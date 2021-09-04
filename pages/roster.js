@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useGetRoster } from "../utils";
 
 const Roster = () => {
@@ -8,7 +9,13 @@ const Roster = () => {
          <h1>Roster</h1>
          {roster
             ? roster.map((player) => {
-                 return <div key={player.id}>{JSON.stringify(player)}</div>;
+                 return (
+                    <Link key={player.id} href={`/player/${player.id}`}>
+                       <div>
+                          {player.firstName + " " + player.lastName}
+                       </div>
+                    </Link>
+                 );
               })
             : null}
       </>
