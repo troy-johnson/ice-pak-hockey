@@ -1,5 +1,9 @@
+// import { useGetProfile } from "../utils";
+
 const Profile = () => {
-   return <h1>Profile</h1>;
+   // const { profile, isLoading, isError } = useGetProfile();
+
+   return (<><h1>Profile</h1></>);
 };
 
 export default Profile;

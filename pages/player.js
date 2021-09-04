@@ -1,12 +1,12 @@
-import { useGetRoster } from "../utils";
+import { useGetPlayer } from "../utils";
 
-const Roster = () => {
-   const { roster, isLoading, isError } = useGetRoster();
+const Player = () => {
+   const { player, isLoading, isError } = useGetPlayer();
 
    return (
       <>
          <h1>Roster</h1>
-         {roster
+         {player
             ? roster.map((player) => {
                  return <div key={player.id}>{JSON.stringify(player)}</div>;
               })
@@ -15,4 +15,4 @@ const Roster = () => {
    );
 };
 
-export default Roster;
+export default Player;
