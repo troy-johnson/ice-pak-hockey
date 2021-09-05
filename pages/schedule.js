@@ -8,7 +8,7 @@ const Schedule = () => {
          <h1>Schedule</h1>
          {schedule
             ? schedule?.map((game) => {
-                 return <div key={game.id}>{JSON.stringify(game)}</div>;
+                 return <div key={game.id}></div>;
               })
             : null}
       </>

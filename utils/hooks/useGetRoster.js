@@ -1,8 +1,7 @@
 import useSWR from "swr";
-import fetcher from "./fetcher";
 
 const useGetRoster = () => {
-   const { data, error } = useSWR(`/api/players`, fetcher);
+   const { data, error } = useSWR(`/api/players`);
 
    return {
       roster: data,

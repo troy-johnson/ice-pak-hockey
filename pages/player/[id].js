@@ -1,11 +1,12 @@
 import { useRouter } from "next/router";
-import { useGetPlayer } from "../../utils";
+import { useGetRoster } from "../../utils";
 
 const Player = () => {
    const router = useRouter();
    const { id } = router.query;
+   const { roster, isLoading, isError } = useGetRoster();
 
-   const { player, isLoading, isError } = useGetPlayer(id);
+   const player = roster?.filter(player => player.id === id)[0];
 
    console.log("player", player)
 

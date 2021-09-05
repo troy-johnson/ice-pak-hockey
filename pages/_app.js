@@ -2,11 +2,12 @@ import "../styles/globals.css";
 import { SWRConfig } from "swr";
 import { Layout } from "../components";
 
-function MyApp({ Component, pageProps }) {
+function IcePakHockey({ Component, pageProps }) {
    return (
       <SWRConfig
          value={{
-            refreshInterval: 3000,
+            revalidateOnMount: true,
+            dedupingInterval: 6000,
             fetcher: (resource, init) =>
                fetch(resource, init).then((res) => res.json()),
          }}
@@ -18,4 +19,4 @@ function MyApp({ Component, pageProps }) {
    );
 }
 
-export default MyApp;
+export default IcePakHockey;

@@ -1,8 +1,9 @@
 import useSWR from "swr";
-import fetcher from "./fetcher";
 
 const useGetSchedule = () => {
-   const { data, error } = useSWR(`/api/games`, fetcher);
+   const { data, error } = useSWR(`/api/games`);
+
+   console.log('schedule', data, error)
 
    return {
       roster: data,
