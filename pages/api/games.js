@@ -2,15 +2,15 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../config";
 
 const gamesHandler = async(req, res) => {
-   const querySnapshot = await getDocs(collection(db, "games"));
+   const result = await getDocs(collection(db, "games"));
 
-   let currentGames = [];
+   let games = [];
 
-   querySnapshot.forEach((doc) => {
-      currentGames.push({ id: doc.id, ...doc.data() });
+   result.forEach((doc) => {
+      games.push({ id: doc.id, ...doc.data() });
    });
 
-   return res.status(200).json(currentGames);
+   return res.status(200).json(games);
 }
 
 

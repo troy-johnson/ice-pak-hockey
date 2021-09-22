@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { useGetRoster } from "../utils";
+import { getRoster } from "../utils";
 
 const Roster = () => {
-   const { roster, isLoading, isError } = useGetRoster();
+   const { roster, isLoading, isError } = getRoster();
 
    return (
       <>

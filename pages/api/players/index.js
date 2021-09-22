@@ -2,18 +2,18 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config";
 
 const playersHandler = async (req, res) => {
-   const result = await getDocs(collection(db, "asf"));
+   const result = await getDocs(collection(db, "players"));
 
    console.log("querySnapshot", result);
 
    // if (result.length) {
-   let currentRoster = [];
+   let players = [];
 
    result.forEach((doc) => {
-      currentRoster.push({ id: doc.id, ...doc.data() });
+      players.push({ id: doc.id, ...doc.data() });
    });
 
-   return res.status(200).json(currentRoster);
+   return res.status(200).json(players);
    // }
 
    // return res.status(400).json(result);
