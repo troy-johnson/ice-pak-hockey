@@ -15,13 +15,18 @@ const Navbar = () => {
                </Link>
             </li>
             <li>
-               <Link href="/roster">
+               <Link href="/players">
                   <a>Roster</a>
                </Link>
             </li>
             <li>
-               <Link href="/schedule">
-                  <a>Schedule</a>
+               <Link href="/games">
+                  <a>Games</a>
+               </Link>
+            </li>
+            <li>
+               <Link href="/seasons">
+                  <a>Seasons</a>
                </Link>
             </li>
          </ul>

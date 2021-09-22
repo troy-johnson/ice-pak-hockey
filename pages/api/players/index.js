@@ -4,8 +4,6 @@ import { db } from "../../../config";
 const playersHandler = async (req, res) => {
    const result = await getDocs(collection(db, "players"));
 
-   console.log("querySnapshot", result);
-
    // if (result.length) {
    let players = [];
 
