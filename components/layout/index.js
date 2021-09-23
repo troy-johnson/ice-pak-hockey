@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Banner, Burger, Footer, Menu, Navbar, UpcomingGames } from "..";
+import { Banner, Burger, Footer, Menu, UpcomingGames } from "..";
 
 const Layout = ({ children }) => {
    const [open, setOpen] = useState(false);
@@ -31,7 +31,6 @@ const Layout = ({ children }) => {
          </div>
          <Banner />
          <UpcomingGames />
-         <Navbar />
          <main>{children}</main>
          <Footer />
       </>

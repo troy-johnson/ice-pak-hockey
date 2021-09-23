@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StyledMenu } from "./Menu.styled";
 
 const Menu = ({ open, ...props }) => {
@@ -6,18 +7,24 @@ const Menu = ({ open, ...props }) => {
 
    return (
       <StyledMenu open={open} aria-hidden={!isHidden} {...props}>
-         <a href="/" tabIndex={tabIndex}>
-            <span aria-hidden="true">💁🏻‍♂️</span>
-            About us
-         </a>
-         <a href="/" tabIndex={tabIndex}>
-            <span aria-hidden="true">💸</span>
-            Pricing
-         </a>
-         <a href="/" tabIndex={tabIndex}>
-            <span aria-hidden="true">📩</span>
-            Contact
-         </a>
+         <Link href="/team" tabIndex={tabIndex}>
+            Team
+         </Link>
+         <Link href="/schedule" tabIndex={tabIndex}>
+            Schedule
+         </Link>
+         <Link href="/stats" tabIndex={tabIndex}>
+            Stats
+         </Link>
+         <Link href="/news" tabIndex={tabIndex}>
+            News
+         </Link>
+         <Link href="/standings" tabIndex={tabIndex}>
+            Standings
+         </Link>
+         <Link href="/shop" tabIndex={tabIndex}>
+            Shop
+         </Link>
       </StyledMenu>
    );
 };
