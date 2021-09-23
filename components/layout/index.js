@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Banner, Burger, Footer, Menu, UpcomingGames } from "..";
+import { StyledMain } from "./Layout.styled";
 
 const Layout = ({ children }) => {
    const [open, setOpen] = useState(false);

@@ -18,23 +18,30 @@ export const StyledMenu = styled.nav`
       width: 100%;
    }
 
-   a {
-      font-size: 2rem;
-      text-transform: uppercase;
-      padding: 2rem 0;
-      font-weight: bold;
-      letter-spacing: 0.5rem;
-      color: ${({ theme }) => theme.white};
-      text-decoration: none;
-      transition: color 0.3s linear;
+   span {
+      padding: 1.5rem 0;
 
       @media (max-width: ${({ theme }) => theme.mobile}) {
-         font-size: 1.5rem;
-         text-align: center;
+         padding: 2rem 0
       }
 
-      &:hover {
-         color: ${({ theme }) => theme.darkGrey};
+      a {
+         font-size: 2rem;
+         text-transform: uppercase;
+         font-weight: bold;
+         letter-spacing: 0.5rem;
+         color: ${({ theme }) => theme.white};
+         text-decoration: none;
+         transition: color 0.3s linear;
+
+         @media (max-width: ${({ theme }) => theme.mobile}) {
+            font-size: 1.5rem;
+            text-align: center;
+         }
+
+         &:hover {
+            color: ${({ theme }) => theme.black};
+         }
       }
    }
 `;

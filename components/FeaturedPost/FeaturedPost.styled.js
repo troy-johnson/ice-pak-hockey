@@ -9,6 +9,11 @@ export const Container = styled.article`
    padding-right: 5px;
    display: flex;
    flex-direction: column;
+   width: 75%;
+
+   @media (max-width: ${({ theme }) => theme.mobile}) {
+      width: 100%;
+   }
 `;
 
 export const Title = styled.h2`

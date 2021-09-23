@@ -7,9 +7,7 @@ const UpcomingGames = () => {
    const gamesToShow = games
       .filter(game => game.date.seconds * 1000 > new Date().getTime() / 1000)
       .sort((a, b) => new Date(a.date.seconds) - new Date(b.date.seconds))
-      .slice(0, 5);
-
-   console.log("gamesToShow", gamesToShow);
+      .slice(0, 3);
 
    return (
       <div>
