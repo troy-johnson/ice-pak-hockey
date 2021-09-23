@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { getPlayers } from "../../utils";
+import { getPlayers } from "../utils";
 
-const Roster = () => {
+const Team = () => {
    const { players, playersLoading, playersError } = getPlayers();
 
    if (playersLoading) {
@@ -12,7 +12,7 @@ const Roster = () => {
 
    return (
       <>
-         <h1>Roster</h1>
+         <h1>Team</h1>
          {players
             ? players.map((player) => {
                  return (
@@ -26,4 +26,4 @@ const Roster = () => {
    );
 };
 
-export default Roster;
+export default Team;

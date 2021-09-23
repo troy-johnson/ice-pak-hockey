@@ -5,28 +5,33 @@ const Navbar = () => {
       <nav>
          <ul>
             <li>
-               <Link href="/">
-                  <a>Home</a>
+               <Link href="/team">
+                  <a>Team</a>
                </Link>
             </li>
             <li>
-               <Link href="/profile">
-                  <a>Profile</a>
+               <Link href="/schedule">
+                  <a>Schedule</a>
                </Link>
             </li>
             <li>
-               <Link href="/players">
-                  <a>Roster</a>
+               <Link href="/stats">
+                  <a>Stats</a>
                </Link>
             </li>
             <li>
-               <Link href="/games">
-                  <a>Games</a>
+               <Link href="/news">
+                  <a>News</a>
                </Link>
             </li>
             <li>
-               <Link href="/seasons">
-                  <a>Seasons</a>
+               <Link href="/standings">
+                  <a>Standings</a>
+               </Link>
+            </li>
+            <li>
+               <Link href="/shop">
+                  <a>Shop</a>
                </Link>
             </li>
          </ul>

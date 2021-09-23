@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { Posts } from "../components";
 
 const Home = () => {
    return (
@@ -10,7 +11,7 @@ const Home = () => {
          </Head>
 
          <main>
-            <h1>Welcome to Ice Pak Hockey!</h1>
+            <Posts />
          </main>
       </>
    );
