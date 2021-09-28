@@ -1,6 +1,5 @@
 import { useState } from "react";
-import Link from "next/link";
-import { GameCard } from './schedule.styled';
+import { ScheduleGameCard, ScheduleGameDate } from "./schedule.styled";
 import { getAllGames } from "../../utils";
 
 const Schedule = () => {
@@ -21,27 +20,34 @@ const Schedule = () => {
                     (a, b) =>
                        new Date(a.date.seconds) - new Date(b.date.seconds)
                  )
-                 .slice(0, 10)
                  .map((game) => {
+                    console.log("game", game);
                     return (
-                       <GameCard key={game.id}>
-                          <Link key={game.id} href={`/games/${game.id}`}>
-                             <div>
-                                {new Date(
+                       <ScheduleGameCard game={game} key={game.id}>
+                          <ScheduleGameDate
+                             day={`${new Intl.DateTimeFormat("en-US", {
+                                weekday: "long",
+                             })
+                                .format(game.date.seconds * 1000)
+                                .split("")
+                                .slice(0, 3)
+                                .join("")} ${
+                                new Date(game.date.seconds * 1000).getMonth() +
+                                1
+                             }/${new Date(game.date.seconds * 1000).getDate()}`}
+                          />
+                          <div>
+                             {" @ " +
+                                new Date(
                                    game.date.seconds * 1000
-                                ).toLocaleDateString() +
-                                   " @ " +
-                                   new Date(
-                                      game.date.seconds * 1000
-                                   ).toLocaleTimeString([], {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                   }) +
-                                   " vs. " +
-                                   game?.opponentName}
-                             </div>
-                          </Link>
-                       </GameCard>
+                                ).toLocaleTimeString([], {
+                                   hour: "2-digit",
+                                   minute: "2-digit",
+                                }) +
+                                " vs. " +
+                                game?.opponentName}
+                          </div>
+                       </ScheduleGameCard>
                     );
                  })
             : null}
