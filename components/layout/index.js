@@ -1,4 +1,4 @@
-import { Banner, Footer, UpcomingGames } from "..";
+import { Banner, UpcomingGames } from "..";
 
 const Layout = ({ children }) => {
    return (
@@ -6,7 +6,7 @@ const Layout = ({ children }) => {
          <Banner />
          <UpcomingGames />
          <main>{children}</main>
-         <Footer />
+         {/* <Footer /> */}
       </>
    );
 };
