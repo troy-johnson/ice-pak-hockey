@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import Link from "next/link";
+// import Link from "next/link";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -11,9 +11,9 @@ const StyledScheduleGameCard = ({ className, children, game }) => {
       <GameCard className={className}>
          <CardContent>{children}</CardContent>
          <CardActions>
-            <Link key={game.id} href={`/games/${game.id}`}>
+            {/* <Link key={game.id} href={`/games/${game.id}`}> */}
                <Button size="small">View Game</Button>
-            </Link>
+            {/* </Link> */}
          </CardActions>
       </GameCard>
    );
@@ -31,7 +31,9 @@ export const GameCard = styled(Card)`
    margin: 10px 5px;
 `;
 
-export const ScheduleGameCard = styled(StyledScheduleGameCard)``;
+export const ScheduleGameCard = styled(StyledScheduleGameCard)`
+   max-width: 100%;
+`;
 
 export const ScheduleGameDate = styled(StyledDate)`
    width: 100%;

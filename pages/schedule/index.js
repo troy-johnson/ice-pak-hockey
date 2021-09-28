@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ScheduleGameCard, ScheduleGameDate } from "./schedule.styled";
+import { ScheduleGameCard, ScheduleGameDate } from "../../styles/schedule.styled";
 import { getAllGames } from "../../utils";
 
 const Schedule = () => {
