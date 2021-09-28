@@ -1,50 +1,77 @@
 import { useState } from "react";
 import Link from "next/link";
-import { StyledContainer } from "./Banner.styled";
-import Button from "@mui/material/Button";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import {
+   CloseNav,
+   Container,
+   MenuItem,
+   NavMenuBox,
+   OpenNav,
+} from "./Banner.styled";
+import { List, ListItem, SwipeableDrawer, useMediaQuery } from "@mui/material";
 
 const Banner = () => {
    const [open, setOpen] = useState(false);
-
-   const list = (anchor) => (
-      <Box
-         sx={{ width: anchor === "top" || anchor === "bottom" ? "auto" : 250 }}
-         role="presentation"
-         onClick={() => setOpen(false)}
-         onKeyDown={() => setOpen(false)}
-      >
-         <List>
-            <ListItem button>
-               <ListItemIcon>
-               </ListItemIcon>
-               <ListItemText primary="Home" />
-            </ListItem>
-         </List>
-      </Box>
-   );
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
-      <StyledContainer>
-         <Button onClick={() => setOpen(true)}>Menu</Button>
+      <Container>
+         <OpenNav onClick={() => setOpen(true)} />
          <SwipeableDrawer
             anchor="left"
+            onOpen={() => {}}
             open={open}
             onClose={() => setOpen(false)}
          >
-            {list("left")}
+            <NavMenuBox
+               role="presentation"
+               onClick={() => setOpen(false)}
+               onKeyDown={() => setOpen(false)}
+               desktop={desktop}
+            >
+               {/* <CloseNav onClick={() => setOpen(false)} /> */}
+               <List>
+                  <ListItem button>
+                     <Link href="/">
+                        <MenuItem primary="Home" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/news">
+                        <MenuItem primary="News" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/team">
+                        <MenuItem primary="Team" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/schedule">
+                        <MenuItem primary="Schedule" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/stats">
+                        <MenuItem primary="Stats" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/standings">
+                        <MenuItem primary="Standings" />
+                     </Link>
+                  </ListItem>
+                  <ListItem button>
+                     <Link href="/shop">
+                        <MenuItem primary="Shop" />
+                     </Link>
+                  </ListItem>
+               </List>
+            </NavMenuBox>
          </SwipeableDrawer>
-         <h1>
-            <Link href={`/`}>Ice Pak Hockey </Link>
-         </h1>
-      </StyledContainer>
+         <Link href={`/`}>
+            <h1>Ice Pak Hockey</h1>
+         </Link>
+      </Container>
    );
 };
 

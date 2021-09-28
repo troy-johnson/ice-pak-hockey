@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 export const StyledMain = styled.main`
 left: 1.5rem;
