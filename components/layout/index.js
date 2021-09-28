@@ -6,7 +6,6 @@ const Layout = ({ children }) => {
          <Banner />
          <UpcomingGames />
          <main>{children}</main>
-         {/* <Footer /> */}
       </>
    );
 };

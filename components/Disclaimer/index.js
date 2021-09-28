@@ -1,4 +1,4 @@
-const Footer = () => {
+const Disclaimer = () => {
    return (
       <>
          <div>Please do not use any information contained here without permission of Ice Pak Hockey.</div>
@@ -6,4 +6,4 @@ const Footer = () => {
    );
 };
 
-export default Footer;
+export default Disclaimer;
