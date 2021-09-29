@@ -1,3 +1,4 @@
+import styled from "@emotion/styled";
 import { Banner, UpcomingGames } from "..";
 
 const Layout = ({ children }) => {
@@ -5,9 +6,16 @@ const Layout = ({ children }) => {
       <>
          <Banner />
          <UpcomingGames />
-         <main>{children}</main>
+         <LayoutMain>{children}</LayoutMain>
       </>
    );
 };
 
 export default Layout;
+
+const LayoutMain = styled.main`
+   left: 1.5rem;
+   @media (max-width: ${({ theme }) => theme.mobile}) {
+      margin: 1rem 0.25rem;
+   }
+`;
