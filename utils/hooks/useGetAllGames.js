@@ -18,8 +18,6 @@ const useGetAllGames = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { locations, locationsLoading, locationsError } = useGetLocations();
 
-   console.log("locations loading", { locations, locationsError, locationsLoading })
-
    let games = [];
 
    data?.forEach((game) =>
@@ -31,9 +29,9 @@ const useGetAllGames = () => {
          locationName: locations?.filter(
             (location) => location.id === game.locationId
          )[0]?.name,
-         locationImage: locations?.filter(
-            (location) => location.id === game.locationId
-         )[0]?.image,
+         // locationImage: locations?.filter(
+         //    (location) => location.id === game.locationId
+         // )[0]?.image,
          locationMapLink: locations?.filter(
             (location) => location.id === game.locationId
          )[0]?.googleMapsLink,
