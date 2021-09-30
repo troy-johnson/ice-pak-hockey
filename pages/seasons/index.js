@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getSeasons } from "../../utils";
+import { useGetSeasons } from "../../utils";
 
 const Seasons = () => {
-   const { seasons, seasonsLoading, seasonsError } = getSeasons();
+   const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
 
    return (
       <>

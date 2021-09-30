@@ -1,12 +1,12 @@
 import { useRouter } from "next/router";
-import { getAllGames, getSeasons } from "../../utils";
+import { useGetAllGames, useGetSeasons } from "../../utils";
 
 const Season = () => {
    const router = useRouter();
    const { id } = router.query;
 
-   const { seasons, seasonsLoading, seasonsError } = getSeasons();
-   const { games, gamesLoading, gamesError } = getAllGames();
+   const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
+   const { games, gamesLoading, gamesError } = useGetAllGames();
 
    const season = seasons?.filter((season) => season?.id === id)[0];
    const seasonGames = games?.filter((game) => game?.seasonId === id);

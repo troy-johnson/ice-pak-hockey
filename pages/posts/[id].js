@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { getPosts } from "../../utils";
+import { useGetPosts } from "../../utils";
 
 const Post = () => {
-   const { posts, postsLoading, postsError } = getPosts();
+   const { posts, postsLoading, postsError } = useGetPosts();
 
    const router = useRouter();
    const { id } = router.query;
