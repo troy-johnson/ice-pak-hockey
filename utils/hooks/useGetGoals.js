@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getGoals = () => {
+const useGetGoals = () => {
    const { data, error } = useSWR(`/api/goals`);
 
    return {
@@ -10,4 +10,4 @@ const getGoals = () => {
    };
 };
 
-export default getGoals;
+export default useGetGoals;

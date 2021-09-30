@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getPosts = () => {
+const useGetPosts = () => {
    const { data, error } = useSWR(`/api/posts`);
 
    return {
@@ -10,4 +10,4 @@ const getPosts = () => {
    };
 };
 
-export default getPosts;
+export default useGetPosts;

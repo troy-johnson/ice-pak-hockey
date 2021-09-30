@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getSeasonSchedule = seasonId => {
+const useGetSeasonSchedule = seasonId => {
    const { data, error } = useSWR(`/api/season-schedule/${seasonId}`);
 
    return {
@@ -10,4 +10,4 @@ const getSeasonSchedule = seasonId => {
    };
 };
 
-export default getSeasonSchedule;
+export default useGetSeasonSchedule;

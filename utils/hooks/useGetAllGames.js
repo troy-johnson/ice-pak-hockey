@@ -1,20 +1,22 @@
 import useSWR from "swr";
 import {
-   getGoals,
-   getOpponents,
-   getPenalties,
-   getPlayers,
-   getSeasons,
-} from ".";
+   useGetGoals,
+   useGetLocations,
+   useGetOpponents,
+   useGetPenalties,
+   useGetPlayers,
+   useGetSeasons,
+} from "..";
 
-const getAllGames = () => {
+const useGetAllGames = () => {
    const { data, error } = useSWR(`/api/games`);
 
-   const { goals, goalsLoading, goalsError } = getGoals();
-   const { opponents, opponentsLoading, opponentsError } = getOpponents();
-   const { penalties, penaltiesLoading, penaltiesError } = getPenalties();
-   const { players, playersLoading, playersError } = getPlayers();
-   const { seasons, seasonsLoading, seasonsError } = getSeasons();
+   const { goals, goalsLoading, goalsError } = useGetGoals();
+   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
+   const { penalties, penaltiesLoading, penaltiesError } = useGetPenalties();
+   const { players, playersLoading, playersError } = useGetPlayers();
+   const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
+   const { locations, locationsLoading, locationsError } = useGetLocations();
 
    let games = [];
 
@@ -24,6 +26,12 @@ const getAllGames = () => {
          goals: game?.goals.map((goal) => goals[goal.id]),
          penalties: game?.penalties.map((penalty) => penalties[penalty.id]),
          roster: game?.roster.map((player) => players[player.id]),
+         locationName: locations?.filter(
+            (location) => location.id === game.locationId
+         )[0]?.name,
+         locationMapLink: locations?.filter(
+            (location) => location.id === game.locationId
+         )[0]?.googleMapsLink,
          opponentName: opponents?.filter(
             (opponent) => opponent.id === game.opponentId
          )[0]?.teamName,
@@ -41,6 +49,7 @@ const getAllGames = () => {
       goalsError |
       opponentsError |
       penaltiesError |
+      locationsError |
       playersError |
       seasonsError;
    const isLoading =
@@ -48,6 +57,7 @@ const getAllGames = () => {
          opponentsLoading |
          penaltiesLoading |
          playersLoading |
+         locationsLoading |
          seasonsLoading |
          !error && !data;
 
@@ -58,4 +68,4 @@ const getAllGames = () => {
    };
 };
 
-export default getAllGames;
+export default useGetAllGames;

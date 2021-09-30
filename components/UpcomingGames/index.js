@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getAllGames } from "../../utils";
+import { useGetAllGames } from "../../utils";
 
 const UpcomingGames = () => {
-   const { games, gamesLoading, gamesError } = getAllGames();
+   const { games, gamesLoading, gamesError } = useGetAllGames();
 
    const gamesToShow = games
       .filter(game => game.date.seconds * 1000 > new Date().getTime() / 1000)

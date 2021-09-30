@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getLeagues = () => {
+const useGetLeagues = () => {
    const { data, error } = useSWR(`/api/leagues`);
 
    return {
@@ -10,4 +10,4 @@ const getLeagues = () => {
    };
 };
 
-export default getLeagues;
+export default useGetLeagues;

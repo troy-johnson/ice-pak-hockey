@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getPlayers } from "../utils";
+import { useGetPlayers } from "../utils";
 
 const Team = () => {
-   const { players, playersLoading, playersError } = getPlayers();
+   const { players, playersLoading, playersError } = useGetPlayers();
 
    if (playersLoading) {
       return <div>Loading...</div>;

@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
-import { getAllGames } from "../../utils";
+import { useGetAllGames } from "../../utils";
 
 const Game = () => {
-   const { games, gamesLoading, gamesError } = getAllGames();
+   const { games, gamesLoading, gamesError } = useGetAllGames();
 
    const router = useRouter();
    const { id } = router.query;

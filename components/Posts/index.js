@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { getPosts } from "../../utils";
+import { useGetPosts } from "../../utils";
 import { FeaturedPost } from "..";
 
 const StyledPosts = styled.section`
@@ -10,7 +10,7 @@ const StyledPosts = styled.section`
 `;
 
 const Posts = () => {
-   const { posts, postsLoading, postsError } = getPosts();
+   const { posts, postsLoading, postsError } = useGetPosts();
 
    const mostRecentPost = posts?.[0];
    const olderPosts = posts?.slice(1, posts.length - 1);

@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getOpponents = () => {
+const useGetOpponents = () => {
    const { data, error } = useSWR(`/api/opponents`);
 
    return {
@@ -10,4 +10,4 @@ const getOpponents = () => {
    };
 };
 
-export default getOpponents;
+export default useGetOpponents;

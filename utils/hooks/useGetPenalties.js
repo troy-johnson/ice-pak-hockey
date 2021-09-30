@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const getPenalties = () => {
+const useGetPenalties = () => {
    const { data, error } = useSWR(`/api/penalties`);
 
    return {
@@ -10,4 +10,4 @@ const getPenalties = () => {
    };
 };
 
-export default getPenalties;
+export default useGetPenalties;
