@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import * as dayjs from "dayjs";
+import dayjs from "dayjs";
 import {
    Alert,
    Button,
@@ -13,42 +13,40 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
+import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useGetAllGames } from "../utils";
 
-const StyledScheduleGameCard = ({ className, children, game }) => {
+const StyledScheduleGameCard = ({ className, children, desktop, game }) => {
    return (
-      <GameCard className={className}>
+      <Card className={className}>
          <CardContent>{children}</CardContent>
          <CardActions>
             <Link key={game?.id} href={`/games/${game?.id}`} passHref>
-               <Button size="small">View Game</Button>
+               <Button size={desktop ? "large" : "small"} variant="contained">View Game</Button>
             </Link>
          </CardActions>
-      </GameCard>
+      </Card>
    );
 };
 
 const StyledLoader = ({ className }) => {
    return (
-      <GameCard className={className}>
+      <Card className={className}>
          <DateTime variant="overline">
             <Skeleton variant="text" />
          </DateTime>
          <Opponent variant="body1">
             <Skeleton variant="rectangle" height={115} />
          </Opponent>
-      </GameCard>
+      </Card>
    );
 };
 
-const GameCard = styled(Card)`
-   margin: 10px 5px;
-`;
-
 const ScheduleGameCard = styled(StyledScheduleGameCard)`
    max-width: 100%;
-   margin: 15px;
+   margin: 15px 0px;
 `;
 
 const DateTime = styled(Typography)`
@@ -56,6 +54,9 @@ const DateTime = styled(Typography)`
    font-size: 1.1rem;
    width: 100%;
    margin-bottom: 5px;
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
 `;
 
 const Opponent = styled(Typography)`
@@ -86,9 +87,16 @@ const Season = styled(Typography)`
    margin-bottom: 5px;
 `;
 
-const Loader = styled(StyledLoader)`
-   margin: 15px;
+const DateContainer = styled.div`
+   display: flex;
+   align-items: center;
+`;
 
+const ArrowButton = styled(Button)`
+   color: ${(props) => props.theme.black};
+`;
+
+const Loader = styled(StyledLoader)`
    span > span,
    p > span {
       margin: 5px 10px;
@@ -97,6 +105,10 @@ const Loader = styled(StyledLoader)`
    p > span {
       margin-bottom: 15px;
    }
+`;
+
+const ScheduleContainer = styled.section`
+   margin: 15px;
 `;
 
 const Schedule = () => {
@@ -115,6 +127,12 @@ const Schedule = () => {
 
    console.log("games", games);
    // console.log('desktop', desktop)
+   console.log(
+      "date comparison",
+      games.filter((game) => dayjs.unix(game?.date.seconds) > date)
+   );
+
+   console.log("date", date.format("MM DD YY"));
 
    if (gamesLoading) {
       return (
@@ -133,12 +151,24 @@ const Schedule = () => {
    }
 
    return (
-      <>
+      <ScheduleContainer>
          <Typography variant="h3">Schedule</Typography>
-         <Typography variant="h4">{date.format("MMMM YYYY")}</Typography>
+         <DateContainer>
+            <ArrowButton
+               onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}
+            >
+               <ArrowLeftIcon fontSize="large" />
+            </ArrowButton>
+            <Typography variant="h5">{date.format("MMMM YYYY")}</Typography>
+            <ArrowButton
+               onClick={() => setDate(dayjs(date).add(1, "M").date(1))}
+            >
+               <ArrowRightIcon fontSize="large" />
+            </ArrowButton>
+         </DateContainer>
          {games
             ? games
-                 ?.filter((game) => dayjs(game?.date.seconds) < date)
+                 ?.filter((game) => dayjs.unix(game?.date.seconds) > date)
                  ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
                  .map((game) => {
                     let icePakGoals = game?.goals.filter(
@@ -148,26 +178,29 @@ const Schedule = () => {
                        (goal) => !goal.icePakGoal
                     ).length;
                     return (
-                       <ScheduleGameCard game={game} key={game?.id}>
+                       <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
                           <DateTime variant="overline">
-                             {isGameEnded(game?.date.seconds) ? (
-                                dayjs
-                                   .unix(game?.date.seconds)
-                                   .format("ddd M/D h:mm A")
-                             ) : (
-                                <>
-                                   {dayjs
+                             <span>
+                                {isGameEnded(game?.date.seconds) ? (
+                                   dayjs
                                       .unix(game?.date.seconds)
-                                      .format("ddd M/D")}{" "}
-                                   - FINAL
-                                   <Score variant="overline">
-                                      {`${isWin(
-                                         icePakGoals,
-                                         opponentGoals
-                                      )} ${icePakGoals} - ${opponentGoals}`}
-                                   </Score>
-                                </>
-                             )}
+                                      .format("ddd M/D h:mm A")
+                                ) : (
+                                   <>
+                                      {dayjs
+                                         .unix(game?.date.seconds)
+                                         .format("ddd M/D")}{" "}
+                                      - FINAL
+                                      <Score variant="overline">
+                                         {`${isWin(
+                                            icePakGoals,
+                                            opponentGoals
+                                         )} ${icePakGoals} - ${opponentGoals}`}
+                                      </Score>
+                                   </>
+                                )}
+                             </span>
+                             {desktop ? <span>{game?.seasonName}</span> : null}
                           </DateTime>
                           {/* <Season variant="caption">{game?.seasonName}</Season> */}
                           <Opponent variant="body1">
@@ -190,7 +223,7 @@ const Schedule = () => {
                     );
                  })
             : null}
-      </>
+      </ScheduleContainer>
    );
 };
 

@@ -41,7 +41,7 @@ const Container = styled.div`
 `;
 
 const NavMenuBox = styled(Box)`
-   background-color: ${(props) => props.theme.palette.primary.main};
+   background-color: ${(props) => props.theme.primary.main};
    height: 100%;
    width: ${(props) => (props.desktop ? 300 : "500px")};
 `;
@@ -56,7 +56,7 @@ const MenuItem = styled(ListItemText)`
       transition: color 0.2s ease-in-out;
 
       :hover {
-         color: ${(props) => props.theme.palette.secondary.main};
+         color: ${(props) => props.theme.secondary.main};
       }
    }
 `;
@@ -75,7 +75,7 @@ const CloseNav = styled(StyledCloseNav)`
       color: white;
 
       :hover {
-         color: ${(props) => props.theme.palette.secondary.main};
+         color: ${(props) => props.theme.secondary.main};
       }
    }
 `;
