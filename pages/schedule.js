@@ -8,6 +8,7 @@ import {
    Card,
    CardActions,
    CardContent,
+   IconButton,
    Link as MuiLink,
    Skeleton,
    Typography,
@@ -24,7 +25,13 @@ const StyledScheduleGameCard = ({ className, children, desktop, game }) => {
          <CardContent>{children}</CardContent>
          <CardActions>
             <Link key={game?.id} href={`/games/${game?.id}`} passHref>
-               <Button size={desktop ? "large" : "small"} variant="contained">View Game</Button>
+               <Button
+                  size={desktop ? "medium" : "small"}
+                  color="secondary"
+                  variant="outlined"
+               >
+                  View Game
+               </Button>
             </Link>
          </CardActions>
       </Card>
@@ -90,10 +97,11 @@ const Season = styled(Typography)`
 const DateContainer = styled.div`
    display: flex;
    align-items: center;
+   margin-left: -15px;
 `;
 
-const ArrowButton = styled(Button)`
-   color: ${(props) => props.theme.black};
+const ArrowButton = styled(IconButton)`
+   color: ${(props) => props.theme.palette.black};
 `;
 
 const Loader = styled(StyledLoader)`
@@ -106,6 +114,9 @@ const Loader = styled(StyledLoader)`
       margin-bottom: 15px;
    }
 `;
+
+
+// TODO: Figure out card background image using data:image/png;base64,game.locationImage
 
 const ScheduleContainer = styled.section`
    margin: 15px;
@@ -178,7 +189,11 @@ const Schedule = () => {
                        (goal) => !goal.icePakGoal
                     ).length;
                     return (
-                       <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
+                       <ScheduleGameCard
+                          game={game}
+                          desktop={desktop}
+                          key={game?.id}
+                       >
                           <DateTime variant="overline">
                              <span>
                                 {isGameEnded(game?.date.seconds) ? (

@@ -43,13 +43,13 @@ const PostTitle = styled(StyledPostTitle)``;
 // export const Title = styled.h2`
 //    font-size: 24px;
 //    margin-bottom: 2px;
-//    color: ${(props) => props.theme.black};
+//    color: ${(props) => props.theme.palette.black};
 // `;
 
 // export const PostDate = styled.h3`
 //    margin-top: 0px;
 //    font-weight: 300;
-//    color: ${(props) => props.theme.mediumGrey};
+//    color: ${(props) => props.theme.palette.mediumGrey};
 // `;
 
 const FeaturedPost = ({ post }) => {

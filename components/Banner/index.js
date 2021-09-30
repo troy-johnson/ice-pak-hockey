@@ -3,7 +3,7 @@ import Link from "next/link";
 import styled from "@emotion/styled";
 import {
    Box,
-   Button,
+   IconButton,
    List,
    ListItem,
    ListItemText,
@@ -15,17 +15,17 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
-      <Button className={className} onClick={onClick}>
+      <IconButton className={className} onClick={onClick}>
          <MenuIcon />
-      </Button>
+      </IconButton>
    );
 };
 
 const StyledCloseNav = ({ className, onClick }) => {
    return (
-      <Button className={className} onClick={onClick}>
+      <IconButton className={className} onClick={onClick}>
          <CloseIcon />
-      </Button>
+      </IconButton>
    );
 };
 
@@ -33,6 +33,9 @@ const Container = styled.div`
    display: flex;
    flex-direction: row;
    align-items: center;
+   background-color: ${props => props.theme.palette.primary.main};
+   color: ${props => props.theme.palette.white};
+   width: 100%;
 
    h1 {
       flex-grow: 2;
@@ -41,7 +44,7 @@ const Container = styled.div`
 `;
 
 const NavMenuBox = styled(Box)`
-   background-color: ${(props) => props.theme.primary.main};
+   background-color: ${(props) => props.theme.palette.primary.main};
    height: 100%;
    width: ${(props) => (props.desktop ? 300 : "500px")};
 `;
@@ -56,14 +59,14 @@ const MenuItem = styled(ListItemText)`
       transition: color 0.2s ease-in-out;
 
       :hover {
-         color: ${(props) => props.theme.secondary.main};
+         color: ${(props) => props.theme.palette.secondary.main};
       }
    }
 `;
 
 const OpenNav = styled(StyledOpenNav)`
    svg {
-      color: black;
+      color: ${props => props.theme.palette.white};
       height: 24px;
       width: 24px;
    }
@@ -75,7 +78,7 @@ const CloseNav = styled(StyledCloseNav)`
       color: white;
 
       :hover {
-         color: ${(props) => props.theme.secondary.main};
+         color: ${(props) => props.theme.palette.secondary.main};
       }
    }
 `;
