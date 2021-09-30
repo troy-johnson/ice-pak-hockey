@@ -16,7 +16,7 @@ const Team = () => {
          {players
             ? players.map((player) => {
                  return (
-                    <Link key={player.id} href={`/player/${player.id}`}>
+                    <Link key={player.id} href={`/player/${player.id}`} passHref>
                        <div>{player.firstName + " " + player.lastName}</div>
                     </Link>
                  );

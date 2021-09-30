@@ -1,6 +1,13 @@
+import styled from "@emotion/styled";
 import { getPosts } from "../../utils";
 import { FeaturedPost } from "..";
-import { StyledPosts } from "./Posts.styled";
+
+const StyledPosts = styled.section`
+   display: flex;
+   flex-direction: row;
+   justify-content: center;
+   width: 75%;
+`;
 
 const Posts = () => {
    const { posts, postsLoading, postsError } = getPosts();
@@ -12,7 +19,7 @@ const Posts = () => {
       <StyledPosts>
          <FeaturedPost post={mostRecentPost} />
          {olderPosts?.map((post) => {
-            return <div>{JSON.stringify(post)}</div>;
+            return <div key={post.id}>{JSON.stringify(post)}</div>;
          })}
       </StyledPosts>
    );

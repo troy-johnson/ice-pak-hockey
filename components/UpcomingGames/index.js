@@ -13,7 +13,7 @@ const UpcomingGames = () => {
       <div>
          {gamesToShow?.map((game) => {
             return (
-               <Link key={game.id} href={`/games/${game.id}`}>
+               <Link key={game.id} href={`/games/${game.id}`} passHref>
                   <div>
                      {new Date(game.date.seconds * 1000).toLocaleDateString() +
                         " @ " +

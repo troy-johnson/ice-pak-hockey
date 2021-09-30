@@ -1,10 +1,10 @@
-import * as React from 'react';
+import * as React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
-import createCache from '@emotion/cache';
+import createCache from "@emotion/cache";
 import { theme } from "../utils";
 
-const createEmotionCache = () => createCache({ key: 'css' })
+const createEmotionCache = () => createCache({ key: "css" });
 
 class MyDocument extends Document {
    render() {
@@ -38,6 +38,7 @@ MyDocument.getInitialProps = async (ctx) => {
 
    ctx.renderPage = () =>
       originalRenderPage({
+         // eslint-disable-next-line react/display-name
          enhanceApp: (App) => (props) =>
             <App emotionCache={cache} {...props} />,
       });
