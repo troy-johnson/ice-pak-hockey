@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import {
@@ -29,18 +30,44 @@ const StyledCloseNav = ({ className, onClick }) => {
    );
 };
 
-const Container = styled.div`
+const StyledTextLogo = ({ className }) => {
+   return (
+      <div className={className}>
+         <Link href="/" passHref>
+            <div>
+               <Image
+                  src="/icePakTextLogo.png"
+                  width={300}
+                  height={60}
+                  alt="Ice Pak Hockey"
+               />
+            </div>
+         </Link>
+      </div>
+   );
+};
+
+const Container = styled.nav`
    display: flex;
    flex-direction: row;
    align-items: center;
-   background-color: ${props => props.theme.palette.primary.main};
-   color: ${props => props.theme.palette.white};
+   background-color: ${(props) => props.theme.palette.primary.main};
+   color: ${(props) => props.theme.palette.white};
    width: 100%;
 
-   h1 {
+   img {
       flex-grow: 2;
       text-align: center;
    }
+`;
+
+const TextLogo = styled(StyledTextLogo)`
+   width: 100%;
+   margin: 15px 15px 5px 15px;
+   display: flex;
+   height: 100%;
+   width: 100%;
+   justify-content: center;
 `;
 
 const NavMenuBox = styled(Box)`
@@ -59,14 +86,14 @@ const MenuItem = styled(ListItemText)`
       transition: color 0.2s ease-in-out;
 
       :hover {
-         color: ${(props) => props.theme.palette.secondary.main};
+         color: ${(props) => props.theme.palette.tertiary.main};
       }
    }
 `;
 
 const OpenNav = styled(StyledOpenNav)`
    svg {
-      color: ${props => props.theme.palette.white};
+      color: ${(props) => props.theme.palette.white};
       height: 24px;
       width: 24px;
    }
@@ -142,9 +169,7 @@ const Banner = () => {
                </List>
             </NavMenuBox>
          </SwipeableDrawer>
-         <Link href={`/`} passHref>
-            <h1>Ice Pak Hockey</h1>
-         </Link>
+         <TextLogo />
       </Container>
    );
 };

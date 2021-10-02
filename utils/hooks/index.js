@@ -1,4 +1,5 @@
 export { default as useGetAllGames } from "./useGetAllGames";
+export { default as useGetAssists } from "./useGetAssists";
 export { default as useGetGoals } from "./useGetGoals";
 export { default as useGetLeagues } from "./useGetLeagues";
 export { default as useGetLocations } from "./useGetLocations";
