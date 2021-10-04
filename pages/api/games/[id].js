@@ -94,13 +94,13 @@ const gameHandler = async (req, res) => {
                      goalId: goal.id,
                      playerName: roster.filter(
                         (player) => player.playerId === goal.data().playerId
-                     )[0].playerName,
+                     )?.[0]?.playerName,
                      playerJerseyNumber: roster.filter(
                         (player) => player.playerId === goal.data().playerId
-                     )[0].jerseyNumber,
+                     )?.[0]?.jerseyNumber,
                      playerImage: roster.filter(
                         (player) => player.playerId === goal.data().playerId
-                     )[0].image,
+                     )?.[0]?.image,
                   });
                });
 
@@ -141,7 +141,9 @@ const gameHandler = async (req, res) => {
          }
       case "PUT":
          try {
-            await setDoc(doc(db, "games", id), {});
+            await setDoc(doc(db, "games", id), {
+               ...req.body,
+            });
 
             return res.status(200).json({ ...req.body });
          } catch (error) {

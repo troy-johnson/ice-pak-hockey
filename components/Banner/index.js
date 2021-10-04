@@ -54,6 +54,10 @@ const Container = styled.nav`
    background-color: ${(props) => props.theme.palette.primary.main};
    color: ${(props) => props.theme.palette.white};
    width: 100%;
+   position: sticky;
+   overflow: hidden;
+   top: 0;
+   z-index: 50;
 
    img {
       flex-grow: 2;

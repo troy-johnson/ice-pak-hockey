@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import {
    Avatar,
    Box,
+   Paper,
    Tabs,
    Tab,
    Typography,
@@ -44,14 +45,12 @@ const PlayerContainer = styled.section`
    margin: 15px;
 `;
 
-const SectionContainer = styled.div`
+const SectionContainer = styled(Paper)`
    display: flex;
    flex-direction: column;
    align-items: center;
    width: ${(props) => (props.desktop ? "75%" : "100%")};
-   border: 1px solid ${(props) => props.theme.palette.grey.light};
    border-top: 5px solid ${(props) => props.theme.palette.secondary.main};
-   border-radius: 4px;
    padding-top: 15px;
    margin-bottom: 15px;
 `;
