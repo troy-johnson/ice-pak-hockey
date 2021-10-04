@@ -1,19 +1,33 @@
 import { useRouter } from "next/router";
-import { useGetAllGames } from "../../utils";
+import styled from "@emotion/styled";
+import { Typography, useMediaQuery } from "@mui/material";
+import { useGetGameInfo} from "../../utils";
+
+const GameContainer = styled.section`
+   display: flex;
+   flex-direction: column;
+   margin: 15px;
+`;
 
 const Game = () => {
-   const { games, gamesLoading, gamesError } = useGetAllGames();
-
    const router = useRouter();
    const { id } = router.query;
 
-   const game = games?.filter((game) => game.id === id);
+   const { game, gameLoading, gameError } = useGetGameInfo(id);
+
+   console.log("game", game)
+
+   if (gameLoading) {
+      return <GameContainer>Loading...</GameContainer>
+   } else if (gameError) {
+      return <GameContainer>Error retrieving game data. Please try again later.</GameContainer>
+   }
 
    return (
-      <>
-         <h1>Game</h1>
+      <GameContainer>
+         <Typography variant="h3">Game</Typography>
          {game ? <div>{JSON.stringify(game)}</div> : null}
-      </>
+      </GameContainer>
    );
 };
 
