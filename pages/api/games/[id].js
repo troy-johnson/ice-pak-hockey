@@ -19,88 +19,111 @@ const gameHandler = async (req, res) => {
          try {
             const gameResult = await getDoc(doc(db, "games", id));
             const gameData = gameResult.data();
-            // console.log('gameData', gameData);
 
             const locationResult = await getDoc(
                doc(db, "locations", gameData?.locationId)
             );
             const locationData = locationResult?.data();
-            // console.log('locationData', locationData);
 
             const seasonResult = await getDoc(
                doc(db, "seasons", gameData?.seasonId)
             );
             const seasonData = seasonResult?.data();
-            // console.log('locationData', locationData);
 
-            const goalsResult = await getDocs(
-               query(collection(db, "goals"), where("gameId", "==", id))
+            const opponentResult = await getDoc(
+               doc(db, "opponents", gameData?.opponentId)
             );
+            const opponentData = opponentResult?.data();
 
-            const penaltiesResult = await getDocs(
-               query(collection(db, "penalties"), where("gameId", "==", id))
-            );
-
-            const playersResult = await getDocs(
-               query(
-                  collection(db, "players"),
-                  where(documentId(), "in", gameData?.roster)
-               )
-            );
             let roster = [];
-            playersResult?.forEach((player) =>
-               roster.push({
-                  playerName: `${player.data().firstName} ${
-                     player.data().nickname
-                        ? `"${player.data().nickname}" ${
-                             player.data().lastName
-                          }`
-                        : player.data().lastName
-                  }`,
-                  jerseyNumber: player.data().jerseyNumber,
-                  image: player.data().image,
-                  playerId: player.id,
-               })
-            );
-
             let goals = [];
+            let penalties = [];
 
-            goalsResult?.forEach((goal) => {           
-               let assists = [];
+            if (gameData?.roster.length >= 1) {
+               const goalsResult = await getDocs(
+                  query(collection(db, "goals"), where("gameId", "==", id))
+               );
 
-               goal.data().assists?.forEach((assist) => {
-                  assists.push({
-                     playerId: assist,
-                     playerName: roster.filter(player => player.playerId === assist)[0].playerName,
-                     playerJerseyNumber: roster.filter(player => player.playerId === assist)[0].jerseyNumber,
-                     playerImage: roster.filter(player => player.playerId === assist)[0].image
+               const penaltiesResult = await getDocs(
+                  query(collection(db, "penalties"), where("gameId", "==", id))
+               );
+
+               const playersResult = await getDocs(
+                  query(
+                     collection(db, "players"),
+                     where(documentId(), "in", gameData?.roster)
+                  )
+               );
+
+               playersResult?.forEach((player) =>
+                  roster.push({
+                     playerName: `${player.data().firstName} ${
+                        player.data().nickname
+                           ? `"${player.data().nickname}" ${
+                                player.data().lastName
+                             }`
+                           : player.data().lastName
+                     }`,
+                     jerseyNumber: player.data().jerseyNumber,
+                     image: player.data().image,
+                     playerId: player.id,
+                  })
+               );
+
+               goalsResult?.forEach((goal) => {
+                  let assists = [];
+
+                  goal.data().assists?.forEach((assist) => {
+                     assists.push({
+                        playerId: assist,
+                        playerName: roster.filter(
+                           (player) => player.playerId === assist
+                        )[0].playerName,
+                        playerJerseyNumber: roster.filter(
+                           (player) => player.playerId === assist
+                        )[0].jerseyNumber,
+                        playerImage: roster.filter(
+                           (player) => player.playerId === assist
+                        )[0].image,
+                     });
+                  });
+
+                  goals.push({
+                     ...goal.data(),
+                     assists,
+                     goalId: goal.id,
+                     playerName: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
+                     )[0].playerName,
+                     playerJerseyNumber: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
+                     )[0].jerseyNumber,
+                     playerImage: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
+                     )[0].image,
                   });
                });
 
-               goals.push({
-                  ...goal.data(),
-                  assists,
-                  goalId: goal.id,
-                  playerName: roster.filter(player => player.playerId === goal.data().playerId)[0].playerName,
-                  playerJerseyNumber: roster.filter(player => player.playerId === goal.data().playerId)[0].jerseyNumber,
-                  playerImage: roster.filter(player => player.playerId === goal.data().playerId)[0].image
+               penaltiesResult?.forEach((penalty) => {
+                  penalties.push({
+                     ...penalty.data(),
+                     playerName: roster.filter(
+                        (player) => player.playerId === penalty.data().playerId
+                     )[0].playerName,
+                     playerJerseyNumber: roster.filter(
+                        (player) => player.playerId === penalty.data().playerId
+                     )[0].jerseyNumber,
+                     playerImage: roster.filter(
+                        (player) => player.playerId === penalty.data().playerId
+                     )[0].image,
+                  });
                });
-            });
-
-            let penalties = [];
-
-            penaltiesResult?.forEach((penalty) => {           
-               penalties.push({
-                  ...penalty.data(),
-                  playerName: roster.filter(player => player.playerId === penalty.data().playerId)[0].playerName,
-                  playerJerseyNumber: roster.filter(player => player.playerId === penalty.data().playerId)[0].jerseyNumber,
-                  playerImage: roster.filter(player => player.playerId === penalty.data().playerId)[0].image
-               });
-            });
+            }
 
             const gameInfo = {
                ...gameData,
                locationName: locationData.name,
+               opponentName: opponentData.teamName,
                seasonName: `${seasonData.leagueName} ${seasonData.name}`,
                penalties,
                goals,
