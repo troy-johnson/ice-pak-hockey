@@ -11,9 +11,7 @@ const Seasons = () => {
             ? seasons.map((season) => {
                  return (
                     <Link key={season.id} href={`/seasons/${season.id}`} passHref>
-                       <div>
-                          {season?.leagueName + ' ' + season?.name}
-                       </div>
+                       <div>{season?.leagueName + " " + season?.name}</div>
                     </Link>
                  );
               })

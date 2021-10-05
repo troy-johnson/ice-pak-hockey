@@ -37,12 +37,7 @@ const StyledTextLogo = ({ className }) => {
       <div className={className}>
          <Link href="/" passHref>
             <div>
-               <Image
-                  src="/icePakTextLogo.png"
-                  width={300}
-                  height={60}
-                  alt="Ice Pak Hockey"
-               />
+               <Image src="/icePakTextLogo.png" width={300} height={60} alt="Ice Pak Hockey" />
             </div>
          </Link>
       </div>

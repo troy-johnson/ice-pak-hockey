@@ -24,21 +24,16 @@ const Season = () => {
       <>
          <h1>{`${season?.leagueName} ${season?.name}`}</h1>
          {seasonGames
-            ?.sort(
-               (a, b) => new Date(a.date.seconds) - new Date(b.date.seconds)
-            )
+            ?.sort((a, b) => new Date(a.date.seconds) - new Date(b.date.seconds))
             .map((game) => {
                return (
                   <div key={game.id}>
                      {new Date(game.date.seconds * 1000).toLocaleDateString() +
                         " @ " +
-                        new Date(game.date.seconds * 1000).toLocaleTimeString(
-                           [],
-                           {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                           }
-                        ) +
+                        new Date(game.date.seconds * 1000).toLocaleTimeString([], {
+                           hour: "2-digit",
+                           minute: "2-digit",
+                        }) +
                         " vs. " +
                         game?.opponentName}
                   </div>

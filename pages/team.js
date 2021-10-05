@@ -157,11 +157,7 @@ const Team = () => {
       <TeamContainer>
          <TeamInfo>
             <Typography variant="h3">Team</Typography>
-            <AddButton
-               aria-label="Add Player"
-               color="primary"
-               onClick={handleClickOpen}
-            >
+            <AddButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
                <AddIcon />
             </AddButton>
          </TeamInfo>
@@ -170,70 +166,54 @@ const Team = () => {
                <TableHead>
                   <PlayerTableHeader>
                      <PlayerTableCell>Player</PlayerTableCell>
-                     <PlayerTableCell align="center">
-                        {desktop ? "Number" : "#"}
-                     </PlayerTableCell>
+                     <PlayerTableCell align="center">{desktop ? "Number" : "#"}</PlayerTableCell>
                      <PlayerTableCell align="center">
                         {desktop ? "Position" : "Pos"}
                      </PlayerTableCell>
-                     <PlayerTableCell align="center">
-                        {desktop ? "Shoots" : "Sh"}
-                     </PlayerTableCell>
-                     {desktop ? (
-                        <PlayerTableCell align="center">
-                           Home Town
-                        </PlayerTableCell>
-                     ) : null}
+                     <PlayerTableCell align="center">{desktop ? "Shoots" : "Sh"}</PlayerTableCell>
+                     {desktop ? <PlayerTableCell align="center">Home Town</PlayerTableCell> : null}
                   </PlayerTableHeader>
                </TableHead>
                <PlayerTableBody>
-                  {players?.sort((a, b) => a?.jerseyNumber - b?.jerseyNumber)?.map((player) => (
-                     <Link
-                        href={`/player/${player.id}`}
-                        key={player?.id || `${player?.firstName}${player?.lastName}`}
-                        passHref
-                     >
-                        <TableRow>
-                           <PlayerTableCell component="th" scope="row">
-                              <PlayerName>
-                                 {desktop ? (
-                                    <PlayerAvatar
-                                       alt={`${player?.firstName} ${
-                                          player?.nickname
-                                             ? player?.nickname
-                                             : ""
-                                       } ${player?.lastName}`}
-                                       src={`data:image/png;base64,${player?.image}`}
-                                    />
-                                 ) : null}{" "}
-                                 {desktop
-                                    ? `${player?.firstName} ${
-                                         player?.nickname
-                                            ? `"${player?.nickname}"`
-                                            : ""
-                                      } ${player?.lastName}`
-                                    : `${player?.firstName.split("")[0]}. ${
-                                         player?.lastName
-                                      }`}
-                              </PlayerName>
-                           </PlayerTableCell>
-                           <PlayerTableCell align="center">
-                              {player?.jerseyNumber}
-                           </PlayerTableCell>
-                           <PlayerTableCell align="center">
-                              {player?.position}
-                           </PlayerTableCell>
-                           <PlayerTableCell align="center">
-                              {player?.shoots}
-                           </PlayerTableCell>
-                           {desktop ? (
-                              <PlayerTableCell align="center">
-                                 {player?.homeTown}
+                  {players
+                     ?.sort((a, b) => a?.jerseyNumber - b?.jerseyNumber)
+                     ?.map((player) => (
+                        <Link
+                           href={`/player/${player.id}`}
+                           key={player?.id || `${player?.firstName}${player?.lastName}`}
+                           passHref
+                        >
+                           <TableRow>
+                              <PlayerTableCell component="th" scope="row">
+                                 <PlayerName>
+                                    {desktop ? (
+                                       <PlayerAvatar
+                                          alt={`${player?.firstName} ${
+                                             player?.nickname ? player?.nickname : ""
+                                          } ${player?.lastName}`}
+                                          src={`data:image/png;base64,${player?.image}`}
+                                       />
+                                    ) : null}{" "}
+                                    {desktop
+                                       ? `${player?.firstName} ${
+                                            player?.nickname ? `"${player?.nickname}"` : ""
+                                         } ${player?.lastName}`
+                                       : `${player?.firstName.split("")[0]}. ${player?.lastName}`}
+                                 </PlayerName>
                               </PlayerTableCell>
-                           ) : null}
-                        </TableRow>
-                     </Link>
-                  ))}
+                              <PlayerTableCell align="center">
+                                 {player?.jerseyNumber}
+                              </PlayerTableCell>
+                              <PlayerTableCell align="center">{player?.position}</PlayerTableCell>
+                              <PlayerTableCell align="center">{player?.shoots}</PlayerTableCell>
+                              {desktop ? (
+                                 <PlayerTableCell align="center">
+                                    {player?.homeTown}
+                                 </PlayerTableCell>
+                              ) : null}
+                           </TableRow>
+                        </Link>
+                     ))}
                </PlayerTableBody>
             </Table>
          </TableContainer>
@@ -247,12 +227,7 @@ const Team = () => {
                   variant="outlined"
                   required
                />
-               <TextInput
-                  control={control}
-                  label="Nickname"
-                  name="nickname"
-                  variant="outlined"
-               />
+               <TextInput control={control} label="Nickname" name="nickname" variant="outlined" />
                <TextInput
                   control={control}
                   label="Last Name"
@@ -274,12 +249,7 @@ const Team = () => {
                   variant="outlined"
                   required
                />
-               <TextInput
-                  control={control}
-                  label="Home Town"
-                  name="homeTown"
-                  variant="outlined"
-               />
+               <TextInput control={control} label="Home Town" name="homeTown" variant="outlined" />
                <SelectInput
                   control={control}
                   name="position"

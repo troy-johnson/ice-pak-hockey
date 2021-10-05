@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config";
 
-const gamesHandler = async(req, res) => {
+const gamesHandler = async (req, res) => {
    const result = await getDocs(collection(db, "games"));
 
    let games = [];
@@ -11,7 +11,6 @@ const gamesHandler = async(req, res) => {
    });
 
    return res.status(200).json(games);
-}
-
+};
 
 export default gamesHandler;

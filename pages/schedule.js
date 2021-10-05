@@ -25,11 +25,7 @@ const StyledScheduleGameCard = ({ className, children, desktop, game }) => {
          <CardContent>{children}</CardContent>
          <CardActions>
             <Link key={game?.id} href={`/games/${game?.id}`} passHref>
-               <Button
-                  size={desktop ? "medium" : "small"}
-                  color="secondary"
-                  variant="outlined"
-               >
+               <Button size={desktop ? "medium" : "small"} color="secondary" variant="outlined">
                   View Game
                </Button>
             </Link>
@@ -115,7 +111,6 @@ const Loader = styled(StyledLoader)`
    }
 `;
 
-
 // TODO: Figure out card background image using data:image/png;base64,game.locationImage
 
 const ScheduleContainer = styled.section`
@@ -154,26 +149,18 @@ const Schedule = () => {
          </>
       );
    } else if (gamesError) {
-      return (
-         <Alert severity="error">
-            Error retrieving schedule. Please try again later.
-         </Alert>
-      );
+      return <Alert severity="error">Error retrieving schedule. Please try again later.</Alert>;
    }
 
    return (
       <ScheduleContainer>
          <Typography variant="h3">Schedule</Typography>
          <DateContainer>
-            <ArrowButton
-               onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}
-            >
+            <ArrowButton onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}>
                <ArrowLeftIcon fontSize="large" />
             </ArrowButton>
             <Typography variant="h5">{date.format("MMMM YYYY")}</Typography>
-            <ArrowButton
-               onClick={() => setDate(dayjs(date).add(1, "M").date(1))}
-            >
+            <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
                <ArrowRightIcon fontSize="large" />
             </ArrowButton>
          </DateContainer>
@@ -182,30 +169,17 @@ const Schedule = () => {
                  ?.filter((game) => dayjs.unix(game?.date.seconds) > date)
                  ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
                  .map((game) => {
-                    let icePakGoals = game?.goals.filter(
-                       (goal) => goal.icePakGoal
-                    ).length;
-                    let opponentGoals = game?.goals.filter(
-                       (goal) => !goal.icePakGoal
-                    ).length;
+                    let icePakGoals = game?.goals.filter((goal) => goal.icePakGoal).length;
+                    let opponentGoals = game?.goals.filter((goal) => !goal.icePakGoal).length;
                     return (
-                       <ScheduleGameCard
-                          game={game}
-                          desktop={desktop}
-                          key={game?.id}
-                       >
+                       <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
                           <DateTime variant="overline">
                              <span>
                                 {isGameEnded(game?.date.seconds) ? (
-                                   dayjs
-                                      .unix(game?.date.seconds)
-                                      .format("ddd M/D h:mm A")
+                                   dayjs.unix(game?.date.seconds).format("ddd M/D h:mm A")
                                 ) : (
                                    <>
-                                      {dayjs
-                                         .unix(game?.date.seconds)
-                                         .format("ddd M/D")}{" "}
-                                      - FINAL
+                                      {dayjs.unix(game?.date.seconds).format("ddd M/D")} - FINAL
                                       <Score variant="overline">
                                          {`${isWin(
                                             icePakGoals,
@@ -218,9 +192,7 @@ const Schedule = () => {
                              {desktop ? <span>{game?.seasonName}</span> : null}
                           </DateTime>
                           {/* <Season variant="caption">{game?.seasonName}</Season> */}
-                          <Opponent variant="body1">
-                             {game?.opponentName}
-                          </Opponent>
+                          <Opponent variant="body1">{game?.opponentName}</Opponent>
                           <Location variant="body2">
                              <LocationOnIcon />
                              <MuiLink

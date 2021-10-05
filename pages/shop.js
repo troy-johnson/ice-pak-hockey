@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 const Shop = () => {
-
    return (
       <>
          <h1>Shop</h1>

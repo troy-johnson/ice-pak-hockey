@@ -20,19 +20,13 @@ const gameHandler = async (req, res) => {
             const gameResult = await getDoc(doc(db, "games", id));
             const gameData = gameResult.data();
 
-            const locationResult = await getDoc(
-               doc(db, "locations", gameData?.locationId)
-            );
+            const locationResult = await getDoc(doc(db, "locations", gameData?.locationId));
             const locationData = locationResult?.data();
 
-            const seasonResult = await getDoc(
-               doc(db, "seasons", gameData?.seasonId)
-            );
+            const seasonResult = await getDoc(doc(db, "seasons", gameData?.seasonId));
             const seasonData = seasonResult?.data();
 
-            const opponentResult = await getDoc(
-               doc(db, "opponents", gameData?.opponentId)
-            );
+            const opponentResult = await getDoc(doc(db, "opponents", gameData?.opponentId));
             const opponentData = opponentResult?.data();
 
             let roster = [];
@@ -49,19 +43,14 @@ const gameHandler = async (req, res) => {
                );
 
                const playersResult = await getDocs(
-                  query(
-                     collection(db, "players"),
-                     where(documentId(), "in", gameData?.roster)
-                  )
+                  query(collection(db, "players"), where(documentId(), "in", gameData?.roster))
                );
 
                playersResult?.forEach((player) =>
                   roster.push({
                      playerName: `${player.data().firstName} ${
                         player.data().nickname
-                           ? `"${player.data().nickname}" ${
-                                player.data().lastName
-                             }`
+                           ? `"${player.data().nickname}" ${player.data().lastName}`
                            : player.data().lastName
                      }`,
                      jerseyNumber: player.data().jerseyNumber,
@@ -76,15 +65,11 @@ const gameHandler = async (req, res) => {
                   goal.data().assists?.forEach((assist) => {
                      assists.push({
                         playerId: assist,
-                        playerName: roster.filter(
-                           (player) => player.playerId === assist
-                        )[0].playerName,
-                        playerJerseyNumber: roster.filter(
-                           (player) => player.playerId === assist
-                        )[0].jerseyNumber,
-                        playerImage: roster.filter(
-                           (player) => player.playerId === assist
-                        )[0].image,
+                        playerName: roster.filter((player) => player.playerId === assist)[0]
+                           .playerName,
+                        playerJerseyNumber: roster.filter((player) => player.playerId === assist)[0]
+                           .jerseyNumber,
+                        playerImage: roster.filter((player) => player.playerId === assist)[0].image,
                      });
                   });
 

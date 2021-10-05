@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../../config";
 
-const postsHandler = async(req, res) => {
+const postsHandler = async (req, res) => {
    const result = await getDocs(collection(db, "posts"));
 
    let posts = [];
@@ -11,7 +11,6 @@ const postsHandler = async(req, res) => {
    });
 
    return res.status(200).json(posts);
-}
-
+};
 
 export default postsHandler;

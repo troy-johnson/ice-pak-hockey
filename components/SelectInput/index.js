@@ -8,15 +8,7 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const SelectInput = ({
-   control,
-   disabled,
-   label,
-   name,
-   options,
-   required,
-   variant,
-}) => {
+const SelectInput = ({ control, disabled, label, name, options, required, variant }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
@@ -36,12 +28,7 @@ const SelectInput = ({
             >
                <InputLabel id={`${name}-label`}>{label}</InputLabel>
                {desktop ? (
-                  <Select
-                     {...field}
-                     labelId={`${name}-label`}
-                     id={`${name}-select`}
-                     label={label}
-                  >
+                  <Select {...field} labelId={`${name}-label`} id={`${name}-select`} label={label}>
                      {options?.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                            {option.label}
@@ -49,12 +36,7 @@ const SelectInput = ({
                      ))}
                   </Select>
                ) : (
-                  <NativeSelect
-                     {...field}
-                     id={`${name}-select`}
-                     label={label}
-                     variant="outlined"
-                  >
+                  <NativeSelect {...field} id={`${name}-select`} label={label} variant="outlined">
                      {options?.map((option) => (
                         <option key={option.value} value={option.value}>
                            {option.label}

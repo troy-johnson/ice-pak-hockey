@@ -1,15 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import {
-   Avatar,
-   Box,
-   Paper,
-   Tabs,
-   Tab,
-   Typography,
-   useMediaQuery,
-} from "@mui/material";
+import { Avatar, Box, Paper, Tabs, Tab, Typography, useMediaQuery } from "@mui/material";
 import { useGetAssists, useGetGoals, useGetPlayers } from "../../utils";
 
 const StyledTabPanel = (props) => {
@@ -24,9 +16,7 @@ const StyledTabPanel = (props) => {
          aria-labelledby={`simple-tab-${index}`}
          {...other}
       >
-         {value === index && (
-            <SectionContainer desktop={desktop}>{children}</SectionContainer>
-         )}
+         {value === index && <SectionContainer desktop={desktop}>{children}</SectionContainer>}
       </div>
    );
 };
@@ -96,28 +86,22 @@ const Player = () => {
       <PlayerContainer>
          <SectionContainer desktop={desktop}>
             <Avatar
-               alt={`${player?.firstName} ${
-                  player?.nickname ? player?.nickname : ""
-               } ${player?.lastName}`}
+               alt={`${player?.firstName} ${player?.nickname ? player?.nickname : ""} ${
+                  player?.lastName
+               }`}
                src={`data:image/png;base64,${player?.image}`}
                sx={{ width: desktop ? 160 : 100, height: desktop ? 160 : 100 }}
             />
-            <Typography variant={desktop ? "h4" : "h5"}>{`${
-               player?.firstName
-            } ${player?.nickname ? `"${player?.nickname}"` : ""} ${
-               player?.lastName
-            } | #${player?.jerseyNumber}`}</Typography>
+            <Typography variant={desktop ? "h4" : "h5"}>{`${player?.firstName} ${
+               player?.nickname ? `"${player?.nickname}"` : ""
+            } ${player?.lastName} | #${player?.jerseyNumber}`}</Typography>
             <Typography variant={desktop ? "h5" : "h6"}>{`${
                player?.shoots === "L" ? "Left" : "Right"
             } | ${player?.homeTown}`}</Typography>
          </SectionContainer>
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
-               <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-               >
+               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Summary" />
                   <Tab label="Career Stats" />
                   <Tab label="Game Log" />

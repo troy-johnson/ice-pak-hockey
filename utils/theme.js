@@ -10,7 +10,7 @@ export const theme = createTheme({
          main: "#5BA5D1",
       },
       tertiary: {
-         main: "#E6ECF6"
+         main: "#E6ECF6",
       },
       black: "#0D0D0D",
       white: "#F2F2F2",

@@ -10,8 +10,7 @@ function IcePakHockey({ Component, pageProps }) {
          value={{
             revalidateOnMount: true,
             dedupingInterval: 6000,
-            fetcher: (resource, init) =>
-               fetch(resource, init).then((res) => res.json()),
+            fetcher: (resource, init) => fetch(resource, init).then((res) => res.json()),
          }}
       >
          <CssBaseline />

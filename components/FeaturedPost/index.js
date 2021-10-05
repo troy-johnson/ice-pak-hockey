@@ -1,12 +1,5 @@
 import styled from "@emotion/styled";
-import {
-   Box,
-   Button,
-   Card,
-   CardActions,
-   CardContent,
-   Typography,
-} from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
 
 const StyledPostCard = ({ className, children }) => (
    <Box className={className}>

@@ -57,15 +57,11 @@ const GoalTime = styled(Typography)`
    font-size: 18px;
    font-weight: 700;
    background-color: ${(props) =>
-      props.playerid
-         ? props.theme.palette.primary.main
-         : props.theme.palette.error.main};
+      props.playerid ? props.theme.palette.primary.main : props.theme.palette.error.main};
    color: ${(props) => props.theme.palette.white};
    border: 1px solid
       ${(props) =>
-         props.playerid
-            ? props.theme.palette.primary.main
-            : props.theme.palette.error.main};
+         props.playerid ? props.theme.palette.primary.main : props.theme.palette.error.main};
    width: 150px;
 `;
 
@@ -101,9 +97,7 @@ const StyledTabPanel = (props) => {
          aria-labelledby={`simple-tab-${index}`}
          {...other}
       >
-         {value === index && (
-            <SectionContainer desktop={desktop}>{children}</SectionContainer>
-         )}
+         {value === index && <SectionContainer desktop={desktop}>{children}</SectionContainer>}
       </div>
    );
 };
@@ -190,11 +184,11 @@ const Game = () => {
       },
    ];
 
-   if (goalsSorted?.filter(goal => goal.period === 4).length >= 1) {
+   if (goalsSorted?.filter((goal) => goal.period === 4).length >= 1) {
       goalsByPeriod.push({
          period: "OT",
-         goals: goalsSorted?.filter(goal => goal.period === 4)
-      })
+         goals: goalsSorted?.filter((goal) => goal.period === 4),
+      });
    }
 
    const penaltiesByPeriod = [
@@ -212,11 +206,11 @@ const Game = () => {
       },
    ];
 
-   if (penaltiesSorted?.filter(penalty => penalty.period === 4).length >= 1) {
+   if (penaltiesSorted?.filter((penalty) => penalty.period === 4).length >= 1) {
       penaltiesByPeriod.push({
          period: "OT",
-         penalties: penaltiesSorted?.filter(penalty => penalty.period === 4)
-      })
+         penalties: penaltiesSorted?.filter((penalty) => penalty.period === 4),
+      });
    }
 
    const rows = [
@@ -246,39 +240,24 @@ const Game = () => {
    if (gameLoading) {
       return <GameContainer>Loading...</GameContainer>;
    } else if (gameError) {
-      return (
-         <GameContainer>
-            Error retrieving game data. Please try again later.
-         </GameContainer>
-      );
+      return <GameContainer>Error retrieving game data. Please try again later.</GameContainer>;
    }
 
    return (
       <GameContainer>
-         <Typography variant={desktop ? "h4" : "h5"}>
-            Ice Pak vs. {game?.opponentName}
-         </Typography>
+         <Typography variant={desktop ? "h4" : "h5"}>Ice Pak vs. {game?.opponentName}</Typography>
          <Typography variant={desktop ? "h5" : "h6"}>
             {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY")}
          </Typography>
 
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
-               <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-               >
+               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Box Score" />
                   <Tab label="Team Stats" />
                </Tabs>
             </TabBox>
-            <TabPanel
-               desktop={desktop ? 1 : 0}
-               value={value}
-               index={0}
-               sx={{ border: "none" }}
-            >
+            <TabPanel desktop={desktop ? 1 : 0} value={value} index={0} sx={{ border: "none" }}>
                <Section>
                   <TableContainer component={Paper}>
                      <Table aria-label="simple table">
@@ -288,8 +267,7 @@ const Game = () => {
                               <BoxScoreCell align="right">1ST</BoxScoreCell>
                               <BoxScoreCell align="right">2ND</BoxScoreCell>
                               <BoxScoreCell align="right">3RD</BoxScoreCell>
-                              {rows[0].overTime >= 1 ||
-                              rows[1].overTime >= 1 ? (
+                              {rows[0].overTime >= 1 || rows[1].overTime >= 1 ? (
                                  <BoxScoreCell align="right">OT</BoxScoreCell>
                               ) : null}
                               <BoxScoreCell align="right">T</BoxScoreCell>
@@ -308,23 +286,13 @@ const Game = () => {
                                  <BoxScoreCell component="th" scope="row">
                                     {row.name}
                                  </BoxScoreCell>
-                                 <BoxScoreCell align="right">
-                                    {row.periodOne}
-                                 </BoxScoreCell>
-                                 <BoxScoreCell align="right">
-                                    {row.periodTwo}
-                                 </BoxScoreCell>
-                                 <BoxScoreCell align="right">
-                                    {row.periodThree}
-                                 </BoxScoreCell>
+                                 <BoxScoreCell align="right">{row.periodOne}</BoxScoreCell>
+                                 <BoxScoreCell align="right">{row.periodTwo}</BoxScoreCell>
+                                 <BoxScoreCell align="right">{row.periodThree}</BoxScoreCell>
                                  {row.overTime ? (
-                                    <BoxScoreCell align="right">
-                                       {row.overTime}
-                                    </BoxScoreCell>
+                                    <BoxScoreCell align="right">{row.overTime}</BoxScoreCell>
                                  ) : null}
-                                 <BoxScoreCell align="right">
-                                    {row.total}
-                                 </BoxScoreCell>
+                                 <BoxScoreCell align="right">{row.total}</BoxScoreCell>
                               </BoxScoreRow>
                            ))}
                         </TableBody>
@@ -352,9 +320,7 @@ const Game = () => {
                                     />
                                     <div>
                                        <GoalText variant="body1">
-                                          {goal?.playerName
-                                             ? goal?.playerName
-                                             : game?.opponentName}
+                                          {goal?.playerName ? goal?.playerName : game?.opponentName}
                                        </GoalText>
                                        {goal?.assists?.map((assist) => {
                                           return (
@@ -363,9 +329,7 @@ const Game = () => {
                                                 key={goal?.goalId + assist}
                                              >
                                                 {assist?.playerName}
-                                                {goal?.assists?.length > 1
-                                                   ? ","
-                                                   : ""}
+                                                {goal?.assists?.length > 1 ? "," : ""}
                                              </AssistText>
                                           );
                                        })}
@@ -388,7 +352,9 @@ const Game = () => {
                            <Typography variant="overline" gutterBottom>
                               {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
                            </Typography>
-                           {period?.penalties?.length === 0 ? <Typography variant="body2">No penalties</Typography> : null}
+                           {period?.penalties?.length === 0 ? (
+                              <Typography variant="body2">No penalties</Typography>
+                           ) : null}
                            {period?.penalties?.map((penalty) => {
                               return (
                                  <GoalContainer key={penalty?.goalId}>
@@ -406,11 +372,9 @@ const Game = () => {
                                              ? penalty?.playerName
                                              : penalty?.opponentName}
                                        </GoalText>
-                                             <AssistText
-                                                variant="body2"
-                                             >
-                                                {`${penalty?.penaltyType} (${penalty?.minutes}:00)`}
-                                             </AssistText>
+                                       <AssistText variant="body2">
+                                          {`${penalty?.penaltyType} (${penalty?.minutes}:00)`}
+                                       </AssistText>
                                        <GoalTime playerid={penalty?.playerId}>
                                           {penalty?.time} / {period?.period}
                                        </GoalTime>

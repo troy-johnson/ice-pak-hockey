@@ -1,1 +1,1 @@
-export { default as db } from './firebaseConfig';
+export { default as db } from "./firebaseConfig";
