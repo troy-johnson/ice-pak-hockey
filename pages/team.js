@@ -22,7 +22,7 @@ import {
    Paper,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { SelectInput, TextInput } from "../components";
+import { Loading, SelectInput, TextInput } from "../components";
 import { addPlayer, useGetPlayers } from "../utils";
 
 const TeamContainer = styled.section`
@@ -148,7 +148,7 @@ const Team = () => {
    console.log("players", players);
 
    if (playersLoading) {
-      return <div>Loading...</div>;
+      return <Loading />;
    } else if (playersError) {
       return <div>An error occurred. Please try again.</div>;
    }

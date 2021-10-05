@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { Loading } from "../../components";
 import { useGetAllGames, useGetSeasons } from "../../utils";
 
 const Season = () => {
@@ -15,7 +16,7 @@ const Season = () => {
    const isError = seasonsError | gamesError;
 
    if (isLoading) {
-      return <div>Loading...</div>;
+      return <Loading />;
    } else if (isError) {
       return <div>An error occurred. Please try again.</div>;
    }

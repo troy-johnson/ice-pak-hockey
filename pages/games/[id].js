@@ -19,10 +19,28 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
+import { Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
+
+const StyledTabPanel = (props) => {
+   const { children, className, desktop, value, index, ...other } = props;
+
+   return (
+      <div
+         className={className}
+         role="tabpanel"
+         hidden={value !== index}
+         id={`game-tabpanel-${index}`}
+         aria-labelledby={`game-tab-${index}`}
+         {...other}
+      >
+         {value === index && <SectionContainer desktop={desktop}>{children}</SectionContainer>}
+      </div>
+   );
+};
 
 const GameContainer = styled.section`
    display: flex;
@@ -39,6 +57,7 @@ const SectionContainer = styled(Paper)`
    padding-top: 15px;
    border: none;
    margin-bottom: 15px;
+   box-shadow: none;
 `;
 
 const GoalText = styled(Typography)`
@@ -70,37 +89,28 @@ const Section = styled.section`
    flex-direction: column;
    align-content: center;
    margin-bottom: 25px;
+   box-shadow: none;
 `;
 
-const GoalContainer = styled.div`
+const GoalContainer = styled(Paper)`
    display: flex;
    flex-direction: row;
    align-items: center;
    border: 1px solid ${(props) => props.theme.palette.grey.light};
    padding: 10px;
    height: 100px;
+   margin-bottom: 5px;
 
    div {
       margin-right: 10px;
    }
 `;
 
-const StyledTabPanel = (props) => {
-   const { children, className, desktop, value, index, ...other } = props;
-
-   return (
-      <div
-         className={className}
-         role="tabpanel"
-         hidden={value !== index}
-         id={`simple-tabpanel-${index}`}
-         aria-labelledby={`simple-tab-${index}`}
-         {...other}
-      >
-         {value === index && <SectionContainer desktop={desktop}>{children}</SectionContainer>}
-      </div>
-   );
-};
+const BoxScoreBody = styled(TableBody)`
+   tr:nth-of-type(even) {
+      background-color: rgba(0, 0, 0, 0.04);
+   }
+`;
 
 const TabPanel = styled(StyledTabPanel)`
    display: flex;
@@ -119,6 +129,14 @@ const TabContainer = styled(Box)`
 
 const TabBox = styled(Box)`
    margin-bottom: 10px;
+`;
+
+const BoxScoreHeader = styled(TableRow)`
+   background-color: ${(props) => props.theme.palette.black};
+
+   th {
+      color: ${(props) => props.theme.palette.white};
+   }
 `;
 
 const BoxScoreRow = styled(TableRow)`
@@ -143,24 +161,24 @@ const Game = () => {
    const goalsSorted = game?.goals?.sort(
       (a, b) =>
          dayjs({
-            minute: b.time.split(":")[0],
-            second: b.time.split(":")[1],
+            minute: b.time?.split(":")[0],
+            second: b.time?.split(":")[1],
          }) -
          dayjs({
-            minute: a.time.split(":")[0],
-            second: a.time.split(":")[1],
+            minute: a.time?.split(":")[0],
+            second: a.time?.split(":")[1],
          })
    );
 
    const penaltiesSorted = game?.penalties?.sort(
       (a, b) =>
          dayjs({
-            minute: b.time.split(":")[0],
-            second: b.time.split(":")[1],
+            minute: b.time?.split(":")[0],
+            second: b.time?.split(":")[1],
          }) -
          dayjs({
-            minute: a.time.split(":")[0],
-            second: a.time.split(":")[1],
+            minute: a.time?.split(":")[0],
+            second: a.time?.split(":")[1],
          })
    );
 
@@ -238,7 +256,7 @@ const Game = () => {
    console.log("desktop", desktop);
 
    if (gameLoading) {
-      return <GameContainer>Loading...</GameContainer>;
+      return <Loading />;
    } else if (gameError) {
       return <GameContainer>Error retrieving game data. Please try again later.</GameContainer>;
    }
@@ -252,17 +270,17 @@ const Game = () => {
 
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
-               <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+               <Tabs value={value} onChange={handleChange} aria-label="game-tabs">
                   <Tab label="Box Score" />
                   <Tab label="Team Stats" />
                </Tabs>
             </TabBox>
-            <TabPanel desktop={desktop ? 1 : 0} value={value} index={0} sx={{ border: "none" }}>
+            <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
                <Section>
                   <TableContainer component={Paper}>
                      <Table aria-label="simple table">
                         <TableHead>
-                           <BoxScoreRow>
+                           <BoxScoreHeader>
                               <BoxScoreCell>FINAL</BoxScoreCell>
                               <BoxScoreCell align="right">1ST</BoxScoreCell>
                               <BoxScoreCell align="right">2ND</BoxScoreCell>
@@ -271,9 +289,9 @@ const Game = () => {
                                  <BoxScoreCell align="right">OT</BoxScoreCell>
                               ) : null}
                               <BoxScoreCell align="right">T</BoxScoreCell>
-                           </BoxScoreRow>
+                           </BoxScoreHeader>
                         </TableHead>
-                        <TableBody>
+                        <BoxScoreBody>
                            {rows.map((row) => (
                               <BoxScoreRow
                                  key={row.name}
@@ -295,7 +313,7 @@ const Game = () => {
                                  <BoxScoreCell align="right">{row.total}</BoxScoreCell>
                               </BoxScoreRow>
                            ))}
-                        </TableBody>
+                        </BoxScoreBody>
                      </Table>
                   </TableContainer>
                </Section>
@@ -307,6 +325,11 @@ const Game = () => {
                            <Typography variant="overline" gutterBottom>
                               {period?.period === "OT" ? "Overtime" : `${period?.period} Period`}
                            </Typography>
+                           {period?.goals?.length === 0 ? (
+                              <Typography variant="body2" gutterBottom>
+                                 No Goals
+                              </Typography>
+                           ) : null}
                            {period?.goals?.map((goal) => {
                               return (
                                  <GoalContainer key={goal?.goalId}>
@@ -353,7 +376,9 @@ const Game = () => {
                               {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
                            </Typography>
                            {period?.penalties?.length === 0 ? (
-                              <Typography variant="body2">No penalties</Typography>
+                              <Typography variant="body2" gutterBottom>
+                                 No Penalties
+                              </Typography>
                            ) : null}
                            {period?.penalties?.map((penalty) => {
                               return (

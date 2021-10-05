@@ -64,6 +64,7 @@ const TextLogo = styled(StyledTextLogo)`
 const NavMenuBox = styled(Box)`
    background-color: ${(props) => props.theme.palette.primary.main};
    width: ${(props) => (props.desktop ? 300 : "500px")};
+   height: 100%;
 `;
 
 const MenuItem = styled(ListItemText)`

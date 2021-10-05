@@ -1,7 +1,16 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
-import { Avatar, Box, Paper, Tabs, Tab, Typography, useMediaQuery } from "@mui/material";
+import {
+   Avatar,
+   Box,
+   Paper,
+   Tabs,
+   Tab,
+   Typography,
+   useMediaQuery,
+} from "@mui/material";
+import { Loading } from "../../components"
 import { useGetAssists, useGetGoals, useGetPlayers } from "../../utils";
 
 const StyledTabPanel = (props) => {
@@ -77,7 +86,7 @@ const Player = () => {
    console.log("player", player);
 
    if (loading) {
-      return <div>Loading...</div>;
+      return <Loading />;
    } else if (error) {
       return <div>An error occurred. Please try again.</div>;
    }

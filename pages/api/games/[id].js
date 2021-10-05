@@ -33,7 +33,7 @@ const gameHandler = async (req, res) => {
             let goals = [];
             let penalties = [];
 
-            if (gameData?.roster.length >= 1) {
+            if (gameData?.roster?.length >= 1) {
                const goalsResult = await getDocs(
                   query(collection(db, "goals"), where("gameId", "==", id))
                );
@@ -92,15 +92,16 @@ const gameHandler = async (req, res) => {
                penaltiesResult?.forEach((penalty) => {
                   penalties.push({
                      ...penalty.data(),
-                     playerName: roster.filter(
-                        (player) => player.playerId === penalty.data().playerId
-                     )[0].playerName,
+                     opponentName: penalty.data().opponentId ? opponentData?.teamName : undefined,
+                     playerName: roster?.filter(
+                        (player) => player?.playerId === penalty.data().playerId
+                     )?.[0]?.playerName,
                      playerJerseyNumber: roster.filter(
                         (player) => player.playerId === penalty.data().playerId
-                     )[0].jerseyNumber,
+                     )?.[0]?.jerseyNumber,
                      playerImage: roster.filter(
                         (player) => player.playerId === penalty.data().playerId
-                     )[0].image,
+                     )?.[0]?.image,
                   });
                });
             }
