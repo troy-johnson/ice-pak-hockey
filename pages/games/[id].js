@@ -7,7 +7,10 @@ import { useForm } from "react-hook-form";
 import {
    Avatar,
    Box,
+   Fab,
    Paper,
+   SpeedDial,
+   SpeedDialIcon,
    Tabs,
    Tab,
    Table,
@@ -19,7 +22,8 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { Loading } from "../../components";
+import EditIcon from "@mui/icons-material/Edit";
+import { EditGame, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -152,12 +156,26 @@ const BoxScoreCell = styled(TableCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
 `;
 
+const EditButton = styled(Fab)`
+   background-color: ${(props) => props.theme.palette.black};
+   color: ${(props) => props.theme.palette.white};
+   height: 48px;
+   width: 48px;
+
+   :hover {
+      background-color: ${(props) => props.theme.palette.white};
+      color: ${(props) => props.theme.palette.black};
+   }
+`;
+
 const Game = () => {
    const router = useRouter();
    const [value, setValue] = useState(0);
+   const [open, setOpen] = useState(false);
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
    const goalsSorted = game?.goals?.sort(
       (a, b) =>
          dayjs({
@@ -416,6 +434,25 @@ const Game = () => {
                Team Stats
             </TabPanel>
          </TabContainer>
+         {/* <EditButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
+            <EditIcon />
+         </EditButton> */}
+
+         {/* <SpeedDial
+            ariaLabel="Edit Game"
+            sx={{
+               position: "sticky",
+               bottom: 16,
+               display: "flex",
+               alignItems: "flex-end",
+               marginTop: "-88px",
+            }}
+            icon={<EditIcon />}
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            open={open}
+         /> */}
+         {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
       </GameContainer>
    );
 };

@@ -1,6 +1,7 @@
 export { default as Banner } from "./Banner";
 export { default as FeaturedPost } from "./FeaturedPost";
 export { default as Disclaimer } from "./Disclaimer";
+export { default as EditGame } from "./EditGame";
 export { default as Layout } from "./Layout";
 export { default as Loading } from "./Loading";
 export { default as Posts } from "./Posts";

@@ -108,6 +108,7 @@ const gameHandler = async (req, res) => {
 
             const gameInfo = {
                ...gameData,
+               gameId: gameResult.id,
                locationName: locationData.name,
                opponentName: opponentData.teamName,
                seasonName: `${seasonData.leagueName} ${seasonData.name}`,
