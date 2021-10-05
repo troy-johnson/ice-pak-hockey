@@ -337,9 +337,9 @@ const Game = () => {
                      return (
                         <>
                            <Typography variant="overline" gutterBottom>
-                              {period.period === "OT" ? "Overtime" : `${period.period} Period`}
+                              {period?.period === "OT" ? "Overtime" : `${period?.period} Period`}
                            </Typography>
-                           {period?.goals.map((goal) => {
+                           {period?.goals?.map((goal) => {
                               return (
                                  <GoalContainer key={goal?.goalId}>
                                     <Avatar
@@ -386,10 +386,10 @@ const Game = () => {
                      return (
                         <>
                            <Typography variant="overline" gutterBottom>
-                              {period.period === "OT" ? "Overtime" : `${period.period} Period`}
+                              {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
                            </Typography>
-                           {period.penalties.length === 0 ? <Typography variant="body2">No penalties</Typography> : null}
-                           {period?.penalties.map((penalty) => {
+                           {period?.penalties?.length === 0 ? <Typography variant="body2">No penalties</Typography> : null}
+                           {period?.penalties?.map((penalty) => {
                               return (
                                  <GoalContainer key={penalty?.goalId}>
                                     <Avatar
@@ -412,7 +412,7 @@ const Game = () => {
                                                 {`${penalty?.penaltyType} (${penalty?.minutes}:00)`}
                                              </AssistText>
                                        <GoalTime playerid={penalty?.playerId}>
-                                          {penalty?.time} / {period.period}
+                                          {penalty?.time} / {period?.period}
                                        </GoalTime>
                                     </div>
                                  </GoalContainer>

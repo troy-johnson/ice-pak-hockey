@@ -3,12 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import {
+   AppBar,
    Box,
    IconButton,
    List,
    ListItem,
    ListItemText,
    SwipeableDrawer,
+   Toolbar,
    useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -47,23 +49,13 @@ const StyledTextLogo = ({ className }) => {
    );
 };
 
-const Container = styled.nav`
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   background-color: ${(props) => props.theme.palette.primary.main};
-   color: ${(props) => props.theme.palette.white};
-   width: 100%;
-   position: sticky;
-   overflow: hidden;
-   top: 0;
-   z-index: 50;
+// const BannerAppBar = styled(AppBar)`
+// `;
 
-   img {
-      flex-grow: 2;
-      text-align: center;
-   }
-`;
+// const BannerToolbar = styled(Toolbar)`
+//    width: 100%;
+//    align-items: center;
+// `;
 
 const TextLogo = styled(StyledTextLogo)`
    width: 100%;
@@ -119,62 +111,64 @@ const Banner = () => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
-      <Container>
-         <OpenNav onClick={() => setOpen(true)} />
-         <SwipeableDrawer
-            anchor="left"
-            onOpen={() => {}}
-            open={open}
-            onClose={() => setOpen(false)}
-         >
-            <NavMenuBox
-               role="presentation"
-               onClick={() => setOpen(false)}
-               onKeyDown={() => setOpen(false)}
-               desktop={desktop}
+      <AppBar position="sticky">
+         <Toolbar>
+            <OpenNav onClick={() => setOpen(true)} />
+            <SwipeableDrawer
+               anchor="left"
+               onOpen={() => {}}
+               open={open}
+               onClose={() => setOpen(false)}
             >
-               {/* <CloseNav onClick={() => setOpen(false)} /> */}
-               <List>
-                  <ListItem button>
-                     <Link href="/" passHref>
-                        <MenuItem primary="Home" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/news" passHref>
-                        <MenuItem primary="News" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/team" passHref>
-                        <MenuItem primary="Team" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/schedule" passHref>
-                        <MenuItem primary="Schedule" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/stats" passHref>
-                        <MenuItem primary="Stats" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/standings" passHref>
-                        <MenuItem primary="Standings" />
-                     </Link>
-                  </ListItem>
-                  <ListItem button>
-                     <Link href="/shop" passHref>
-                        <MenuItem primary="Shop" />
-                     </Link>
-                  </ListItem>
-               </List>
-            </NavMenuBox>
-         </SwipeableDrawer>
-         <TextLogo />
-      </Container>
+               <NavMenuBox
+                  role="presentation"
+                  onClick={() => setOpen(false)}
+                  onKeyDown={() => setOpen(false)}
+                  desktop={desktop}
+               >
+                  {/* <CloseNav onClick={() => setOpen(false)} /> */}
+                  <List>
+                     <ListItem button>
+                        <Link href="/" passHref>
+                           <MenuItem primary="Home" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/news" passHref>
+                           <MenuItem primary="News" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/team" passHref>
+                           <MenuItem primary="Team" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/schedule" passHref>
+                           <MenuItem primary="Schedule" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/stats" passHref>
+                           <MenuItem primary="Stats" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/standings" passHref>
+                           <MenuItem primary="Standings" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/shop" passHref>
+                           <MenuItem primary="Shop" />
+                        </Link>
+                     </ListItem>
+                  </List>
+               </NavMenuBox>
+            </SwipeableDrawer>
+            <TextLogo />
+         </Toolbar>
+      </AppBar>
    );
 };
 

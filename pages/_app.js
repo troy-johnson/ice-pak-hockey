@@ -14,9 +14,9 @@ function IcePakHockey({ Component, pageProps }) {
                fetch(resource, init).then((res) => res.json()),
          }}
       >
+         <CssBaseline />
          <ThemeProvider theme={theme}>
             <Layout>
-               <CssBaseline />
                <Component {...pageProps} />
             </Layout>
          </ThemeProvider>
