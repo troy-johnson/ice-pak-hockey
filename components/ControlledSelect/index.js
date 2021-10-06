@@ -8,14 +8,13 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const SelectInput = ({ control, disabled, label, name, options, required, variant }) => {
+const ControlledSelect = ({ control, defaultValue, disabled, label, name, options, required, variant }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
       <Controller
          name={name}
          control={control}
-         defaultValue=""
          render={({ error, field }) => (
             <FormControl
                disabled={disabled}
@@ -50,4 +49,4 @@ const SelectInput = ({ control, disabled, label, name, options, required, varian
    );
 };
 
-export default SelectInput;
+export default ControlledSelect;

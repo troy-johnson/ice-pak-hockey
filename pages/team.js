@@ -22,7 +22,7 @@ import {
    Paper,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { Loading, SelectInput, TextInput } from "../components";
+import { Loading, ControlledInput, ControlledSelect } from "../components";
 import { addPlayer, useGetPlayers } from "../utils";
 
 const TeamContainer = styled.section`
@@ -220,51 +220,51 @@ const Team = () => {
          <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Add New Player</DialogTitle>
             <AddPlayerContent>
-               <TextInput
+               <ControlledInput
                   control={control}
                   label="First Name"
                   name="firstName"
                   variant="outlined"
                   required
                />
-               <TextInput control={control} label="Nickname" name="nickname" variant="outlined" />
-               <TextInput
+               <ControlledInput control={control} label="Nickname" name="nickname" variant="outlined" />
+               <ControlledInput
                   control={control}
                   label="Last Name"
                   name="lastName"
                   variant="outlined"
                   required
                />
-               <TextInput
+               <ControlledInput
                   control={control}
                   label="Email Address"
                   name="email"
                   variant="outlined"
                   required
                />
-               <TextInput
+               <ControlledInput
                   control={control}
                   label="Phone Number"
                   name="phoneNumber"
                   variant="outlined"
                   required
                />
-               <TextInput control={control} label="Home Town" name="homeTown" variant="outlined" />
-               <SelectInput
+               <ControlledInput control={control} label="Home Town" name="homeTown" variant="outlined" />
+               <ControlledSelect
                   control={control}
                   name="position"
                   label="Position"
                   options={posOptions}
                   variant="outlined"
                />
-               <SelectInput
+               <ControlledInput
                   control={control}
                   name="shoots"
                   label="Shoots"
                   options={shootsOptions}
                   variant="outlined"
                />
-               <TextInput
+               <ControlledInput
                   control={control}
                   label="Jersey Number"
                   name="jerseyNumber"

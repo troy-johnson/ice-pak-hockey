@@ -1,5 +1,5 @@
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../config";
+import { db } from "../../../config";
 
 const penaltiesHandler = async(req, res) => {
    const result = await getDocs(collection(db, "penalties"));

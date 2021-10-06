@@ -92,6 +92,7 @@ const gameHandler = async (req, res) => {
                penaltiesResult?.forEach((penalty) => {
                   penalties.push({
                      ...penalty.data(),
+                     penaltyId: penalty.id,
                      opponentName: penalty.data().opponentId ? opponentData?.teamName : undefined,
                      playerName: roster?.filter(
                         (player) => player?.playerId === penalty.data().playerId

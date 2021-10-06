@@ -23,7 +23,7 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { EditGame, Loading } from "../../components";
+import { EditPenalty, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -171,10 +171,21 @@ const EditButton = styled(Fab)`
 const Game = () => {
    const router = useRouter();
    const [value, setValue] = useState(0);
-   const [open, setOpen] = useState(false);
+   const [editPenaltyDialog, setEditPenaltyDialog] = useState(false);
+   const [penalty, setPenalty] = useState(null);
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+   const handleChange = (event, newValue) => setValue(newValue);
+
+   const handleClickOpen = (penalty) => {
+      console.log('penalty', penalty)
+      setPenalty(penalty);
+      setEditPenaltyDialog(true);
+   };
+
+   console.log("penalty dialog", { penalty, editPenaltyDialog });
 
    const goalsSorted = game?.goals?.sort(
       (a, b) =>
@@ -199,8 +210,6 @@ const Game = () => {
             second: a.time?.split(":")[1],
          })
    );
-
-   const handleChange = (event, newValue) => setValue(newValue);
 
    const icePakGoals = goalsSorted?.filter((goal) => goal?.playerId);
    const opponentGoals = goalsSorted?.filter((goal) => goal?.opponentId);
@@ -269,9 +278,9 @@ const Game = () => {
    ];
 
    console.log("game", game);
-   console.log("icePakGoals", icePakGoals);
-   console.log("oppGoals", opponentGoals);
-   console.log("desktop", desktop);
+   // console.log("icePakGoals", icePakGoals);
+   // console.log("oppGoals", opponentGoals);
+   // console.log("desktop", desktop);
 
    if (gameLoading) {
       return <Loading />;
@@ -339,7 +348,7 @@ const Game = () => {
                   <Typography variant="h6">Scoring</Typography>
                   {goalsByPeriod?.map((period) => {
                      return (
-                        <>
+                        <div key={`${period.period}-goals`}>
                            <Typography variant="overline" gutterBottom>
                               {period?.period === "OT" ? "Overtime" : `${period?.period} Period`}
                            </Typography>
@@ -349,6 +358,7 @@ const Game = () => {
                               </Typography>
                            ) : null}
                            {period?.goals?.map((goal) => {
+                              console.log("goal", goal);
                               return (
                                  <GoalContainer key={goal?.goalId}>
                                     <Avatar
@@ -367,7 +377,7 @@ const Game = () => {
                                           return (
                                              <AssistText
                                                 variant="body2"
-                                                key={goal?.goalId + assist}
+                                                key={goal?.goalId + assist?.playerId}
                                              >
                                                 {assist?.playerName}
                                                 {goal?.assists?.length > 1 ? "," : ""}
@@ -381,7 +391,7 @@ const Game = () => {
                                  </GoalContainer>
                               );
                            })}
-                        </>
+                        </div>
                      );
                   })}
                </Section>
@@ -389,7 +399,7 @@ const Game = () => {
                   <Typography variant="h6">Penalties</Typography>
                   {penaltiesByPeriod?.map((period) => {
                      return (
-                        <>
+                        <div key={`${period.period}-penalties`}>
                            <Typography variant="overline" gutterBottom>
                               {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
                            </Typography>
@@ -400,7 +410,7 @@ const Game = () => {
                            ) : null}
                            {period?.penalties?.map((penalty) => {
                               return (
-                                 <GoalContainer key={penalty?.goalId}>
+                                 <GoalContainer key={penalty?.penaltyId}>
                                     <Avatar
                                        alt={penalty?.playerName}
                                        src={`data:image/png;base64,${penalty?.playerImage}`}
@@ -422,10 +432,17 @@ const Game = () => {
                                           {penalty?.time} / {period?.period}
                                        </GoalTime>
                                     </div>
+                                    {/* <EditButton
+                                       size="small"
+                                       aria-label="Add Player"
+                                       onClick={() => handleClickOpen(penalty)}
+                                    >
+                                       <EditIcon />
+                                    </EditButton> */}
                                  </GoalContainer>
                               );
                            })}
-                        </>
+                        </div>
                      );
                   })}
                </Section>
@@ -434,9 +451,6 @@ const Game = () => {
                Team Stats
             </TabPanel>
          </TabContainer>
-         {/* <EditButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
-            <EditIcon />
-         </EditButton> */}
 
          {/* <SpeedDial
             ariaLabel="Edit Game"
@@ -453,6 +467,21 @@ const Game = () => {
             open={open}
          /> */}
          {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
+         {editPenaltyDialog ? (
+            <EditPenalty
+               gameRoster={game?.roster}
+               penalty={penalty}
+               onClose={() => {
+                  setPenalty(null);
+                  setEditPenaltyDialog(false);
+               }}
+               close={() => {
+                  setPenalty(null);
+                  setEditPenaltyDialog(false);
+               }}
+               open={editPenaltyDialog}
+            />
+         ) : null}
       </GameContainer>
    );
 };

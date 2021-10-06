@@ -1,10 +1,11 @@
 export { default as Banner } from "./Banner";
+export { default as ControlledSelect } from "./ControlledSelect";
+export { default as ControlledInput } from "./ControlledInput";
 export { default as FeaturedPost } from "./FeaturedPost";
 export { default as Disclaimer } from "./Disclaimer";
-export { default as EditGame } from "./EditGame";
+export { default as EditPenalty } from "./EditPenalty";
 export { default as Layout } from "./Layout";
 export { default as Loading } from "./Loading";
 export { default as Posts } from "./Posts";
-export { default as SelectInput } from "./SelectInput";
-export { default as TextInput } from "./TextInput";
+export { default as TextInput } from "./ControlledInput";
 export { default as UpcomingGames } from "./UpcomingGames";

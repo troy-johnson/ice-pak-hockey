@@ -6,6 +6,7 @@ export { default as useGetLeagues } from "./useGetLeagues";
 export { default as useGetLocations } from "./useGetLocations";
 export { default as useGetOpponents } from "./useGetOpponents";
 export { default as useGetPenalties } from "./useGetPenalties";
+export { default as useGetPenaltyInfo } from "./useGetPenaltyInfo";
 export { default as useGetPlayers } from "./useGetPlayers";
 export { default as useGetPosts } from "./useGetPosts";
 export { default as useGetSeasons } from "./useGetSeasons";
