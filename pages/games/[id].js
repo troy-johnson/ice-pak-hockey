@@ -9,8 +9,6 @@ import {
    Box,
    Fab,
    Paper,
-   SpeedDial,
-   SpeedDialIcon,
    Tabs,
    Tab,
    Table,
@@ -23,6 +21,8 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import CelebrationIcon from '@mui/icons-material/Celebration';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { EditPenalty, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
@@ -180,7 +180,7 @@ const Game = () => {
    const handleChange = (event, newValue) => setValue(newValue);
 
    const handleClickOpen = (penalty) => {
-      console.log('penalty', penalty)
+      console.log("penalty", penalty);
       setPenalty(penalty);
       setEditPenaltyDialog(true);
    };
@@ -452,20 +452,6 @@ const Game = () => {
             </TabPanel>
          </TabContainer>
 
-         {/* <SpeedDial
-            ariaLabel="Edit Game"
-            sx={{
-               position: "sticky",
-               bottom: 16,
-               display: "flex",
-               alignItems: "flex-end",
-               marginTop: "-88px",
-            }}
-            icon={<EditIcon />}
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
-            open={open}
-         /> */}
          {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
          {editPenaltyDialog ? (
             <EditPenalty
