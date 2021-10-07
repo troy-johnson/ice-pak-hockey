@@ -8,7 +8,14 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
 
    const { control, handleSubmit, reset } = useForm({
       defaultValues: {
+         gameId: penalty?.gameId,
+         minutes: penalty?.minutes,
+         penaltyId: penalty?.penaltyId,
          penaltyType: penalty?.penaltyType,
+         period: penalty?.period,
+         playerId: penalty?.playerId,
+         playerName: penalty?.playerName,
+         time: penalty?.time
       },
    });
 
@@ -39,6 +46,12 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
                control={control}
                label="Penalty Type"
                name="penaltyType"
+               variant="filled"
+            />
+            <ControlledInput
+               control={control}
+               label="Minutes"
+               name="minutes"
                variant="filled"
             />
          </DialogContent>

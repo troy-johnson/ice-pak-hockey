@@ -42,50 +42,34 @@ const gameHandler = async (req, res) => {
                   query(collection(db, "penalties"), where("gameId", "==", id))
                );
 
-               const playersResult = await getDocs(
-                  query(collection(db, "players"), where(documentId(), "in", gameData?.roster))
+               let playerBatches = [gameData?.roster.slice(0, 10), gameData?.roster.slice(10, 20)];
+
+               const batchResultOne = await getDocs(
+                  query(collection(db, "players"), where(documentId(), "in", playerBatches[0]))
+               );
+               const batchResultTwo = await getDocs(
+                  query(collection(db, "players"), where(documentId(), "in", playerBatches[1]))
                );
 
-               playersResult?.forEach((player) =>
+               batchResultOne?.forEach((player) => {
                   roster.push({
-                     playerName: `${player.data().firstName} ${
-                        player.data().nickname
-                           ? `"${player.data().nickname}" ${player.data().lastName}`
-                           : player.data().lastName
-                     }`,
-                     jerseyNumber: player.data().jerseyNumber,
-                     image: player.data().image,
-                     playerId: player.id,
-                  })
-               );
-
-               goalsResult?.forEach((goal) => {
-                  let assists = [];
-
-                  goal.data().assists?.forEach((assist) => {
-                     assists.push({
-                        playerId: assist,
-                        playerName: roster.filter((player) => player.playerId === assist)[0]
-                           .playerName,
-                        playerJerseyNumber: roster.filter((player) => player.playerId === assist)[0]
-                           .jerseyNumber,
-                        playerImage: roster.filter((player) => player.playerId === assist)[0].image,
-                     });
+                     playerId: player?.id,
+                     image: player?.data()?.image,
+                     playerName: `${player?.data()?.firstName}${
+                        player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
+                     }${player?.data()?.lastName}`,
+                     playerJerseyNumber: player?.data()?.jerseyNumber,
                   });
+               });
 
-                  goals.push({
-                     ...goal.data(),
-                     assists,
-                     goalId: goal.id,
-                     playerName: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.playerName,
-                     playerJerseyNumber: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.jerseyNumber,
-                     playerImage: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.image,
+               batchResultTwo?.forEach((player) => {
+                  roster.push({
+                     playerId: player?.id,
+                     image: player?.data()?.image,
+                     playerName: `${player?.data()?.firstName}${
+                        player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
+                     }${player?.data()?.lastName}`,
+                     playerJerseyNumber: player?.data()?.jerseyNumber,
                   });
                });
 
@@ -102,6 +86,37 @@ const gameHandler = async (req, res) => {
                      )?.[0]?.jerseyNumber,
                      playerImage: roster.filter(
                         (player) => player.playerId === penalty.data().playerId
+                     )?.[0]?.image,
+                  });
+               });
+
+               goalsResult?.forEach((goal) => {
+                  let assists = [];
+
+                  goal.data().assists?.forEach((assist) => {
+                     assists.push({
+                        playerId: assist,
+                        playerName: roster.filter((player) => player.playerId === assist)[0]
+                           ?.playerName,
+                        playerJerseyNumber: roster.filter((player) => player.playerId === assist)[0]
+                           ?.jerseyNumber,
+                        playerImage: roster.filter((player) => player.playerId === assist)[0]
+                           ?.image,
+                     });
+                  });
+
+                  goals.push({
+                     ...goal.data(),
+                     assists,
+                     goalId: goal.id,
+                     playerName: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
+                     )?.[0]?.playerName,
+                     playerJerseyNumber: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
+                     )?.[0]?.jerseyNumber,
+                     playerImage: roster.filter(
+                        (player) => player.playerId === goal.data().playerId
                      )?.[0]?.image,
                   });
                });
