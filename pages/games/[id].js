@@ -213,10 +213,10 @@ const EditPenaltyContainer = styled.div`
 `;
 
 const PenaltyRowBackground = styled(Image)`
-   opacity: 0.25;
-   position: absolute;
-   overflow: hidden;
+right: 0;
 `;
+
+const PenaltyRow = styled(TableRow)``;
 
 const Game = () => {
    const router = useRouter();
@@ -515,10 +515,20 @@ const Game = () => {
                                  return (
                                     <TableRow
                                        key={"box-score-row-" + penalty.penaltyId}
-                                       sx={{ border: 0, maxHeight: "100px"}}
+                                       sx={{ border: 0, maxHeight: "100px" }}
                                     >
                                        <TableCell component="th" scope="row" align="left">
                                           {penalty?.time}
+                                       </TableCell>
+                                       <TableCell sx={{ width: "75px", padding: 0 }} align="center">
+                                          {penalty?.playerName ? (
+                                             <PenaltyRowBackground
+                                                alt="Ice Pak Penalty"
+                                                src="/jerseyLogo.png"
+                                                width={50}
+                                                height={50}
+                                             />
+                                          ) : null}
                                        </TableCell>
                                        <TableCell align="left">
                                           <div style={{ display: "flex", flexDirection: "column" }}>
@@ -546,7 +556,6 @@ const Game = () => {
                                              <EditIcon />
                                           </EditButton> */}
                                        </TableCell>
-                                       {/* <PenaltyRowBackground alt="Ice Pak Penalty" src="/jerseyLogo.png" width={200} height={200} /> */}
                                     </TableRow>
                                  );
                               })}

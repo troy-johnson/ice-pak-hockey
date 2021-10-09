@@ -47,6 +47,7 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
                label="Penalty Type"
                name="penaltyType"
                variant="filled"
+               required
             />
             <ControlledInput
                control={control}

@@ -8,14 +8,15 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledSelect = ({ control, defaultValue, disabled, label, name, options, required, variant }) => {
+const ControlledSelect = ({ control, disabled, label, name, options, required, variant }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
       <Controller
          name={name}
          control={control}
-         render={({ error, field }) => (
+         defaultValue=""
+         render={({ field: { onChange, value }, fieldState: { error } }) => (
             <FormControl
                disabled={disabled}
                error={error}
@@ -27,7 +28,7 @@ const ControlledSelect = ({ control, defaultValue, disabled, label, name, option
             >
                <InputLabel id={`${name}-label`}>{label}</InputLabel>
                {desktop ? (
-                  <Select {...field} labelId={`${name}-label`} id={`${name}-select`} label={label}>
+                  <Select value={value} onChange={onChange} labelId={`${name}-label`} id={`${name}-select`} label={label}>
                      {options?.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                            {option.label}
@@ -35,7 +36,7 @@ const ControlledSelect = ({ control, defaultValue, disabled, label, name, option
                      ))}
                   </Select>
                ) : (
-                  <NativeSelect {...field} id={`${name}-select`} label={label} variant="outlined">
+                  <NativeSelect value={value} onChange={onChange} id={`${name}-select`} label={label} variant="outlined">
                      {options?.map((option) => (
                         <option key={option.value} value={option.value}>
                            {option.label}
