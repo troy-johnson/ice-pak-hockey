@@ -532,7 +532,7 @@ const Game = () => {
                                        </TableCell>
                                        <TableCell align="left">
                                           <div style={{ display: "flex", flexDirection: "column" }}>
-                                             <Typography variant="h6">
+                                             <Typography variant={desktop ? "h6" : "subtitle2"}>
                                                 {penalty?.playerName
                                                    ? desktop
                                                       ? penalty?.playerName
@@ -542,19 +542,20 @@ const Game = () => {
                                                         }`
                                                    : penalty?.opponentName}
                                              </Typography>
-                                             <Typography variant="caption">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</Typography>
+                                             <Typography variant={desktop ? "subtitle1" : "caption"}>{`${penalty?.penaltyType}`}</Typography>
+                                             <Typography variant={desktop ? "subtitle1" : "caption"}>{`(${penalty?.minutes})`}</Typography>
                                           </div>
                                        </TableCell>
                                        {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
                                        <TableCell align="right">
-                                          {/* <EditButton
+                                          <EditButton
                                              size="small"
                                              aria-label="Edit Penalty"
                                              onClick={() => handleClickOpen(penalty)}
                                              sx={{ flexGrow: "2" }}
                                           >
                                              <EditIcon />
-                                          </EditButton> */}
+                                          </EditButton>
                                        </TableCell>
                                     </TableRow>
                                  );
