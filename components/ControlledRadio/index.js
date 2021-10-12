@@ -1,7 +1,7 @@
 import { FormControl, FormLabel, Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledRadio = ({ control, disabled, label, name, options, required, variant }) => {
+const ControlledRadio = ({ control, disabled, label, name, options, required, row, variant }) => {
    return (
       <Controller
          name={name}
@@ -23,7 +23,8 @@ const ControlledRadio = ({ control, disabled, label, name, options, required, va
                   defaultValue=""
                   name={`${name}-radio-group`}
                   onChange={onChange}
-                  alue={value}
+                  row={row}
+                  value={value}
                >
                   {options?.map((option) => (
                      <FormControlLabel

@@ -1,15 +1,15 @@
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import {
+   Alert,
    Avatar,
    Box,
    Divider,
-   IconButton,
    Paper,
+   Snackbar,
    Tabs,
    Tab,
    Table,
@@ -21,8 +21,7 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import EditIcon from "@mui/icons-material/Edit";
-import { EditPenalty, Loading } from "../../components";
+import { EditPenalty, GamePenalties, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -63,26 +62,9 @@ const SectionContainer = styled(Paper)`
    box-shadow: none;
 `;
 
-// const DesktopContainer = styled(Box)`
-//    display: flex;
-//    flex-direction: column;
-// `;
-
 const GoalText = styled(Typography)`
    color: ${(props) => props.theme.palette.black};
    font-size: 18px;
-`;
-
-const PenaltyPlayer = styled(Typography)`
-   color: ${(props) => props.theme.palette.black};
-`;
-
-const PenaltyType = styled(Typography)`
-   color: ${(props) => props.theme.palette.grey.dark};
-   font-size: 14px;
-   width: max-content;
-   margin-left: 5px;
-   margin-right: 5px;
 `;
 
 const AssistText = styled(Typography)`
@@ -105,11 +87,6 @@ const GoalTime = styled(Typography)`
    width: 150px;
 `;
 
-const PenaltyTime = styled(Typography)`
-   margin-right: 10px;
-   width: ${(props) => (props.desktop ? "75px" : "0px")};
-`;
-
 const Section = styled.section`
    display: flex;
    flex-direction: column;
@@ -126,19 +103,6 @@ const GoalContainer = styled(Paper)`
    padding: 10px;
    height: 100px;
    margin-bottom: 5px;
-
-   div {
-      margin-right: 10px;
-   }
-`;
-
-const PenaltyContainer = styled.div`
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   padding: 10px;
-   margin-bottom: 5px;
-   width: 100%;
 
    div {
       margin-right: 10px;
@@ -191,45 +155,19 @@ const BoxScoreCell = styled(TableCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
 `;
 
-const EditButton = styled(IconButton)`
-   background-color: #fff;
-   color: ${(props) => props.theme.palette.grey.main};
-   height: 24px;
-   width: 24px;
-   :hover {
-      background-color: ${(props) => props.theme.palette.white};
-      color: ${(props) => props.theme.palette.black};
-   }
-`;
-
-const EditPenaltyContainer = styled.div`
-   display: flex;
-   flex-grow: 2;
-   height: 100%;
-   flex-direction: column;
-   align-items: flex-end;
-   justify-content: center;
-   margin-right: 0px !important;
-`;
-
-const PenaltyRowBackground = styled(Image)`
-right: 0;
-`;
-
-const PenaltyRow = styled(TableRow)``;
-
 const Game = () => {
    const router = useRouter();
    const [value, setValue] = useState(0);
    const [editPenaltyDialog, setEditPenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
+   const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const handleChange = (event, newValue) => setValue(newValue);
 
-   const handleClickOpen = (penalty) => {
+   const openEditPenalty = (penalty) => {
       console.log("penalty", penalty);
       setPenalty(penalty);
       setEditPenaltyDialog(true);
@@ -378,7 +316,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   console.log("game", game);
+   // console.log("game", game);
    // console.log("icePakGoals", icePakGoals);
    // console.log("oppGoals", opponentGoals);
    // console.log("desktop", desktop);
@@ -454,14 +392,29 @@ const Game = () => {
                         console.log("goal", goal);
                         return (
                            <GoalContainer key={goal?.goalId}>
-                              <Avatar
-                                 alt={goal?.playerName}
-                                 src={`data:image/png;base64,${goal?.playerImage}`}
-                                 sx={{
-                                    width: desktop ? 65 : 50,
-                                    height: desktop ? 65 : 50,
-                                 }}
-                              />
+                              {goal?.playerId ? (
+                                 <Avatar
+                                    alt={goal?.playerName}
+                                    src={
+                                       goal?.playerId
+                                          ? `data:image/png;base64,${goal?.playerImage}`
+                                          : null
+                                    }
+                                    sx={{
+                                       width: desktop ? 65 : 50,
+                                       height: desktop ? 65 : 50,
+                                    }}
+                                 />
+                              ) : (
+                                 <Avatar
+                                    sx={{
+                                       width: desktop ? 65 : 50,
+                                       height: desktop ? 65 : 50,
+                                    }}
+                                 >
+                                    {game?.opponentName.slice(0, 1)[0]}
+                                 </Avatar>
+                              )}
                               <div>
                                  <GoalText variant="body1">
                                     {goal?.playerName ? goal?.playerName : game?.opponentName}
@@ -484,85 +437,6 @@ const Game = () => {
                            </GoalContainer>
                         );
                      })}
-                  </div>
-               );
-            })}
-         </Section>
-      );
-   };
-
-   const Penalties = () => {
-      return (
-         <Section>
-            <Typography variant="h6">Penalties</Typography>
-            {penaltiesByPeriod?.map((period) => {
-               return (
-                  <div key={`${period.period}-penalties`}>
-                     <Divider>
-                        <Typography variant="overline" gutterBottom>
-                           {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
-                        </Typography>
-                     </Divider>
-                     {period?.penalties?.length === 0 ? (
-                        <Typography variant="body2" gutterBottom>
-                           No Penalties
-                        </Typography>
-                     ) : null}
-                     <TableContainer>
-                        <Table aria-label="simple table">
-                           <TableBody>
-                              {period?.penalties?.map((penalty) => {
-                                 return (
-                                    <TableRow
-                                       key={"box-score-row-" + penalty.penaltyId}
-                                       sx={{ border: 0, maxHeight: "100px" }}
-                                    >
-                                       <TableCell component="th" scope="row" align="left">
-                                          {penalty?.time}
-                                       </TableCell>
-                                       <TableCell sx={{ width: "75px", padding: 0 }} align="center">
-                                          {penalty?.playerName ? (
-                                             <PenaltyRowBackground
-                                                alt="Ice Pak Penalty"
-                                                src="/jerseyLogo.png"
-                                                width={50}
-                                                height={50}
-                                             />
-                                          ) : null}
-                                       </TableCell>
-                                       <TableCell align="left">
-                                          <div style={{ display: "flex", flexDirection: "column" }}>
-                                             <Typography variant={desktop ? "h6" : "subtitle2"}>
-                                                {penalty?.playerName
-                                                   ? desktop
-                                                      ? penalty?.playerName
-                                                      : `${penalty.playerName.charAt(0)}. ${
-                                                           penalty.playerName.split(" ")[2] ||
-                                                           penalty.playerName.split(" ")[1]
-                                                        }`
-                                                   : penalty?.opponentName}
-                                             </Typography>
-                                             <Typography variant={desktop ? "subtitle1" : "caption"}>{`${penalty?.penaltyType}`}</Typography>
-                                             <Typography variant={desktop ? "subtitle1" : "caption"}>{`(${penalty?.minutes})`}</Typography>
-                                          </div>
-                                       </TableCell>
-                                       {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                       <TableCell align="right">
-                                          <EditButton
-                                             size="small"
-                                             aria-label="Edit Penalty"
-                                             onClick={() => handleClickOpen(penalty)}
-                                             sx={{ flexGrow: "2" }}
-                                          >
-                                             <EditIcon />
-                                          </EditButton>
-                                       </TableCell>
-                                    </TableRow>
-                                 );
-                              })}
-                           </TableBody>
-                        </Table>
-                     </TableContainer>
                   </div>
                );
             })}
@@ -656,7 +530,10 @@ const Game = () => {
                      <Typography variant="h5">Box Score</Typography>
                      <BoxScore />
                      <Goals />
-                     <Penalties />
+                     <GamePenalties
+                        penaltiesByPeriod={penaltiesByPeriod}
+                        handleClickOpen={openEditPenalty}
+                     />
                   </SectionContainer>
                   <SectionContainer>
                      <Typography variant="h5">Team Stats</Typography>
@@ -674,7 +551,10 @@ const Game = () => {
                   <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
                      <BoxScore />
                      <Goals />
-                     <Penalties />
+                     <GamePenalties
+                        penaltiesByPeriod={penaltiesByPeriod}
+                        handleClickOpen={openEditPenalty}
+                     />
                   </TabPanel>
                   <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
                      <TeamStats desktop={desktop} teamStats={teamStats} />
@@ -695,10 +575,18 @@ const Game = () => {
                      setPenalty(null);
                      setEditPenaltyDialog(false);
                   }}
+                  setSnackbar={setSnackbar}
+                  opponentId={game?.opponentId}
+                  opponentName={game?.opponentName}
                   open={editPenaltyDialog}
                />
             ) : null}
          </GameContainer>
+         <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ open: false, type: "success", message: ""})}>
+            <Alert onClose={() => setSnackbar({ open: false, type: "success", message: ""})} severity={snackbar.type} sx={{ width: "100%" }}>
+               {snackbar.message}
+            </Alert>
+         </Snackbar>
       </>
    );
 };

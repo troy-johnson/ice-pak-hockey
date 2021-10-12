@@ -3,6 +3,7 @@ export { default as ControlledRadio } from "./ControlledRadio";
 export { default as ControlledSelect } from "./ControlledSelect";
 export { default as ControlledInput } from "./ControlledInput";
 export { default as FeaturedPost } from "./FeaturedPost";
+export { default as GamePenalties } from "./GamePenalties";
 export { default as Disclaimer } from "./Disclaimer";
 export { default as EditPenalty } from "./EditPenalty";
 export { default as Layout } from "./Layout";

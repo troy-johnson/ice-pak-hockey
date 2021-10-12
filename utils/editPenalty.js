@@ -1,16 +1,20 @@
-const editPenalty = async (data) => {
-   console.log("data", data)
-   // const response = await fetch(`/api/penalties/${data.id}`, {
-   //    method: "POST",
-   //    mode: "cors",
-   //    cache: "no-cache",
-   //    headers: {
-   //       "Content-Type": "application/json",
-   //    },
-   //    body: JSON.stringify(data),
-   // });
+import { mutate } from "swr";
 
-   // return response.json();
+const editPenalty = async (data) => {
+   console.log("data", data);
+   const response = await fetch(`/api/penalties/${data.penaltyId}`, {
+      method: "PUT",
+      mode: "cors",
+      cache: "no-cache",
+      headers: {
+         "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+   });
+
+   mutate("/api/penalties");
+
+   return response.json();
 };
 
 export default editPenalty;

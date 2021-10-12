@@ -157,9 +157,9 @@ const Team = () => {
       <TeamContainer>
          <TeamInfo>
             <Typography variant="h3">Team</Typography>
-            <AddButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
+            {/* <AddButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
                <AddIcon />
-            </AddButton>
+            </AddButton> */}
          </TeamInfo>
          <TableContainer component={Paper}>
             <Table aria-label="Team">

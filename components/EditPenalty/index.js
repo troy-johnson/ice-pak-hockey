@@ -1,15 +1,32 @@
-import { Button, DialogActions, DialogContent, DialogTitle, Dialog, Stack } from "@mui/material";
-import { useSWRConfig } from "swr";
+import { mutate } from "swr";
+import {
+   Button,
+   DialogActions,
+   DialogContent,
+   DialogTitle,
+   Dialog,
+   Stack,
+   useMediaQuery,
+} from "@mui/material";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
-import { Loading, ControlledInput, ControlledRadio, ControlledSelect } from "../";
+import { ControlledInput, ControlledRadio, ControlledSelect } from "../";
+import { editPenalty } from "../../utils";
 
 const InputWithMargin = styled(ControlledInput)`
    margin-bottom: 10px;
 `;
 
-const EditPenalty = ({ close, gameRoster, open, penalty }) => {
-   console.log("gameRoster", gameRoster);
+const EditPenalty = ({
+   close,
+   gameRoster,
+   open,
+   opponentId,
+   opponentName,
+   penalty,
+   setSnackbar
+}) => {
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const { control, handleSubmit, reset, watch } = useForm({
       defaultValues: {
@@ -18,11 +35,14 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
          penaltyId: penalty?.penaltyId,
          penaltyType: penalty?.penaltyType,
          period: penalty?.period,
-         player: penalty?.playerId,
+         playerId: penalty?.playerId,
          time: penalty?.time,
-         team: penalty?.playerId ? "Ice Pak" : penalty?.opponentName,
+         team: penalty?.playerId ? "Ice Pak" : opponentName,
       },
    });
+
+   const team = watch("team");
+   const playerId = watch("playerId");
 
    const handleClose = () => {
       reset({
@@ -32,15 +52,19 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
    };
 
    const onSubmit = (data) => {
-      console.log(data);
-
-      // try {
-      //    editPenalty(data);
-      //    mutate(`/api/penalties`, [...players, data], true);
-      //    handleClose();
-      // } catch (error) {
-      //    consol.log("error", error);
-      // }
+      try {
+         editPenalty({
+            ...data,
+            opponentId: team === opponentName ? opponentId : null,
+            playerId: team === opponentName ? null : playerId,
+         });
+         mutate(`/api/games/${penalty?.gameId}`);
+         handleClose();
+         setSnackbar({open: true, type: "success", message: "Penalty successfully updated!"})
+      } catch (error) {
+         console.log("error", error);
+         setSnackbar({open: true, type: "error", message: "An error has occurred. Please try again."})
+      }
    };
 
    const playerOptions = gameRoster?.map((player) => {
@@ -50,37 +74,53 @@ const EditPenalty = ({ close, gameRoster, open, penalty }) => {
       };
    });
 
-   const teamOptions = ["Ice Pak", penalty?.opponentName];
-
-   const team = watch("team", penalty?.playerId ? "Ice Pak" : penalty?.opponentName);
+   const teamOptions = ["Ice Pak", opponentName];
 
    return (
       <Dialog onClose={handleClose} open={open}>
          <DialogTitle>Edit Penalty</DialogTitle>
-         <DialogContent sx={{ display: "flex", flexDirection: "row" }}>
-            <Stack sx={{ marginRight: "5px", marginTop: "10px" }}>
-               {/* <ControlledRadio control={control} name="team" label="Team" options={teamOptions} required /> */}
-               {team === "Ice Pak" ? (
-                  <ControlledSelect
+         <DialogContent>
+            <ControlledRadio
+               control={control}
+               name="team"
+               label="Team"
+               options={teamOptions}
+               row
+               required
+            />
+            <Stack direction={desktop ? "row" : "column"}>
+               <Stack spacing={2} sx={{ marginRight: "15px", marginTop: "10px" }}>
+                  {team === "Ice Pak" ? (
+                     <ControlledSelect
+                        control={control}
+                        name="playerId"
+                        label="Player"
+                        options={playerOptions}
+                        variant="outlined"
+                     />
+                  ) : null}
+                  <InputWithMargin
                      control={control}
-                     name="player"
-                     label="Player"
-                     options={playerOptions}
+                     label="Penalty Type"
+                     name="penaltyType"
                      variant="outlined"
                   />
-               ) : null}
-               <InputWithMargin
-                  control={control}
-                  label="Penalty Type"
-                  name="penaltyType"
-                  variant="filled"
-                  required
-               />
-            </Stack>
-            <Stack sx={{ marginTop: "10px" }}>
-               <InputWithMargin control={control} label="Period" name="period" variant="filled" />
-               <InputWithMargin control={control} label="Time" name="time" variant="filled" />
-               <InputWithMargin control={control} label="Minutes" name="minutes" variant="filled" />
+               </Stack>
+               <Stack spacing={2} sx={{ marginTop: "10px" }}>
+                  <InputWithMargin
+                     control={control}
+                     label="Period"
+                     name="period"
+                     variant="outlined"
+                  />
+                  <InputWithMargin control={control} label="Time" name="time" variant="outlined" />
+                  <InputWithMargin
+                     control={control}
+                     label="Minutes"
+                     name="minutes"
+                     variant="outlined"
+                  />
+               </Stack>
             </Stack>
          </DialogContent>
          <DialogActions>
