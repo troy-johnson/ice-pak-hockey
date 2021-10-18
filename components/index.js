@@ -5,7 +5,7 @@ export { default as ControlledInput } from "./ControlledInput";
 export { default as FeaturedPost } from "./FeaturedPost";
 export { default as GamePenalties } from "./GamePenalties";
 export { default as Disclaimer } from "./Disclaimer";
-export { default as EditPenalty } from "./EditPenalty";
+export { default as MutatePenalty } from "./MutatePenalty";
 export { default as Layout } from "./Layout";
 export { default as Loading } from "./Loading";
 export { default as Login } from "./Login";

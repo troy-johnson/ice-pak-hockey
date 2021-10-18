@@ -10,33 +10,35 @@ import {
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
-import { ControlledInput, ControlledRadio, ControlledSelect } from "../";
+import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
 import { editPenalty } from "../../utils";
 
 const InputWithMargin = styled(ControlledInput)`
    margin-bottom: 10px;
 `;
 
-const EditPenalty = ({
+const MutatePenalty = ({
+   penaltyAction = "add",
    close,
+   gameId,
    gameRoster,
    open,
    opponentId,
    opponentName,
    penalty,
-   setSnackbar
+   setSnackbar,
 }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const { control, handleSubmit, reset, watch } = useForm({
       defaultValues: {
-         gameId: penalty?.gameId,
-         minutes: penalty?.minutes,
-         penaltyId: penalty?.penaltyId,
-         penaltyType: penalty?.penaltyType,
-         period: penalty?.period,
-         playerId: penalty?.playerId,
-         time: penalty?.time,
+         gameId: gameId,
+         minutes: penaltyAction === "add" ? 2 : penalty?.minutes,
+         penaltyId: penaltyAction === "add" ? null : penalty?.penaltyId,
+         penaltyType: penaltyAction === "add" ? "Tripping" : penalty?.penaltyType,
+         period: penaltyAction === "add" ? 1 : penalty?.period,
+         playerId: penaltyAction === "add" ? gameRoster[0].playerId : penalty?.playerId,
+         time: penaltyAction === "add" ? "10:00" : penalty?.time,
          team: penalty?.playerId ? "Ice Pak" : opponentName,
       },
    });
@@ -60,10 +62,14 @@ const EditPenalty = ({
          });
          mutate(`/api/games/${penalty?.gameId}`);
          handleClose();
-         setSnackbar({open: true, type: "success", message: "Penalty successfully updated!"})
+         setSnackbar({ open: true, type: "success", message: "Penalty successfully updated!" });
       } catch (error) {
          console.log("error", error);
-         setSnackbar({open: true, type: "error", message: "An error has occurred. Please try again."})
+         setSnackbar({
+            open: true,
+            type: "error",
+            message: "An error has occurred. Please try again.",
+         });
       }
    };
 
@@ -78,7 +84,7 @@ const EditPenalty = ({
 
    return (
       <Dialog onClose={handleClose} open={open}>
-         <DialogTitle>Edit Penalty</DialogTitle>
+         <DialogTitle>{penaltyAction === "add" ? "Add" : "Edit"} Penalty</DialogTitle>
          <DialogContent>
             <ControlledRadio
                control={control}
@@ -133,4 +139,4 @@ const EditPenalty = ({
    );
 };
 
-export default EditPenalty;
+export default MutatePenalty;

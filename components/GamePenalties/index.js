@@ -1,5 +1,6 @@
 import Image from "next/image";
 import {
+   Box,
    Divider,
    IconButton,
    Table,
@@ -8,7 +9,7 @@ import {
    TableRow,
    TableCell,
    Typography,
-   useMediaQuery
+   useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import styled from "@emotion/styled";
@@ -42,7 +43,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
 
    return (
       <Section>
-         <Typography variant="h6">Penalties</Typography>
+         <Typography variant="h5">Penalties</Typography>
          {penaltiesByPeriod?.map((period) => {
             return (
                <div key={`${period.period}-penalties`}>
@@ -100,14 +101,14 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                     </TableCell>
                                     {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
                                     <TableCell align="right">
-                                       {/* <EditButton
+                                       <EditButton
                                           size="small"
                                           aria-label="Edit Penalty"
-                                          onClick={() => handleClickOpen(penalty)}
+                                          onClick={() => handleClickOpen("edit", penalty)}
                                           sx={{ flexGrow: "2" }}
                                        >
                                           <EditIcon />
-                                       </EditButton> */}
+                                       </EditButton>
                                     </TableCell>
                                  </TableRow>
                               );

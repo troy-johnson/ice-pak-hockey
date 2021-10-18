@@ -10,6 +10,9 @@ import {
    Divider,
    Paper,
    Snackbar,
+   SpeedDial,
+   SpeedDialAction,
+   SpeedDialIcon,
    Tabs,
    Tab,
    Table,
@@ -21,7 +24,9 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { EditPenalty, GamePenalties, Loading } from "../../components";
+import { FaHockeyPuck } from "react-icons/fa";
+import { MdAccessTimeFilled, MdSportsHockey } from "react-icons/md";
+import { MutatePenalty, GamePenalties, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -158,8 +163,9 @@ const BoxScoreCell = styled(TableCell)`
 const Game = () => {
    const router = useRouter();
    const [value, setValue] = useState(0);
-   const [editPenaltyDialog, setEditPenaltyDialog] = useState(false);
+   const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
+   const [penaltyAction, setPenaltyAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
@@ -167,13 +173,13 @@ const Game = () => {
 
    const handleChange = (event, newValue) => setValue(newValue);
 
-   const openEditPenalty = (penalty) => {
+   const openMutatePenalty = (action, penalty) => {
       console.log("penalty", penalty);
+      console.log("action", action);
+      setPenaltyAction(action);
       setPenalty(penalty);
-      setEditPenaltyDialog(true);
+      setMutatePenaltyDialog(true);
    };
-
-   console.log("penalty dialog", { penalty, editPenaltyDialog });
 
    const goalsSorted = game?.goals?.sort(
       (a, b) =>
@@ -316,7 +322,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   // console.log("game", game);
+   console.log("game", game);
    // console.log("icePakGoals", icePakGoals);
    // console.log("oppGoals", opponentGoals);
    // console.log("desktop", desktop);
@@ -374,7 +380,7 @@ const Game = () => {
    const Goals = () => {
       return (
          <Section>
-            <Typography variant="h6">Scoring Summary</Typography>
+            <Typography variant="h5">Scoring Summary</Typography>
             {goalsByPeriod?.map((period) => {
                return (
                   <div key={`${period.period}-goals`}>
@@ -532,7 +538,7 @@ const Game = () => {
                      <Goals />
                      <GamePenalties
                         penaltiesByPeriod={penaltiesByPeriod}
-                        handleClickOpen={openEditPenalty}
+                        handleClickOpen={openMutatePenalty}
                      />
                   </SectionContainer>
                   <SectionContainer>
@@ -553,7 +559,7 @@ const Game = () => {
                      <Goals />
                      <GamePenalties
                         penaltiesByPeriod={penaltiesByPeriod}
-                        handleClickOpen={openEditPenalty}
+                        handleClickOpen={openMutatePenalty}
                      />
                   </TabPanel>
                   <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
@@ -563,30 +569,56 @@ const Game = () => {
             )}
 
             {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
-            {editPenaltyDialog ? (
-               <EditPenalty
+            {mutatePenaltyDialog ? (
+               <MutatePenalty
+                  penaltyAction={penaltyAction}
+                  gameId={game?.gameId}
                   gameRoster={game?.roster}
                   penalty={penalty}
                   onClose={() => {
                      setPenalty(null);
-                     setEditPenaltyDialog(false);
+                     setMutatePenaltyDialog(false);
                   }}
                   close={() => {
                      setPenalty(null);
-                     setEditPenaltyDialog(false);
+                     setMutatePenaltyDialog(false);
                   }}
                   setSnackbar={setSnackbar}
                   opponentId={game?.opponentId}
                   opponentName={game?.opponentName}
-                  open={editPenaltyDialog}
+                  open={mutatePenaltyDialog}
                />
             ) : null}
          </GameContainer>
-         <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={() => setSnackbar({ open: false, type: "success", message: ""})}>
-            <Alert onClose={() => setSnackbar({ open: false, type: "success", message: ""})} severity={snackbar.type} sx={{ width: "100%" }}>
+         <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+         >
+            <Alert
+               onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+               severity={snackbar.type}
+               sx={{ width: "100%" }}
+            >
                {snackbar.message}
             </Alert>
          </Snackbar>
+         <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1}}>
+            <SpeedDial
+               ariaLabel="SpeedDial basic example"
+               sx={{ position: "absolute", bottom: 16, right: 16 }}
+               icon={<SpeedDialIcon />}
+            >
+               <SpeedDialAction
+                  icon={<MdAccessTimeFilled />}
+                  onClick={() => openMutatePenalty("add")}
+                  tooltipTitle="Add Penalty"
+                  tooltipOpen
+               />
+               <SpeedDialAction icon={<FaHockeyPuck />} tooltipOpen tooltipTitle="Add Goal" />
+               <SpeedDialAction icon={<MdSportsHockey />} tooltipOpen tooltipTitle="Edit Game" />
+            </SpeedDial>
+         </Box>
       </>
    );
 };
