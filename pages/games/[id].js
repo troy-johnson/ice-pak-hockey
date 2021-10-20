@@ -7,12 +7,12 @@ import {
    Alert,
    Avatar,
    Box,
+   Button,
    Divider,
+   IconButton,
    Paper,
    Snackbar,
-   SpeedDial,
-   SpeedDialAction,
-   SpeedDialIcon,
+   Stack,
    Tabs,
    Tab,
    Table,
@@ -25,8 +25,8 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import { FaHockeyPuck } from "react-icons/fa";
-import { MdAccessTimeFilled, MdSportsHockey } from "react-icons/md";
-import { MutatePenalty, GamePenalties, Loading } from "../../components";
+import EditIcon from "@mui/icons-material/Edit";
+import { EditRoster, UpsertGoal, MutatePenalty, GamePenalties, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -120,6 +120,17 @@ const BoxScoreBody = styled(TableBody)`
    }
 `;
 
+const EditButton = styled(IconButton)`
+   background-color: #fff;
+   color: ${(props) => props.theme.palette.grey.main};
+   height: 24px;
+   width: 24px;
+   :hover {
+      background-color: ${(props) => props.theme.palette.white};
+      color: ${(props) => props.theme.palette.black};
+   }
+`;
+
 const TabPanel = styled(StyledTabPanel)`
    display: flex;
    flex-direction: column;
@@ -166,6 +177,10 @@ const Game = () => {
    const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
    const [penaltyAction, setPenaltyAction] = useState("add");
+   const [upsertGoalDialog, setUpsertGoalDialog] = useState(false);
+   const [editRosterDialog, setEditRosterDialog] = useState(false);
+   const [goal, setGoal] = useState(null);
+   const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
@@ -174,11 +189,15 @@ const Game = () => {
    const handleChange = (event, newValue) => setValue(newValue);
 
    const openMutatePenalty = (action, penalty) => {
-      console.log("penalty", penalty);
-      console.log("action", action);
       setPenaltyAction(action);
       setPenalty(penalty);
       setMutatePenaltyDialog(true);
+   };
+
+   const openUpsertGoal = (action, goal) => {
+      setGoalAction(action);
+      setGoal(goal);
+      setUpsertGoalDialog(true);
    };
 
    const goalsSorted = game?.goals?.sort(
@@ -380,7 +399,16 @@ const Game = () => {
    const Goals = () => {
       return (
          <Section>
-            <Typography variant="h5">Scoring Summary</Typography>
+            <Stack direction="row" sx={{display: "flex", justifyContent: "space-between"}}>
+               <Typography variant="h5">Scoring Summary</Typography>
+               <Button
+                  variant="outlined"
+                  onClick={() => openUpsertGoal("add")}
+                  endIcon={<FaHockeyPuck />}
+               >
+                  Add Goal
+               </Button>
+            </Stack>
             {goalsByPeriod?.map((period) => {
                return (
                   <div key={`${period.period}-goals`}>
@@ -440,6 +468,14 @@ const Game = () => {
                                     {goal?.time} / {period.period}
                                  </GoalTime>
                               </div>
+                              <EditButton
+                                 size="small"
+                                 aria-label="Edit Penalty"
+                                 onClick={() => openUpsertGoal("edit", goal)}
+                                 sx={{ textAlign: "right" }}
+                              >
+                                 <EditIcon />
+                              </EditButton>
                            </GoalContainer>
                         );
                      })}
@@ -542,7 +578,16 @@ const Game = () => {
                      />
                   </SectionContainer>
                   <SectionContainer>
-                     <Typography variant="h5">Team Stats</Typography>
+                  <Stack direction="row" sx={{display: "flex", justifyContent: "space-between"}}>
+               <Typography variant="h5">Team Stats</Typography>
+               <Button
+                  variant="outlined"
+                  onClick={() => setEditRosterDialog(true)}
+                  endIcon={<FaHockeyPuck />}
+               >
+                  Edit Roster
+               </Button>
+            </Stack>
                      <TeamStats desktop={desktop} teamStats={teamStats} />
                   </SectionContainer>
                </>
@@ -589,6 +634,35 @@ const Game = () => {
                   open={mutatePenaltyDialog}
                />
             ) : null}
+            {upsertGoalDialog ? (
+               <UpsertGoal
+                  goalAction={goalAction}
+                  gameId={game?.gameId}
+                  gameRoster={game?.roster}
+                  goal={goal}
+                  onClose={() => {
+                     setGoal(null);
+                     setUpsertGoalDialog(false);
+                  }}
+                  close={() => {
+                     setGoal(null);
+                     setUpsertGoalDialog(false);
+                  }}
+                  setSnackbar={setSnackbar}
+                  opponentId={game?.opponentId}
+                  opponentName={game?.opponentName}
+                  open={upsertGoalDialog}
+               />
+            ) : null}
+            {editRosterDialog ? (
+               <EditRoster
+                  gameId={game?.gameId}
+                  gameRoster={game?.roster}
+                  onClose={() => setEditRosterDialog(false)}
+                  close={() => setEditRosterDialog(false)}
+                  open={editRosterDialog}
+               />
+            ) : null}
          </GameContainer>
          <Snackbar
             open={snackbar.open}
@@ -603,22 +677,6 @@ const Game = () => {
                {snackbar.message}
             </Alert>
          </Snackbar>
-         <Box sx={{ transform: 'translateZ(0px)', flexGrow: 1}}>
-            <SpeedDial
-               ariaLabel="SpeedDial basic example"
-               sx={{ position: "absolute", bottom: 16, right: 16 }}
-               icon={<SpeedDialIcon />}
-            >
-               <SpeedDialAction
-                  icon={<MdAccessTimeFilled />}
-                  onClick={() => openMutatePenalty("add")}
-                  tooltipTitle="Add Penalty"
-                  tooltipOpen
-               />
-               <SpeedDialAction icon={<FaHockeyPuck />} tooltipOpen tooltipTitle="Add Goal" />
-               <SpeedDialAction icon={<MdSportsHockey />} tooltipOpen tooltipTitle="Edit Game" />
-            </SpeedDial>
-         </Box>
       </>
    );
 };

@@ -1,9 +1,8 @@
 import { mutate } from "swr";
 
-const editPenalty = async (data) => {
-   console.log("edit penalty", data);
-   const response = await fetch(`/api/penalties/${data.penaltyId}`, {
-      method: "PUT",
+const addGoal = async (data) => {
+   const response = await fetch("/api/goals", {
+      method: "POST",
       mode: "cors",
       cache: "no-cache",
       headers: {
@@ -17,4 +16,4 @@ const editPenalty = async (data) => {
    return response.json();
 };
 
-export default editPenalty;
+export default addGoal;

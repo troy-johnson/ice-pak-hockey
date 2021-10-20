@@ -1,7 +1,7 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
-const penaltyHandler = async (req, res) => {
+const goalHandler = async (req, res) => {
    const { id } = req.query;
 
    switch (req.method) {
@@ -9,7 +9,7 @@ const penaltyHandler = async (req, res) => {
          console.log("id", id);
 
          try {
-            const result = await getDoc(doc(db, "penalties", id));
+            const result = await getDoc(doc(db, "goals", id));
 
             const penalty = { ...result.data() };
 
@@ -17,14 +17,14 @@ const penaltyHandler = async (req, res) => {
                return res.status(200).json(penalty);
             }
 
-            return res.status(200).send("Penalty not found!");
+            return res.status(200).send("Goals not found!");
          } catch (error) {
             console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":
          try {
-            await setDoc(doc(db, "penalties", id), {
+            await setDoc(doc(db, "goals", id), {
                ...req.body,
             });
 
@@ -35,7 +35,7 @@ const penaltyHandler = async (req, res) => {
          }
       case "DELETE":
          try {
-            await deleteDoc(doc(db, "penalties", id), {
+            await deleteDoc(doc(db, "goals", id), {
                ...req.body,
             });
 
@@ -49,4 +49,4 @@ const penaltyHandler = async (req, res) => {
    }
 };
 
-export default penaltyHandler;
+export default goalHandler;
