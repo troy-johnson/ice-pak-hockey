@@ -15,10 +15,10 @@ import styled from "@emotion/styled";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
 import { ControlledSelect } from "..";
 import { IoMdTrash } from "react-icons/io";
-import { editRoster, useGetPlayers } from "../../utils";
+import { editGameRoster, useGetPlayers } from "../../utils";
 
 const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
-   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("md"));
    const { players, playersLoading, playersError } = useGetPlayers();
 
    const { control, handleSubmit, reset, watch } = useForm({
@@ -50,20 +50,18 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
+      // console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
       try {
-         editRoster({
-            gameId: data.gameId,
-            roster: data.roster,
-         });
+         editGameRoster({ gameId, roster: data.roster.map((el) => el.playerId) });
          handleClose();
-         mutate(`/api/games/${goal?.gameId}`);
+         mutate(`/api/games/${gameId}`);
          setSnackbar({
             open: true,
             type: "success",
-            message: `Goal successfully ${goalAction === "add" ? "added" : "updated"}!`,
+            message: "Roster successfully updated!",
          });
       } catch (error) {
-         console.log("error", error);
+         console.log("Roster update error: ", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -79,28 +77,30 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
       };
    });
 
-   console.log("roster", roster)
+   console.log("roster", roster);
 
    return (
-      <Dialog onClose={handleClose} open={open}>
+      <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>
          <DialogTitle>Edit Roster</DialogTitle>
          <DialogContent>
             <Stack direction="column">
                <Stack
                   spacing={2}
                   sx={{
-                     marginRight: "15px",
-                     marginTop: "10px",
                      maxHeight: "300px",
+                     display: "flex",
+                     flexDirection: "column",
+                     flexWrap: desktop ? "wrap" : "nowrap",
                   }}
                >
                   {controlledFields.map((field, index) => {
                      return (
-                        <Stack direction="row" key={field.id}>
+                        <Stack direction="row" key={field.id} sx={{ mt: 2 }}>
                            <ControlledSelect
                               control={control}
                               name={`roster.${index}.playerId`}
                               variant="outlined"
+                              label={`Player No. ${index + 1}`}
                               options={rosterOptions}
                               {...{ control, index, field }}
                            />
@@ -114,6 +114,12 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
             </Stack>
          </DialogContent>
          <DialogActions>
+            <Button
+               disabled={fields.length >= 15}
+               onClick={() => append({ playerId: "", playerName: "" }, { focusIndex: 1 })}
+            >
+               Add Player
+            </Button>
             <Button type="submit" onClick={handleSubmit(onSubmit)}>
                Submit
             </Button>

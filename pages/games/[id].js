@@ -24,7 +24,7 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { FaHockeyPuck } from "react-icons/fa";
+import { FaClipboardList, FaHockeyPuck } from "react-icons/fa";
 import EditIcon from "@mui/icons-material/Edit";
 import { EditRoster, UpsertGoal, MutatePenalty, GamePenalties, Loading } from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
@@ -583,7 +583,7 @@ const Game = () => {
                <Button
                   variant="outlined"
                   onClick={() => setEditRosterDialog(true)}
-                  endIcon={<FaHockeyPuck />}
+                  endIcon={<FaClipboardList />}
                >
                   Edit Roster
                </Button>
@@ -661,6 +661,7 @@ const Game = () => {
                   onClose={() => setEditRosterDialog(false)}
                   close={() => setEditRosterDialog(false)}
                   open={editRosterDialog}
+                  setSnackbar={setSnackbar}
                />
             ) : null}
          </GameContainer>

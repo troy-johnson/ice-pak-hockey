@@ -73,7 +73,7 @@ const UpsertGoal = ({
          if (goalAction === "add") {
             addGoal({
                gameId: data.gameId,
-               assists: data.assists,
+               assists: data.assists.map(assist => assist.playerId),
                opponentId: data.team === opponentName ? opponentId : null,
                period: Number(data.period),
                playerId: data.team === "Ice Pak" ? data.playerId : null,
@@ -90,7 +90,7 @@ const UpsertGoal = ({
                playerId: data.team === opponentName ? null : data.playerId,
             });
          }
-         handleClose();
+         close();
          mutate(`/api/games/${goal?.gameId}`);
          setSnackbar({
             open: true,
@@ -154,7 +154,7 @@ const UpsertGoal = ({
                                     name={`assists.${index}.playerId`}
                                     label="Assisted By"
                                     variant="outlined"
-                                    options={playerOptions.filter(player => !roster.includes(player.playerId))}
+                                    options={playerOptions?.filter(player => player.playerId !== scoredById)}
                                     {...{ control, index, field }}
                                  />
                                  <IconButton onClick={() => remove(index)}>

@@ -7,6 +7,7 @@ import {
    getDocs,
    query,
    setDoc,
+   updateDoc,
    where,
 } from "firebase/firestore";
 import { db } from "../../../config";
@@ -47,9 +48,14 @@ const gameHandler = async (req, res) => {
                const batchResultOne = await getDocs(
                   query(collection(db, "players"), where(documentId(), "in", playerBatches[0]))
                );
-               const batchResultTwo = await getDocs(
-                  query(collection(db, "players"), where(documentId(), "in", playerBatches[1]))
-               );
+
+               let batchResultTwo;
+
+               if (playerBatches[1].length >= 1) {
+                  batchResultTwo = await getDocs(
+                     query(collection(db, "players"), where(documentId(), "in", playerBatches[1]))
+                  );
+               }
 
                batchResultOne?.forEach((player) => {
                   roster.push({
@@ -59,6 +65,7 @@ const gameHandler = async (req, res) => {
                         player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
                      }${player?.data()?.lastName}`,
                      playerJerseyNumber: player?.data()?.jerseyNumber,
+                     position: player?.data()?.position
                   });
                });
 
@@ -70,6 +77,7 @@ const gameHandler = async (req, res) => {
                         player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
                      }${player?.data()?.lastName}`,
                      playerJerseyNumber: player?.data()?.jerseyNumber,
+                     position: player?.data()?.position
                   });
                });
 
@@ -144,7 +152,7 @@ const gameHandler = async (req, res) => {
          }
       case "PUT":
          try {
-            await setDoc(doc(db, "games", id), {
+            await updateDoc(doc(db, "games", id), {
                ...req.body,
             });
 
