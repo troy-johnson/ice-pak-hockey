@@ -152,14 +152,14 @@ const Team = () => {
 
    return (
       <PageContainer pageTitle="TEAM">
-         <Button
+         {/* <Button
             variant="outlined"
             onClick={handleClickOpen}
             sx={{ marginLeft: "15px", marginBottom: "15px" }}
             endIcon={<IoPersonAddSharp />}
          >
             Add Player
-         </Button>
+         </Button> */}
          <TableContainer>
             <Table aria-label="Team">
                <TableHead>
