@@ -48,13 +48,13 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
       <Section>
          <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="h5">Penalties</Typography>
-            <Button
+            {/* <Button
                variant="outlined"
                onClick={() => handleClickOpen("add")}
                endIcon={<MdAccessTimeFilled />}
             >
                Add Penalty
-            </Button>
+            </Button> */}
          </Stack>
          {penaltiesByPeriod?.map((period) => {
             return (
@@ -112,7 +112,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        </div>
                                     </TableCell>
                                     {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                    <TableCell align="right">
+                                    {/* <TableCell align="right">
                                        <EditButton
                                           size="small"
                                           aria-label="Edit Penalty"
@@ -121,7 +121,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        >
                                           <EditIcon />
                                        </EditButton>
-                                    </TableCell>
+                                    </TableCell> */}
                                  </TableRow>
                               );
                            })}

@@ -11,6 +11,7 @@ import {
    DialogTitle,
    Dialog,
    IconButton,
+   Stack,
    Table,
    TableBody,
    TableCell,
@@ -21,13 +22,9 @@ import {
    useMediaQuery,
    Paper,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { Loading, ControlledInput, ControlledSelect } from "../components";
+import { IoPersonAddSharp } from "react-icons/io5";
+import { Loading, ControlledInput, ControlledSelect, PageContainer } from "../components";
 import { addPlayer, useGetPlayers } from "../utils";
-
-const TeamContainer = styled.section`
-   margin: 15px;
-`;
 
 const PlayerTableCell = styled(TableCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
@@ -154,14 +151,16 @@ const Team = () => {
    }
 
    return (
-      <TeamContainer>
-         <TeamInfo>
-            <Typography variant="h3">Team</Typography>
-            <AddButton aria-label="Add Player" color="primary" onClick={handleClickOpen}>
-               <AddIcon />
-            </AddButton>
-         </TeamInfo>
-         <TableContainer component={Paper}>
+      <PageContainer pageTitle="TEAM">
+         <Button
+            variant="outlined"
+            onClick={handleClickOpen}
+            sx={{ marginLeft: "15px", marginBottom: "15px" }}
+            endIcon={<IoPersonAddSharp />}
+         >
+            Add Player
+         </Button>
+         <TableContainer>
             <Table aria-label="Team">
                <TableHead>
                   <PlayerTableHeader>
@@ -227,7 +226,12 @@ const Team = () => {
                   variant="outlined"
                   required
                />
-               <ControlledInput control={control} label="Nickname" name="nickname" variant="outlined" />
+               <ControlledInput
+                  control={control}
+                  label="Nickname"
+                  name="nickname"
+                  variant="outlined"
+               />
                <ControlledInput
                   control={control}
                   label="Last Name"
@@ -249,7 +253,12 @@ const Team = () => {
                   variant="outlined"
                   required
                />
-               <ControlledInput control={control} label="Home Town" name="homeTown" variant="outlined" />
+               <ControlledInput
+                  control={control}
+                  label="Home Town"
+                  name="homeTown"
+                  variant="outlined"
+               />
                <ControlledSelect
                   control={control}
                   name="position"
@@ -280,7 +289,7 @@ const Team = () => {
                <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
          </Dialog>
-      </TeamContainer>
+      </PageContainer>
    );
 };
 

@@ -26,7 +26,14 @@ import {
 } from "@mui/material";
 import { FaClipboardList, FaHockeyPuck } from "react-icons/fa";
 import EditIcon from "@mui/icons-material/Edit";
-import { EditRoster, UpsertGoal, MutatePenalty, GamePenalties, Loading } from "../../components";
+import {
+   EditRoster,
+   UpsertGoal,
+   MutatePenalty,
+   GamePenalties,
+   Loading,
+   PageContainer,
+} from "../../components";
 import { upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -137,6 +144,13 @@ const TabPanel = styled(StyledTabPanel)`
    align-items: center;
    width: 100%;
    border: none;
+`;
+
+const PlayerName = styled.div`
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   margin-left: 10px;
 `;
 
 const TabContainer = styled(Box)`
@@ -399,15 +413,15 @@ const Game = () => {
    const Goals = () => {
       return (
          <Section>
-            <Stack direction="row" sx={{display: "flex", justifyContent: "space-between"}}>
+            <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
                <Typography variant="h5">Scoring Summary</Typography>
-               <Button
+               {/* <Button
                   variant="outlined"
                   onClick={() => openUpsertGoal("add")}
                   endIcon={<FaHockeyPuck />}
                >
                   Add Goal
-               </Button>
+               </Button> */}
             </Stack>
             {goalsByPeriod?.map((period) => {
                return (
@@ -468,14 +482,14 @@ const Game = () => {
                                     {goal?.time} / {period.period}
                                  </GoalTime>
                               </div>
-                              <EditButton
+                              {/* <EditButton
                                  size="small"
                                  aria-label="Edit Penalty"
                                  onClick={() => openUpsertGoal("edit", goal)}
                                  sx={{ textAlign: "right" }}
                               >
                                  <EditIcon />
-                              </EditButton>
+                              </EditButton> */}
                            </GoalContainer>
                         );
                      })}
@@ -492,8 +506,7 @@ const Game = () => {
             <Table aria-label="Team Stats Table">
                <TableHead>
                   <BoxScoreHeader>
-                     <BoxScoreCell align="center">#</BoxScoreCell>
-                     <BoxScoreCell align="center">{desktop ? "Player Name" : "Name"}</BoxScoreCell>
+                     <BoxScoreCell>Name</BoxScoreCell>
                      <BoxScoreCell align="center">G</BoxScoreCell>
                      <BoxScoreCell align="center">A</BoxScoreCell>
                      <BoxScoreCell align="center">P</BoxScoreCell>
@@ -514,20 +527,32 @@ const Game = () => {
                               },
                            }}
                         >
-                           <BoxScoreCell align="center">{row.jerseyNumber}</BoxScoreCell>
                            <BoxScoreCell
-                              align="center"
+                              component="th"
+                              scope="row"
                               sx={{
                                  width: "85px !important",
                                  padding: "16px 0px !important",
                                  cursor: "pointer",
                               }}
                            >
-                              {desktop
-                                 ? row?.playerName
-                                 : `${row.playerName.charAt(0)}. ${
-                                      row.playerName.split(" ")[2] || row.playerName.split(" ")[1]
-                                   }`}
+                              <PlayerName>
+                                 <Typography
+                                    variant="caption"
+                                    sx={{ marginRight: "5px", color: "grey.main" }}
+                                 >
+                                    {row.jerseyNumber}
+                                 </Typography>
+
+                                 <Typography variant="caption">
+                                    {desktop
+                                       ? row?.playerName
+                                       : `${row.playerName.charAt(0)}. ${
+                                            row.playerName.split(" ")[2] ||
+                                            row.playerName.split(" ")[1]
+                                         }`}
+                                 </Typography>
+                              </PlayerName>
                            </BoxScoreCell>
                            <BoxScoreCell align="center">{row.goals}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.assists}</BoxScoreCell>
@@ -543,142 +568,129 @@ const Game = () => {
    };
 
    return (
-      <>
-         {desktop ? (
-            <>
-               <Typography sx={{ textAlign: "center" }} variant={desktop ? "h4" : "h5"}>
-                  Ice Pak vs. {game?.opponentName}
-               </Typography>
-               <Typography sx={{ textAlign: "center" }} variant={desktop ? "h5" : "h6"}>
-                  {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY")}
-               </Typography>
-            </>
-         ) : null}
-         <GameContainer desktop={desktop}>
-            {!desktop ? (
-               <>
-                  <Typography variant={desktop ? "h4" : "h5"}>
-                     Ice Pak vs. {game?.opponentName}
-                  </Typography>
-                  <Typography variant={desktop ? "h5" : "h6"}>
-                     {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY")}
-                  </Typography>
-               </>
-            ) : null}
+      <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`}>
+         <Typography sx={{ textAlign: "center" }} variant={desktop ? "h5" : "h6"}>
+            {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY")}
+         </Typography>
+         <>
+            <GameContainer desktop={desktop}>
+               {desktop ? (
+                  <>
+                     <SectionContainer>
+                        <Typography variant="h5">Box Score</Typography>
+                        <BoxScore />
+                        <Goals />
+                        <GamePenalties
+                           penaltiesByPeriod={penaltiesByPeriod}
+                           handleClickOpen={openMutatePenalty}
+                        />
+                     </SectionContainer>
+                     <SectionContainer>
+                        <Stack
+                           direction="row"
+                           sx={{ display: "flex", justifyContent: "space-between" }}
+                        >
+                           <Typography variant="h5">Team Stats</Typography>
+                           {/* <Button
+                              variant="outlined"
+                              onClick={() => setEditRosterDialog(true)}
+                              endIcon={<FaClipboardList />}
+                           >
+                              Edit Roster
+                           </Button> */}
+                        </Stack>
+                        <TeamStats desktop={desktop} teamStats={teamStats} />
+                     </SectionContainer>
+                  </>
+               ) : (
+                  <TabContainer>
+                     <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
+                        <Tabs value={value} onChange={handleChange} aria-label="game-tabs">
+                           <Tab label="Box Score" />
+                           <Tab label="Team Stats" />
+                        </Tabs>
+                     </TabBox>
+                     <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
+                        <BoxScore />
+                        <Goals />
+                        <GamePenalties
+                           penaltiesByPeriod={penaltiesByPeriod}
+                           handleClickOpen={openMutatePenalty}
+                        />
+                     </TabPanel>
+                     <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
+                        <TeamStats desktop={desktop} teamStats={teamStats} />
+                     </TabPanel>
+                  </TabContainer>
+               )}
 
-            {desktop ? (
-               <>
-                  <SectionContainer>
-                     <Typography variant="h5">Box Score</Typography>
-                     <BoxScore />
-                     <Goals />
-                     <GamePenalties
-                        penaltiesByPeriod={penaltiesByPeriod}
-                        handleClickOpen={openMutatePenalty}
-                     />
-                  </SectionContainer>
-                  <SectionContainer>
-                  <Stack direction="row" sx={{display: "flex", justifyContent: "space-between"}}>
-               <Typography variant="h5">Team Stats</Typography>
-               <Button
-                  variant="outlined"
-                  onClick={() => setEditRosterDialog(true)}
-                  endIcon={<FaClipboardList />}
-               >
-                  Edit Roster
-               </Button>
-            </Stack>
-                     <TeamStats desktop={desktop} teamStats={teamStats} />
-                  </SectionContainer>
-               </>
-            ) : (
-               <TabContainer>
-                  <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
-                     <Tabs value={value} onChange={handleChange} aria-label="game-tabs">
-                        <Tab label="Box Score" />
-                        <Tab label="Team Stats" />
-                     </Tabs>
-                  </TabBox>
-                  <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
-                     <BoxScore />
-                     <Goals />
-                     <GamePenalties
-                        penaltiesByPeriod={penaltiesByPeriod}
-                        handleClickOpen={openMutatePenalty}
-                     />
-                  </TabPanel>
-                  <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
-                     <TeamStats desktop={desktop} teamStats={teamStats} />
-                  </TabPanel>
-               </TabContainer>
-            )}
-
-            {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
-            {mutatePenaltyDialog ? (
-               <MutatePenalty
-                  penaltyAction={penaltyAction}
-                  gameId={game?.gameId}
-                  gameRoster={game?.roster}
-                  penalty={penalty}
-                  onClose={() => {
-                     setPenalty(null);
-                     setMutatePenaltyDialog(false);
-                  }}
-                  close={() => {
-                     setPenalty(null);
-                     setMutatePenaltyDialog(false);
-                  }}
-                  setSnackbar={setSnackbar}
-                  opponentId={game?.opponentId}
-                  opponentName={game?.opponentName}
-                  open={mutatePenaltyDialog}
-               />
-            ) : null}
-            {upsertGoalDialog ? (
-               <UpsertGoal
-                  goalAction={goalAction}
-                  gameId={game?.gameId}
-                  gameRoster={game?.roster}
-                  goal={goal}
-                  onClose={() => {
-                     setGoal(null);
-                     setUpsertGoalDialog(false);
-                  }}
-                  close={() => {
-                     setGoal(null);
-                     setUpsertGoalDialog(false);
-                  }}
-                  setSnackbar={setSnackbar}
-                  opponentId={game?.opponentId}
-                  opponentName={game?.opponentName}
-                  open={upsertGoalDialog}
-               />
-            ) : null}
-            {editRosterDialog ? (
-               <EditRoster
-                  gameId={game?.gameId}
-                  gameRoster={game?.roster}
-                  onClose={() => setEditRosterDialog(false)}
-                  close={() => setEditRosterDialog(false)}
-                  open={editRosterDialog}
-                  setSnackbar={setSnackbar}
-               />
-            ) : null}
-         </GameContainer>
-         <Snackbar
-            open={snackbar.open}
-            autoHideDuration={6000}
-            onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
-         >
-            <Alert
+               {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
+               {mutatePenaltyDialog ? (
+                  <MutatePenalty
+                     penaltyAction={penaltyAction}
+                     gameId={game?.gameId}
+                     gameRoster={game?.roster}
+                     penalty={penalty}
+                     onClose={() => {
+                        setPenalty(null);
+                        setMutatePenaltyDialog(false);
+                     }}
+                     close={() => {
+                        setPenalty(null);
+                        setMutatePenaltyDialog(false);
+                     }}
+                     setSnackbar={setSnackbar}
+                     opponentId={game?.opponentId}
+                     opponentName={game?.opponentName}
+                     open={mutatePenaltyDialog}
+                  />
+               ) : null}
+               {upsertGoalDialog ? (
+                  <UpsertGoal
+                     goalAction={goalAction}
+                     gameId={game?.gameId}
+                     gameRoster={game?.roster}
+                     goal={goal}
+                     onClose={() => {
+                        setGoal(null);
+                        setUpsertGoalDialog(false);
+                     }}
+                     close={() => {
+                        setGoal(null);
+                        setUpsertGoalDialog(false);
+                     }}
+                     setSnackbar={setSnackbar}
+                     opponentId={game?.opponentId}
+                     opponentName={game?.opponentName}
+                     open={upsertGoalDialog}
+                  />
+               ) : null}
+               {editRosterDialog ? (
+                  <EditRoster
+                     gameId={game?.gameId}
+                     gameRoster={game?.roster}
+                     onClose={() => setEditRosterDialog(false)}
+                     close={() => setEditRosterDialog(false)}
+                     open={editRosterDialog}
+                     setSnackbar={setSnackbar}
+                  />
+               ) : null}
+            </GameContainer>
+            <Snackbar
+               open={snackbar.open}
+               autoHideDuration={6000}
                onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
-               severity={snackbar.type}
-               sx={{ width: "100%" }}
             >
-               {snackbar.message}
-            </Alert>
-         </Snackbar>
-      </>
+               <Alert
+                  onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+                  severity={snackbar.type}
+                  sx={{ width: "100%" }}
+               >
+                  {snackbar.message}
+               </Alert>
+            </Snackbar>
+         </>
+      </PageContainer>
    );
 };
 
