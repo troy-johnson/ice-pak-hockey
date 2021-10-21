@@ -1,12 +1,11 @@
 import { collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../../config";
 
-const penaltiesHandler = async (req, res) => {
+const goalsHandler = async (req, res) => {
    switch (req.method) {
       case "POST":
-         console.log("got to post penalty")
          try {
-            await addDoc(collection(db, "penalties"), {
+            await addDoc(collection(db, "goals"), {
                ...req.body,
             });
 
@@ -16,16 +15,16 @@ const penaltiesHandler = async (req, res) => {
             return res.status(400).send(error);
          }
       case "GET":
-         const result = await getDocs(collection(db, "penalties"));
+         const result = await getDocs(collection(db, "goals"));
 
-         let penalties = [];
+         let goals = [];
 
          result.forEach((doc) => {
-            penalties.push({ id: doc.id, ...doc.data() });
+            goals.push({ id: doc.id, ...doc.data() });
          });
 
-         return res.status(200).json(penalties);
+         return res.status(200).json(goals);
    }
 };
 
-export default penaltiesHandler;
+export default goalsHandler;

@@ -11,3 +11,4 @@ export { default as useGetPlayers } from "./useGetPlayers";
 export { default as useGetPosts } from "./useGetPosts";
 export { default as useGetSeasons } from "./useGetSeasons";
 export { default as useGetSeasonSchedule } from "./useGetSeasonSchedule";
+export { default as useGetSeasonStats } from "./useGetSeasonStats";

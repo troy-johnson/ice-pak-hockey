@@ -11,7 +11,7 @@ import {
 import styled from "@emotion/styled";
 import { useForm } from "react-hook-form";
 import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
-import { editPenalty } from "../../utils";
+import { addPenalty, editPenalty } from "../../utils";
 
 const InputWithMargin = styled(ControlledInput)`
    margin-bottom: 10px;
@@ -37,9 +37,9 @@ const MutatePenalty = ({
          penaltyId: penaltyAction === "add" ? null : penalty?.penaltyId,
          penaltyType: penaltyAction === "add" ? "Tripping" : penalty?.penaltyType,
          period: penaltyAction === "add" ? 1 : penalty?.period,
-         playerId: penaltyAction === "add" ? gameRoster[0].playerId : penalty?.playerId,
+         playerId: penaltyAction === "add" ? null : penalty?.playerId,
          time: penaltyAction === "add" ? "10:00" : penalty?.time,
-         team: penalty?.playerId ? "Ice Pak" : opponentName,
+         team: penaltyAction === "add" ? opponentName : penalty?.team
       },
    });
 
@@ -55,14 +55,28 @@ const MutatePenalty = ({
 
    const onSubmit = (data) => {
       try {
-         editPenalty({
-            ...data,
-            opponentId: team === opponentName ? opponentId : null,
-            playerId: team === opponentName ? null : playerId,
-         });
-         mutate(`/api/games/${penalty?.gameId}`);
-         handleClose();
+         if (penaltyAction === "add") {
+            addPenalty({
+               gameId: data.gameId,
+               minutes: data.minutes,
+               opponentId: data.team === opponentName ? opponentId : null,
+               penaltyType: data.penaltyType,
+               period: Number(data.period),
+               playerId: data.team === "Ice Pak" ? data.playerId : null,
+               team: data.team,
+               time: data.time
+            });
+         } else if (penaltyAction === "edit") {
+            editPenalty({
+               ...data,
+               period: Number(data.period),
+               opponentId: team === opponentName ? opponentId : null,
+               playerId: team === opponentName ? null : playerId,
+            });
+         }
+         close();
          setSnackbar({ open: true, type: "success", message: "Penalty successfully updated!" });
+         mutate(`/api/games/${penalty?.gameId}`);
       } catch (error) {
          console.log("error", error);
          setSnackbar({
@@ -117,6 +131,7 @@ const MutatePenalty = ({
                      control={control}
                      label="Period"
                      name="period"
+                     type="number"
                      variant="outlined"
                   />
                   <InputWithMargin control={control} label="Time" name="time" variant="outlined" />

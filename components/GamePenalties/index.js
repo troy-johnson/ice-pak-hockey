@@ -1,8 +1,10 @@
 import Image from "next/image";
 import {
    Box,
+   Button,
    Divider,
    IconButton,
+   Stack,
    Table,
    TableBody,
    TableContainer,
@@ -12,6 +14,7 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { MdAccessTimeFilled } from "react-icons/md";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 
@@ -43,7 +46,16 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
 
    return (
       <Section>
-         <Typography variant="h5">Penalties</Typography>
+         <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Typography variant="h5">Penalties</Typography>
+            {/* <Button
+               variant="outlined"
+               onClick={() => handleClickOpen("add")}
+               endIcon={<MdAccessTimeFilled />}
+            >
+               Add Penalty
+            </Button> */}
+         </Stack>
          {penaltiesByPeriod?.map((period) => {
             return (
                <div key={`${period.period}-penalties`}>
@@ -100,7 +112,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        </div>
                                     </TableCell>
                                     {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                    <TableCell align="right">
+                                    {/* <TableCell align="right">
                                        <EditButton
                                           size="small"
                                           aria-label="Edit Penalty"
@@ -109,7 +121,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        >
                                           <EditIcon />
                                        </EditButton>
-                                    </TableCell>
+                                    </TableCell> */}
                                  </TableRow>
                               );
                            })}

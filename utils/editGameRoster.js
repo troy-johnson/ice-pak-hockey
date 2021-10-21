@@ -1,15 +1,15 @@
 import { mutate } from "swr";
 
-const editPenalty = async (data) => {
+const editGameRoster = async (data) => {
    console.log("edit penalty", data);
-   const response = await fetch(`/api/penalties/${data.penaltyId}`, {
+   const response = await fetch(`/api/games/${data.gameId}`, {
       method: "PUT",
       mode: "cors",
       cache: "no-cache",
       headers: {
          "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({roster: data.roster}),
    });
 
    mutate(`/api/games/${data.gameId}`);
@@ -17,4 +17,4 @@ const editPenalty = async (data) => {
    return response.json();
 };
 
-export default editPenalty;
+export default editGameRoster;
