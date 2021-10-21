@@ -15,3 +15,4 @@ export { default as Login } from "./Login";
 export { default as Posts } from "./Posts";
 export { default as TextInput } from "./ControlledInput";
 export { default as UpcomingGames } from "./UpcomingGames";
+export { default as PageContainer } from "./PageContainer";

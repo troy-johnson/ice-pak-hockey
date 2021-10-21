@@ -8,7 +8,6 @@ import {
    NativeSelect,
    MenuItem,
    InputLabel,
-   IconButton,
    Stack,
    Table,
    TableBody,
@@ -18,13 +17,43 @@ import {
    TableRow,
    Typography,
    useMediaQuery,
-   Paper,
 } from "@mui/material";
-import { Loading } from "../components";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import { Loading, PageContainer } from "../components";
 import { useGetSeasons, useGetSeasonStats } from "../utils";
 
-const PlayerTableCell = styled(TableCell)`
+const SortArrow = styled(ArrowDropUpIcon)`
+   transform: ${(props) => (props.order === "asc" ? "rotate(0deg)" : "rotate(180deg)")};
+`;
+
+const StyledStatHeaderCell = ({ className, children, onClick, orderBy, order, type }) => {
+   return (
+      <TableCell className={className} onClick={onClick} align="center">
+         <Stack direction="row">
+            {type === orderBy ? <SortArrow order={order} /> : null}
+            {children}
+         </Stack>
+      </TableCell>
+   );
+};
+
+const StatHeaderCell = styled(StyledStatHeaderCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
+   cursor: pointer;
+   th:first-of-type {
+      padding-left: 5px;
+      width: 250px;
+   }
+`;
+
+const StatBodyCell = styled(TableCell)`
+   width: ${(props) => (props.desktop ? "100%" : "25px")};
+   padding-left: 10px;
+   padding-right: 0px;
+
+   th:first-of-type {
+      width: 250px;
+   }
 `;
 
 const PlayerTableHeader = styled(TableRow)`
@@ -59,23 +88,13 @@ const PlayerAvatar = styled(Avatar)`
    margin-right: 10px;
 `;
 
-const AddButton = styled(IconButton)`
-   background-color: ${(props) => props.theme.palette.black};
-   color: ${(props) => props.theme.palette.white};
-   height: 48px;
-   width: 48px;
-
-   :hover {
-      background-color: ${(props) => props.theme.palette.white};
-      color: ${(props) => props.theme.palette.black};
-   }
-`;
-
 const Stats = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const [seasonId, setSeasonId] = useState(
-      !seasonsLoading && !seasonsError ? seasons[0].id : null
+      !seasonsLoading && !seasonsError ? seasons[0].id : "LSdvGKI4dFWUBwgeEC5z"
    );
+   const [order, setOrder] = useState("desc");
+   const [orderBy, setOrderBy] = useState("points");
    const { seasonStats, seasonStatsLoading, seasonStatsError } = useGetSeasonStats(
       seasonId ?? seasons?.[0]?.id
    );
@@ -94,116 +113,138 @@ const Stats = () => {
       return { label: `${season.leagueName} ${season.name}`, value: season.id };
    });
 
-   const handleSeasonChange = () => {};
+   const handleSeasonChange = () => {
+      setSeasonId(e.target.value);
+   };
+
+   const handleClick = (type) => {
+      setOrderBy(type);
+      setOrder(order === "asc" ? "desc" : "asc");
+   };
 
    return (
-      <Stack
-         justifyContent="center"
-         alignItems="center"
-         sx={{
-            marginBottom: desktop ? 0 : "5px",
-            marginTop: "15px",
-         }}
-      >
-         <Paper elevation={3} sx={{ width: desktop ? "75%" : "100%" }}>
-            <Typography variant={desktop ? "h3" : "h4"} mt={3} mb={3} sx={{ textAlign: "center" }}>
-               SEASON STATS
-            </Typography>
-            <FormControl sx={{ marginLeft: "15px", marginBottom: "15px" }}>
-               <InputLabel id="demo-simple-select-label">Season</InputLabel>
-               {desktop ? (
-                  <Select
-                     labelId="demo-simple-select-label"
-                     id="demo-simple-select"
-                     value={seasonId}
-                     label="Season"
-                     onChange={handleSeasonChange}
-                  >
-                     {seasonOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                           {option.label}
-                        </MenuItem>
+      <PageContainer pageTitle="SEASON STATS">
+         <FormControl sx={{ marginLeft: "15px", marginBottom: "15px" }}>
+            <InputLabel id="demo-simple-select-label">Season</InputLabel>
+            {desktop ? (
+               <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={seasonId}
+                  label="Season"
+                  onChange={handleSeasonChange}
+               >
+                  {seasonOptions.map((option) => (
+                     <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                     </MenuItem>
+                  ))}
+               </Select>
+            ) : (
+               <NativeSelect
+                  id="demo-simple-select"
+                  value={seasonId}
+                  label="Season"
+                  onChange={handleSeasonChange}
+               >
+                  {seasonOptions.map((option) => (
+                     <option key={option.value} value={option.value}>
+                        {option.label}
+                     </option>
+                  ))}
+               </NativeSelect>
+            )}
+         </FormControl>
+         <TableContainer>
+            <Table aria-label="Team">
+               <TableHead>
+                  <PlayerTableHeader>
+                     <StatHeaderCell order={order} orderBy={orderBy} type="lastName">
+                        Player
+                     </StatHeaderCell>
+                     <StatHeaderCell
+                        order={order}
+                        orderBy={orderBy}
+                        type="gamesPlayed"
+                        onClick={() => handleClick("gamesPlayed")}
+                     >
+                        GP
+                     </StatHeaderCell>
+                     <StatHeaderCell
+                        order={order}
+                        orderBy={orderBy}
+                        type="goals"
+                        onClick={() => handleClick("goals")}
+                     >
+                        {desktop ? "Goals" : "G"}
+                     </StatHeaderCell>
+                     <StatHeaderCell
+                        order={order}
+                        orderBy={orderBy}
+                        type="assists"
+                        onClick={() => handleClick("assists")}
+                     >
+                        {desktop ? "Assists" : "A"}
+                     </StatHeaderCell>
+                     <StatHeaderCell
+                        order={order}
+                        orderBy={orderBy}
+                        type="points"
+                        onClick={() => handleClick("points")}
+                     >
+                        {desktop ? "Points" : "P"}
+                     </StatHeaderCell>
+                     <StatHeaderCell
+                        order={order}
+                        orderBy={orderBy}
+                        type="penaltyMinutes"
+                        onClick={() => handleClick("penaltyMinutes")}
+                     >
+                        PIM
+                     </StatHeaderCell>
+                  </PlayerTableHeader>
+               </TableHead>
+               <PlayerTableBody>
+                  {seasonStats?.stats
+                     ?.sort((a, b) =>
+                        order === "asc" ? a?.[orderBy] - b?.[orderBy] : b?.[orderBy] - a?.[orderBy]
+                     )
+                     ?.map((player) => (
+                        <Link
+                           href={`/player/${player.playerId}`}
+                           key={player?.id || `${player?.firstName}${player?.lastName}`}
+                           passHref
+                        >
+                           <TableRow>
+                              <StatBodyCell component="th" scope="row">
+                                 <PlayerName>
+                                    <Typography variant="caption">{` ${
+                                       desktop
+                                          ? `${player?.firstName} ${
+                                               player?.nickname ? `"${player?.nickname}"` : ""
+                                            } ${player?.lastName}`
+                                          : `${player?.firstName.split("")[0]}. ${player?.lastName}`
+                                    }`}</Typography>
+                                    <Typography
+                                       variant="caption"
+                                       sx={{ marginLeft: "5px", color: "grey.main" }}
+                                    >
+                                       {player?.position}
+                                    </Typography>
+                                 </PlayerName>
+                              </StatBodyCell>
+                              <StatBodyCell align="center">{player?.gamesPlayed}</StatBodyCell>
+                              <StatBodyCell align="center">{player?.goals}</StatBodyCell>
+                              <StatBodyCell align="center">{player?.assists}</StatBodyCell>
+                              <StatBodyCell align="center">{player?.points}</StatBodyCell>
+                              <StatBodyCell align="center">{player?.penaltyMinutes}</StatBodyCell>
+                           </TableRow>
+                        </Link>
                      ))}
-                  </Select>
-               ) : (
-                  <NativeSelect
-                     id="demo-simple-select"
-                     value={seasonId}
-                     label="Season"
-                     onChange={handleSeasonChange}
-                  >
-                     {seasonOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                           {option.label}
-                        </option>
-                     ))}
-                  </NativeSelect>
-               )}
-            </FormControl>
-            <TableContainer>
-               <Table aria-label="Team">
-                  <TableHead>
-                     <PlayerTableHeader>
-                        <PlayerTableCell>Player</PlayerTableCell>
-                        <PlayerTableCell align="center">
-                           {desktop ? "Games Played" : "GP"}
-                        </PlayerTableCell>
-                        <PlayerTableCell align="center">{desktop ? "Goals" : "G"}</PlayerTableCell>
-                        <PlayerTableCell align="center">
-                           {desktop ? "Assists" : "A"}
-                        </PlayerTableCell>
-                        <PlayerTableCell align="center">{desktop ? "Points" : "P"}</PlayerTableCell>
-                        <PlayerTableCell align="center">
-                           {desktop ? "Penalty Minutes" : "PIM"}
-                        </PlayerTableCell>
-                     </PlayerTableHeader>
-                  </TableHead>
-                  <PlayerTableBody>
-                     {seasonStats?.stats
-                        ?.sort((a, b) => b?.points - a?.points)
-                        ?.map((player) => (
-                           <Link
-                              href={`/player/${player.playerId}`}
-                              key={player?.id || `${player?.firstName}${player?.lastName}`}
-                              passHref
-                           >
-                              <TableRow>
-                                 <PlayerTableCell component="th" scope="row">
-                                    <PlayerName>
-                                       <Typography variant="caption">{` ${
-                                          desktop
-                                             ? `${player?.firstName} ${
-                                                  player?.nickname ? `"${player?.nickname}"` : ""
-                                               } ${player?.lastName}`
-                                             : `${player?.firstName.split("")[0]}. ${
-                                                  player?.lastName
-                                               }`
-                                       }`}</Typography>
-                                       <Typography
-                                          variant="caption"
-                                          sx={{ marginLeft: "5px", color: "grey.main" }}
-                                       >
-                                          {player?.position}
-                                       </Typography>
-                                    </PlayerName>
-                                 </PlayerTableCell>
-                                 <PlayerTableCell align="center">
-                                    {player?.gamesPlayed}
-                                 </PlayerTableCell>
-                                 <PlayerTableCell align="center">{player?.goals}</PlayerTableCell>
-                                 <PlayerTableCell align="center">{player?.assists}</PlayerTableCell>
-                                 <PlayerTableCell align="center">{player?.points}</PlayerTableCell>
-                                 <PlayerTableCell align="center">
-                                    {player?.penaltyMinutes}
-                                 </PlayerTableCell>
-                              </TableRow>
-                           </Link>
-                        ))}
-                  </PlayerTableBody>
-               </Table>
-            </TableContainer>
-         </Paper>
-      </Stack>
+               </PlayerTableBody>
+            </Table>
+         </TableContainer>
+      </PageContainer>
    );
 };
 
