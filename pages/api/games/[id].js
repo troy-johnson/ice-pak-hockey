@@ -147,7 +147,7 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).send("Game not found!");
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":

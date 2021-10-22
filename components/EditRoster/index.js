@@ -61,7 +61,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
             message: "Roster successfully updated!",
          });
       } catch (error) {
-         console.log("Roster update error: ", error);
+         // console.log("Roster update error: ", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -77,7 +77,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
       };
    });
 
-   console.log("roster", roster);
+   // console.log("roster", roster);
 
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>

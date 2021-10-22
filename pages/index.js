@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { Posts } from "../components";
+import { PageContainer, Posts } from "../components";
 
 const Home = () => {
    return (
@@ -10,9 +10,9 @@ const Home = () => {
             <link rel="icon" href="/favicon.ico" />
          </Head>
 
-         <div>
+         <>
             <Posts />
-         </div>
+         </>
       </>
    );
 };

@@ -7,6 +7,7 @@ import {
    Select,
    NativeSelect,
    MenuItem,
+   Paper,
    InputLabel,
    Stack,
    Table,
@@ -36,6 +37,8 @@ const StyledStatHeaderCell = ({ className, children, onClick, orderBy, order, ty
       </TableCell>
    );
 };
+
+const TableComponent = ({children}) => (<Paper variant="outlined">{children}</Paper>)
 
 const StatHeaderCell = styled(StyledStatHeaderCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
@@ -100,8 +103,8 @@ const Stats = () => {
    );
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   console.log("seasons", seasons);
-   console.log("seasonStats", seasonStats);
+   // console.log("seasons", seasons);
+   // console.log("seasonStats", seasonStats);
 
    if (seasonStatsLoading) {
       return <Loading />;

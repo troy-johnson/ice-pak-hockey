@@ -6,7 +6,7 @@ const goalHandler = async (req, res) => {
 
    switch (req.method) {
       case "GET":
-         console.log("id", id);
+         // console.log("id", id);
 
          try {
             const result = await getDoc(doc(db, "goals", id));
@@ -19,7 +19,7 @@ const goalHandler = async (req, res) => {
 
             return res.status(200).send("Goals not found!");
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":
@@ -30,7 +30,7 @@ const goalHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       case "DELETE":
@@ -41,7 +41,7 @@ const goalHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       default:

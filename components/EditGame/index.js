@@ -14,7 +14,7 @@ const EditGame = ({ game, onClose, open }) => {
    const { mutate } = useSWRConfig();
 
    const onSubmit = (data) => {
-      console.log(data);
+      // console.log(data);
 
       try {
          editGame(data);

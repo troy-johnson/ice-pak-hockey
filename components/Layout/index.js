@@ -1,6 +1,5 @@
-import { useMediaQuery } from "@mui/material";
 import styled from "@emotion/styled";
-import { Banner, UpcomingGames } from "..";
+import { Banner, GameTicker } from "..";
 
 const LayoutMain = styled.main`
    left: 1.5rem;
@@ -11,11 +10,10 @@ const LayoutMain = styled.main`
 `;
 
 const Layout = ({ children }) => {
-   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    return (
       <>
          <Banner />
-         {desktop ? <UpcomingGames /> : null}
+         <GameTicker />
          <LayoutMain>{children}</LayoutMain>
       </>
    );

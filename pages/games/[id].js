@@ -56,6 +56,8 @@ const StyledTabPanel = (props) => {
    );
 };
 
+const TableComponent = ({children}) => (<Paper variant="outlined">{children}</Paper>)
+
 const GameContainer = styled.section`
    display: flex;
    margin: 15px;
@@ -151,6 +153,7 @@ const PlayerName = styled.div`
    flex-direction: row;
    align-items: center;
    margin-left: 10px;
+   width: 125px;
 `;
 
 const TabContainer = styled(Box)`
@@ -355,7 +358,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   console.log("game", game);
+   // console.log("game", game);
    // console.log("icePakGoals", icePakGoals);
    // console.log("oppGoals", opponentGoals);
    // console.log("desktop", desktop);
@@ -369,7 +372,7 @@ const Game = () => {
    const BoxScore = () => {
       return (
          <Section>
-            <TableContainer component={Paper}>
+            <TableContainer component={TableComponent}>
                <Table aria-label="simple table">
                   <TableHead>
                      <BoxScoreHeader>
@@ -502,7 +505,7 @@ const Game = () => {
 
    const TeamStats = ({ desktop, teamStats }) => {
       return (
-         <TableContainer component={Paper}>
+         <TableContainer component={TableComponent}>
             <Table aria-label="Team Stats Table">
                <TableHead>
                   <BoxScoreHeader>

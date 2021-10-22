@@ -1,68 +1,24 @@
 import styled from "@emotion/styled";
-import { Box, Button, Card, CardActions, CardContent, Typography } from "@mui/material";
-
-const StyledPostCard = ({ className, children }) => (
-   <Box className={className}>
-      <Card>{children}</Card>
-   </Box>
-);
-
-const StyledPostTitle = ({ className, children }) => (
-   <Typography className={className} variant="h2">
-      {children}
-   </Typography>
-);
-
-const StyledPostDate = ({ className, children }) => (
-   <Typography className={className}>{children}</Typography>
-);
-
-const StyledPostTime = ({ className, children }) => (
-   <Typography className={className}>{children}</Typography>
-);
-
-const PostBox = styled(Box)``;
-
-const PostCard = styled(StyledPostCard)``;
-
-const PostCardContent = styled(CardContent)``;
-
-const PostDate = styled(StyledPostDate)``;
-
-const PostTime = styled(StyledPostTime)``;
-
-const PostTitle = styled(StyledPostTitle)``;
-
-// export const Title = styled.h2`
-//    font-size: 24px;
-//    margin-bottom: 2px;
-//    color: ${(props) => props.theme.palette.black};
-// `;
-
-// export const PostDate = styled.h3`
-//    margin-top: 0px;
-//    font-weight: 300;
-//    color: ${(props) => props.theme.palette.mediumGrey};
-// `;
+import { Box, Button, Stack, Typography } from "@mui/material";
+import { PageContainer } from "..";
+import dayjs from "dayjs";
 
 const FeaturedPost = ({ post }) => {
-   console.log("post", post);
-
    return (
-      <PostBox>
-         <PostCard variant="outlined">
-            <PostCardContent>
-               <PostTitle>{post?.title}</PostTitle>
-               <PostTime>
-                  {new Date(post?.date.seconds * 1000).toLocaleString("en-us", {
-                     month: "long",
-                     day: "numeric",
-                     year: "numeric",
-                  })}
-               </PostTime>
-            </PostCardContent>
-         </PostCard>
-      </PostBox>
+      <PageContainer>
+         <Stack direction="column" ml={2} mr={2} mt={0} mb={2}>
+            <Typography variant="h4">{post.title}</Typography>
+            <Typography mb={1} mt={0} variant="body2">
+               {dayjs.unix(post.date.seconds).format("MMMM DD, YYYY")}
+            </Typography>
+            <Typography mb={2} mt={2} variant="body1">
+               {post.body.slice(0, 400)}...
+            </Typography>
+            <Button size="small" sx={{ maxWidth: "125px" }} variant="contained">
+               View More
+            </Button>
+         </Stack>
+      </PageContainer>
    );
 };
 

@@ -1,11 +1,7 @@
-import Link from "next/link";
+import { PageContainer } from "../components";
 
 const Shop = () => {
-   return (
-      <>
-         <h1>Shop</h1>
-      </>
-   );
+   return <PageContainer pageTitle="SHOP">Coming Soon</PageContainer>;
 };
 
 export default Shop;

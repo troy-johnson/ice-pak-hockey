@@ -1,11 +1,7 @@
-import Link from "next/link";
+import { PageContainer } from "../components";
 
 const News = () => {
-   return (
-      <>
-         <h1>News</h1>
-      </>
-   );
+   return <PageContainer pageTitle="NEWS">Coming Soon</PageContainer>;
 };
 
 export default News;

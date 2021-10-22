@@ -11,7 +11,7 @@ const goalsHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       case "GET":

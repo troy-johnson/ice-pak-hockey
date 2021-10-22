@@ -68,7 +68,7 @@ const UpsertGoal = ({
    };
 
    const onSubmit = (data) => {
-      console.log("data", data);
+      // console.log("data", data);
       try {
          if (goalAction === "add") {
             addGoal({
@@ -98,7 +98,7 @@ const UpsertGoal = ({
             message: `Goal successfully ${goalAction === "add" ? "added" : "updated"}!`,
          });
       } catch (error) {
-         console.log("error", error);
+         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

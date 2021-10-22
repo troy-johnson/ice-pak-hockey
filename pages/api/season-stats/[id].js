@@ -4,7 +4,7 @@ import { db } from "../../../config";
 const seasonStatsHandler = async (req, res) => {
    const { id } = req.query;
 
-   console.log("id", id);
+   // console.log("id", id);
 
    switch (req.method) {
       case "GET":
@@ -155,7 +155,7 @@ const seasonStatsHandler = async (req, res) => {
                })
             );
 
-            console.log("games", games.length);
+            // console.log("games", games.length);
 
             const seasonStats = {
                ...seasonData,
@@ -169,7 +169,7 @@ const seasonStatsHandler = async (req, res) => {
 
             return res.status(200).send("Game not found!");
          } catch (error) {
-            console.log("error", error);
+            // console.log("error", error);
             return res.status(400).send(error);
          }
       default:

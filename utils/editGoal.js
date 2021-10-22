@@ -1,7 +1,7 @@
 import { mutate } from "swr";
 
 const editGoal = async (data) => {
-   console.log("edit goal", data)
+   // console.log("edit goal", data)
    const response = await fetch(`/api/goals/${data.goalId}`, {
       method: "PUT",
       mode: "cors",

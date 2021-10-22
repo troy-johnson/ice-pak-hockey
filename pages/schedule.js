@@ -131,14 +131,14 @@ const Schedule = () => {
       return "Loss";
    };
 
-   console.log("games", games);
+   // console.log("games", games);
    // console.log('desktop', desktop)
-   console.log(
-      "date comparison",
-      games.filter((game) => dayjs.unix(game?.date.seconds) > date)
-   );
+   // console.log(
+   //    "date comparison",
+   //    games.filter((game) => dayjs.unix(game?.date.seconds) > date)
+   // );
 
-   console.log("date", date.format("MM DD YY"));
+   // console.log("date", date.format("MM DD YY"));
 
    if (gamesLoading) {
       return (

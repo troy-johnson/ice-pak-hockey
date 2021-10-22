@@ -1,13 +1,7 @@
-// import { getProfile } from "../utils";
+import { PageContainer } from "../components";
 
 const Profile = () => {
-   // const { profile, isLoading, isError } = getProfile();
-
-   return (
-      <>
-         <h1>Profile</h1>
-      </>
-   );
+   return <PageContainer pageTitle="PROFILE">Coming Soon</PageContainer>;
 };
 
 export default Profile;

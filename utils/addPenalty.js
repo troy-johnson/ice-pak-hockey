@@ -1,7 +1,7 @@
 import { mutate } from "swr";
 
 const addPenalty = async (data) => {
-   console.log("add penalty", data);
+   // console.log("add penalty", data);
    const response = await fetch("/api/penalties", {
       method: "POST",
       mode: "cors",

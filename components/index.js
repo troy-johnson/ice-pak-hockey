@@ -14,5 +14,5 @@ export { default as Loading } from "./Loading";
 export { default as Login } from "./Login";
 export { default as Posts } from "./Posts";
 export { default as TextInput } from "./ControlledInput";
-export { default as UpcomingGames } from "./UpcomingGames";
+export { default as GameTicker } from "./GameTicker";
 export { default as PageContainer } from "./PageContainer";

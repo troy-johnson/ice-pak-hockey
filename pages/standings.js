@@ -1,11 +1,7 @@
-import Link from "next/link";
+import { PageContainer } from "../components";
 
 const Standings = () => {
-   return (
-      <>
-         <h1>Standings</h1>
-      </>
-   );
+   return <PageContainer pageTitle="STANDINGS">Coming Soon</PageContainer>;
 };
 
 export default Standings;

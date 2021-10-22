@@ -78,7 +78,7 @@ const MutatePenalty = ({
          setSnackbar({ open: true, type: "success", message: "Penalty successfully updated!" });
          mutate(`/api/games/${penalty?.gameId}`);
       } catch (error) {
-         console.log("error", error);
+         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

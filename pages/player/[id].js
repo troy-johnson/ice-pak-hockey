@@ -79,11 +79,11 @@ const Player = () => {
 
    const handleChange = (event, newValue) => setValue(newValue);
 
-   console.log("id", id);
+   // console.log("id", id);
 
    const player = players?.filter((player) => player.id === id)[0];
 
-   console.log("player", player);
+   // console.log("player", player);
 
    if (loading) {
       return <Loading />;
