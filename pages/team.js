@@ -151,7 +151,7 @@ const Team = () => {
    }
 
    return (
-      <PageContainer pageTitle="TEAM">
+      <PageContainer pageTitle="Team">
          {/* <Button
             variant="outlined"
             onClick={handleClickOpen}

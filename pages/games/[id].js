@@ -56,7 +56,7 @@ const StyledTabPanel = (props) => {
    );
 };
 
-const TableComponent = ({children}) => (<Paper variant="outlined">{children}</Paper>)
+const TableComponent = ({ children }) => <Paper variant="outlined">{children}</Paper>;
 
 const GameContainer = styled.section`
    display: flex;
@@ -440,7 +440,6 @@ const Game = () => {
                         </Typography>
                      ) : null}
                      {period?.goals?.map((goal) => {
-                        console.log("goal", goal);
                         return (
                            <GoalContainer key={goal?.goalId}>
                               {goal?.playerId ? (
@@ -572,8 +571,11 @@ const Game = () => {
 
    return (
       <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`}>
-         <Typography sx={{ textAlign: "center" }} variant={desktop ? "h5" : "h6"}>
-            {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY")}
+         <Typography sx={{ textAlign: "left" }} ml={3} mt={-3} variant={desktop ? "h5" : "h6"}>
+            {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY @ h:mm a")}
+         </Typography>
+         <Typography sx={{ textAlign: "left" }} ml={3} variant={desktop ? "h5" : "h6"}>
+            {game?.locationName}
          </Typography>
          <>
             <GameContainer desktop={desktop}>

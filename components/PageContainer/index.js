@@ -18,7 +18,7 @@ const PageContainer = ({ children, pageTitle }) => {
             elevation={3}
             sx={{ width: desktop ? "75%" : "100%", borderTop: "5px solid #5BA5D1" }}
          >
-            <Typography variant={desktop ? "h3" : "h4"} mt={3} mb={3} sx={{ textAlign: "center" }}>
+            <Typography variant={desktop ? "h3" : "h4"} ml={3} mt={3} mb={3} sx={{ textAlign: "left" }}>
                {pageTitle}
             </Typography>
             {children}
