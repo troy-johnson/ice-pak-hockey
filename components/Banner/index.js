@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { Account } from "..";
+
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
@@ -32,7 +34,7 @@ const StyledCloseNav = ({ className, onClick }) => {
    );
 };
 
-const StyledTextLogo = ({ className }) => {
+const StyledTextLogo = ({ className, desktop }) => {
    return (
       <div className={className}>
          <Link href="/" passHref>
@@ -54,7 +56,7 @@ const StyledTextLogo = ({ className }) => {
 
 const TextLogo = styled(StyledTextLogo)`
    width: 100%;
-   margin: 15px 15px 5px 15px;
+   margin: ${props => props.desktop ? "15px 15px 5px 15px" : "15px 0px 5px 15px"};
    display: flex;
    height: 100%;
    width: 100%;
@@ -161,7 +163,8 @@ const Banner = () => {
                   </List>
                </NavMenuBox>
             </SwipeableDrawer>
-            <TextLogo />
+            <TextLogo desktop={desktop} />
+            <Account />
          </Toolbar>
       </AppBar>
    );
