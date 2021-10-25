@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/client";
 import {
    Alert,
    Avatar,
@@ -34,7 +35,7 @@ import {
    Loading,
    PageContainer,
 } from "../../components";
-import { upsertGame, useGetGameInfo } from "../../utils";
+import { roleCheck, upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
@@ -202,6 +203,7 @@ const Game = () => {
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const [session, loading] = useSession();
 
    const handleChange = (event, newValue) => setValue(newValue);
 
@@ -418,13 +420,15 @@ const Game = () => {
          <Section>
             <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
                <Typography variant="h5">Scoring Summary</Typography>
-               {/* <Button
-                  variant="outlined"
-                  onClick={() => openUpsertGoal("add")}
-                  endIcon={<FaHockeyPuck />}
-               >
-                  Add Goal
-               </Button> */}
+               {!!roleCheck(session, ["Admins"]) ? (
+                  <Button
+                     variant="outlined"
+                     onClick={() => openUpsertGoal("add")}
+                     endIcon={<FaHockeyPuck />}
+                  >
+                     Add Goal
+                  </Button>
+               ) : null}
             </Stack>
             {goalsByPeriod?.map((period) => {
                return (
@@ -484,14 +488,16 @@ const Game = () => {
                                     {goal?.time} / {period.period}
                                  </GoalTime>
                               </div>
-                              {/* <EditButton
-                                 size="small"
-                                 aria-label="Edit Penalty"
-                                 onClick={() => openUpsertGoal("edit", goal)}
-                                 sx={{ textAlign: "right" }}
-                              >
-                                 <EditIcon />
-                              </EditButton> */}
+                              {!!roleCheck(session, ["Admins"]) ? (
+                                 <EditButton
+                                    size="small"
+                                    aria-label="Edit Penalty"
+                                    onClick={() => openUpsertGoal("edit", goal)}
+                                    sx={{ textAlign: "right" }}
+                                 >
+                                    <EditIcon />
+                                 </EditButton>
+                              ) : null}
                            </GoalContainer>
                         );
                      })}
@@ -596,13 +602,15 @@ const Game = () => {
                            sx={{ display: "flex", justifyContent: "space-between" }}
                         >
                            <Typography variant="h5">Team Stats</Typography>
-                           {/* <Button
-                              variant="outlined"
-                              onClick={() => setEditRosterDialog(true)}
-                              endIcon={<FaClipboardList />}
-                           >
-                              Edit Roster
-                           </Button> */}
+                           {!!roleCheck(session, ["Admins"]) ? (
+                              <Button
+                                 variant="outlined"
+                                 onClick={() => setEditRosterDialog(true)}
+                                 endIcon={<FaClipboardList />}
+                              >
+                                 Edit Roster
+                              </Button>
+                           ) : null}
                         </Stack>
                         <TeamStats desktop={desktop} teamStats={teamStats} />
                      </SectionContainer>

@@ -31,6 +31,8 @@ const Account = () => {
       setAnchorEl(null);
    };
 
+   console.log("account info", session)
+
    return (
       <>
          <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -90,7 +92,7 @@ const Account = () => {
                   Logout
                </MenuItem>
             ) : (
-               <MenuItem onClick={() => signIn()}>
+               <MenuItem onClick={() => signIn("auth0")}>
                   <ListItemIcon>
                      <Login fontSize="small" />
                   </ListItemIcon>

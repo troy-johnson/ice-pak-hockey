@@ -159,7 +159,7 @@ const seasonStatsHandler = async (req, res) => {
 
             const seasonStats = {
                ...seasonData,
-               seasonName: `${seasonData.leagueName} ${seasonData.name}`,
+               seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
                stats,
             };
 

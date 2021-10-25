@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
+import { useSession } from "next-auth/client";
 import { useSWRConfig } from "swr";
 import { useForm } from "react-hook-form";
 import {
@@ -24,7 +25,7 @@ import {
 } from "@mui/material";
 import { IoPersonAddSharp } from "react-icons/io5";
 import { Loading, ControlledInput, ControlledSelect, PageContainer } from "../components";
-import { addPlayer, useGetPlayers } from "../utils";
+import { addPlayer, roleCheck, useGetPlayers } from "../utils";
 
 const PlayerTableCell = styled(TableCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
@@ -93,6 +94,7 @@ const Team = () => {
    const { players, playersLoading, playersError } = useGetPlayers();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const { mutate } = useSWRConfig();
+   const [session, loading] = useSession();
 
    const shootsOptions = [
       { label: "L", value: "L" },
@@ -152,14 +154,16 @@ const Team = () => {
 
    return (
       <PageContainer pageTitle="Team">
-         {/* <Button
-            variant="outlined"
-            onClick={handleClickOpen}
-            sx={{ marginLeft: "15px", marginBottom: "15px" }}
-            endIcon={<IoPersonAddSharp />}
-         >
-            Add Player
-         </Button> */}
+         {!!roleCheck(session, ["Admins"]) ? (
+            <Button
+               variant="outlined"
+               onClick={handleClickOpen}
+               sx={{ marginLeft: "15px", marginBottom: "15px" }}
+               endIcon={<IoPersonAddSharp />}
+            >
+               Add Player
+            </Button>
+         ) : null}
          <TableContainer>
             <Table aria-label="Team">
                <TableHead>
