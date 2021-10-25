@@ -36,9 +36,13 @@ const useGetAllGames = () => {
             ?.teamName,
          seasonName: `${seasons?.filter((season) => season.id === game.seasonId)[0]?.leagueName} ${
             seasons?.filter((season) => season.id === game.seasonId)[0]?.name
+         } ${
+            seasons?.filter((season) => season.id === game.seasonId)[0]?.type
          }`,
       })
    );
+
+   console.log("games", games)
 
    const isError =
       error |

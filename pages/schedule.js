@@ -169,8 +169,8 @@ const Schedule = () => {
                  ?.filter((game) => dayjs.unix(game?.date.seconds) > date)
                  ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
                  .map((game) => {
-                    let icePakGoals = game?.goals.filter((goal) => goal.icePakGoal).length;
-                    let opponentGoals = game?.goals.filter((goal) => !goal.icePakGoal).length;
+                    let icePakGoals = game?.goals.filter((goal) => goal.playerId).length;
+                    let opponentGoals = game?.goals.filter((goal) => !goal.playerId).length;
                     return (
                        <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
                           <DateTime variant="overline">
@@ -189,7 +189,7 @@ const Schedule = () => {
                                    </>
                                 )}
                              </span>
-                             {desktop ? <span>{game?.seasonName}</span> : null}
+                             {desktop ? <span>{game?.seasonName} {game?.type}</span> : null}
                           </DateTime>
                           {/* <Season variant="caption">{game?.seasonName}</Season> */}
                           <Opponent variant="body1">{game?.opponentName}</Opponent>

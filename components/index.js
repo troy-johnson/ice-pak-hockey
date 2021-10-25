@@ -1,3 +1,4 @@
+export { default as Account } from "./Account";
 export { default as Banner } from "./Banner";
 export { default as ControlledRadio } from "./ControlledRadio";
 export { default as ControlledSelect } from "./ControlledSelect";
@@ -11,7 +12,6 @@ export { default as UpsertGoal } from "./UpsertGoal";
 export { default as MutatePenalty } from "./MutatePenalty";
 export { default as Layout } from "./Layout";
 export { default as Loading } from "./Loading";
-export { default as Login } from "./Login";
 export { default as Posts } from "./Posts";
 export { default as TextInput } from "./ControlledInput";
 export { default as GameTicker } from "./GameTicker";

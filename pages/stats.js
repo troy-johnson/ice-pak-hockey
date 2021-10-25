@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
+import dayjs from "dayjs";
 import {
    Avatar,
    FormControl,
@@ -29,7 +30,12 @@ const SortArrow = styled(ArrowDropUpIcon)`
 
 const StyledStatHeaderCell = ({ className, children, onClick, orderBy, order, type }) => {
    return (
-      <TableCell className={className} onClick={onClick} align="center">
+      <TableCell
+         className={className}
+         onClick={onClick}
+         align="center"
+         sx={{ backgroundColor: orderBy === type ? "secondary.main" : "black" }}
+      >
          <Stack direction="row">
             {type === orderBy ? <SortArrow order={order} /> : null}
             {children}
@@ -38,10 +44,10 @@ const StyledStatHeaderCell = ({ className, children, onClick, orderBy, order, ty
    );
 };
 
-const TableComponent = ({children}) => (<Paper variant="outlined">{children}</Paper>)
+const TableComponent = ({ children }) => <Paper variant="outlined">{children}</Paper>;
 
 const StatHeaderCell = styled(StyledStatHeaderCell)`
-   width: ${(props) => (props.desktop ? "100%" : "25px")};
+   width: ${(props) => (props.desktop ? "50px" : "25px")};
    cursor: pointer;
    th:first-of-type {
       padding-left: 5px;
@@ -94,7 +100,11 @@ const PlayerAvatar = styled(Avatar)`
 const Stats = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const [seasonId, setSeasonId] = useState(
-      !seasonsLoading && !seasonsError ? seasons[0].id : "LSdvGKI4dFWUBwgeEC5z"
+      !seasonsLoading && !seasonsError
+         ? seasons.sort(
+              (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+           )?.[0].id
+         : "LSdvGKI4dFWUBwgeEC5z"
    );
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
@@ -112,11 +122,15 @@ const Stats = () => {
       return <div>An error occurred. Please try again.</div>;
    }
 
-   const seasonOptions = seasons.map((season) => {
-      return { label: `${season.leagueName} ${season.name}`, value: season.id };
-   });
+   const seasonOptions = seasons
+      .sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
+      .map((season) => {
+         return { label: `${season.leagueName} ${season.name} ${season.type}`, value: season.id };
+      });
 
-   const handleSeasonChange = () => {
+   console.log("seasons", seasons);
+
+   const handleSeasonChange = (e) => {
       setSeasonId(e.target.value);
    };
 
@@ -131,8 +145,8 @@ const Stats = () => {
             <InputLabel id="demo-simple-select-label">Season</InputLabel>
             {desktop ? (
                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
+                  labelId="season-select-label"
+                  id="season-select"
                   value={seasonId}
                   label="Season"
                   onChange={handleSeasonChange}
@@ -145,7 +159,7 @@ const Stats = () => {
                </Select>
             ) : (
                <NativeSelect
-                  id="demo-simple-select"
+                  id="season-select"
                   value={seasonId}
                   label="Season"
                   onChange={handleSeasonChange}

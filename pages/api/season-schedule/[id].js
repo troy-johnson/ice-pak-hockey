@@ -1,5 +1,5 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../../config";
+import { db } from "../../../config";
 
 const seasonScheduleHandler = async (req, res) => {
    switch (req.method) {

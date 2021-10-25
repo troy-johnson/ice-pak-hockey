@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useSession } from "next-auth/client";
 import {
    Box,
    Button,
@@ -17,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { MdAccessTimeFilled } from "react-icons/md";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
+import { roleCheck } from "../../utils";
 
 const Section = styled.section`
    display: flex;
@@ -43,18 +45,21 @@ const EditButton = styled(IconButton)`
 
 const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const [session, loading] = useSession();
 
    return (
       <Section>
          <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="h5">Penalties</Typography>
-            {/* <Button
-               variant="outlined"
-               onClick={() => handleClickOpen("add")}
-               endIcon={<MdAccessTimeFilled />}
-            >
-               Add Penalty
-            </Button> */}
+            {!!roleCheck(session, ["Admins"]) ? (
+               <Button
+                  variant="outlined"
+                  onClick={() => handleClickOpen("add")}
+                  endIcon={<MdAccessTimeFilled />}
+               >
+                  Add Penalty
+               </Button>
+            ) : null}
          </Stack>
          {penaltiesByPeriod?.map((period) => {
             return (
@@ -112,16 +117,18 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        </div>
                                     </TableCell>
                                     {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                    {/* <TableCell align="right">
-                                       <EditButton
-                                          size="small"
-                                          aria-label="Edit Penalty"
-                                          onClick={() => handleClickOpen("edit", penalty)}
-                                          sx={{ flexGrow: "2" }}
-                                       >
-                                          <EditIcon />
-                                       </EditButton>
-                                    </TableCell> */}
+                                    {!!roleCheck(session, ["Admins"]) ? (
+                                       <TableCell align="right">
+                                          <EditButton
+                                             size="small"
+                                             aria-label="Edit Penalty"
+                                             onClick={() => handleClickOpen("edit", penalty)}
+                                             sx={{ flexGrow: "2" }}
+                                          >
+                                             <EditIcon />
+                                          </EditButton>
+                                       </TableCell>
+                                    ) : null}
                                  </TableRow>
                               );
                            })}
