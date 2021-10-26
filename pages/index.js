@@ -6,6 +6,8 @@ const Home = ({ allPosts, preview }) => {
    const heroPost = allPosts[0]
    const morePosts = allPosts.slice(1)
 
+   console.log("INDEX", { allPosts, preview })
+
    return (
       <>
          <Head>
@@ -22,6 +24,7 @@ const Home = ({ allPosts, preview }) => {
                   date={heroPost.date}
                   author={heroPost.author}
                   slug={heroPost.slug}
+                  body={heroPost.body}
                   excerpt={heroPost.excerpt}
                />
             )}

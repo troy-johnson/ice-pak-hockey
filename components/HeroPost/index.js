@@ -1,55 +1,49 @@
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Button, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
+import BlockContent from "@sanity/block-content-to-react";
 import { PageContainer } from "..";
 import { imageBuilder } from "../../utils";
+import markdownStyles from "../../styles/markdown-styles.module.css";
 
-const HeroPost = ({ title, coverImage, date, excerpt, author, slug }) => {
-   console.log("HERO POST", {title, coverImage, date, excerpt, author, slug})
-
-
-   console.log("test", imageBuilder(coverImage).url())
+const HeroPost = ({ title, body, coverImage, date, excerpt, author, slug }) => {
+   console.log("HERO POST", { title, coverImage, date, excerpt, author, slug });
    return (
-      <PageContainer>
-         <div className="-mx-5 sm:mx-0">
-            {slug ? (
-               <Link as={`/posts/${slug}`} href="/posts/[slug]">
-                  <a aria-label={title}>
-                     {/* <Image
-                        width={1240}
-                        height={540}
-                        alt={`Cover Image for ${title}`}
-                        src={coverImage}
-                     /> */}
-                  </a>
-               </Link>
-            ) : (
-               // <Image width={1240} height={540} alt={`Cover Image for ${title}`} src={coverImage} />
-               <div>asdf</div>
-            )}
-         </div>
-         {slug ? (
-            <Link as={`/posts/${slug}`} href="/posts/[slug]">
-               <a aria-label={title}>
-                  <Image src={imageBuilder(coverImage).url()} alt={title} width={1920} height={1440} />
-               </a>
-            </Link>
-         ) : (
-            <Image src={imageBuilder(coverImage).url()} alt={title} width={1920} height={1440} />
-         )}
+      <PageContainer padding>
+         <Link href={`/posts/${slug}`} passHref>
+            <Image
+               src={imageBuilder(coverImage).width(384).height(288).url()}
+               alt={title}
+               width={384}
+               height={288}
+            />
+         </Link>
          <div>
-            <h3 className="mb-4 text-4xl lg:text-6xl leading-tight">
-               <Link as={`/posts/${slug}`} href="/posts/[slug]">
-                  <a className="hover:underline">{title}</a>
+            <Typography variant="h4">
+               <Link href={`/posts/${slug}`} passHref>
+                  {title}
                </Link>
-            </h3>
-            <div className="mb-4 md:mb-0 text-lg">{dayjs(date).format("DD/MM/YYYY")}</div>
+            </Typography>
+            <Stack direction="row" sx={{ display: "flex", alignItems: "center" }}>
+               <Avatar alt={author?.name} src={author?.picture} />
+               <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>
+                  {author?.name}
+               </Typography>
+            </Stack>
+            <Typography>{dayjs(date).format("MMMM DD, YYYY")}</Typography>
          </div>
-         <div>
-            <Typography variant="body1">{excerpt}</Typography>
-            <Avatar name={author?.name} picture={author?.picture} />
-         </div>
+         <Typography>
+            <BlockContent
+               blocks={body.slice(0, 3)}
+               projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
+               dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
+               className={markdownStyles.markdown}
+            />
+         </Typography>
+         <Link href={`/posts/${slug}`} passHref>
+            <Button variant="outlined">Read More</Button>
+         </Link>
       </PageContainer>
    );
 };

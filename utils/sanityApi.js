@@ -44,6 +44,7 @@ export async function getAllPostsWithSlug() {
 export async function getAllPostsForHome(preview) {
    const results = await getClient(preview).fetch(`*[_type == "post"] | order(publishedAt desc){
       ${postFields}
+      body
     }`);
    return getUniquePosts(results);
 }
