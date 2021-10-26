@@ -7,6 +7,8 @@ export { default as EditRoster } from "./EditRoster";
 export { default as FeaturedPost } from "./FeaturedPost";
 export { default as GameGoals } from "./GameGoals";
 export { default as GamePenalties } from "./GamePenalties";
+export { default as HeroPost } from "./HeroPost";
+export { default as MoreStories } from "./MoreStories";
 export { default as Disclaimer } from "./Disclaimer"; 
 export { default as UpsertGoal } from "./UpsertGoal";
 export { default as MutatePenalty } from "./MutatePenalty";
