@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { HeroPost, MoreStories } from "../components";
-import { getAllPostsForHome } from "../utils"
+import { getAllPostsForHome } from "../utils/sanityApi"
 
 const Home = ({ allPosts, preview }) => {
    const heroPost = allPosts[0]
@@ -36,7 +36,7 @@ const Home = ({ allPosts, preview }) => {
 
 export default Home;
 
-export async function getStaticProps({ preview = false }) {
+export async function getStaticProps({ preview = true }) {
    const allPosts = await getAllPostsForHome(preview);
    return {
       props: { allPosts, preview },

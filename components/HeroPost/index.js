@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import BlockContent from "@sanity/block-content-to-react";
 import { PageContainer } from "..";
-import { imageBuilder } from "../../utils";
+import { imageBuilder } from "../../utils/sanity";
 import markdownStyles from "../../styles/markdown-styles.module.css";
 
 const HeroPost = ({ title, body, coverImage, date, excerpt, author, slug }) => {
