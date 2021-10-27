@@ -130,11 +130,11 @@ const Banner = () => {
                            <MenuItem primary="Home" />
                         </Link>
                      </ListItem>
-                     <ListItem button>
+                     {/* <ListItem button>
                         <Link href="/news" passHref>
                            <MenuItem primary="News" />
                         </Link>
-                     </ListItem>
+                     </ListItem> */}
                      <ListItem button>
                         <Link href="/team" passHref>
                            <MenuItem primary="Team" />
@@ -155,11 +155,11 @@ const Banner = () => {
                            <MenuItem primary="Standings" />
                         </Link>
                      </ListItem>
-                     <ListItem button>
+                     {/* <ListItem button>
                         <Link href="/shop" passHref>
                            <MenuItem primary="Shop" />
                         </Link>
-                     </ListItem>
+                     </ListItem> */}
                   </List>
                </NavMenuBox>
             </SwipeableDrawer>
