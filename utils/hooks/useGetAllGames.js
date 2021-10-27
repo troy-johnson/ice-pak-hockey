@@ -42,7 +42,7 @@ const useGetAllGames = () => {
       })
    );
 
-   console.log("games", games)
+   // console.log("games", games)
 
    const isError =
       error |

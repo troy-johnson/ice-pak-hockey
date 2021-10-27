@@ -1,6 +1,6 @@
 import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
 
-const PageContainer = ({ children, pageTitle }) => {
+const PageContainer = ({ children, padding, pageTitle }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
@@ -16,9 +16,19 @@ const PageContainer = ({ children, pageTitle }) => {
       >
          <Paper
             elevation={3}
-            sx={{ width: desktop ? "75%" : "100%", borderTop: "5px solid #5BA5D1" }}
+            sx={{
+               width: desktop ? "75%" : "100%",
+               borderTop: "5px solid #5BA5D1",
+               padding: padding ? "10px" : 0,
+            }}
          >
-            <Typography variant={desktop ? "h3" : "h4"} ml={3} mt={3} mb={3} sx={{ textAlign: "left" }}>
+            <Typography
+               variant={desktop ? "h3" : "h4"}
+               ml={3}
+               mt={3}
+               mb={3}
+               sx={{ textAlign: "left" }}
+            >
                {pageTitle}
             </Typography>
             {children}
