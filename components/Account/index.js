@@ -31,7 +31,7 @@ const Account = () => {
       setAnchorEl(null);
    };
 
-   console.log("account info", session)
+   // console.log("account info", session)
 
    return (
       <>

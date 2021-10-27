@@ -16,6 +16,7 @@ const postFields = `
   _id,
   name,
   title,
+  categories,
   'date': publishedAt,
   excerpt,
   'slug': slug.current,
@@ -30,6 +31,7 @@ export async function getPreviewPostBySlug(slug) {
       `*[_type == "post" && slug.current == $slug] | order(publishedAt desc){
       ${postFields}
       body
+      categories
     }`,
       { slug }
    );
@@ -64,7 +66,8 @@ export async function getPostAndMorePosts(slug, preview) {
           _id, 
           name, 
           email, 
-          comment, 
+          comment,
+          categories, 
           _createdAt
         }
       }`,
