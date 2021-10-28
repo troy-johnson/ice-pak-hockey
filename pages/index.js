@@ -19,12 +19,14 @@ const Home = ({ allPosts, preview }) => {
          <>
             {heroPost && (
                <HeroPost
+                  categories={heroPost.categories}
                   title={heroPost.title}
                   coverImage={heroPost.coverImage}
                   date={heroPost.date}
                   author={heroPost.author}
                   slug={heroPost.slug}
                   body={heroPost.body}
+                  postId={heroPost._id}
                   excerpt={heroPost.excerpt}
                />
             )}

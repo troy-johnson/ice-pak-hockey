@@ -1,104 +1,93 @@
-import { useState } from "react";
-import { Avatar, Button, Container, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Button, Chip, Container, Stack, Typography, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
-import BlockContent from "@sanity/block-content-to-react";
 import { PageContainer } from "..";
 import { imageBuilder } from "../../utils/sanity";
-import markdownStyles from "../../styles/markdown-styles.module.css";
 
-const HeroPost = ({ title, body, coverImage, date, excerpt, author, slug }) => {
-   const [expanded, setExpanded] = useState(false);
+const HeroPost = ({ title, categories, coverImage, postId, date, excerpt, slug }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   const slice = body.slice(1, 3);
-
-   console.log("HERO POST", { title, coverImage, date, excerpt, author, slug });
    return (
-      <PageContainer padding>
-         <Container sx={{ marginBottom: "20px"}}>
-            {desktop ? (
-               <Stack direction="row" display="flex" alignItems="center" justifyContent="center">
-                  <Stack sx={{ marginRight: "15px" }}>
-                     <Typography variant="h4" sx={{ textTransform: "uppercase" }}>
-                        {title}
-                     </Typography>
-                     {/* <Stack direction="row" sx={{ display: "flex", alignItems: "center" }}>
-               <Avatar alt={author?.name} src={author?.picture} />
-               <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>
-                  {author?.name}
-               </Typography>
-            </Stack> */}
-                     <Typography>{dayjs(date).format("MMMM DD, YYYY")}</Typography>
-                     <Typography variant="body2" sx={{ maxWidth: "350px" }}>
-                        <BlockContent
-                           blocks={expanded ? body : slice}
-                           projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
-                           dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
-                           className={markdownStyles.markdown}
-                        />
-                     </Typography>
-                     {/* <Link href={`/posts/${slug}`} passHref> */}
-                     <Button
-                        variant="contained"
-                        sx={{ alignSelf: "center", maxWidth: "250px" }}
-                        onClick={() => setExpanded(!expanded)}
-                     >
-                        View {expanded ? "Less" : "More"}
-                     </Button>
-                     {/* </Link> */}
-                  </Stack>
-                  <Stack>
+      <PageContainer small padding>
+         {desktop ? (
+            <>
+               <Stack display="flex" spacing={2}>
+                  <Container sx={{ display: "flex", justifyContent: "center" }}>
                      <Image
-                        src={imageBuilder(coverImage).width(640).height(370).url()}
+                        src={imageBuilder(coverImage).url()}
                         alt={title}
-                        width={640}
-                        height={370}
+                        width={384}
+                        height={222}
                      />
-                  </Stack>
-               </Stack>
-            ) : (
-               <Stack direction="column" display="flex" alignItems="left" justifyContent="center">
-                  <Image
-                     src={imageBuilder(coverImage).width(320).height(185).url()}
-                     alt={title}
-                     width={320}
-                     height={185}
-                  />
-                  <Typography variant="h5" sx={{ marginTop: "15px", textTransform: "uppercase" }}>
+                  </Container>
+                  <Typography variant="h4" style={{ textAlign: "left" }}>
                      {title}
                   </Typography>
-                  <Typography>{dayjs(date).format("MMMM DD, YYYY")}</Typography>
-                  <Typography variant="body2" sx={{ maxWidth: "350px" }}>
-                     <BlockContent
-                        blocks={expanded ? body : slice}
-                        projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
-                        dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
-                        className={markdownStyles.markdown}
-                     />
-                  </Typography>
-                  {/* <Link href={`/posts/${slug}`} passHref> */}
-                  <Button
-                     variant="contained"
-                     sx={{ alignSelf: "center", maxWidth: "250px" }}
-                     onClick={() => setExpanded(!expanded)}
-                  >
-                     View {expanded ? "Less" : "More"}
-                  </Button>
-                  {/* </Link> */}
+                  <Typography variant="overline">{dayjs(date).format("MMMM DD, YYYY")}</Typography>
+                  <Typography variant="body1">{excerpt}</Typography>
+                  <Stack direction="row" mb={2}>
+                     {categories.map((category) => {
+                        return (
+                           <Chip
+                              key={category._id}
+                              label={category.title}
+                              color="primary"
+                              variant="outlined"
+                              sx={{ marginRight: "5px" }}
+                           />
+                        );
+                     })}
+                  </Stack>
+                  <Link href={`/posts/${slug}`} passHref>
+                     <Button
+                        variant="contained"
+                        sx={{ alignSelf: "left", maxWidth: "200px" }}
+                     >
+                        View More
+                     </Button>
+                  </Link>
                </Stack>
-            )}
-         </Container>
-         {/* <Link href={`/posts/${slug}`} passHref>
+            </>
+         ) : (
+            <Stack
+               direction="column"
+               display="flex"
+               alignItems="left"
+               justifyContent="center"
+               spacing={2}
+            >
                <Image
-                  src={imageBuilder(coverImage).width(384).height(288).url()}
+                  src={imageBuilder(coverImage).width(320).height(185).url()}
                   alt={title}
-                  width={384}
-                  height={288}
+                  width={320}
+                  height={185}
                />
-            </Link> */}
-         {/* </Stack> */}
+               <Typography variant="h5" sx={{ marginTop: "15px", textTransform: "uppercase" }}>
+                  {title}
+               </Typography>
+               <Typography variant="overline">{dayjs(date).format("MMMM DD, YYYY")}</Typography>
+               <Typography variant="body1">{excerpt}</Typography>
+               <Stack direction="row" display="flex" justifyContent="center" mb={2}>
+                  {categories.map((category) => {
+                     return (
+                        <Chip
+                           key={category._id}
+                           label={category.title}
+                           color="primary"
+                           variant="outlined"
+                           sx={{ marginRight: "5px" }}
+                        />
+                     );
+                  })}
+               </Stack>
+               <Link href={`/posts/${postId}`} passHref>
+                  <Button variant="contained" sx={{ alignSelf: "center", maxWidth: "250px" }}>
+                     View More
+                  </Button>
+               </Link>
+            </Stack>
+         )}
       </PageContainer>
    );
 };

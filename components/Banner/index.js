@@ -56,7 +56,7 @@ const StyledTextLogo = ({ className, desktop }) => {
 
 const TextLogo = styled(StyledTextLogo)`
    width: 100%;
-   margin: ${props => props.desktop ? "15px 15px 5px 15px" : "15px 0px 5px 15px"};
+   margin: ${props => props.desktop ? "15px 15px 5px 45px" : "15px 0px 5px 15px"};
    display: flex;
    height: 100%;
    width: 100%;

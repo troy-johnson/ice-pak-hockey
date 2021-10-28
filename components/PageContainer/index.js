@@ -1,7 +1,15 @@
 import { Paper, Stack, Typography, useMediaQuery } from "@mui/material";
 
-const PageContainer = ({ children, padding, pageTitle }) => {
+const PageContainer = ({ children, padding, pageTitle, small }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+   let width = "100%";
+
+   if (desktop && small) {
+      width = "40%";
+   } else if (desktop && !small) {
+      width = "75%";
+   }
 
    return (
       <Stack
@@ -17,7 +25,7 @@ const PageContainer = ({ children, padding, pageTitle }) => {
          <Paper
             elevation={3}
             sx={{
-               width: desktop ? "75%" : "100%",
+               width,
                borderTop: "5px solid #5BA5D1",
                padding: padding ? "10px" : 0,
             }}
