@@ -51,7 +51,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
       <Section>
          <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
             <Typography variant="h5">Penalties</Typography>
-            {!!roleCheck(session, ["Admins"]) ? (
+            {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager]"]) ? (
                <Button
                   variant="outlined"
                   onClick={() => handleClickOpen("add")}
@@ -117,7 +117,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        </div>
                                     </TableCell>
                                     {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                    {!!roleCheck(session, ["Admins"]) ? (
+                                    {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager]"]) ? (
                                        <TableCell align="right">
                                           <EditButton
                                              size="small"

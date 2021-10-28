@@ -1,7 +1,7 @@
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledInput = ({ control, disabled, label, name, required, rules, type, variant }) => {
+const ControlledInput = ({ control, disabled, fullWidth, multiline, label, name, placeholder, rows, required, rules, type, variant }) => {
    return (
       <Controller
          name={name}
@@ -13,6 +13,10 @@ const ControlledInput = ({ control, disabled, label, name, required, rules, type
                required={required}
                type={type}
                label={label}
+               fullWidth={fullWidth}
+               multiline={multiline}
+               placeholder={placeholder}
+               rows={rows}
                variant={variant}
                value={value}
                onChange={onChange}

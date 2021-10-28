@@ -18,7 +18,9 @@ const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
                   <Typography variant="h4" fontWeight={500} style={{ textAlign: "left" }}>
                      {title}
                   </Typography>
-                  <Typography variant="h5" fontWeight={300} color="grey.dark">{excerpt}</Typography>
+                  <Typography variant="h5" fontWeight={300} color="grey.dark">
+                     {excerpt}
+                  </Typography>
                   <Container
                      sx={{
                         marginTop: "15px",
@@ -73,8 +75,12 @@ const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
                      .format("MMMM DD, YYYY")
                      .toUpperCase()}`}
                </Typography>
-               <Typography fontWeight={700} variant="h5">{title}</Typography>
-               <Typography fontWeight={400} variant="subtitle1" color="grey.dark">{excerpt}</Typography>
+               <Typography fontWeight={700} variant="h5">
+                  {title}
+               </Typography>
+               <Typography fontWeight={400} variant="subtitle1" color="grey.dark">
+                  {excerpt}
+               </Typography>
                <Link href={`/posts/${slug}`} passHref>
                   <Button variant="contained" sx={{ alignSelf: "center", maxWidth: "250px" }}>
                      View More

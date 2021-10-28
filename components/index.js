@@ -18,3 +18,4 @@ export { default as Posts } from "./Posts";
 export { default as TextInput } from "./ControlledInput";
 export { default as GameTicker } from "./GameTicker";
 export { default as PageContainer } from "./PageContainer";
+export { default as AddComment } from "./AddComment"

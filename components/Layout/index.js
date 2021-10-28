@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { useSession } from "next-auth/client";
 import { Banner, GameTicker } from "..";
 
 const LayoutMain = styled.main`
@@ -10,6 +11,8 @@ const LayoutMain = styled.main`
 `;
 
 const Layout = ({ children }) => {
+   const [session, loading] = useSession();
+   console.log("session", session)
    return (
       <>
          <Banner />
