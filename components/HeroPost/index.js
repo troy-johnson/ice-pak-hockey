@@ -1,19 +1,32 @@
-import { Button, Chip, Container, Stack, Typography, useMediaQuery } from "@mui/material";
-import dayjs from "dayjs";
 import Link from "next/link";
 import Image from "next/image";
+import dayjs from "dayjs";
+import { Button, Container, Divider, Stack, Typography, useMediaQuery } from "@mui/material";
+import BlockContent from "@sanity/block-content-to-react";
+import markdownStyles from "../../styles/markdown-styles.module.css";
 import { PageContainer } from "..";
 import { imageBuilder } from "../../utils/sanity";
 
-const HeroPost = ({ title, categories, coverImage, postId, date, excerpt, slug }) => {
+const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
       <PageContainer small padding>
          {desktop ? (
             <>
-               <Stack display="flex" spacing={2}>
-                  <Container sx={{ display: "flex", justifyContent: "center" }}>
+               <Stack display="flex">
+                  <Typography variant="h4" fontWeight={500} style={{ textAlign: "left" }}>
+                     {title}
+                  </Typography>
+                  <Typography variant="h5" fontWeight={300} color="grey.dark">{excerpt}</Typography>
+                  <Container
+                     sx={{
+                        marginTop: "15px",
+                        marginBottom: "15px",
+                        display: "flex",
+                        justifyContent: "center",
+                     }}
+                  >
                      <Image
                         src={imageBuilder(coverImage).url()}
                         alt={title}
@@ -21,29 +34,21 @@ const HeroPost = ({ title, categories, coverImage, postId, date, excerpt, slug }
                         height={222}
                      />
                   </Container>
-                  <Typography variant="h4" style={{ textAlign: "left" }}>
-                     {title}
-                  </Typography>
-                  <Typography variant="overline">{dayjs(date).format("MMMM DD, YYYY")}</Typography>
-                  <Typography variant="body1">{excerpt}</Typography>
-                  <Stack direction="row" mb={2}>
-                     {categories.map((category) => {
-                        return (
-                           <Chip
-                              key={category._id}
-                              label={category.title}
-                              color="primary"
-                              variant="outlined"
-                              sx={{ marginRight: "5px" }}
-                           />
-                        );
-                     })}
-                  </Stack>
+                  <Divider>
+                     <Typography variant="overline" color="grey.dark">
+                        {`POSTED BY ${author.name.toUpperCase()} ON ${dayjs(date)
+                           .format("MMMM DD, YYYY")
+                           .toUpperCase()}`}
+                     </Typography>
+                  </Divider>
+                  <BlockContent
+                     blocks={body.slice(1, 3)}
+                     projectId={process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}
+                     dataset={process.env.NEXT_PUBLIC_SANITY_DATASET}
+                     className={markdownStyles.markdown}
+                  />
                   <Link href={`/posts/${slug}`} passHref>
-                     <Button
-                        variant="contained"
-                        sx={{ alignSelf: "left", maxWidth: "200px" }}
-                     >
+                     <Button variant="contained" sx={{ alignSelf: "center", maxWidth: "200px" }}>
                         View More
                      </Button>
                   </Link>
@@ -55,7 +60,7 @@ const HeroPost = ({ title, categories, coverImage, postId, date, excerpt, slug }
                display="flex"
                alignItems="left"
                justifyContent="center"
-               spacing={2}
+               spacing={1}
             >
                <Image
                   src={imageBuilder(coverImage).width(320).height(185).url()}
@@ -63,25 +68,14 @@ const HeroPost = ({ title, categories, coverImage, postId, date, excerpt, slug }
                   width={320}
                   height={185}
                />
-               <Typography variant="h5" sx={{ marginTop: "15px", textTransform: "uppercase" }}>
-                  {title}
+               <Typography variant="overline" color="grey.dark">
+                  {`POSTED BY ${author.name.toUpperCase()} ON ${dayjs(date)
+                     .format("MMMM DD, YYYY")
+                     .toUpperCase()}`}
                </Typography>
-               <Typography variant="overline">{dayjs(date).format("MMMM DD, YYYY")}</Typography>
-               <Typography variant="body1">{excerpt}</Typography>
-               <Stack direction="row" display="flex" justifyContent="center" mb={2}>
-                  {categories.map((category) => {
-                     return (
-                        <Chip
-                           key={category._id}
-                           label={category.title}
-                           color="primary"
-                           variant="outlined"
-                           sx={{ marginRight: "5px" }}
-                        />
-                     );
-                  })}
-               </Stack>
-               <Link href={`/posts/${postId}`} passHref>
+               <Typography fontWeight={700} variant="h5">{title}</Typography>
+               <Typography fontWeight={400} variant="subtitle1" color="grey.dark">{excerpt}</Typography>
+               <Link href={`/posts/${slug}`} passHref>
                   <Button variant="contained" sx={{ alignSelf: "center", maxWidth: "250px" }}>
                      View More
                   </Button>
