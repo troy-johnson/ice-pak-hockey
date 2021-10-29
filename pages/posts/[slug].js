@@ -65,10 +65,12 @@ const Post = () => {
          {desktop ? (
             <>
                <Stack display="flex">
-                  <Typography variant="h4" style={{ textAlign: "left" }}>
+               <Typography variant="h4" fontWeight={500} style={{ textAlign: "left" }}>
                      {title}
                   </Typography>
-                  <Typography variant="body1">{excerpt.toUpperCase()}</Typography>
+                  <Typography variant="h5" fontWeight={300} color="grey.dark">
+                     {excerpt}
+                  </Typography>
                   <Container
                      sx={{
                         marginTop: "15px",
