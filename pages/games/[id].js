@@ -392,7 +392,7 @@ const Game = () => {
    };
 
    return (
-      <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`}>
+      <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`} small>
          <Stack
             direction="column"
             ml={3}
