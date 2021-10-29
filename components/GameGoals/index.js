@@ -61,7 +61,6 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
             ) : null}
          </Stack>
          {goalsByPeriod?.map((period) => {
-            console.log(period);
             return (
                <div key={`${period.period}-period-goals`}>
                   <Divider>

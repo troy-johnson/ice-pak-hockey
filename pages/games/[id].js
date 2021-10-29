@@ -7,6 +7,7 @@ import {
    Alert,
    Box,
    Container,
+   Divider,
    Paper,
    Snackbar,
    Stack,
@@ -279,7 +280,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   console.log("game", game);
+   // console.log("game", game);
    // console.log("icePakGoals", icePakGoals);
    // console.log("oppGoals", opponentGoals);
    // console.log("desktop", desktop);
@@ -435,6 +436,7 @@ const Game = () => {
                         </Tabs>
                      </TabBox>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
+                        <Stack spacing={2}>
                         <GameGoals
                            goals={game?.goals}
                            openUpsertGoal={openUpsertGoal}
@@ -445,6 +447,7 @@ const Game = () => {
                            penaltiesByPeriod={penaltiesByPeriod}
                            handleClickOpen={openMutatePenalty}
                         />
+                        </Stack>
                      </TabPanel>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
                         <TeamStats desktop={desktop} teamStats={teamStats} />
