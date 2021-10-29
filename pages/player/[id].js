@@ -83,7 +83,7 @@ const Player = () => {
 
    const player = players?.filter((player) => player.id === id)[0];
 
-   // console.log("player", player);
+   console.log("player", player);
 
    if (loading) {
       return <Loading />;
@@ -111,19 +111,19 @@ const Player = () => {
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label="Summary" />
+                  <Tab label="Bio" />
                   <Tab label="Career Stats" />
                   <Tab label="Game Log" />
                </Tabs>
             </TabBox>
             <TabPanel desktop={desktop} value={value} index={0}>
-               Summary
+               Bio (coming soon)
             </TabPanel>
             <TabPanel desktop={desktop} value={value} index={1}>
-               Career Stats
+               Career Stats (coming soon)
             </TabPanel>
             <TabPanel desktop={desktop} value={value} index={2}>
-               Game Log
+               Game Log (coming soon)
             </TabPanel>
          </TabContainer>
       </PlayerContainer>

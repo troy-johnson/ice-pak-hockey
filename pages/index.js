@@ -3,9 +3,6 @@ import { HeroPost, MoreStories } from "../components";
 import { getAllPostsForHome } from "../utils/sanityApi"
 
 const Home = ({ allPosts, preview }) => {
-   const heroPost = allPosts[0]
-   const morePosts = allPosts.slice(1)
-
    console.log("INDEX", { allPosts, preview })
 
    return (
@@ -17,20 +14,20 @@ const Home = ({ allPosts, preview }) => {
          </Head>
 
          <>
-            {heroPost && (
+            {allPosts.map(post => (
                <HeroPost
-                  categories={heroPost.categories}
-                  title={heroPost.title}
-                  coverImage={heroPost.coverImage}
-                  date={heroPost.date}
-                  author={heroPost.author}
-                  slug={heroPost.slug}
-                  body={heroPost.body}
-                  postId={heroPost._id}
-                  excerpt={heroPost.excerpt}
+                  key={post._id}
+                  categories={post.categories}
+                  title={post.title}
+                  coverImage={post.coverImage}
+                  date={post.date}
+                  author={post.author}
+                  slug={post.slug}
+                  body={post.body}
+                  postId={post._id}
+                  excerpt={post.excerpt}
                />
-            )}
-            {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+            ))}
          </>
       </>
    );

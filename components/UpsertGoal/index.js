@@ -41,6 +41,7 @@ const UpsertGoal = ({
          playerId: goalAction === "add" ? gameRoster[0].playerId : goal?.playerId,
          time: goalAction === "add" ? "10:00" : goal?.time,
          team: goalAction === "add" ? opponentName : goal?.team,
+         ytLink: goalAction === "add" ? "" : goal?.ytLink,
       },
    });
 
@@ -79,6 +80,7 @@ const UpsertGoal = ({
                playerId: data.team === "Ice Pak" ? data.playerId : null,
                team: data.team,
                time: data.time,
+               ytLink: data.ytLink,
             });
          } else if (goalAction === "edit") {
             editGoal({
@@ -175,6 +177,12 @@ const UpsertGoal = ({
                      variant="outlined"
                   />
                   <InputWithMargin control={control} label="Time" name="time" variant="outlined" />
+                  <InputWithMargin
+                     control={control}
+                     label="YouTube Link"
+                     name="ytLink"
+                     variant="outlined"
+                  />
                </Stack>
             </Stack>
          </DialogContent>

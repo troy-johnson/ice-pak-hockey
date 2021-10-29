@@ -39,7 +39,8 @@ const MutatePenalty = ({
          period: penaltyAction === "add" ? 1 : penalty?.period,
          playerId: penaltyAction === "add" ? null : penalty?.playerId,
          time: penaltyAction === "add" ? "10:00" : penalty?.time,
-         team: penaltyAction === "add" ? opponentName : penalty?.team
+         team: penaltyAction === "add" ? opponentName : penalty?.team,
+         ytLink: penaltyAction === "add" ? "" : penalty?.ytLink,
       },
    });
 
@@ -64,7 +65,8 @@ const MutatePenalty = ({
                period: Number(data.period),
                playerId: data.team === "Ice Pak" ? data.playerId : null,
                team: data.team,
-               time: data.time
+               time: data.time,
+               ytLink: data.ytLink,
             });
          } else if (penaltyAction === "edit") {
             editPenalty({
@@ -123,6 +125,12 @@ const MutatePenalty = ({
                      control={control}
                      label="Penalty Type"
                      name="penaltyType"
+                     variant="outlined"
+                  />
+                  <InputWithMargin
+                     control={control}
+                     label="YouTube Link"
+                     name="ytLink"
                      variant="outlined"
                   />
                </Stack>

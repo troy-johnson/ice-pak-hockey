@@ -35,7 +35,9 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
    return (
       <Section>
          <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="h5">Penalties</Typography>
+            <Typography sx={{ ml: "5px" }} variant="h5">
+               Penalties
+            </Typography>
             {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager]"]) ? (
                <Button
                   variant="outlined"
@@ -55,7 +57,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                      </Typography>
                   </Divider>
                   {period?.penalties?.length === 0 ? (
-                     <Typography variant="body2" gutterBottom>
+                     <Typography sx={{ ml: "5px" }} variant="body2" gutterBottom>
                         No Penalties
                      </Typography>
                   ) : null}
@@ -111,7 +113,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                           </Typography>
 
                                           <Typography
-                                             variant={desktop ? "body2": "caption"}
+                                             variant={desktop ? "body2" : "caption"}
                                              fontStyle="italic"
                                           >{`${penalty?.penaltyType} (${penalty?.minutes}:00)`}</Typography>
                                        </Stack>

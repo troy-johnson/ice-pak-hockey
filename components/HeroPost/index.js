@@ -34,6 +34,7 @@ const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
                         alt={title}
                         width={384}
                         height={222}
+                        quality={100}
                      />
                   </Container>
                   <Divider>
@@ -69,6 +70,7 @@ const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
                   alt={title}
                   width={320}
                   height={185}
+                  quality={100}
                />
                <Typography variant="overline" color="grey.dark">
                   {`POSTED BY ${author.name.toUpperCase()} ON ${dayjs(date)

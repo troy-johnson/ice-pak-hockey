@@ -97,7 +97,6 @@ const PlayerName = styled.div`
    flex-direction: row;
    align-items: center;
    margin-left: 10px;
-   width: 125px;
 `;
 
 const TabContainer = styled(Box)`
@@ -121,11 +120,6 @@ const BoxScoreHeader = styled(TableRow)`
 
 const BoxScoreRow = styled(TableRow)`
    text-align: center;
-
-   th,
-   td {
-      text-align: center;
-   }
 `;
 
 const BoxScoreCell = styled(TableCell)`
@@ -362,33 +356,28 @@ const Game = () => {
                               },
                            }}
                         >
-                           <BoxScoreCell
-                              component="th"
-                              scope="row"
+                           <TableCell
                               sx={{
-                                 width: "85px !important",
-                                 padding: "16px 0px !important",
                                  cursor: "pointer",
+                                 textAlign: "left",
                               }}
+                              align="left"
                            >
-                              <PlayerName>
-                                 <Typography
-                                    variant="caption"
-                                    sx={{ marginRight: "5px", color: "grey.main" }}
-                                 >
-                                    {row.jerseyNumber}
-                                 </Typography>
-
-                                 <Typography variant="caption">
-                                    {desktop
-                                       ? row?.playerName
-                                       : `${row.playerName.charAt(0)}. ${
-                                            row.playerName.split(" ")[2] ||
-                                            row.playerName.split(" ")[1]
-                                         }`}
-                                 </Typography>
-                              </PlayerName>
-                           </BoxScoreCell>
+                              <Typography
+                                 variant="caption"
+                                 sx={{ marginRight: "5px", color: "grey.main" }}
+                              >
+                                 {row.jerseyNumber}
+                              </Typography>
+                              <Typography variant="caption" sx={{ flexGrow: 2 }}>
+                                 {desktop
+                                    ? row?.playerName
+                                    : `${row.playerName.charAt(0)}. ${
+                                         row.playerName.split(" ")[2] ||
+                                         row.playerName.split(" ")[1]
+                                      }`}
+                              </Typography>
+                           </TableCell>
                            <BoxScoreCell align="center">{row.goals}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.assists}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.points}</BoxScoreCell>
@@ -437,19 +426,19 @@ const Game = () => {
                      </TabBox>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
                         <Stack spacing={2}>
-                        <GameGoals
-                           goals={game?.goals}
-                           openUpsertGoal={openUpsertGoal}
-                           goalsSorted={goalsSorted}
-                           opponentName={game?.opponentName}
-                        />
-                        <GamePenalties
-                           penaltiesByPeriod={penaltiesByPeriod}
-                           handleClickOpen={openMutatePenalty}
-                        />
+                           <GameGoals
+                              goals={game?.goals}
+                              openUpsertGoal={openUpsertGoal}
+                              goalsSorted={goalsSorted}
+                              opponentName={game?.opponentName}
+                           />
+                           <GamePenalties
+                              penaltiesByPeriod={penaltiesByPeriod}
+                              handleClickOpen={openMutatePenalty}
+                           />
                         </Stack>
                      </TabPanel>
-                     <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
+                     <TabPanel desktop={desktop ? 1 : 0} value={value} index={1} sx={{ width: 95 }}>
                         <TeamStats desktop={desktop} teamStats={teamStats} />
                      </TabPanel>
                      <TabPanel desktop={desktop ? 2 : 0} value={value} index={2}>

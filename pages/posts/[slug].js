@@ -61,7 +61,7 @@ const Post = () => {
    } = post?.post;
 
    return (
-      <PageContainer padding>
+      <PageContainer padding small>
          {desktop ? (
             <>
                <Stack display="flex">
@@ -82,6 +82,7 @@ const Post = () => {
                         alt={title}
                         width={384}
                         height={222}
+                        quality={100}
                      />
                   </Container>
                   <Divider>
@@ -155,6 +156,7 @@ const Post = () => {
                      alt={title}
                      width={320}
                      height={185}
+                     quality={100}
                   />
                </Container>
                <Divider>
@@ -171,7 +173,7 @@ const Post = () => {
                   className={markdownStyles.markdown}
                />
                <Stack direction="row" display="flex" justifyContent="center" mt={1} mb={1}>
-                  {categories.map((category) => {
+                  {categories?.map((category) => {
                      return (
                         <Chip
                            key={category._id}

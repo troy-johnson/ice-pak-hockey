@@ -61,6 +61,9 @@ const TextLogo = styled(StyledTextLogo)`
    height: 100%;
    width: 100%;
    justify-content: center;
+   div div:hover {
+      cursor: pointer;
+   }
 `;
 
 const NavMenuBox = styled(Box)`

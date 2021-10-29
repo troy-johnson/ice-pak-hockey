@@ -49,7 +49,9 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
    return (
       <Stack direction="column">
          <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography variant="h5">Goals</Typography>
+            <Typography sx={{ ml: "5px" }} variant="h5">
+               Goals
+            </Typography>
             {!!roleCheck(session, ["Admins"]) ? (
                <Button
                   variant="outlined"
@@ -69,7 +71,7 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
                      </Typography>
                   </Divider>
                   {period?.goals?.length === 0 ? (
-                     <Typography variant="body2" gutterBottom>
+                     <Typography sx={{ ml: "5px" }} variant="body2" gutterBottom>
                         No Goals
                      </Typography>
                   ) : null}
