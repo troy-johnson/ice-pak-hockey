@@ -140,7 +140,7 @@ const Stats = () => {
    };
 
    return (
-      <PageContainer pageTitle="Season Stats">
+      <PageContainer pageTitle="Season Stats" small>
          <FormControl sx={{ marginLeft: "15px", marginBottom: "15px" }}>
             <InputLabel id="demo-simple-select-label">Season</InputLabel>
             {desktop ? (
