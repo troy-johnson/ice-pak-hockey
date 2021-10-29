@@ -45,7 +45,7 @@ const Post = () => {
       return <>Error retrieving post. Please try again later.</>;
    }
 
-   console.log("post", post);
+   // console.log("post", post);
 
    const {
       _id,

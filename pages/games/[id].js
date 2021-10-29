@@ -3,14 +3,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/client";
 import {
    Alert,
-   Avatar,
    Box,
-   Button,
-   Divider,
-   IconButton,
+   Container,
    Paper,
    Snackbar,
    Stack,
@@ -25,12 +21,11 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { FaClipboardList, FaHockeyPuck } from "react-icons/fa";
-import EditIcon from "@mui/icons-material/Edit";
 import {
    EditRoster,
    UpsertGoal,
    MutatePenalty,
+   GameGoals,
    GamePenalties,
    Loading,
    PageContainer,
@@ -82,62 +77,9 @@ const GoalText = styled(Typography)`
    font-size: 18px;
 `;
 
-const AssistText = styled(Typography)`
-   color: ${(props) => props.theme.palette.grey.dark};
-   font-size: 14px;
-   width: max-content;
-`;
-
-const GoalTime = styled(Typography)`
-   margin-top: 5px;
-   text-align: center;
-   font-size: 18px;
-   font-weight: 700;
-   background-color: ${(props) =>
-      props.playerid ? props.theme.palette.primary.main : props.theme.palette.error.main};
-   color: ${(props) => props.theme.palette.white};
-   border: 1px solid
-      ${(props) =>
-         props.playerid ? props.theme.palette.primary.main : props.theme.palette.error.main};
-   width: 150px;
-`;
-
-const Section = styled.section`
-   display: flex;
-   flex-direction: column;
-   align-content: center;
-   margin-bottom: 25px;
-   box-shadow: none;
-`;
-
-const GoalContainer = styled(Paper)`
-   display: flex;
-   flex-direction: row;
-   align-items: center;
-   border: 1px solid ${(props) => props.theme.palette.grey.light};
-   padding: 10px;
-   height: 100px;
-   margin-bottom: 5px;
-
-   div {
-      margin-right: 10px;
-   }
-`;
-
 const BoxScoreBody = styled(TableBody)`
    tr:nth-of-type(even) {
       background-color: rgba(0, 0, 0, 0.04);
-   }
-`;
-
-const EditButton = styled(IconButton)`
-   background-color: #fff;
-   color: ${(props) => props.theme.palette.grey.main};
-   height: 24px;
-   width: 24px;
-   :hover {
-      background-color: ${(props) => props.theme.palette.white};
-      color: ${(props) => props.theme.palette.black};
    }
 `;
 
@@ -203,7 +145,6 @@ const Game = () => {
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   const [session, loading] = useSession();
 
    const handleChange = (event, newValue) => setValue(newValue);
 
@@ -245,28 +186,6 @@ const Game = () => {
 
    const icePakGoals = goalsSorted?.filter((goal) => goal?.playerId);
    const opponentGoals = goalsSorted?.filter((goal) => goal?.opponentId);
-
-   const goalsByPeriod = [
-      {
-         period: "1st",
-         goals: goalsSorted?.filter((goal) => goal.period === 1),
-      },
-      {
-         period: "2nd",
-         goals: goalsSorted?.filter((goal) => goal.period === 2),
-      },
-      {
-         period: "3rd",
-         goals: goalsSorted?.filter((goal) => goal.period === 3),
-      },
-   ];
-
-   if (goalsSorted?.filter((goal) => goal.period === 4).length >= 1) {
-      goalsByPeriod.push({
-         period: "OT",
-         goals: goalsSorted?.filter((goal) => goal.period === 4),
-      });
-   }
 
    const penaltiesByPeriod = [
       {
@@ -360,7 +279,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   // console.log("game", game);
+   console.log("game", game);
    // console.log("icePakGoals", icePakGoals);
    // console.log("oppGoals", opponentGoals);
    // console.log("desktop", desktop);
@@ -373,7 +292,7 @@ const Game = () => {
 
    const BoxScore = () => {
       return (
-         <Section>
+         <Container sx={{ width: desktop ? 3 / 4 : 1 }}>
             <TableContainer component={TableComponent}>
                <Table aria-label="simple table">
                   <TableHead>
@@ -411,100 +330,7 @@ const Game = () => {
                   </BoxScoreBody>
                </Table>
             </TableContainer>
-         </Section>
-      );
-   };
-
-   const Goals = () => {
-      return (
-         <Section>
-            <Stack direction="row" sx={{ display: "flex", justifyContent: "space-between" }}>
-               <Typography variant="h5">Scoring Summary</Typography>
-               {!!roleCheck(session, ["Admins"]) ? (
-                  <Button
-                     variant="outlined"
-                     onClick={() => openUpsertGoal("add")}
-                     endIcon={<FaHockeyPuck />}
-                  >
-                     Add Goal
-                  </Button>
-               ) : null}
-            </Stack>
-            {goalsByPeriod?.map((period) => {
-               return (
-                  <div key={`${period.period}-goals`}>
-                     <Divider>
-                        <Typography variant="overline" gutterBottom>
-                           {period?.period === "OT" ? "Overtime" : `${period.period} Period`}
-                        </Typography>
-                     </Divider>
-                     {period?.goals?.length === 0 ? (
-                        <Typography variant="body2" gutterBottom>
-                           No Goals
-                        </Typography>
-                     ) : null}
-                     {period?.goals?.map((goal) => {
-                        return (
-                           <GoalContainer key={goal?.goalId}>
-                              {goal?.playerId ? (
-                                 <Avatar
-                                    alt={goal?.playerName}
-                                    src={
-                                       goal?.playerId
-                                          ? `data:image/png;base64,${goal?.playerImage}`
-                                          : null
-                                    }
-                                    sx={{
-                                       width: desktop ? 65 : 50,
-                                       height: desktop ? 65 : 50,
-                                    }}
-                                 />
-                              ) : (
-                                 <Avatar
-                                    sx={{
-                                       width: desktop ? 65 : 50,
-                                       height: desktop ? 65 : 50,
-                                    }}
-                                 >
-                                    {game?.opponentName.slice(0, 1)[0]}
-                                 </Avatar>
-                              )}
-                              <div>
-                                 <GoalText variant="body1">
-                                    {goal?.playerName ? goal?.playerName : game?.opponentName}
-                                 </GoalText>
-                                 {goal?.assists?.map((assist) => {
-                                    return (
-                                       <AssistText
-                                          variant="body2"
-                                          key={goal?.goalId + assist?.playerId}
-                                       >
-                                          {assist?.playerName}
-                                          {goal?.assists?.length > 1 ? "," : ""}
-                                       </AssistText>
-                                    );
-                                 })}
-                                 <GoalTime playerid={goal?.playerId}>
-                                    {goal?.time} / {period.period}
-                                 </GoalTime>
-                              </div>
-                              {!!roleCheck(session, ["Admins"]) ? (
-                                 <EditButton
-                                    size="small"
-                                    aria-label="Edit Penalty"
-                                    onClick={() => openUpsertGoal("edit", goal)}
-                                    sx={{ textAlign: "right" }}
-                                 >
-                                    <EditIcon />
-                                 </EditButton>
-                              ) : null}
-                           </GoalContainer>
-                        );
-                     })}
-                  </div>
-               );
-            })}
-         </Section>
+         </Container>
       );
    };
 
@@ -577,55 +403,44 @@ const Game = () => {
 
    return (
       <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`}>
-         <Typography sx={{ textAlign: "left" }} ml={3} mt={-3} variant={desktop ? "h5" : "h6"}>
-            {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY @ h:mm a")}
-         </Typography>
-         <Typography sx={{ textAlign: "left" }} ml={3} variant={desktop ? "h5" : "h6"}>
-            {game?.locationName}
-         </Typography>
+         <Stack
+            direction="column"
+            ml={3}
+            mt={0}
+            mb={2}
+            spacing={1}
+            display="flex"
+            alignItems="flex-start"
+         >
+            <Typography sx={{ textAlign: "left" }} variant="subtitle1">
+               {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY @ h:mm a")}
+            </Typography>
+            <Typography sx={{ textAlign: "left" }} variant="subtitle1">
+               {game?.seasonName}
+            </Typography>
+            <Typography sx={{ textAlign: "left" }} variant="subtitle1">
+               {game?.locationName}
+            </Typography>
+         </Stack>
          <>
-            <GameContainer desktop={desktop}>
-               {desktop ? (
-                  <>
-                     <SectionContainer>
-                        <Typography variant="h5">Box Score</Typography>
-                        <BoxScore />
-                        <Goals />
-                        <GamePenalties
-                           penaltiesByPeriod={penaltiesByPeriod}
-                           handleClickOpen={openMutatePenalty}
-                        />
-                     </SectionContainer>
-                     <SectionContainer>
-                        <Stack
-                           direction="row"
-                           sx={{ display: "flex", justifyContent: "space-between" }}
-                        >
-                           <Typography variant="h5">Team Stats</Typography>
-                           {!!roleCheck(session, ["Admins"]) ? (
-                              <Button
-                                 variant="outlined"
-                                 onClick={() => setEditRosterDialog(true)}
-                                 endIcon={<FaClipboardList />}
-                              >
-                                 Edit Roster
-                              </Button>
-                           ) : null}
-                        </Stack>
-                        <TeamStats desktop={desktop} teamStats={teamStats} />
-                     </SectionContainer>
-                  </>
-               ) : (
+            <Stack direction="column">
+               <>
+                  <BoxScore />
                   <TabContainer>
                      <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                         <Tabs value={value} onChange={handleChange} aria-label="game-tabs">
-                           <Tab label="Box Score" />
+                           <Tab label="Summary" />
                            <Tab label="Team Stats" />
+                           <Tab label="Game Video" />
                         </Tabs>
                      </TabBox>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
-                        <BoxScore />
-                        <Goals />
+                        <GameGoals
+                           goals={game?.goals}
+                           openUpsertGoal={openUpsertGoal}
+                           goalsSorted={goalsSorted}
+                           opponentName={game?.opponentName}
+                        />
                         <GamePenalties
                            penaltiesByPeriod={penaltiesByPeriod}
                            handleClickOpen={openMutatePenalty}
@@ -634,8 +449,25 @@ const Game = () => {
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={1}>
                         <TeamStats desktop={desktop} teamStats={teamStats} />
                      </TabPanel>
+                     <TabPanel desktop={desktop ? 2 : 0} value={value} index={2}>
+                        <Container>
+                           {game?.video ? (
+                              <iframe
+                                 width="100%"
+                                 height={desktop ? "359" : "200"}
+                                 src={game?.embedLink}
+                                 title={`Ice Pak vs. ${game?.opponentName}`}
+                                 frameBorder="0"
+                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                 allowFullScreen
+                              ></iframe>
+                           ) : (
+                              <Typography>No video found for this game.</Typography>
+                           )}
+                        </Container>
+                     </TabPanel>
                   </TabContainer>
-               )}
+               </>
 
                {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
                {mutatePenaltyDialog ? (
@@ -688,7 +520,7 @@ const Game = () => {
                      setSnackbar={setSnackbar}
                   />
                ) : null}
-            </GameContainer>
+            </Stack>
             <Snackbar
                open={snackbar.open}
                autoHideDuration={6000}

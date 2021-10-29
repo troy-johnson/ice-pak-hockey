@@ -3,10 +3,10 @@ import { getClient } from "../../utils/sanity";
 const commentHandler = async (req, res) => {
    const { _id, approved, name, email, comment } = req.body;
 
-   console.log("comment data", { _id, name, email, comment })
+   // console.log("comment data", { _id, name, email, comment })
 
    try {
-      console.log("submitting...")
+      // console.log("submitting...")
 
       await getClient(true).create({
          _type: "comment",

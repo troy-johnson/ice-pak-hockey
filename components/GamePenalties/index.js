@@ -1,10 +1,10 @@
 import Image from "next/image";
 import { useSession } from "next-auth/client";
 import {
-   Box,
    Button,
    Divider,
    IconButton,
+   Link,
    Stack,
    Table,
    TableBody,
@@ -15,9 +15,9 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { MdAccessTimeFilled } from "react-icons/md";
 import styled from "@emotion/styled";
-import dayjs from "dayjs";
 import { roleCheck } from "../../utils";
 
 const Section = styled.section`
@@ -26,21 +26,6 @@ const Section = styled.section`
    align-content: center;
    margin-bottom: 25px;
    box-shadow: none;
-`;
-
-const PenaltyRowBackground = styled(Image)`
-   right: 0;
-`;
-
-const EditButton = styled(IconButton)`
-   background-color: #fff;
-   color: ${(props) => props.theme.palette.grey.main};
-   height: 24px;
-   width: 24px;
-   :hover {
-      background-color: ${(props) => props.theme.palette.white};
-      color: ${(props) => props.theme.palette.black};
-   }
 `;
 
 const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
@@ -81,24 +66,40 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                               return (
                                  <TableRow
                                     key={"box-score-row-" + penalty.penaltyId}
-                                    sx={{ border: 0, maxHeight: "100px" }}
+                                    sx={{
+                                       padding: 0,
+                                       border: "hidden",
+                                       maxHeight: "75px",
+                                       height: "50px",
+                                    }}
                                  >
-                                    <TableCell component="th" scope="row" align="left">
+                                    <TableCell
+                                       component="th"
+                                       scope="row"
+                                       align="left"
+                                       sx={{ padding: "0 15px 0 5px", width: "50px" }}
+                                    >
                                        {penalty?.time}
                                     </TableCell>
-                                    <TableCell sx={{ width: "75px", padding: 0 }} align="center">
+                                    <TableCell
+                                       sx={{ width: "30px", padding: "5px 0 0 0" }}
+                                       align="center"
+                                    >
                                        {penalty?.playerName ? (
-                                          <PenaltyRowBackground
+                                          <Image
                                              alt="Ice Pak Penalty"
                                              src="/jerseyLogo.png"
-                                             width={50}
-                                             height={50}
+                                             width={35}
+                                             height={30}
                                           />
                                        ) : null}
                                     </TableCell>
-                                    <TableCell align="left">
-                                       <div style={{ display: "flex", flexDirection: "column" }}>
-                                          <Typography variant={desktop ? "h6" : "subtitle2"}>
+                                    <TableCell align="left" sx={{ padding: 0 }}>
+                                       <Stack ml={2} direction="column">
+                                          <Typography
+                                             variant={desktop ? "h6" : "subtitle2"}
+                                             fontWeight={400}
+                                          >
                                              {penalty?.playerName
                                                 ? desktop
                                                    ? penalty?.playerName
@@ -108,27 +109,38 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                                      }`
                                                 : penalty?.opponentName}
                                           </Typography>
+
                                           <Typography
-                                             variant={desktop ? "subtitle1" : "caption"}
-                                          >{`${penalty?.penaltyType}`}</Typography>
-                                          <Typography
-                                             variant={desktop ? "subtitle1" : "caption"}
-                                          >{`(${penalty?.minutes})`}</Typography>
-                                       </div>
+                                             variant={desktop ? "body2": "caption"}
+                                             fontStyle="italic"
+                                          >{`${penalty?.penaltyType} (${penalty?.minutes}:00)`}</Typography>
+                                       </Stack>
                                     </TableCell>
-                                    {/* <TableCell align="left">{`${penalty?.minutes}:00 for ${penalty?.penaltyType}`}</TableCell> */}
-                                    {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager]"]) ? (
-                                       <TableCell align="right">
-                                          <EditButton
-                                             size="small"
-                                             aria-label="Edit Penalty"
+                                    <TableCell align="right">
+                                       {penalty?.ytLink ? (
+                                          <Link
+                                             href={penalty?.ytLink}
+                                             rel="noopener"
+                                             target="_blank"
+                                          >
+                                             <IconButton size={desktop ? "large" : "small"}>
+                                                <OndemandVideoIcon />
+                                             </IconButton>
+                                          </Link>
+                                       ) : null}
+                                       {!!roleCheck(session, [
+                                          "Admins",
+                                          "Manager",
+                                          "Assistant Manager]",
+                                       ]) ? (
+                                          <IconButton
+                                             size={desktop ? "large" : "small"}
                                              onClick={() => handleClickOpen("edit", penalty)}
-                                             sx={{ flexGrow: "2" }}
                                           >
                                              <EditIcon />
-                                          </EditButton>
-                                       </TableCell>
-                                    ) : null}
+                                          </IconButton>
+                                       ) : null}
+                                    </TableCell>
                                  </TableRow>
                               );
                            })}

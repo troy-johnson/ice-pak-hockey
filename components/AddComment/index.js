@@ -9,10 +9,17 @@ import { createComment } from "../../utils";
 const AddComment = ({ postId, setSnackbar }) => {
    const [session, loading] = useSession();
    const [isSubmitting, setIsSubmitting] = useState(false);
-   const [error, setError] = useState(false);
+   const [errorMessage, setErrorMessage] = useState(false);
    const [success, setSuccess] = useState(false);
 
-   const { control, handleSubmit, reset, watch } = useForm({
+   const {
+      control,
+      handleSubmit,
+      reset,
+      setError,
+      watch,
+      formState: { errors },
+   } = useForm({
       defaultValues: {
          approved: true,
          email: session?.user?.email,
@@ -29,7 +36,7 @@ const AddComment = ({ postId, setSnackbar }) => {
       setIsSubmitting(true);
 
       try {
-         createComment(data).then(res => console.log(res));
+         createComment(data).then((res) => console.log(res));
          setIsSubmitting(false);
          setSuccess(true);
          setSnackbar({
@@ -38,7 +45,7 @@ const AddComment = ({ postId, setSnackbar }) => {
             message: "Comment successfully posted!",
          });
       } catch (error) {
-         setError(true);
+         setErrorMessage(true);
          setSnackbar({
             open: true,
             type: "error",
@@ -62,7 +69,7 @@ const AddComment = ({ postId, setSnackbar }) => {
       );
    }
 
-   if (error) {
+   if (errorMessage) {
       return (
          <Typography bgcolor="error.main" color="white">
             Error posting comment. Please try again later.
@@ -86,7 +93,9 @@ const AddComment = ({ postId, setSnackbar }) => {
             placeholder="Leave a comment"
             fullWidth
             multiline
+            required
             rows={3}
+            rules={{ minLength: 3, required: true }}
          />
          <Button
             disabled={!session}
