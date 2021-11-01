@@ -38,7 +38,7 @@ const UpsertGoal = ({
          assists: goalAction === "add" ? [] : goal?.assists,
          goalId: goalAction === "add" ? null : goal?.goalId,
          period: goalAction === "add" ? 1 : goal?.period,
-         playerId: goalAction === "add" ? gameRoster[0].playerId : goal?.playerId,
+         playerId: goalAction === "add" ? gameRoster[0]?.playerId : goal?.playerId,
          time: goalAction === "add" ? "10:00" : goal?.time,
          team: goalAction === "add" ? opponentName : goal?.team,
          ytLink: goalAction === "add" ? "" : goal?.ytLink,

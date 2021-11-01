@@ -148,7 +148,7 @@ const seasonStatsHandler = async (req, res) => {
                      .length,
                   penaltyMinutes: penalties?.reduce((sum, currentValue) => {
                      if (currentValue?.playerId === player.playerId) {
-                        return sum + currentValue?.minutes;
+                        return sum + parseFloat(currentValue?.minutes);
                      }
                      return sum;
                   }, 0),

@@ -115,7 +115,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                           <Typography
                                              variant={desktop ? "body2" : "caption"}
                                              fontStyle="italic"
-                                          >{`${penalty?.penaltyType} (${penalty?.minutes}:00)`}</Typography>
+                                          >{`${penalty?.penaltyType} (${Number.isInteger(penalty?.minutes) ? `${penalty?.minutes}:00` : `${Math.floor(penalty?.minutes)}:30`})`}</Typography>
                                        </Stack>
                                     </TableCell>
                                     <TableCell align="right">

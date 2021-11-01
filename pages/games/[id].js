@@ -3,9 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
+import { useSession } from "next-auth/client";
 import {
    Alert,
    Box,
+   Button,
    Container,
    Divider,
    Paper,
@@ -31,6 +33,7 @@ import {
    Loading,
    PageContainer,
 } from "../../components";
+import { FaClipboardList } from "react-icons/fa"
 import { roleCheck, upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -128,6 +131,7 @@ const BoxScoreCell = styled(TableCell)`
 
 const Game = () => {
    const router = useRouter();
+   const [session, loading] = useSession();
    const [value, setValue] = useState(0);
    const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
@@ -252,7 +256,7 @@ const Game = () => {
    const getPlayerPenaltyMinutes = (playerId) => {
       const penaltyMinutes = game?.penalties.reduce((sum, currentValue) => {
          if (currentValue?.playerId === playerId) {
-            return sum + currentValue?.minutes;
+            return sum + parseFloat(currentValue?.minutes);
          }
          return sum;
       }, 0);
@@ -439,6 +443,15 @@ const Game = () => {
                         </Stack>
                      </TabPanel>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={1} sx={{ width: 95 }}>
+                        {!!roleCheck(session, ["Admins"]) ? (
+                           <Button
+                              variant="outlined"
+                              onClick={() => setEditRosterDialog(true)}
+                              endIcon={<FaClipboardList />}
+                           >
+                              Edit Roster
+                           </Button>
+                        ) : null}
                         <TeamStats desktop={desktop} teamStats={teamStats} />
                      </TabPanel>
                      <TabPanel desktop={desktop ? 2 : 0} value={value} index={2}>
