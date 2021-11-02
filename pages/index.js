@@ -1,9 +1,9 @@
 import Head from "next/head";
-import { HeroPost, MoreStories } from "../components";
-import { getAllPostsForHome } from "../utils/sanityApi"
+import { HeroPost } from "../components";
+import { getAllPostsForHome } from "../utils/sanityApi";
 
 const Home = ({ allPosts, preview }) => {
-   console.log("INDEX", { allPosts, preview })
+   console.log("INDEX", { allPosts, preview });
 
    return (
       <>
@@ -14,7 +14,7 @@ const Home = ({ allPosts, preview }) => {
          </Head>
 
          <>
-            {allPosts.map(post => (
+            {allPosts.slice(0,2).map((post) => (
                <HeroPost
                   key={post._id}
                   categories={post.categories}

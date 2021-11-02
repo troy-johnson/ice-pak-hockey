@@ -19,4 +19,5 @@ export { default as MutatePenalty } from "./MutatePenalty";
 export { default as PageContainer } from "./PageContainer";
 export { default as Posts } from "./Posts";
 export { default as SortTable } from "./SortTable";
+export { default as StandingsTable } from "./StandingsTable";
 export { default as UpsertGoal } from "./UpsertGoal";
