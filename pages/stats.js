@@ -126,14 +126,22 @@ const Stats = () => {
    // console.log("seasons", seasons);
    console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
 
+   const leaderStats = (stat) =>
+      seasonStats?.stats.sort((a, b) => {
+         if (b[stat] === a[stat]) {
+            return b.points - a.points;
+         }
+         return b[stat] - a[stat];
+      })[0];
+
    const seasonLeaders = {
-      goals: seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0],
-      assists: seasonStats?.stats?.sort((a, b) => b.assists - a.assists)[0],
-      points: seasonStats?.stats?.sort((a, b) => b.penaltyMinutes - a.penaltyMinutes)[0],
-      penaltyMinutes: seasonStats?.stats?.sort(
-         (a, b) => b.goals + b.assists - (a.goals + a.assists)
-      )[0],
+      goals: leaderStats("goals"),
+      assists: leaderStats("assists"),
+      points: leaderStats("penaltyMinutes"),
+      penaltyMinutes: leaderStats("points"),
    };
+
+   console.log("seasonLeaders", seasonLeaders);
 
    if (seasonStatsLoading) {
       return <Loading />;
@@ -208,7 +216,11 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={`data:image/png;base64,${seasonLeaders?.goals?.image}`}
+                        src={
+                           seasonLeaders?.goals?.image
+                              ? `data:image/png;base64,${seasonLeaders?.goals?.image}`
+                              : seasonLeaders?.goals?.googleAvatarLink
+                        }
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.goals?.fullName}</Typography>
