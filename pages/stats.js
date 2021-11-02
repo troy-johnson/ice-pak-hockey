@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import {
    Avatar,
+   Divider,
    FormControl,
    Select,
    NativeSelect,
@@ -97,6 +98,15 @@ const PlayerAvatar = styled(Avatar)`
    margin-right: 10px;
 `;
 
+const LeaderStatStack = styled(Stack)`
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 5px;
+   min-width: 60px;
+`;
+
 const Stats = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const [seasonId, setSeasonId] = useState(
@@ -114,7 +124,16 @@ const Stats = () => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    // console.log("seasons", seasons);
-   // console.log("seasonStats", seasonStats);
+   console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
+
+   const seasonLeaders = {
+      goals: seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0],
+      assists: seasonStats?.stats?.sort((a, b) => b.assists - a.assists)[0],
+      points: seasonStats?.stats?.sort((a, b) => b.penaltyMinutes - a.penaltyMinutes)[0],
+      penaltyMinutes: seasonStats?.stats?.sort(
+         (a, b) => b.goals + b.assists - (a.goals + a.assists)
+      )[0],
+   };
 
    if (seasonStatsLoading) {
       return <Loading />;
@@ -172,6 +191,124 @@ const Stats = () => {
                </NativeSelect>
             )}
          </FormControl>
+         <Typography variant="subtitle1" sx={{ mt: 2, ml: 2 }}>
+            Leaders
+         </Typography>
+         <Stack
+            direction="row"
+            display="flex"
+            justifyContent="center"
+            divider={<Divider orientation="vertical" flexItem />}
+            spacing={1}
+            sx={{ mb: "15px", mt: 2, mr: 1, ml: 1 }}
+         >
+            <LeaderStatStack>
+               <Typography variant="overline">Goals</Typography>
+               {seasonLeaders?.goals ? (
+                  <>
+                     <Avatar
+                        sx={{ mb: 1 }}
+                        src={`data:image/png;base64,${seasonLeaders?.goals?.image}`}
+                     />
+                     {desktop ? (
+                        <Typography>{seasonLeaders?.goals?.fullName}</Typography>
+                     ) : (
+                        <>
+                           <Typography variant="body2">
+                              {seasonLeaders?.goals?.firstName}
+                           </Typography>
+                           <Typography variant="body2">{seasonLeaders?.goals?.lastName}</Typography>
+                        </>
+                     )}
+                     <Typography variant="h6">{seasonLeaders?.goals?.goals}</Typography>
+                  </>
+               ) : (
+                  "No stats"
+               )}
+            </LeaderStatStack>
+            <LeaderStatStack>
+               <Typography variant="overline">Assists</Typography>
+               {seasonLeaders?.assists ? (
+                  <>
+                     <Avatar
+                        sx={{ mb: 1 }}
+                        src={`data:image/png;base64,${seasonLeaders?.assists?.image}`}
+                     />
+                     {desktop ? (
+                        <Typography>{seasonLeaders?.assists?.fullName}</Typography>
+                     ) : (
+                        <>
+                           <Typography variant="body2">
+                              {seasonLeaders?.assists?.firstName}
+                           </Typography>
+                           <Typography variant="body2">
+                              {seasonLeaders?.assists?.lastName}
+                           </Typography>
+                        </>
+                     )}
+                     <Typography variant="h6">{seasonLeaders?.assists?.assists}</Typography>
+                  </>
+               ) : (
+                  "No stats"
+               )}
+            </LeaderStatStack>
+            <LeaderStatStack>
+               <Typography variant="overline">{desktop ? "Points" : "Pts"}</Typography>
+               {seasonLeaders?.points ? (
+                  <>
+                     <Avatar
+                        sx={{ mb: 1 }}
+                        src={`data:image/png;base64,${seasonLeaders?.points?.image}`}
+                     />
+                     {desktop ? (
+                        <Typography>{seasonLeaders?.points?.fullName}</Typography>
+                     ) : (
+                        <>
+                           <Typography variant="body2">
+                              {seasonLeaders?.points?.firstName}
+                           </Typography>
+                           <Typography variant="body2">
+                              {seasonLeaders?.points?.lastName}
+                           </Typography>
+                        </>
+                     )}
+                     <Typography variant="h6">
+                        {seasonLeaders?.points?.goals + seasonLeaders?.points?.assists}
+                     </Typography>
+                  </>
+               ) : (
+                  "No stats"
+               )}
+            </LeaderStatStack>
+            <LeaderStatStack>
+               <Typography variant="overline">{desktop ? "Penalty Minutes" : "PIM"}</Typography>
+               {seasonLeaders?.penaltyMinutes ? (
+                  <>
+                     <Avatar
+                        sx={{ mb: 1 }}
+                        src={`data:image/png;base64,${seasonLeaders?.penaltyMinutes?.image}`}
+                     />
+                     {desktop ? (
+                        <Typography>{seasonLeaders?.penaltyMinutes?.fullName}</Typography>
+                     ) : (
+                        <>
+                           <Typography variant="body2">
+                              {seasonLeaders?.penaltyMinutes?.firstName}
+                           </Typography>
+                           <Typography variant="body2">
+                              {seasonLeaders?.penaltyMinutes?.lastName}
+                           </Typography>
+                        </>
+                     )}
+                     <Typography variant="h6">
+                        {seasonLeaders?.penaltyMinutes?.penaltyMinutes}
+                     </Typography>
+                  </>
+               ) : (
+                  "No stats"
+               )}
+            </LeaderStatStack>
+         </Stack>
          <TableContainer>
             <Table aria-label="Team">
                <TableHead>

@@ -202,7 +202,7 @@ const Player = () => {
                </Tabs>
             </TabBox>
             <TabPanel desktop={desktop} value={value} index={0}>
-               Bio (coming soon)
+               <Typography>{player?.bio ? player?.bio : "No bio. Login and write one!"}</Typography>
             </TabPanel>
             <TabPanel desktop={desktop} value={value} index={1}>
                <Typography variant="subtitle2" sx={{ ml: 2 }}>
@@ -310,8 +310,12 @@ const Player = () => {
                                  <TableRow key={season.seasonId}>
                                     <StatBodyCell component="th" scope="row">
                                        <Stack direction="column" alignItems="left">
-                                          <Typography variant="caption">{season.leagueName}</Typography>
-                                          <Typography variant="caption">{season.shortYear}</Typography>
+                                          <Typography variant="caption">
+                                             {season.leagueName}
+                                          </Typography>
+                                          <Typography variant="caption">
+                                             {season.shortYear}
+                                          </Typography>
                                           <Typography variant="caption">{season.type}</Typography>
                                        </Stack>
                                     </StatBodyCell>
@@ -353,8 +357,8 @@ const Player = () => {
                            </GameLogHeader>
                         </TableHead>
                         <PlayerTableBody>
-                           {playerStats?.gameLog.map((game) => (
-                              <TableRow key={game.gameId}>
+                           {playerStats?.gameLog.map((game, index) => (
+                              <TableRow key={`game-log-${index}`}>
                                  <StatBodyCell component="th" scope="row">
                                     <PlayerName>
                                        <Typography variant="caption">
