@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
@@ -6,6 +7,7 @@ import {
    AppBar,
    Box,
    IconButton,
+   LinearProgress,
    List,
    ListItem,
    ListItemText,
@@ -16,7 +18,6 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { Account } from "..";
-
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
@@ -46,17 +47,9 @@ const StyledTextLogo = ({ className, desktop }) => {
    );
 };
 
-// const BannerAppBar = styled(AppBar)`
-// `;
-
-// const BannerToolbar = styled(Toolbar)`
-//    width: 100%;
-//    align-items: center;
-// `;
-
 const TextLogo = styled(StyledTextLogo)`
    width: 100%;
-   margin: ${props => props.desktop ? "15px 15px 5px 45px" : "15px 0px 5px 15px"};
+   margin: ${(props) => (props.desktop ? "15px 15px 5px 45px" : "15px 0px 5px 15px")};
    display: flex;
    height: 100%;
    width: 100%;
@@ -95,20 +88,31 @@ const OpenNav = styled(StyledOpenNav)`
    }
 `;
 
-const CloseNav = styled(StyledCloseNav)`
-   svg {
-      font-size: 48px;
-      color: white;
-
-      :hover {
-         color: ${(props) => props.theme.palette.secondary.main};
-      }
-   }
-`;
-
 const Banner = () => {
    const [open, setOpen] = useState(false);
+   const [showProgress, setShowProgress] = useState(false);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+   const router = useRouter();
+
+   useEffect(() => {
+      const handleStart = (url) => {
+         setShowProgress(true);
+      };
+      const handleStop = () => {
+         setShowProgress(false);
+      };
+
+      router.events.on("routeChangeStart", handleStart);
+      router.events.on("routeChangeComplete", handleStop);
+      router.events.on("routeChangeError", handleStop);
+
+      return () => {
+         router.events.off("routeChangeStart", handleStart);
+         router.events.off("routeChangeComplete", handleStop);
+         router.events.off("routeChangeError", handleStop);
+      };
+   }, [router]);
 
    return (
       <AppBar position="sticky">
@@ -169,6 +173,11 @@ const Banner = () => {
             <TextLogo desktop={desktop} />
             <Account />
          </Toolbar>
+         {showProgress ? (
+            <Box sx={{ width: "100%" }}>
+               <LinearProgress color="secondary" />
+            </Box>
+         ) : null}
       </AppBar>
    );
 };
