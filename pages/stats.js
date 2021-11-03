@@ -20,6 +20,7 @@ import {
    TableRow,
    Typography,
    useMediaQuery,
+   useTheme
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading, PageContainer } from "../components";
@@ -121,7 +122,10 @@ const Stats = () => {
    const { seasonStats, seasonStatsLoading, seasonStatsError } = useGetSeasonStats(
       seasonId ?? seasons?.[0]?.id
    );
-   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const theme = useTheme();
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+
+   console.log("uMQ", theme)
 
    // console.log("seasons", seasons);
    console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);

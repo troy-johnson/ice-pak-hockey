@@ -31,6 +31,10 @@ export default NextAuth({
             session.user.metadata.app = user.app_metadata;
          }
 
+         if (user?.sub) {
+            session.user.sub = user.sub;
+         }
+
          return session;
       },
       async jwt(token, user, account, profile, isNewUser) {
@@ -53,6 +57,10 @@ export default NextAuth({
 
          if (user?.app_metadata) {
             token.app_metadata = user.app_metadata;
+         }
+
+         if (user?.sub) {
+            token.sub = user.sub;
          }
          return token;
       },

@@ -79,11 +79,13 @@ const Account = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
          >
-            <Link href="/profile" passHref>
-               <MenuItem>
-                  <Avatar /> Profile
-               </MenuItem>
-            </Link>
+            {session ? (
+               <Link href="/profile" passHref>
+                  <MenuItem>
+                     <Avatar /> Profile
+                  </MenuItem>
+               </Link>
+            ) : null}
             {session ? (
                <MenuItem onClick={() => signOut()}>
                   <ListItemIcon>

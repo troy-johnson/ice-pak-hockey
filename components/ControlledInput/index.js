@@ -9,9 +9,11 @@ const ControlledInput = ({
    label,
    name,
    placeholder,
+   helperText,
    rows,
    required,
    rules,
+   size,
    type,
    variant,
 }) => {
@@ -30,11 +32,12 @@ const ControlledInput = ({
                multiline={multiline}
                placeholder={placeholder}
                rows={rows}
+               size={size}
                variant={variant}
                value={value}
                onChange={onChange}
                error={!!error}
-               helperText={error ? error.message : null}
+               helperText={helperText}
             />
          )}
          rules={rules}
