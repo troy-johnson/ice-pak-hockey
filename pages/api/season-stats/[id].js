@@ -20,6 +20,17 @@ const seasonStatsHandler = async (req, res) => {
             const seasonResult = await getDoc(doc(db, "seasons", id));
             const seasonData = seasonResult?.data();
 
+            if (!seasonData.games) {
+               seasonData.statBypass.forEach((player) => stats.push(player));
+               return res
+                  .status(200)
+                  .json({
+                     ...seasonData,
+                     seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
+                     stats,
+                  });
+            }
+
             let gameBatches = [
                seasonData?.games.slice(0, 9),
                seasonData?.games.slice(10, 19),

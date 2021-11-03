@@ -125,27 +125,29 @@ const Stats = () => {
    const theme = useTheme();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
-   console.log("uMQ", theme)
+   const selectSize = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+
+   // console.log("uMQ", theme)
 
    // console.log("seasons", seasons);
-   console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
+   // console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
 
-   const leaderStats = (stat) =>
-      seasonStats?.stats.sort((a, b) => {
+   const leaderStats = (stat) => {
+      
+      return seasonStats?.stats?.sort((a, b) => {
          if (b[stat] === a[stat]) {
             return b.points - a.points;
          }
          return b[stat] - a[stat];
       })[0];
+   }
 
    const seasonLeaders = {
       goals: leaderStats("goals"),
       assists: leaderStats("assists"),
-      points: leaderStats("penaltyMinutes"),
-      penaltyMinutes: leaderStats("points"),
+      points: leaderStats("points"),
+      penaltyMinutes: leaderStats("penaltyMinutes"),
    };
-
-   console.log("seasonLeaders", seasonLeaders);
 
    if (seasonStatsLoading) {
       return <Loading />;
@@ -172,14 +174,15 @@ const Stats = () => {
 
    return (
       <PageContainer pageTitle="Season Stats" small>
-         <FormControl sx={{ marginLeft: "15px", marginBottom: "15px" }}>
+         <FormControl sx={{ marginLeft: "15px", marginBottom: "15px", maxWidth: "350px" }}>
             <InputLabel id="demo-simple-select-label">Season</InputLabel>
-            {desktop ? (
+            {selectSize ? (
                <Select
                   labelId="season-select-label"
                   id="season-select"
                   value={seasonId}
                   label="Season"
+                  variant="outlined"
                   onChange={handleSeasonChange}
                >
                   {seasonOptions.map((option) => (
@@ -211,7 +214,7 @@ const Stats = () => {
             display="flex"
             justifyContent="center"
             divider={<Divider orientation="vertical" flexItem />}
-            spacing={1}
+            spacing={selectSize ? 2.5 : 1}
             sx={{ mb: "15px", mt: 2, mr: 1, ml: 1 }}
          >
             <LeaderStatStack>
@@ -222,7 +225,7 @@ const Stats = () => {
                         sx={{ mb: 1 }}
                         src={
                            seasonLeaders?.goals?.image
-                              ? `data:image/png;base64,${seasonLeaders?.goals?.image}`
+                              ? seasonLeaders?.goals?.image
                               : seasonLeaders?.goals?.googleAvatarLink
                         }
                      />
@@ -248,7 +251,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={`data:image/png;base64,${seasonLeaders?.assists?.image}`}
+                        src={seasonLeaders?.assists?.image}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.assists?.fullName}</Typography>
@@ -274,7 +277,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={`data:image/png;base64,${seasonLeaders?.points?.image}`}
+                        src={seasonLeaders?.points?.image}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.points?.fullName}</Typography>
@@ -302,7 +305,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={`data:image/png;base64,${seasonLeaders?.penaltyMinutes?.image}`}
+                        src={seasonLeaders?.penaltyMinutes?.image}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.penaltyMinutes?.fullName}</Typography>

@@ -12,7 +12,7 @@ const LayoutMain = styled.main`
 
 const Layout = ({ children }) => {
    const [session, loading] = useSession();
-   console.log("session", session)
+   // console.log("session", session)
    return (
       <>
          <Banner />

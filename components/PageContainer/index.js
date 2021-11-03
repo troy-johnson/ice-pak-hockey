@@ -6,7 +6,7 @@ const PageContainer = ({ children, padding, pageTitle, small }) => {
    let width = "100%";
 
    if (desktop && small) {
-      width = "40%";
+      width = "60%";
    } else if (desktop && !small) {
       width = "75%";
    }
