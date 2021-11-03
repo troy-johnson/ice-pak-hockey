@@ -1,7 +1,18 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/client";
-import { Avatar, Button, Alert, Stack, Snackbar, Typography, useMediaQuery } from "@mui/material";
-import { useForm } from "react-hook-form";
+import {
+   Avatar,
+   Button,
+   Alert,
+   Stack,
+   FormGroup,
+   FormControlLabel,
+   Checkbox,
+   Snackbar,
+   Typography,
+   useMediaQuery,
+} from "@mui/material";
+import { Controller, useForm } from "react-hook-form";
 import { mutate } from "swr";
 import { ControlledInput, ControlledRadio, ControlledSelect, PageContainer } from "../components";
 import { editPlayer, useGetPlayers } from "../utils";
@@ -33,6 +44,10 @@ const Profile = () => {
          setImage(e.target.result);
       };
    };
+
+   // const gameDay = watch("gameDayNotifications");
+
+   // console.log("gameDayNotifications", gameDay);
 
    const onSubmit = (data) => {
       let imageToUpload = image ?? session?.user?.image;
@@ -69,6 +84,7 @@ const Profile = () => {
          setValue("tShirtSize", player?.tShirtSize || "m");
          setValue("position", player?.position);
          setValue("handedness", player?.handedness || player?.shoots);
+         // setValue("gameDayNotifications", player?.gameDayNotifications || false);
       }
    }, [player]);
 
@@ -88,19 +104,50 @@ const Profile = () => {
                <Typography>Please login to view your profile information.</Typography>
             ) : (
                <>
-                  <Stack display="flex" alignItems="center" direction="column" spacing={1} mb={3}>
-                     <Avatar
-                        src={player?.image ?? session?.user?.image}
-                        sx={{ height: 128, width: 128 }}
-                     />
-                     <Button variant="contained" component="label">
-                        Upload New Photo
-                        <input
-                           {...register("image", { onChange: (e) => handleImageUpload(e) })}
-                           type="file"
-                           hidden
+                  <Stack direction="row">
+                     <Stack
+                        display="flex"
+                        alignItems="center"
+                        direction="column"
+                        spacing={1}
+                        mb={3}
+                     >
+                        <Avatar
+                           src={player?.image ?? session?.user?.image}
+                           sx={{ height: 128, width: 128 }}
                         />
-                     </Button>
+                        <Button variant="contained" component="label">
+                           Upload Photo
+                           <input
+                              {...register("image", { onChange: (e) => handleImageUpload(e) })}
+                              type="file"
+                              hidden
+                           />
+                        </Button>
+                     </Stack>
+                     {/* {desktop ? (
+                        <Controller
+                           control={control}
+                           name="gameDayNotifications"
+                           render={({
+                              field: { onChange, onBlur, value, name, ref },
+                              fieldState: { invalid, isTouched, isDirty, error },
+                              formState,
+                           }) => (
+                              <FormControlLabel
+                                 control={
+                                    <Checkbox
+                                       onBlur={onBlur}
+                                       onChange={onChange}
+                                       checked={value}
+                                       inputRef={ref}
+                                    />
+                                 }
+                                 label="Game Day Notifications (SMS)"
+                              />
+                           )}
+                        />
+                     ) : null} */}
                   </Stack>
                   {desktop ? (
                      <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
@@ -184,6 +231,13 @@ const Profile = () => {
                               name="position"
                               label="Position"
                            />
+                           <ControlledSelect
+                              control={control}
+                              size="small"
+                              name="tShirtSize"
+                              label="T-Shirt Size"
+                              options={shirtSizeOptions}
+                           />
                            <ControlledRadio
                               control={control}
                               name="handedness"
@@ -191,13 +245,6 @@ const Profile = () => {
                               options={["Left", "Right"]}
                               row
                               required
-                           />
-                           <ControlledSelect
-                              control={control}
-                              size="small"
-                              name="tShirtSize"
-                              label="T-Shirt Size"
-                              options={shirtSizeOptions}
                            />
                         </Stack>
                      </Stack>
@@ -275,6 +322,13 @@ const Profile = () => {
                            name="position"
                            label="Position"
                         />
+                        <ControlledSelect
+                           control={control}
+                           size="small"
+                           name="tShirtSize"
+                           label="T-Shirt Size"
+                           options={shirtSizeOptions}
+                        />
                         <ControlledRadio
                            control={control}
                            name="handedness"
@@ -283,13 +337,12 @@ const Profile = () => {
                            row
                            required
                         />
-                        <ControlledSelect
-                           control={control}
-                           size="small"
-                           name="tShirtSize"
-                           label="T-Shirt Size"
-                           options={shirtSizeOptions}
-                        />
+                        {/* <FormGroup>
+                           <FormControlLabel
+                              control={<Checkbox {...register("gameDayNotifications")} />}
+                              label="Game Day (SMS) Notifications"
+                           />
+                        </FormGroup> */}
                      </Stack>
                   )}
                   {/* <ControlledInput control={control} name="bio" label="Bio" rows={3} /> */}
