@@ -83,14 +83,14 @@ const Post = () => {
                         src={imageBuilder(coverImage).url()}
                         alt={title}
                         width={384}
-                        height={222}
+                        height={288}
                         quality={100}
                      />
                   </Container>
                   <Divider>
                      <Typography variant="overline" color="grey.dark">
                         {`POSTED BY ${author.name.toUpperCase()} ON ${dayjs(date)
-                           .format("MMMM DD, YYYY")
+                           .format("MMMM D, YYYY")
                            .toUpperCase()}`}
                      </Typography>
                   </Divider>
