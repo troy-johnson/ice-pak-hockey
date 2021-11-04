@@ -78,9 +78,9 @@ const Profile = () => {
          setValue("nickname", player?.nickname);
          setValue("lastName", player?.lastName);
          setValue("homeTown", player?.homeTown);
-         setValue("preferredEmail", player?.preferredEmail || player?.email);
-         setValue("preferredPhone", player?.preferredPhone || player?.phoneNumber);
-         setValue("preferredJerseyNumber", player?.preferredJerseyNumber || player?.number);
+         setValue("preferredEmail", player?.preferredEmail ?? player?.email);
+         setValue("preferredPhone", player?.preferredPhone ?? player?.phoneNumber);
+         setValue("preferredJerseyNumber", player?.preferredJerseyNumber ?? player?.jerseyNumber);
          setValue("tShirtSize", player?.tShirtSize || "m");
          setValue("position", player?.position);
          setValue("handedness", player?.handedness || player?.shoots);

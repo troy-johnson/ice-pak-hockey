@@ -194,7 +194,7 @@ const Team = () => {
                                           alt={`${player?.firstName} ${
                                              player?.nickname ? player?.nickname : ""
                                           } ${player?.lastName}`}
-                                          src={`data:image/png;base64,${player?.image}`}
+                                          src={player?.image}
                                        />
                                     ) : null}{" "}
                                     {desktop
@@ -208,7 +208,9 @@ const Team = () => {
                                  {player?.jerseyNumber}
                               </PlayerTableCell>
                               <PlayerTableCell align="center">{player?.position}</PlayerTableCell>
-                              <PlayerTableCell align="center">{player?.shoots}</PlayerTableCell>
+                              <PlayerTableCell align="center">
+                                 {player?.shoots || player?.handedness.slice(0, 1)}
+                              </PlayerTableCell>
                               {desktop ? (
                                  <PlayerTableCell align="center">
                                     {player?.homeTown}
