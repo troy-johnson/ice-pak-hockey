@@ -8,115 +8,24 @@ import {
    Card,
    CardActions,
    CardContent,
+   Divider,
    IconButton,
    Link as MuiLink,
    Skeleton,
+   Stack,
    Typography,
    useMediaQuery,
 } from "@mui/material";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { PageContainer } from "../components"
+import { Loading, PageContainer } from "../components";
 import { useGetAllGames } from "../utils";
-
-const StyledScheduleGameCard = ({ className, children, desktop, game }) => {
-   return (
-      <Card className={className}>
-         <CardContent>{children}</CardContent>
-         <CardActions>
-            <Link key={game?.id} href={`/games/${game?.id}`} passHref>
-               <Button size={desktop ? "medium" : "small"} color="secondary" variant="outlined">
-                  View Game
-               </Button>
-            </Link>
-         </CardActions>
-      </Card>
-   );
-};
-
-const StyledLoader = ({ className }) => {
-   return (
-      <Card className={className}>
-         <DateTime variant="overline">
-            <Skeleton variant="text" />
-         </DateTime>
-         <Opponent variant="body1">
-            <Skeleton variant="rectangle" height={115} />
-         </Opponent>
-      </Card>
-   );
-};
-
-const ScheduleGameCard = styled(StyledScheduleGameCard)`
-   max-width: 100%;
-   margin: 15px 0px;
-`;
-
-const DateTime = styled(Typography)`
-   letter-spacing: 0.2rem;
-   font-size: 1.1rem;
-   width: 100%;
-   margin-bottom: 5px;
-   display: flex;
-   flex-direction: row;
-   justify-content: space-between;
-`;
-
-const Opponent = styled(Typography)`
-   font-size: 1.5rem;
-   width: 100%;
-   margin-bottom: 5px;
-   margin-top: 5px;
-`;
-
-const Location = styled(Typography)`
-   font-size: 1.25rem;
-   width: 100%;
-   display: flex;
-   margin-top: 10px;
-   align-items: center;
-`;
-
-const Score = styled(Typography)`
-   letter-spacing: 0.2rem;
-   font-size: 1.1rem;
-   width: 100%;
-`;
-
-const Season = styled(Typography)`
-   letter-spacing: 0.2rem;
-   font-size: 1.1rem;
-   width: 100%;
-   margin-bottom: 5px;
-`;
-
-const DateContainer = styled.div`
-   display: flex;
-   align-items: center;
-   margin-left: -15px;
-`;
 
 const ArrowButton = styled(IconButton)`
    color: ${(props) => props.theme.palette.black};
 `;
 
-const Loader = styled(StyledLoader)`
-   span > span,
-   p > span {
-      margin: 5px 10px;
-   }
-
-   p > span {
-      margin-bottom: 15px;
-   }
-`;
-
 // TODO: Figure out card background image using data:image/png;base64,game.locationImage
-
-const ScheduleContainer = styled.section`
-   margin: 15px;
-`;
 
 const Schedule = () => {
    const [date, setDate] = useState(dayjs());
@@ -125,38 +34,30 @@ const Schedule = () => {
    const isGameEnded = (gameTime) => dayjs().isAfter(dayjs(gameTime));
    const isWin = (icePakGoals, opponentGoals) => {
       if (icePakGoals > opponentGoals) {
-         return "Win";
+         return "W";
       } else if (icePakGoals === opponentGoals) {
-         return "Tie";
+         return "T";
       }
-      return "Loss";
+      return "L";
    };
 
-   // console.log("games", games);
-   // console.log('desktop', desktop)
-   // console.log(
-   //    "date comparison",
-   //    games.filter((game) => dayjs.unix(game?.date.seconds) > date)
-   // );
-
-   // console.log("date", date.format("MM DD YY"));
+   const schedule = games.map((game) => {
+      return {
+         date: game?.date?.seconds,
+         opponentName: game?.opponentName,
+         locationName: game?.locationName,
+      };
+   });
 
    if (gamesLoading) {
-      return (
-         <>
-            <Loader />
-            <Loader />
-            <Loader />
-         </>
-      );
+      return <Loading />;
    } else if (gamesError) {
       return <Alert severity="error">Error retrieving schedule. Please try again later.</Alert>;
    }
 
    return (
-      <ScheduleContainer>
-         <Typography variant="h3">Schedule</Typography>
-         <DateContainer>
+      <PageContainer pageTitle="Schedule" small>
+         <Stack direction="row" display="flex" alignItems="center">
             <ArrowButton onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}>
                <ArrowLeftIcon fontSize="large" />
             </ArrowButton>
@@ -164,54 +65,63 @@ const Schedule = () => {
             <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
                <ArrowRightIcon fontSize="large" />
             </ArrowButton>
-         </DateContainer>
-         {games
-            ? games
-                 ?.filter((game) => dayjs.unix(game?.date.seconds) > date)
-                 ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
-                 .map((game) => {
-                    let icePakGoals = game?.goals?.filter((goal) => goal.playerId).length;
-                    let opponentGoals = game?.goals?.filter((goal) => !goal.playerId).length;
-                    return (
-                       <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
-                          <DateTime variant="overline">
-                             <span>
-                                {isGameEnded(game?.date.seconds) ? (
-                                   dayjs.unix(game?.date.seconds).format("ddd M/D h:mm A")
-                                ) : (
-                                   <>
-                                      {dayjs.unix(game?.date.seconds).format("ddd M/D")} - FINAL
-                                      <Score variant="overline">
-                                         {`${isWin(
-                                            icePakGoals,
-                                            opponentGoals
-                                         )} ${icePakGoals} - ${opponentGoals}`}
-                                      </Score>
-                                   </>
-                                )}
-                             </span>
-                             {desktop ? <span>{game?.seasonName} {game?.type}</span> : null}
-                          </DateTime>
-                          {/* <Season variant="caption">{game?.seasonName}</Season> */}
-                          <Opponent variant="body1">{game?.opponentName}</Opponent>
-                          <Location variant="body2">
-                             <LocationOnIcon />
-                             <MuiLink
-                                href={game?.locationMapLink}
-                                alt={`View ${game?.locationName} on Google Maps`}
-                                color="primary"
-                                underline="hover"
-                                target="_blank"
-                                rel="noopener"
-                             >
-                                {game?.locationName}
-                             </MuiLink>
-                          </Location>
-                       </ScheduleGameCard>
-                    );
-                 })
-            : null}
-      </ScheduleContainer>
+         </Stack>
+         <Stack
+            direction="column"
+            spacing={2}
+            sx={{ ml: 2, mr: 2, mb: 2 }}
+            divider={<Divider orientation="horizontal" flexItem />}
+         >
+            {games
+               ? games
+                    ?.filter(
+                       (game) =>
+                          dayjs.unix(game?.date.seconds).isAfter(date) &&
+                          dayjs.unix(game?.date.seconds).isBefore(date.add(1, "M").date(1))
+                    )
+                    ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
+                    .map((game) => {
+                       return (
+                          <Link href={`/games/${game?.id}`} key={game?.id} passHref>
+                             <Stack direction="column">
+                                <Stack
+                                   direction="row"
+                                   display="flex"
+                                   justifyContent="space-between"
+                                >
+                                   <Typography variant="overline" sx={{ fontSize: 14 }}>
+                                      {dayjs.unix(game?.date.seconds).format("ddd M/D h:mm A")}
+                                   </Typography>
+                                   <Typography variant="overline" sx={{ fontSize: 14 }}>
+                                      {dayjs().isAfter(dayjs.unix(game?.date.seconds))
+                                         ? `FINAL ${game.icePakGoals} - ${
+                                              game.opponentGoals
+                                           } (${isWin(game.icePakGoals, game.opponentGoals)})`
+                                         : ""}
+                                   </Typography>
+                                </Stack>
+                                <Typography gutterBottom variant="h5">
+                                   {game?.opponentName}
+                                </Typography>
+                                <Typography variant="caption">
+                                   <MuiLink
+                                      href={game?.locationMapLink}
+                                      alt={`View ${game?.locationName} on Google Maps`}
+                                      color="primary"
+                                      underline="hover"
+                                      target="_blank"
+                                      rel="noopener"
+                                   >
+                                      {game?.locationName}
+                                   </MuiLink>
+                                </Typography>
+                             </Stack>
+                          </Link>
+                       );
+                    })
+               : null}
+         </Stack>
+      </PageContainer>
    );
 };
 

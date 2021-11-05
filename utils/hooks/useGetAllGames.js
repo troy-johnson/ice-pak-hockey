@@ -1,31 +1,26 @@
 import useSWR from "swr";
-import {
-   useGetGoals,
-   useGetLocations,
-   useGetOpponents,
-   useGetPenalties,
-   useGetPlayers,
-   useGetSeasons,
-} from "..";
+import { useGetGoals, useGetLocations, useGetOpponents, useGetSeasons } from "..";
 
 const useGetAllGames = () => {
    const { data, error } = useSWR(`/api/games`);
 
    const { goals, goalsLoading, goalsError } = useGetGoals();
    const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
-   const { penalties, penaltiesLoading, penaltiesError } = useGetPenalties();
-   const { players, playersLoading, playersError } = useGetPlayers();
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { locations, locationsLoading, locationsError } = useGetLocations();
 
    let games = [];
 
-   data?.forEach((game) =>
+   data?.forEach((game) => {
+      // console.log("game", {
+      //    ...game,
+      //    icePakGoals: goals?.filter((goal) => goal.gameId === game.id && goal.playerId)?.length,
+      //    opponentGoals: goals?.filter((goal) => goal.gameId === game.id && goal.opponentId)?.length,
+      // });
       games.push({
          ...game,
-         // goals: game?.goals.map((goal) => goals[goal.id]),
-         // penalties: game?.penalties.map((penalty) => penalties[penalty.id]),
-         // roster: game?.roster.map((player) => players?.[player.id]),
+         icePakGoals: goals?.filter((goal) => goal.gameId === game.id && goal.playerId).length,
+         opponentGoals: goals?.filter((goal) => goal.gameId === game.id && goal.opponentId).length,
          locationName: locations?.filter((location) => location.id === game.locationId)[0]?.name,
          // locationImage: locations?.filter(
          //    (location) => location.id === game.locationId
@@ -36,30 +31,15 @@ const useGetAllGames = () => {
             ?.teamName,
          seasonName: `${seasons?.filter((season) => season.id === game.seasonId)[0]?.leagueName} ${
             seasons?.filter((season) => season.id === game.seasonId)[0]?.name
-         } ${
-            seasons?.filter((season) => season.id === game.seasonId)[0]?.type
-         }`,
-      })
-   );
+         } ${seasons?.filter((season) => season.id === game.seasonId)[0]?.type}`,
+      });
+   });
 
    // console.log("games", games)
 
-   const isError =
-      error |
-      goalsError |
-      opponentsError |
-      penaltiesError |
-      locationsError |
-      playersError |
-      seasonsError;
+   const isError = error | goalsError | opponentsError | locationsError | seasonsError;
    const isLoading =
-      goalsLoading |
-         opponentsLoading |
-         penaltiesLoading |
-         playersLoading |
-         locationsLoading |
-         seasonsLoading |
-         !error && !data;
+      goalsLoading | opponentsLoading | locationsLoading | seasonsLoading | !error && !data;
 
    return {
       games,
