@@ -71,6 +71,8 @@ const gameDayNotificationHandler = async (req, res) => {
             if (gameDay) {
                let listToNotify = players?.filter((player) => gameDay.roster.includes(player.id));
 
+               const result = [];
+
                const textClient = twilio(
                   process.env.TWILIO_ACCOUNT_SID,
                   process.env.TWILIO_AUTH_TOKEN
@@ -82,6 +84,8 @@ const gameDayNotificationHandler = async (req, res) => {
                   preferredPhone: "7143126570‬",
                });
 
+               console.log("Game Day Time ", dayjs.unix(gameDay.date.seconds).format("h:m a"));
+
                const sendTexts = async () => {
                   for (const player of listToNotify) {
                      try {
@@ -90,9 +94,9 @@ const gameDayNotificationHandler = async (req, res) => {
                            to: player.preferredPhone ?? player.phoneNumber,
                            body: `Ice Pak Hockey \n\nIt's game day! \n\nOpponent: ${
                               opponentInfo.teamName
-                           } \nDate and Time: ${dayjs
+                           } \nTime: ${dayjs
                               .unix(gameDay.date.seconds)
-                              .format("MMMM D h:m")} \nLocation: ${locationInfo.name} (${
+                              .format("h:m a")} \nLocation: ${locationInfo.name} (${
                               locationInfo.googleMapsLink
                            }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
                         });
@@ -101,6 +105,11 @@ const gameDayNotificationHandler = async (req, res) => {
                               player.lastName
                            } @ ${player.preferredPhone ?? player.phoneNumber}`
                         );
+                        result.push({
+                           name: `${player.firstName} ${player.lastName}`,
+                           phoneNumber: player.preferredPhone ?? player.phoneNumber,
+                           status: "success",
+                        });
                      } catch (error) {
                         console.log(
                            `Error sending sms notification to ${player.firstName} ${
@@ -108,6 +117,11 @@ const gameDayNotificationHandler = async (req, res) => {
                            } @ ${player.preferredPhone ?? player.phoneNumber}: `,
                            error
                         );
+                        result.push({
+                           name: `${player.firstName} ${player.lastName}`,
+                           phoneNumber: player.preferredPhone ?? player.phoneNumber,
+                           status: "error",
+                        });
                      }
                   }
                };
@@ -141,10 +155,7 @@ const gameDayNotificationHandler = async (req, res) => {
                //       );
                // });
 
-               return res.status(200).json({
-                  message: "Successfully sent game day text notifications.",
-                  listToNotify,
-               });
+               return res.status(200).json({ result });
             }
          } catch (error) {
             console.log("error", error);
