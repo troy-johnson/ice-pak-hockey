@@ -79,7 +79,7 @@ const gameDayNotificationHandler = async (req, res) => {
                listToNotify.push({
                   firstName: "Bob",
                   lastName: "McCracken",
-                  preferredPhone: "(714) 312-6570‬",
+                  preferredPhone: "7143126570‬",
                });
 
                const sendTexts = async () => {
