@@ -3,7 +3,7 @@ name: Game Day Notifications
 # Controls when the workflow will run
 on:
    schedule:
-      - cron: '30 18 * * *'
+      - cron: '2 * * * *'
 
 jobs:
    game-day-notification-check:
@@ -21,4 +21,4 @@ jobs:
 
          # Runs a set of commands using the runners shell
          - name: Check for game day status
-           run: curl -XPOST 'https://icepakhockey.com/api/notifications/game-day'
+           run: curl -XPOST 'https://www.icepakhockey.com/api/notifications/game-day'

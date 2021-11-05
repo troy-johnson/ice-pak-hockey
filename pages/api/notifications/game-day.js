@@ -39,7 +39,7 @@ const gameDayNotificationHandler = async (req, res) => {
                      difference: dayjs.unix(game.date.seconds).diff(dayjs(), "hour"),
                   };
                })
-               .filter((game) => game.difference <= 12 && game.difference >= 0)
+               .filter((game) => game.difference <= 72 && game.difference >= 0)
                .sort((a, b) => a.difference - b.difference)[0];
 
             if (!gameDay) {
