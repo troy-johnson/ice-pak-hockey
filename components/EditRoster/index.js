@@ -70,14 +70,28 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
       }
    };
 
-   const rosterOptions = players.map((player) => {
-      return {
-         label: `${player.firstName} ${player.lastName}`,
-         value: player.id,
-      };
-   });
+   const rosterOptions = players
+      .map((player) => {
+         return {
+            lastName: player.lastName,
+            label: `${player.firstName} ${player.lastName}`,
+            value: player.id,
+         };
+      })
+      .sort((a, b) => {
+         const nameA = a.lastName.toUpperCase();
+         const nameB = b.lastName.toUpperCase();
+         if (nameA < nameB) {
+            return -1;
+         }
+         if (nameA > nameB) {
+            return 1;
+         }
 
-   // console.log("roster", roster);
+         return 0;
+      });
+
+   console.log("roster", rosterOptions);
 
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>

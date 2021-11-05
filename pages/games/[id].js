@@ -265,6 +265,7 @@ const Game = () => {
    };
 
    const teamStats = game?.roster
+      ?.filter(player => !player.doNotDisplay)
       ?.map((player) => {
          return {
             jerseyNumber: player?.playerJerseyNumber || 0,

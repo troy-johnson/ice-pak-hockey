@@ -180,6 +180,7 @@ const Team = () => {
                <PlayerTableBody>
                   {players
                      ?.sort((a, b) => a?.jerseyNumber - b?.jerseyNumber)
+                     ?.filter(player => !player?.doNotDisplay)
                      ?.map((player) => (
                         <Link
                            href={`/player/${player.id}`}

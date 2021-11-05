@@ -60,6 +60,7 @@ const gameHandler = async (req, res) => {
                batchResultOne?.forEach((player) => {
                   roster.push({
                      playerId: player?.id,
+                     doNotDisplay: player?.data().doNotDisplay,
                      image: player?.data()?.image,
                      playerName: `${player?.data()?.firstName}${
                         player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
@@ -72,6 +73,7 @@ const gameHandler = async (req, res) => {
                batchResultTwo?.forEach((player) => {
                   roster.push({
                      playerId: player?.id,
+                     doNotDisplay: player?.data().doNotDisplay,
                      image: player?.data()?.image,
                      playerName: `${player?.data()?.firstName}${
                         player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "

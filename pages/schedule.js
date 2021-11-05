@@ -17,6 +17,7 @@ import {
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { PageContainer } from "../components"
 import { useGetAllGames } from "../utils";
 
 const StyledScheduleGameCard = ({ className, children, desktop, game }) => {
@@ -169,8 +170,8 @@ const Schedule = () => {
                  ?.filter((game) => dayjs.unix(game?.date.seconds) > date)
                  ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
                  .map((game) => {
-                    let icePakGoals = game?.goals.filter((goal) => goal.playerId).length;
-                    let opponentGoals = game?.goals.filter((goal) => !goal.playerId).length;
+                    let icePakGoals = game?.goals?.filter((goal) => goal.playerId).length;
+                    let opponentGoals = game?.goals?.filter((goal) => !goal.playerId).length;
                     return (
                        <ScheduleGameCard game={game} desktop={desktop} key={game?.id}>
                           <DateTime variant="overline">
