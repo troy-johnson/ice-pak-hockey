@@ -107,7 +107,7 @@ const gameDayNotificationHandler = async (req, res) => {
 
                return res
                   .status(200)
-                  .json({ message: "Successfully sent game day text notifications.", gameDay });
+                  .json({ message: "Successfully sent game day text notifications.", listToNotify });
             }
          } catch (error) {
             console.log("error", error);
