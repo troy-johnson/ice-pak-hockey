@@ -99,8 +99,7 @@ const gameDayNotificationHandler = async (req, res) => {
                               opponentInfo.teamName
                            } \nTime: ${dayjs
                               .unix(gameDay.date.seconds)
-                              .utc()
-                              .local()
+                              .utcOffset(-7)
                               .format("h:m a")} \nLocation: ${locationInfo.name} (${
                               locationInfo.googleMapsLink
                            }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
