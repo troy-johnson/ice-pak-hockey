@@ -113,14 +113,14 @@ const Team = () => {
    ];
 
    const onSubmit = (data) => {
-      console.log(data);
+      // console.log(data);
 
       try {
          addPlayer(data);
          mutate(`/api/players`, [...players, data], true);
          handleClose();
       } catch (error) {
-         consol.log("error", error);
+         console.log("error", error);
       }
    };
 
@@ -144,7 +144,7 @@ const Team = () => {
       setOpen(false);
    };
 
-   console.log("players", players);
+   // console.log("players", players);
 
    if (playersLoading) {
       return <Loading />;
@@ -194,7 +194,7 @@ const Team = () => {
                                           alt={`${player?.firstName} ${
                                              player?.nickname ? player?.nickname : ""
                                           } ${player?.lastName}`}
-                                          src={player?.image}
+                                          src={player?.image || player?.authProviderImage}
                                        />
                                     ) : null}{" "}
                                     {desktop

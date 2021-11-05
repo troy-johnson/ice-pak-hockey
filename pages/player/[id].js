@@ -167,8 +167,8 @@ const Player = () => {
 
    const player = players?.filter((player) => player.id === id)[0];
 
-   console.log("player", player);
-   console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
+   // console.log("player", player);
+   // console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
 
    if (loading) {
       return <Loading />;
@@ -183,7 +183,7 @@ const Player = () => {
                alt={`${player?.firstName} ${player?.nickname ? player?.nickname : ""} ${
                   player?.lastName
                }`}
-               src={`data:image/png;base64,${player?.image}`}
+               src={player?.image || player?.authProviderImage}
                sx={{ width: desktop ? 160 : 100, height: desktop ? 160 : 100 }}
             />
             <Typography variant={desktop ? "h4" : "h5"}>{`${player?.firstName} ${
@@ -244,71 +244,76 @@ const Player = () => {
                <Typography variant="subtitle2" sx={{ ml: 2, mb: 2, mt: 3 }}>
                   Season Stats
                </Typography>
-               <Container>
-                  <TableContainer component={TableComponent}>
-                     <Table aria-label="Team">
-                        <TableHead>
-                           <PlayerTableHeader>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="season"
-                                 onClick={() => handleClick("gamesPlayed")}
-                              >
-                                 Season
-                              </StatHeaderCell>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="gamesPlayed"
-                                 onClick={() => handleClick("gamesPlayed")}
-                              >
-                                 GP
-                              </StatHeaderCell>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="goals"
-                                 onClick={() => handleClick("goals")}
-                              >
-                                 {desktop ? "Goals" : "G"}
-                              </StatHeaderCell>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="assists"
-                                 onClick={() => handleClick("assists")}
-                              >
-                                 {desktop ? "Assists" : "A"}
-                              </StatHeaderCell>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="points"
-                                 onClick={() => handleClick("points")}
-                              >
-                                 {desktop ? "Points" : "P"}
-                              </StatHeaderCell>
-                              <StatHeaderCell
-                                 order={order}
-                                 orderBy={orderBy}
-                                 type="penaltyMinutes"
-                                 onClick={() => handleClick("penaltyMinutes")}
-                              >
-                                 PIM
-                              </StatHeaderCell>
-                           </PlayerTableHeader>
-                        </TableHead>
-                        <PlayerTableBody>
-                           {playerStats?.seasonStats
-                              ?.sort((a, b) =>
-                                 order === "asc"
-                                    ? a?.[orderBy] - b?.[orderBy]
-                                    : b?.[orderBy] - a?.[orderBy]
-                              )
-                              ?.map((season) => (
-                                 <TableRow key={season.seasonId}>
-                                    <StatBodyCell component="th" scope="row">
+               <Container sx={{ mb: 2 }}>
+               <TableContainer component={TableComponent}>
+                  <Table aria-label="Team">
+                     <TableHead>
+                        <PlayerTableHeader>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="season"
+                              onClick={() => handleClick("gamesPlayed")}
+                           >
+                              Season
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="gamesPlayed"
+                              onClick={() => handleClick("gamesPlayed")}
+                           >
+                              GP
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="goals"
+                              onClick={() => handleClick("goals")}
+                           >
+                              {desktop ? "Goals" : "G"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="assists"
+                              onClick={() => handleClick("assists")}
+                           >
+                              {desktop ? "Assists" : "A"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="points"
+                              onClick={() => handleClick("points")}
+                           >
+                              {desktop ? "Points" : "P"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="penaltyMinutes"
+                              onClick={() => handleClick("penaltyMinutes")}
+                           >
+                              PIM
+                           </StatHeaderCell>
+                        </PlayerTableHeader>
+                     </TableHead>
+                     <PlayerTableBody>
+                        {playerStats?.seasonStats
+                           ?.sort((a, b) =>
+                              order === "asc"
+                                 ? a?.[orderBy] - b?.[orderBy]
+                                 : b?.[orderBy] - a?.[orderBy]
+                           )
+                           ?.map((season) => (
+                              <TableRow key={season.seasonId}>
+                                 <StatBodyCell component="th" scope="row">
+                                    {desktop ? (
+                                       <Typography variant="caption">
+                                          {`${season.leagueName} ${season.shortYear} ${season.type}`}
+                                       </Typography>
+                                    ) : (
                                        <Stack direction="column" alignItems="left">
                                           <Typography variant="caption">
                                              {season.leagueName}
@@ -318,23 +323,22 @@ const Player = () => {
                                           </Typography>
                                           <Typography variant="caption">{season.type}</Typography>
                                        </Stack>
-                                    </StatBodyCell>
-                                    <StatBodyCell align="center">
-                                       {season?.gamesPlayed}
-                                    </StatBodyCell>
-                                    <StatBodyCell align="center">{season?.goals}</StatBodyCell>
-                                    <StatBodyCell align="center">{season?.assists}</StatBodyCell>
-                                    <StatBodyCell align="center">
-                                       {season?.goals + season?.assists}
-                                    </StatBodyCell>
-                                    <StatBodyCell align="center">
-                                       {season?.penaltyMinutes}
-                                    </StatBodyCell>
-                                 </TableRow>
-                              ))}
-                        </PlayerTableBody>
-                     </Table>
-                  </TableContainer>
+                                    )}
+                                 </StatBodyCell>
+                                 <StatBodyCell align="center">{season?.gamesPlayed}</StatBodyCell>
+                                 <StatBodyCell align="center">{season?.goals}</StatBodyCell>
+                                 <StatBodyCell align="center">{season?.assists}</StatBodyCell>
+                                 <StatBodyCell align="center">
+                                    {season?.goals + season?.assists}
+                                 </StatBodyCell>
+                                 <StatBodyCell align="center">
+                                    {season?.penaltyMinutes}
+                                 </StatBodyCell>
+                              </TableRow>
+                           ))}
+                     </PlayerTableBody>
+                  </Table>
+               </TableContainer>
                </Container>
             </TabPanel>
             <TabPanel desktop={desktop} value={value} index={2}>

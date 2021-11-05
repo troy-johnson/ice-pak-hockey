@@ -88,10 +88,10 @@ const gameDayNotificationHandler = async (req, res) => {
                //    preferredPhone: "7143126570‬",
                // });
 
-               console.log(
-                  "Game Day Time ",
-                  dayjs.unix(gameDay.date.seconds).utc().local().format("h:m a")
-               );
+               // console.log(
+               //    "Game Day Time ",
+               //    dayjs.unix(gameDay.date.seconds).utc().local().format("h:m a")
+               // );
 
                // NOTE: Time format has to include utc offset as api route is hosted in Washington D.C.
 

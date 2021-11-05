@@ -71,7 +71,7 @@ export default NextAuth({
          clientSecret: process.env.AUTH0_CLIENT_SECRET,
          domain: process.env.AUTH0_DOMAIN,
          profile(profile, tokens) {
-            console.log("profile", { profile, tokens });
+            // console.log("profile", { profile, tokens });
             return {
                id: profile.sub,
                name: profile.nickname,

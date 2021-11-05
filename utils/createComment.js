@@ -1,5 +1,5 @@
 const createComment = async (data) => {
-   console.log("createComment", data);
+   // console.log("createComment", data);
    const response = await fetch("/api/comment", {
       method: "POST",
       mode: "cors",

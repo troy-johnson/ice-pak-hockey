@@ -149,7 +149,7 @@ const seasonStatsHandler = async (req, res) => {
                   shoots: player.shoots,
                   fullName: `${player.firstName} ${player.lastName}`,
                   image: player.image,
-                  googleAvatarLink: player.googleAvatarLink,
+                  authProviderImage: player.authProviderImage,
                   jerseyNumber: player.jerseyNumber ?? player.number ,
                   goals: goals.filter((goal) => goal.playerId === player.playerId).length,
                   assists: goals.filter((goal) => goal?.assists?.includes(player.playerId)).length,

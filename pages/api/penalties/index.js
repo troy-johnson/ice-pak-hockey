@@ -4,7 +4,7 @@ import { db } from "../../../config";
 const penaltiesHandler = async (req, res) => {
    switch (req.method) {
       case "POST":
-         console.log("got to post penalty")
+         // console.log("got to post penalty")
          try {
             await addDoc(collection(db, "penalties"), {
                ...req.body,

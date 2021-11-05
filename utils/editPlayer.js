@@ -1,5 +1,5 @@
 const editPlayer = async (data) => {
-   console.log("EDIT PLAYER", {id: data.id, ...data})
+   // console.log("EDIT PLAYER", {id: data.id, ...data})
    const response = await fetch(`/api/players/${data.id}`, {
       method: "PUT",
       mode: "cors",
