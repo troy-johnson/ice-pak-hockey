@@ -8,7 +8,7 @@ const dataMigrationHandler = async (req, res) => {
    //    statBypass: data,
    // });
 
-   return res.status(418).json({message: "This route is not available."});
+   return res.status(418).json({ message: "This route is not available." });
 };
 
 export default dataMigrationHandler;
