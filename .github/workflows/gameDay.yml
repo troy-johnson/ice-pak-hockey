@@ -3,7 +3,7 @@ name: Game Day Notifications
 # Controls when the workflow will run
 on:
    schedule:
-      - cron: '2 * * * *'
+      - cron: '5 * * * *'
 
 jobs:
    game-day-notification-check:
