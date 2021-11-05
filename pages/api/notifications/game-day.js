@@ -69,6 +69,9 @@ const gameDayNotificationHandler = async (req, res) => {
             )[0];
 
             if (gameDay) {
+               const utc = require("dayjs/plugin/utc");
+               dayjs.extend(utc)
+
                let listToNotify = players?.filter((player) => gameDay.roster.includes(player.id));
 
                const result = [];
@@ -84,7 +87,7 @@ const gameDayNotificationHandler = async (req, res) => {
                   preferredPhone: "7143126570‬",
                });
 
-               console.log("Game Day Time ", dayjs.unix(gameDay.date.seconds).format("h:m a"));
+               console.log("Game Day Time ", dayjs.unix(gameDay.date.seconds).local().format("h:m a"));
 
                const sendTexts = async () => {
                   for (const player of listToNotify) {
@@ -96,6 +99,8 @@ const gameDayNotificationHandler = async (req, res) => {
                               opponentInfo.teamName
                            } \nTime: ${dayjs
                               .unix(gameDay.date.seconds)
+                              .utc()
+                              .local()
                               .format("h:m a")} \nLocation: ${locationInfo.name} (${
                               locationInfo.googleMapsLink
                            }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
@@ -126,7 +131,7 @@ const gameDayNotificationHandler = async (req, res) => {
                   }
                };
 
-               sendTexts();
+               await sendTexts();
 
                // listToNotify.forEach((player) => {
                //    textClient.messages
