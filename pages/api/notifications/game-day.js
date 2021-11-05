@@ -78,36 +78,55 @@ const gameDayNotificationHandler = async (req, res) => {
                   process.env.TWILIO_AUTH_TOKEN
                );
 
-               listToNotify.forEach((player) => {
-                  textClient.messages
-                     .create({
+               const sendTexts = async () => {
+                  for (const player of listToNotify) {
+                     await textClient.messages.create({
                         from: "(714) 519-2916",
                         to: player.preferredPhone ?? player.phoneNumber,
-                        body: `Ice Pak Hockey -- It's game day! \n\nOpponent: ${
+                        body: `Ice Pak Hockey \n\nIt's game day! \n\nOpponent: ${
                            opponentInfo.teamName
                         } \nDate and Time: ${dayjs
                            .unix(gameDay.date.seconds)
                            .format("MMM D @ h:m")} \nLocation: ${locationInfo.name} (${
                            locationInfo.googleMapsLink
                         }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
-                     })
-                     .then((res) =>
-                        console.log(
-                           `successfully sent game day sms notification to ${player.firstName} ${player.lastName}`,
-                           res
-                        )
-                     )
-                     .catch((err) =>
-                        console.log(
-                           `error sending message to ${player.firstName} ${player.lastName}`,
-                           err
-                        )
-                     );
-               });
+                     });
+                  }
+               };
 
-               return res
-                  .status(200)
-                  .json({ message: "Successfully sent game day text notifications.", listToNotify });
+               sendTexts();
+
+               // listToNotify.forEach((player) => {
+               //    textClient.messages
+               //       .create({
+               //          from: "(714) 519-2916",
+               //          to: player.preferredPhone ?? player.phoneNumber,
+               //          body: `Ice Pak Hockey \n\nIt's game day! \n\nOpponent: ${
+               //             opponentInfo.teamName
+               //          } \nDate and Time: ${dayjs
+               //             .unix(gameDay.date.seconds)
+               //             .format("MMM D @ h:m")} \nLocation: ${locationInfo.name} (${
+               //             locationInfo.googleMapsLink
+               //          }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
+               //       })
+               //       .then((res) =>
+               //          console.log(
+               //             `successfully sent game day sms notification to ${player.firstName} ${player.lastName}`,
+               //             res
+               //          )
+               //       )
+               //       .catch((err) =>
+               //          console.log(
+               //             `error sending message to ${player.firstName} ${player.lastName}`,
+               //             err
+               //          )
+               //       );
+               // });
+
+               return res.status(200).json({
+                  message: "Successfully sent game day text notifications.",
+                  listToNotify,
+               });
             }
          } catch (error) {
             console.log("error", error);
