@@ -70,7 +70,7 @@ const gameDayNotificationHandler = async (req, res) => {
 
             if (gameDay) {
                const utc = require("dayjs/plugin/utc");
-               dayjs.extend(utc)
+               dayjs.extend(utc);
 
                let listToNotify = players?.filter((player) => gameDay.roster.includes(player.id));
 
@@ -81,13 +81,19 @@ const gameDayNotificationHandler = async (req, res) => {
                   process.env.TWILIO_AUTH_TOKEN
                );
 
-               listToNotify.push({
-                  firstName: "Bob",
-                  lastName: "McCracken",
-                  preferredPhone: "7143126570‬",
-               });
+               // NOTE: For testing purposes
+               // listToNotify.push({
+               //    firstName: "Bob",
+               //    lastName: "McCracken",
+               //    preferredPhone: "7143126570‬",
+               // });
 
-               console.log("Game Day Time ", dayjs.unix(gameDay.date.seconds).utc().local().format("h:m a"));
+               console.log(
+                  "Game Day Time ",
+                  dayjs.unix(gameDay.date.seconds).utc().local().format("h:m a")
+               );
+
+               // NOTE: Time format has to include utc offset as api route is hosted in Washington D.C.
 
                const sendTexts = async () => {
                   for (const player of listToNotify) {
@@ -131,33 +137,6 @@ const gameDayNotificationHandler = async (req, res) => {
                };
 
                await sendTexts();
-
-               // listToNotify.forEach((player) => {
-               //    textClient.messages
-               //       .create({
-               //          from: "(714) 519-2916",
-               //          to: player.preferredPhone ?? player.phoneNumber,
-               //          body: `Ice Pak Hockey \n\nIt's game day! \n\nOpponent: ${
-               //             opponentInfo.teamName
-               //          } \nDate and Time: ${dayjs
-               //             .unix(gameDay.date.seconds)
-               //             .format("MMM D @ h:m")} \nLocation: ${locationInfo.name} (${
-               //             locationInfo.googleMapsLink
-               //          }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
-               //       })
-               //       .then((res) =>
-               //          console.log(
-               //             `successfully sent game day sms notification to ${player.firstName} ${player.lastName}`,
-               //             res
-               //          )
-               //       )
-               //       .catch((err) =>
-               //          console.log(
-               //             `error sending message to ${player.firstName} ${player.lastName}`,
-               //             err
-               //          )
-               //       );
-               // });
 
                return res.status(200).json({ result });
             }
