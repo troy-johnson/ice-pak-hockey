@@ -223,11 +223,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={
-                           seasonLeaders?.goals?.image
-                              ? seasonLeaders?.goals?.image
-                              : seasonLeaders?.goals?.googleAvatarLink
-                        }
+                        src={seasonLeaders?.goals?.image ?? seasonLeaders?.goals?.googleAvatarLink}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.goals?.fullName}</Typography>
@@ -251,7 +247,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={seasonLeaders?.assists?.image}
+                        src={seasonLeaders?.assists?.image ?? seasonLeaders?.assists?.googleAvatarLink}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.assists?.fullName}</Typography>
@@ -277,7 +273,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={seasonLeaders?.points?.image}
+                        src={seasonLeaders?.points?.image ?? seasonLeaders?.points?.googleAvatarLink}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.points?.fullName}</Typography>
@@ -305,7 +301,7 @@ const Stats = () => {
                   <>
                      <Avatar
                         sx={{ mb: 1 }}
-                        src={seasonLeaders?.penaltyMinutes?.image}
+                        src={seasonLeaders?.penaltyMinutes?.image ?? seasonLeaders?.penaltyMinutes?.googleAvatarLink}
                      />
                      {desktop ? (
                         <Typography>{seasonLeaders?.penaltyMinutes?.fullName}</Typography>

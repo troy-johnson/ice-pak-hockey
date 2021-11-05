@@ -110,11 +110,13 @@ const gameDayNotificationHandler = async (req, res) => {
                               locationInfo.googleMapsLink
                            }) \n \nView game at www.icepakhockey.com/games/${gameDay.id}`,
                         });
+
                         console.log(
                            `Successfully sent sms notification to ${player.firstName} ${
                               player.lastName
                            } @ ${player.preferredPhone ?? player.phoneNumber}`
                         );
+
                         result.push({
                            name: `${player.firstName} ${player.lastName}`,
                            phoneNumber: player.preferredPhone ?? player.phoneNumber,
@@ -127,6 +129,7 @@ const gameDayNotificationHandler = async (req, res) => {
                            } @ ${player.preferredPhone ?? player.phoneNumber}: `,
                            error
                         );
+
                         result.push({
                            name: `${player.firstName} ${player.lastName}`,
                            phoneNumber: player.preferredPhone ?? player.phoneNumber,
