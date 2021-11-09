@@ -14,3 +14,5 @@ export { default as editPenalty } from "./editPenalty";
 export { default as editPlayer } from "./editPlayer";
 export { default as editGameRoster } from "./editGameRoster";
 export { default as roleCheck } from "./roleCheck";
+export { default as deleteGoal } from "./deleteGoal";
+export { default as deletePenalty } from "./deletePenalty";

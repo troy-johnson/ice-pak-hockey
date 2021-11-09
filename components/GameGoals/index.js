@@ -1,5 +1,4 @@
 import Image from "next/image";
-import styled from "@emotion/styled";
 import { useSession } from "next-auth/client";
 import {
    Button,
@@ -16,11 +15,12 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { FaHockeyPuck } from "react-icons/fa";
-import { roleCheck } from "../../utils";
+import { deleteGoal, roleCheck } from "../../utils";
 
-const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
+const GameGoals = ({ goals, goalsSorted, openUpsertGoal, setSnackbar, opponentName }) => {
    const [session, loading] = useSession();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -45,6 +45,23 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
          goals: goalsSorted?.filter((goal) => goal.period === 4),
       });
    }
+
+   const handleDelete = (data) => {
+      try {
+         deleteGoal(data);
+         setSnackbar({
+            open: true,
+            type: "success",
+            message: "Goal successfully deleted!",
+         });
+      } catch (error) {
+         setSnackbar({
+            open: true,
+            type: "error",
+            message: "An error has occurred. Please try again.",
+         });
+      }
+   };
 
    return (
       <Stack direction="column">
@@ -169,13 +186,25 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, opponentName }) => {
                                        {!!roleCheck(session, [
                                           "Admins",
                                           "Manager",
-                                          "Assistant Manager]",
+                                          "Assistant Manager",
                                        ]) ? (
                                           <IconButton
                                              size={desktop ? "large" : "small"}
                                              onClick={() => openUpsertGoal("edit", goal)}
                                           >
                                              <EditIcon />
+                                          </IconButton>
+                                       ) : null}
+                                       {!!roleCheck(session, [
+                                          "Admins",
+                                          "Manager",
+                                          "Assistant Manager",
+                                       ]) ? (
+                                          <IconButton
+                                             size={desktop ? "large" : "small"}
+                                             onClick={() => handleDelete(goal)}
+                                          >
+                                             <DeleteIcon />
                                           </IconButton>
                                        ) : null}
                                        {/* </Stack> */}

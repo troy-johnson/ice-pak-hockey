@@ -15,10 +15,11 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { MdAccessTimeFilled } from "react-icons/md";
 import styled from "@emotion/styled";
-import { roleCheck } from "../../utils";
+import { deletePenalty, roleCheck } from "../../utils";
 
 const Section = styled.section`
    display: flex;
@@ -28,9 +29,26 @@ const Section = styled.section`
    box-shadow: none;
 `;
 
-const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
+const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [session, loading] = useSession();
+
+   const handleDelete = (data) => {
+      try {
+         deletePenalty(data);
+         setSnackbar({
+            open: true,
+            type: "success",
+            message: "Penalty successfully deleted!",
+         });
+      } catch (error) {
+         setSnackbar({
+            open: true,
+            type: "error",
+            message: "An error has occurred. Please try again.",
+         });
+      }
+   };
 
    return (
       <Section>
@@ -115,7 +133,11 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                           <Typography
                                              variant={desktop ? "body2" : "caption"}
                                              fontStyle="italic"
-                                          >{`${penalty?.penaltyType} (${Number.isInteger(penalty?.minutes) ? `${penalty?.minutes}:00` : `${Math.floor(penalty?.minutes)}:30`})`}</Typography>
+                                          >{`${penalty?.penaltyType} (${
+                                             Number.isInteger(penalty?.minutes)
+                                                ? `${penalty?.minutes}:00`
+                                                : `${Math.floor(penalty?.minutes)}:30`
+                                          })`}</Typography>
                                        </Stack>
                                     </TableCell>
                                     <TableCell align="right">
@@ -133,13 +155,25 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod }) => {
                                        {!!roleCheck(session, [
                                           "Admins",
                                           "Manager",
-                                          "Assistant Manager]",
+                                          "Assistant Manager",
                                        ]) ? (
                                           <IconButton
                                              size={desktop ? "large" : "small"}
                                              onClick={() => handleClickOpen("edit", penalty)}
                                           >
                                              <EditIcon />
+                                          </IconButton>
+                                       ) : null}
+                                       {!!roleCheck(session, [
+                                          "Admins",
+                                          "Manager",
+                                          "Assistant Manager",
+                                       ]) ? (
+                                          <IconButton
+                                             size={desktop ? "large" : "small"}
+                                             onClick={() => handleDelete(penalty)}
+                                          >
+                                             <DeleteIcon />
                                           </IconButton>
                                        ) : null}
                                     </TableCell>

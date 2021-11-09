@@ -33,7 +33,7 @@ import {
    Loading,
    PageContainer,
 } from "../../components";
-import { FaClipboardList } from "react-icons/fa"
+import { FaClipboardList } from "react-icons/fa";
 import { roleCheck, upsertGame, useGetGameInfo } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
@@ -265,7 +265,7 @@ const Game = () => {
    };
 
    const teamStats = game?.roster
-      ?.filter(player => !player.doNotDisplay)
+      ?.filter((player) => !player.doNotDisplay)
       ?.map((player) => {
          return {
             jerseyNumber: player?.playerJerseyNumber || 0,
@@ -436,23 +436,35 @@ const Game = () => {
                               openUpsertGoal={openUpsertGoal}
                               goalsSorted={goalsSorted}
                               opponentName={game?.opponentName}
+                              setSnackbar={setSnackbar}
                            />
                            <GamePenalties
                               penaltiesByPeriod={penaltiesByPeriod}
                               handleClickOpen={openMutatePenalty}
+                              setSnackbar={setSnackbar}
                            />
                         </Stack>
                      </TabPanel>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={1} sx={{ width: 95 }}>
-                        {!!roleCheck(session, ["Admins"]) ? (
-                           <Button
-                              variant="outlined"
-                              onClick={() => setEditRosterDialog(true)}
-                              endIcon={<FaClipboardList />}
-                           >
-                              Edit Roster
-                           </Button>
-                        ) : null}
+                        <Stack
+                           direction="row"
+                           sx={{ display: "flex", justifyContent: "space-between" }}
+                        >
+                           <Typography sx={{ ml: "5px" }} variant="h5">
+                              Game Roster
+                           </Typography>
+                           {!!roleCheck(session, ["Admins"]) ? (
+                              <Button
+                                 variant="outlined"
+                                 onClick={() => setEditRosterDialog(true)}
+                                 endIcon={<FaClipboardList />}
+                                 sx={{ maxWidth: "200px", mb: 1, textAlign: "right" }}
+                              >
+                                 Edit Roster
+                              </Button>
+                           ) : null}
+                        </Stack>
+
                         <TeamStats desktop={desktop} teamStats={teamStats} />
                      </TabPanel>
                      <TabPanel desktop={desktop ? 2 : 0} value={value} index={2}>
