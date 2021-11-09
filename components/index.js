@@ -1,6 +1,7 @@
 export { default as Account } from "./Account";
 export { default as AddComment } from "./AddComment"
 export { default as Banner } from "./Banner";
+export { default as ControlledCheckbox } from "./ControlledCheckbox";
 export { default as ControlledInput } from "./ControlledInput";
 export { default as ControlledRadio } from "./ControlledRadio";
 export { default as ControlledSelect } from "./ControlledSelect";

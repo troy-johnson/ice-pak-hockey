@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
+import { useSession } from "next-auth/client";
 import {
    AppBar,
    Box,
@@ -18,6 +19,7 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import { Account } from "..";
+import { roleCheck } from "../../utils";
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
@@ -92,6 +94,7 @@ const Banner = () => {
    const [open, setOpen] = useState(false);
    const [showProgress, setShowProgress] = useState(false);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const [session, loading] = useSession();
 
    const router = useRouter();
 
@@ -167,6 +170,13 @@ const Banner = () => {
                            <MenuItem primary="Shop" />
                         </Link>
                      </ListItem> */}
+                     {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager"]) ? (
+                        <ListItem button>
+                           <Link href="/manager" passHref>
+                              <MenuItem primary="Manager" />
+                           </Link>
+                        </ListItem>
+                     ) : null}
                   </List>
                </NavMenuBox>
             </SwipeableDrawer>

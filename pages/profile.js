@@ -14,7 +14,13 @@ import {
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import { mutate } from "swr";
-import { ControlledInput, ControlledRadio, ControlledSelect, PageContainer } from "../components";
+import {
+   ControlledCheckbox,
+   ControlledInput,
+   ControlledRadio,
+   ControlledSelect,
+   PageContainer,
+} from "../components";
 import { editPlayer, useGetPlayers } from "../utils";
 
 const Profile = () => {
@@ -52,12 +58,18 @@ const Profile = () => {
    const onSubmit = (data) => {
       let imageToUpload = image ?? session?.user?.image;
 
+      console.log("data", data);
+
       try {
          editPlayer({
             ...player,
             ...data,
             image: imageToUpload,
             auth0AccountId: session?.user?.sub,
+            notifications: {
+               ...player?.notifications,
+               gameDay: data.gameDayNotifications,
+            },
          });
          setSnackbar({ open: true, type: "success", message: "Profile successfully updated!" });
          mutate(`/api/players`);
@@ -81,14 +93,24 @@ const Profile = () => {
          setValue("preferredEmail", player?.preferredEmail ?? player?.email);
          setValue("preferredPhone", player?.preferredPhone ?? player?.phoneNumber);
          setValue("preferredJerseyNumber", player?.preferredJerseyNumber ?? player?.jerseyNumber);
+         setValue("jerseySize", player?.jerseySize || "l");
          setValue("tShirtSize", player?.tShirtSize || "m");
          setValue("position", player?.position);
          setValue("handedness", player?.handedness || player?.shoots);
-         // setValue("gameDayNotifications", player?.gameDayNotifications || false);
+         setValue("gameDayNotifications", player?.notifications?.gameDay || false);
       }
    }, [player]);
 
    const shirtSizeOptions = [
+      { label: "X-Small", value: "xs" },
+      { label: "Small", value: "s" },
+      { label: "Medium", value: "m" },
+      { label: "Large", value: "l" },
+      { label: "X-Large", value: "xl" },
+      { label: "XX-Large", value: "xxl" },
+   ];
+
+   const jerseySizeOptions = [
       { label: "X-Small", value: "xs" },
       { label: "Small", value: "s" },
       { label: "Medium", value: "m" },
@@ -125,29 +147,6 @@ const Profile = () => {
                            />
                         </Button>
                      </Stack>
-                     {/* {desktop ? (
-                        <Controller
-                           control={control}
-                           name="gameDayNotifications"
-                           render={({
-                              field: { onChange, onBlur, value, name, ref },
-                              fieldState: { invalid, isTouched, isDirty, error },
-                              formState,
-                           }) => (
-                              <FormControlLabel
-                                 control={
-                                    <Checkbox
-                                       onBlur={onBlur}
-                                       onChange={onChange}
-                                       checked={value}
-                                       inputRef={ref}
-                                    />
-                                 }
-                                 label="Game Day Notifications (SMS)"
-                              />
-                           )}
-                        />
-                     ) : null} */}
                   </Stack>
                   {desktop ? (
                      <Stack direction="row" spacing={2} sx={{ width: "100%" }}>
@@ -209,6 +208,11 @@ const Profile = () => {
                                     /^\W?\d*?\W*?(?<area>\d{3})\W*?(?<group1>\d{3})\W*?(?<group2>\d{4})\W*?$/,
                               }}
                            />
+                           <ControlledCheckbox
+                              control={control}
+                              name="gameDayNotifications"
+                              label="Game Day Notifications (SMS)"
+                           />
                         </Stack>
                         <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
                            <ControlledInput
@@ -230,6 +234,13 @@ const Profile = () => {
                               size="small"
                               name="position"
                               label="Position"
+                           />
+                           <ControlledSelect
+                              control={control}
+                              size="small"
+                              name="jerseySize"
+                              label="Jersey Size"
+                              options={jerseySizeOptions}
                            />
                            <ControlledSelect
                               control={control}
@@ -325,6 +336,13 @@ const Profile = () => {
                         <ControlledSelect
                            control={control}
                            size="small"
+                           name="jerseySize"
+                           label="Jersey Size"
+                           options={jerseySizeOptions}
+                        />
+                        <ControlledSelect
+                           control={control}
+                           size="small"
                            name="tShirtSize"
                            label="T-Shirt Size"
                            options={shirtSizeOptions}
@@ -337,15 +355,13 @@ const Profile = () => {
                            row
                            required
                         />
-                        {/* <FormGroup>
-                           <FormControlLabel
-                              control={<Checkbox {...register("gameDayNotifications")} />}
-                              label="Game Day (SMS) Notifications"
-                           />
-                        </FormGroup> */}
+                        <ControlledCheckbox
+                           control={control}
+                           name="gameDayNotifications"
+                           label="Game Day Notifications (SMS)"
+                        />
                      </Stack>
                   )}
-                  {/* <ControlledInput control={control} name="bio" label="Bio" rows={3} /> */}
                   <Button
                      type="submit"
                      variant="outlined"
