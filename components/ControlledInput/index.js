@@ -22,6 +22,7 @@ const ControlledInput = ({
          name={name}
          control={control}
          defaultValue=""
+         rules={rules}
          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <TextField
                disabled={disabled}
@@ -40,7 +41,6 @@ const ControlledInput = ({
                helperText={helperText}
             />
          )}
-         rules={rules}
       />
    );
 };

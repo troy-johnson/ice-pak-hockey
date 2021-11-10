@@ -1,12 +1,13 @@
 import { FormControl, FormLabel, Radio, RadioGroup, FormControlLabel } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledRadio = ({ control, disabled, label, name, options, required, row, variant }) => {
+const ControlledRadio = ({ control, disabled, label, name, options, required, rules, row, variant }) => {
    return (
       <Controller
          name={name}
          control={control}
          defaultValue=""
+         rules={rules}
          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <FormControl
                disabled={disabled}

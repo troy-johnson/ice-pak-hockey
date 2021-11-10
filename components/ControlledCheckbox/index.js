@@ -8,15 +8,26 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledRadio = ({ control, disabled, label, name, options, required, row, variant }) => {
+const ControlledCheckbox = ({
+   control,
+   disabled,
+   label,
+   name,
+   options,
+   required,
+   rules,
+   row,
+   variant,
+}) => {
    return (
       <Controller
          name={name}
          control={control}
          defaultValue=""
+         rules={rules}
          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <FormControl
-               required
+               required={required}
                error={error}
                component="fieldset"
                sx={{ m: 3 }}
@@ -38,4 +49,4 @@ const ControlledRadio = ({ control, disabled, label, name, options, required, ro
    );
 };
 
-export default ControlledRadio;
+export default ControlledCheckbox;

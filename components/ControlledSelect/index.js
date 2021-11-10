@@ -8,7 +8,16 @@ import {
 } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-const ControlledSelect = ({ control, disabled, label, name, options, required, variant }) => {
+const ControlledSelect = ({
+   control,
+   disabled,
+   label,
+   name,
+   options,
+   required,
+   rules,
+   variant,
+}) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    return (
@@ -16,6 +25,7 @@ const ControlledSelect = ({ control, disabled, label, name, options, required, v
          name={name}
          control={control}
          defaultValue=""
+         rules={rules}
          render={({ field: { onChange, value }, fieldState: { error } }) => (
             <FormControl
                disabled={disabled}
@@ -28,7 +38,13 @@ const ControlledSelect = ({ control, disabled, label, name, options, required, v
             >
                <InputLabel id={`${name}-label`}>{label}</InputLabel>
                {desktop ? (
-                  <Select value={value} onChange={onChange} labelId={`${name}-label`} id={`${name}-select`} label={label}>
+                  <Select
+                     value={value}
+                     onChange={onChange}
+                     labelId={`${name}-label`}
+                     id={`${name}-select`}
+                     label={label}
+                  >
                      {options?.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                            {option.label}
@@ -36,7 +52,13 @@ const ControlledSelect = ({ control, disabled, label, name, options, required, v
                      ))}
                   </Select>
                ) : (
-                  <NativeSelect value={value} onChange={onChange} id={`${name}-select`} label={label} variant="outlined">
+                  <NativeSelect
+                     value={value}
+                     onChange={onChange}
+                     id={`${name}-select`}
+                     label={label}
+                     variant="outlined"
+                  >
                      {options?.map((option) => (
                         <option key={option.value} value={option.value}>
                            {option.label}

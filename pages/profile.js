@@ -67,7 +67,6 @@ const Profile = () => {
             image: imageToUpload,
             auth0AccountId: session?.user?.sub,
             notifications: {
-               ...player?.notifications,
                gameDay: data.gameDayNotifications,
             },
          });
@@ -101,7 +100,7 @@ const Profile = () => {
       }
    }, [player]);
 
-   const shirtSizeOptions = [
+   const sizeOptions = [
       { label: "X-Small", value: "xs" },
       { label: "Small", value: "s" },
       { label: "Medium", value: "m" },
@@ -110,17 +109,14 @@ const Profile = () => {
       { label: "XX-Large", value: "xxl" },
    ];
 
-   const jerseySizeOptions = [
-      { label: "X-Small", value: "xs" },
-      { label: "Small", value: "s" },
-      { label: "Medium", value: "m" },
-      { label: "Large", value: "l" },
-      { label: "X-Large", value: "xl" },
-      { label: "XX-Large", value: "xxl" },
+   const positionOptions = [
+      { label: "Forward", value: "forward" },
+      { label: "Defense", value: "defense" },
+      { label: "Goalie", value: "goalie" },
    ];
 
    return (
-      <PageContainer pageTitle="Player Profile">
+      <PageContainer small pageTitle="Player Profile">
          <Stack direction="column" alignItems="center" spacing={2} ml={2} mb={2} mr={2}>
             {!session ? (
                <Typography>Please login to view your profile information.</Typography>
@@ -212,6 +208,7 @@ const Profile = () => {
                               control={control}
                               name="gameDayNotifications"
                               label="Game Day Notifications (SMS)"
+                              required
                            />
                         </Stack>
                         <Stack direction="column" spacing={2} sx={{ width: "100%" }}>
@@ -229,25 +226,26 @@ const Profile = () => {
                               label="Preferred Jersey Number"
                               type="number"
                            />
-                           <ControlledInput
-                              control={control}
-                              size="small"
-                              name="position"
-                              label="Position"
-                           />
+                        <ControlledSelect
+                           control={control}
+                           size="small"
+                           name="position"
+                           label="Position"
+                           options={positionOptions}
+                        />
                            <ControlledSelect
                               control={control}
                               size="small"
                               name="jerseySize"
                               label="Jersey Size"
-                              options={jerseySizeOptions}
+                              options={sizeOptions}
                            />
                            <ControlledSelect
                               control={control}
                               size="small"
                               name="tShirtSize"
                               label="T-Shirt Size"
-                              options={shirtSizeOptions}
+                              options={sizeOptions}
                            />
                            <ControlledRadio
                               control={control}
@@ -327,25 +325,26 @@ const Profile = () => {
                            name="preferredJerseyNumber"
                            label="Preferred Jersey Number"
                         />
-                        <ControlledInput
+                        <ControlledSelect
                            control={control}
                            size="small"
                            name="position"
                            label="Position"
+                           options={positionOptions}
                         />
                         <ControlledSelect
                            control={control}
                            size="small"
                            name="jerseySize"
                            label="Jersey Size"
-                           options={jerseySizeOptions}
+                           options={sizeOptions}
                         />
                         <ControlledSelect
                            control={control}
                            size="small"
                            name="tShirtSize"
                            label="T-Shirt Size"
-                           options={shirtSizeOptions}
+                           options={sizeOptions}
                         />
                         <ControlledRadio
                            control={control}
@@ -359,6 +358,7 @@ const Profile = () => {
                            control={control}
                            name="gameDayNotifications"
                            label="Game Day Notifications (SMS)"
+                           required
                         />
                      </Stack>
                   )}
