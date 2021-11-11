@@ -3,79 +3,85 @@ import { db } from "../../config";
 import dayjs from "dayjs";
 
 const dataMigrationHandler = async (req, res) => {
-   const data = [
-      {
-         date: new Date(2021, 6, 23, 18, 15, 0, 0),
-         locationId: "doiWx2roh0nsoz0Wxq1H",
-         opponentId: "LG3ks7DMXwHXtzupNCsJ",
-         opponentName: "Flyers",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO",
-      },
-      {         
-         date: new Date(2021, 6, 28, 17, 45, 0, 0),
-         locationId: "gxvZcjH4pjfc6WUroHSE",
-         opponentId: "LRk405AKU9JV8bHz2Vfm",
-         opponentName: "Dragon Juice",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO"
-      },
-      {         
-         date: new Date(2021, 7, 13, 19, 45, 0, 0),
-         locationId: "doiWx2roh0nsoz0Wxq1H",
-         opponentId: "zun2S3wUdCVyxYuKDlLJ",
-         opponentName: "Dew Crew",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO"
-      },
-      {         
-         date: new Date(2021, 7, 20, 19, 45, 0, 0),
-         locationId: "sTIQDSOE4asDyu6icq12",
-         opponentId: "QgGjs0EoxaIkizRG6xhH",
-         opponentName: "Skate & Score",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO"
-      },
-      {         
-         date: new Date(2021, 7, 27, 18, 15, 0, 0),
-         locationId: "doiWx2roh0nsoz0Wxq1H",
-         opponentId: "9NJrVlNcnaA7JKNaC3eN",
-         opponentName: "Wild",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO"
-      },
-      {         
-         date: new Date(2021, 8, 3, 19, 45, 0, 0),
-         locationId: "sTIQDSOE4asDyu6icq12",
-         opponentId: "UgiUFCBkaPleWL7ZzmgQ",
-         opponentName: "Rat Pack",
-         roster: [],
-         seasonId: "oCjzhpsvGzzFtUrRihkO"
-      },
-      {         
-         date: new Date(2021, 8, 9, 19, 30, 0, 0),
-         locationId: "doiWx2roh0nsoz0Wxq1H",
-         opponentId: "LG3ks7DMXwHXtzupNCsJ",
-         opponentName: "Flyers",
-         roster: [],
-         seasonId: "rNnyTNXfArAUzTRua2Og"
-      },
-      {         
-         date: new Date(2021, 8, 16, 17, 45, 0, 0),
-         locationId: "gxvZcjH4pjfc6WUroHSE",
-         opponentId: "LRk405AKU9JV8bHz2Vfm",
-         opponentName: "Dragon Juice",
-         roster: [],
-         seasonId: "rNnyTNXfArAUzTRua2Og"
-      }
-   ];
+   // const data = [
+   //    {
+   //       goalsAgainst: 29,
+   //       goalsFor: 30,
+   //       losses: 4,
+   //       otl: 0,
+   //       penaltyMinutes: 32,
+   //       wins: 3,
+   //       teamId: "LG3ks7DMXwHXtzupNCsJ",
+   //       teamName: "Flyers",
+   //    },
+   //    {         
+   //       goalsAgainst: 20,
+   //       goalsFor: 36,
+   //       losses: 1,
+   //       otl: 0,
+   //       penaltyMinutes: 24,
+   //       wins: 6,
+   //       teamId: "LRk405AKU9JV8bHz2Vfm",
+   //       teamName: "Dragon Juice",
+   //    },
+   //    {         
+   //       goalsAgainst: 38,
+   //       goalsFor: 26,
+   //       losses: 6,
+   //       otl: 0,
+   //       penaltyMinutes: 30,
+   //       wins: 2,
+   //       teamId: "zun2S3wUdCVyxYuKDlLJ",
+   //       teamName: "Dew Crew",
+   //    },
+   //    {         
+   //       goalsAgainst: 16,
+   //       goalsFor: 34,
+   //       losses: 2,
+   //       otl: 0,
+   //       penaltyMinutes: 26,
+   //       wins: 5,
+   //       teamId: "QgGjs0EoxaIkizRG6xhH",
+   //       teamName: "Skate & Score",
+   //    },
+   //    {         
+   //       goalsAgainst: 48,
+   //       goalsFor: 10,
+   //       losses: 6,
+   //       otl: 1,
+   //       penaltyMinutes: 18,
+   //       wins: 0,
+   //       teamId: "9NJrVlNcnaA7JKNaC3eN",
+   //       teamName: "Wild",
+   //    },
+   //    {         
+   //       goalsAgainst: 22,
+   //       goalsFor: 31,
+   //       losses: 2,
+   //       otl: 0,
+   //       penaltyMinutes: 34,
+   //       wins: 5,
+   //       teamId: "UgiUFCBkaPleWL7ZzmgQ",
+   //       teamName: "Rat Pack",
+   //    },
+   //    {         
+   //       goalsAgainst: 25,
+   //       goalsFor: 32,
+   //       losses: 3,
+   //       otl: 0,
+   //       penaltyMinutes: 28,
+   //       wins: 4,
+   //       teamId: "",
+   //       teamName: "Ice Pak",
+   //    },
+   // ];
 
-   data.forEach(async (el) => {
-      await addDoc(collection(db, "games"), {
-         ...el,
-      });
+   // data.forEach(async (el) => {
+      // await updateDoc(doc(db, "seasons", "oCjzhpsvGzzFtUrRihkO"), {
+      //    standings: data,
+      // });
       // console.log("result", result);
-   });
+   // });
 
    // const result = await addDoc(docollectionc(db, "games"), {
    //    statBypass: data,

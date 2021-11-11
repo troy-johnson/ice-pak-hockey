@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import {
    Avatar,
+   Container,
    Divider,
    FormControl,
    Select,
@@ -20,7 +21,7 @@ import {
    TableRow,
    Typography,
    useMediaQuery,
-   useTheme
+   useTheme,
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading, PageContainer } from "../components";
@@ -133,16 +134,16 @@ const Stats = () => {
    // console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
 
    const leaderStats = (stat) => {
-      
       return seasonStats?.stats?.sort((a, b) => {
          if (b[stat] === a[stat]) {
             return b.points - a.points;
          }
          return b[stat] - a[stat];
       })[0];
-   }
+   };
 
    const seasonLeaders = {
+      gamesPlayed: leaderStats("gamesPlayed"),
       goals: leaderStats("goals"),
       assists: leaderStats("assists"),
       points: leaderStats("points"),
@@ -171,6 +172,8 @@ const Stats = () => {
       setOrderBy(type);
       setOrder(order === "asc" ? "desc" : "asc");
    };
+
+   console.log("seasonStats", { seasonStats, seasonStatsError });
 
    return (
       <PageContainer pageTitle="Season Stats" small>
@@ -206,213 +209,405 @@ const Stats = () => {
                </NativeSelect>
             )}
          </FormControl>
-         <Typography variant="subtitle1" sx={{ mt: 2, ml: 2 }}>
-            Leaders
-         </Typography>
-         <Stack
-            direction="row"
-            display="flex"
-            justifyContent="center"
-            divider={<Divider orientation="vertical" flexItem />}
-            spacing={selectSize ? 2.5 : 1}
-            sx={{ mb: "15px", mt: 2, mr: 1, ml: 1 }}
-         >
-            <LeaderStatStack>
-               <Typography variant="overline">Goals</Typography>
-               {seasonLeaders?.goals ? (
-                  <>
-                     <Avatar
-                        sx={{ mb: 1 }}
-                        src={seasonLeaders?.goals?.image || seasonLeaders?.goals?.authProviderImage}
-                     />
-                     {desktop ? (
-                        <Typography>{seasonLeaders?.goals?.fullName}</Typography>
-                     ) : (
-                        <>
-                           <Typography variant="body2">
-                              {seasonLeaders?.goals?.firstName}
-                           </Typography>
-                           <Typography variant="body2">{seasonLeaders?.goals?.lastName}</Typography>
-                        </>
-                     )}
-                     <Typography variant="h6">{seasonLeaders?.goals?.goals}</Typography>
-                  </>
-               ) : (
-                  "No stats"
-               )}
-            </LeaderStatStack>
-            <LeaderStatStack>
-               <Typography variant="overline">Assists</Typography>
-               {seasonLeaders?.assists ? (
-                  <>
-                     <Avatar
-                        sx={{ mb: 1 }}
-                        src={seasonLeaders?.assists?.image || seasonLeaders?.assists?.authProviderImage}
-                     />
-                     {desktop ? (
-                        <Typography>{seasonLeaders?.assists?.fullName}</Typography>
-                     ) : (
-                        <>
-                           <Typography variant="body2">
-                              {seasonLeaders?.assists?.firstName}
-                           </Typography>
-                           <Typography variant="body2">
-                              {seasonLeaders?.assists?.lastName}
-                           </Typography>
-                        </>
-                     )}
-                     <Typography variant="h6">{seasonLeaders?.assists?.assists}</Typography>
-                  </>
-               ) : (
-                  "No stats"
-               )}
-            </LeaderStatStack>
-            <LeaderStatStack>
-               <Typography variant="overline">{desktop ? "Points" : "Pts"}</Typography>
-               {seasonLeaders?.points ? (
-                  <>
-                     <Avatar
-                        sx={{ mb: 1 }}
-                        src={seasonLeaders?.points?.image || seasonLeaders?.points?.authProviderImage}
-                     />
-                     {desktop ? (
-                        <Typography>{seasonLeaders?.points?.fullName}</Typography>
-                     ) : (
-                        <>
-                           <Typography variant="body2">
-                              {seasonLeaders?.points?.firstName}
-                           </Typography>
-                           <Typography variant="body2">
-                              {seasonLeaders?.points?.lastName}
-                           </Typography>
-                        </>
-                     )}
-                     <Typography variant="h6">
-                        {seasonLeaders?.points?.goals + seasonLeaders?.points?.assists}
-                     </Typography>
-                  </>
-               ) : (
-                  "No stats"
-               )}
-            </LeaderStatStack>
-            <LeaderStatStack>
-               <Typography variant="overline">{desktop ? "Penalty Minutes" : "PIM"}</Typography>
-               {seasonLeaders?.penaltyMinutes ? (
-                  <>
-                     <Avatar
-                        sx={{ mb: 1 }}
-                        src={seasonLeaders?.penaltyMinutes?.image || seasonLeaders?.penaltyMinutes?.authProviderImage}
-                     />
-                     {desktop ? (
-                        <Typography>{seasonLeaders?.penaltyMinutes?.fullName}</Typography>
-                     ) : (
-                        <>
-                           <Typography variant="body2">
-                              {seasonLeaders?.penaltyMinutes?.firstName}
-                           </Typography>
-                           <Typography variant="body2">
-                              {seasonLeaders?.penaltyMinutes?.lastName}
-                           </Typography>
-                        </>
-                     )}
-                     <Typography variant="h6">
-                        {seasonLeaders?.penaltyMinutes?.penaltyMinutes}
-                     </Typography>
-                  </>
-               ) : (
-                  "No stats"
-               )}
-            </LeaderStatStack>
-         </Stack>
-         <TableContainer>
-            <Table aria-label="Team">
-               <TableHead>
-                  <PlayerTableHeader>
-                     <StatHeaderCell order={order} orderBy={orderBy} type="lastName">
-                        Player
-                     </StatHeaderCell>
-                     <StatHeaderCell
-                        order={order}
-                        orderBy={orderBy}
-                        type="gamesPlayed"
-                        onClick={() => handleClick("gamesPlayed")}
-                     >
-                        GP
-                     </StatHeaderCell>
-                     <StatHeaderCell
-                        order={order}
-                        orderBy={orderBy}
-                        type="goals"
-                        onClick={() => handleClick("goals")}
-                     >
-                        {desktop ? "Goals" : "G"}
-                     </StatHeaderCell>
-                     <StatHeaderCell
-                        order={order}
-                        orderBy={orderBy}
-                        type="assists"
-                        onClick={() => handleClick("assists")}
-                     >
-                        {desktop ? "Assists" : "A"}
-                     </StatHeaderCell>
-                     <StatHeaderCell
-                        order={order}
-                        orderBy={orderBy}
-                        type="points"
-                        onClick={() => handleClick("points")}
-                     >
-                        {desktop ? "Points" : "P"}
-                     </StatHeaderCell>
-                     <StatHeaderCell
-                        order={order}
-                        orderBy={orderBy}
-                        type="penaltyMinutes"
-                        onClick={() => handleClick("penaltyMinutes")}
-                     >
-                        PIM
-                     </StatHeaderCell>
-                  </PlayerTableHeader>
-               </TableHead>
-               <PlayerTableBody>
-                  {seasonStats?.stats
-                     ?.sort((a, b) =>
-                        order === "asc" ? a?.[orderBy] - b?.[orderBy] : b?.[orderBy] - a?.[orderBy]
-                     )
-                     ?.map((player) => (
-                        <Link
-                           href={`/player/${player.playerId}`}
-                           key={player?.id || `${player?.firstName}${player?.lastName}`}
-                           passHref
-                        >
-                           <TableRow>
-                              <StatBodyCell component="th" scope="row">
-                                 <PlayerName>
-                                    <Typography variant="caption">{` ${
-                                       desktop
-                                          ? `${player?.firstName} ${
-                                               player?.nickname ? `"${player?.nickname}"` : ""
-                                            } ${player?.lastName}`
-                                          : `${player?.firstName.split("")[0]}. ${player?.lastName}`
-                                    }`}</Typography>
-                                    <Typography
-                                       variant="caption"
-                                       sx={{ marginLeft: "5px", color: "grey.main" }}
-                                    >
-                                       {player?.position}
+         {!seasonStats?.stats ? (
+            <Container>No stats recorded for this season. Please select another season.</Container>
+         ) : (
+            <>
+               <Typography variant="subtitle1" sx={{ mt: 2, ml: 2 }}>
+                  Leaders
+               </Typography>
+               {selectSize ? (
+                  <Stack
+                     direction="row"
+                     display="flex"
+                     justifyContent="center"
+                     divider={<Divider orientation="vertical" flexItem />}
+                     spacing={selectSize ? 2.5 : 1}
+                     sx={{ mb: "15px", mt: 2, mr: 1, ml: 1 }}
+                  >
+                     <LeaderStatStack>
+                        <Typography variant="overline">
+                           {desktop ? "Games Played" : "GP"}
+                        </Typography>
+                        {seasonLeaders?.gamesPlayed ? (
+                           <>
+                              <Avatar
+                                 sx={{ mb: 1 }}
+                                 src={
+                                    seasonLeaders?.gamesPlayed?.image ||
+                                    seasonLeaders?.gamesPlayed?.authProviderImage
+                                 }
+                              />
+                              {desktop ? (
+                                 <Typography>{seasonLeaders?.gamesPlayed?.fullName}</Typography>
+                              ) : (
+                                 <>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.gamesPlayed?.firstName}
                                     </Typography>
-                                 </PlayerName>
-                              </StatBodyCell>
-                              <StatBodyCell align="center">{player?.gamesPlayed}</StatBodyCell>
-                              <StatBodyCell align="center">{player?.goals}</StatBodyCell>
-                              <StatBodyCell align="center">{player?.assists}</StatBodyCell>
-                              <StatBodyCell align="center">{player?.points}</StatBodyCell>
-                              <StatBodyCell align="center">{player?.penaltyMinutes}</StatBodyCell>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.gamesPlayed?.lastName}
+                                    </Typography>
+                                 </>
+                              )}
+                              <Typography variant="h6">
+                                 {seasonLeaders?.gamesPlayed?.gamesPlayed}
+                              </Typography>
+                           </>
+                        ) : (
+                           "No stats"
+                        )}
+                     </LeaderStatStack>
+                     <LeaderStatStack>
+                        <Typography variant="overline">Goals</Typography>
+                        {seasonLeaders?.goals ? (
+                           <>
+                              <Avatar
+                                 sx={{ mb: 1 }}
+                                 src={
+                                    seasonLeaders?.goals?.image ||
+                                    seasonLeaders?.goals?.authProviderImage
+                                 }
+                              />
+                              {desktop ? (
+                                 <Typography>{seasonLeaders?.goals?.fullName}</Typography>
+                              ) : (
+                                 <>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.goals?.firstName}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.goals?.lastName}
+                                    </Typography>
+                                 </>
+                              )}
+                              <Typography variant="h6">{seasonLeaders?.goals?.goals}</Typography>
+                           </>
+                        ) : (
+                           "No stats"
+                        )}
+                     </LeaderStatStack>
+                     <LeaderStatStack>
+                        <Typography variant="overline">Assists</Typography>
+                        {seasonLeaders?.assists ? (
+                           <>
+                              <Avatar
+                                 sx={{ mb: 1 }}
+                                 src={
+                                    seasonLeaders?.assists?.image ||
+                                    seasonLeaders?.assists?.authProviderImage
+                                 }
+                              />
+                              {desktop ? (
+                                 <Typography>{seasonLeaders?.assists?.fullName}</Typography>
+                              ) : (
+                                 <>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.assists?.firstName}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.assists?.lastName}
+                                    </Typography>
+                                 </>
+                              )}
+                              <Typography variant="h6">
+                                 {seasonLeaders?.assists?.assists}
+                              </Typography>
+                           </>
+                        ) : (
+                           "No stats"
+                        )}
+                     </LeaderStatStack>
+                     <LeaderStatStack>
+                        <Typography variant="overline">{desktop ? "Points" : "Pts"}</Typography>
+                        {seasonLeaders?.points ? (
+                           <>
+                              <Avatar
+                                 sx={{ mb: 1 }}
+                                 src={
+                                    seasonLeaders?.points?.image ||
+                                    seasonLeaders?.points?.authProviderImage
+                                 }
+                              />
+                              {desktop ? (
+                                 <Typography>{seasonLeaders?.points?.fullName}</Typography>
+                              ) : (
+                                 <>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.points?.firstName}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.points?.lastName}
+                                    </Typography>
+                                 </>
+                              )}
+                              <Typography variant="h6">
+                                 {seasonLeaders?.points?.goals + seasonLeaders?.points?.assists}
+                              </Typography>
+                           </>
+                        ) : (
+                           "No stats"
+                        )}
+                     </LeaderStatStack>
+                     <LeaderStatStack>
+                        <Typography variant="overline">
+                           {desktop ? "Penalty Minutes" : "PIM"}
+                        </Typography>
+                        {seasonLeaders?.penaltyMinutes ? (
+                           <>
+                              <Avatar
+                                 sx={{ mb: 1 }}
+                                 src={
+                                    seasonLeaders?.penaltyMinutes?.image ||
+                                    seasonLeaders?.penaltyMinutes?.authProviderImage
+                                 }
+                              />
+                              {desktop ? (
+                                 <Typography>{seasonLeaders?.penaltyMinutes?.fullName}</Typography>
+                              ) : (
+                                 <>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.penaltyMinutes?.firstName}
+                                    </Typography>
+                                    <Typography variant="body2">
+                                       {seasonLeaders?.penaltyMinutes?.lastName}
+                                    </Typography>
+                                 </>
+                              )}
+                              <Typography variant="h6">
+                                 {seasonLeaders?.penaltyMinutes?.penaltyMinutes}
+                              </Typography>
+                           </>
+                        ) : (
+                           "No stats"
+                        )}
+                     </LeaderStatStack>
+                  </Stack>
+               ) : (
+                  <TableContainer>
+                     <Table aria-label="leaders table">
+                        <TableBody>
+                           <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell align="left">
+                                 <Typography variant="caption">GP</Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                 <Avatar
+                                    sx={{ mb: 1 }}
+                                    src={
+                                       seasonLeaders?.gamesPlayed?.image ||
+                                       seasonLeaders?.gamesPlayed?.authProviderImage
+                                    }
+                                 />
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="body2">
+                                    {seasonLeaders?.gamesPlayed?.fullName}
+                                 </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="h6">
+                                    {seasonLeaders?.gamesPlayed?.gamesPlayed}
+                                 </Typography>
+                              </TableCell>
                            </TableRow>
-                        </Link>
-                     ))}
-               </PlayerTableBody>
-            </Table>
-         </TableContainer>
+                           <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell align="left">
+                                 <Typography variant="caption">G</Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                 <Avatar
+                                    sx={{ mb: 1 }}
+                                    src={
+                                       seasonLeaders?.goals?.image ||
+                                       seasonLeaders?.goals?.authProviderImage
+                                    }
+                                 />
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="body2">
+                                    {seasonLeaders?.goals?.fullName}
+                                 </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="h6">{seasonLeaders?.goals?.goals}</Typography>
+                              </TableCell>
+                           </TableRow>
+                           <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell align="left">
+                                 <Typography variant="caption">A</Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                 <Avatar
+                                    sx={{ mb: 1 }}
+                                    src={
+                                       seasonLeaders?.assists?.image ||
+                                       seasonLeaders?.assists?.authProviderImage
+                                    }
+                                 />
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="body2">
+                                    {seasonLeaders?.assists?.fullName}
+                                 </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="h6">
+                                    {seasonLeaders?.assists?.assists}
+                                 </Typography>
+                              </TableCell>
+                           </TableRow>
+                           <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell align="left">
+                                 <Typography variant="caption">P</Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                 <Avatar
+                                    sx={{ mb: 1 }}
+                                    src={
+                                       seasonLeaders?.points?.image ||
+                                       seasonLeaders?.points?.authProviderImage
+                                    }
+                                 />
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="body2">
+                                    {seasonLeaders?.points?.fullName}
+                                 </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="h6">
+                                    {seasonLeaders?.points?.points}
+                                 </Typography>
+                              </TableCell>
+                           </TableRow>
+                           <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                              <TableCell align="left">
+                                 <Typography variant="caption">PIM</Typography>
+                              </TableCell>
+                              <TableCell align="right">
+                                 <Avatar
+                                    sx={{ mb: 1 }}
+                                    src={
+                                       seasonLeaders?.penaltyMinutes?.image ||
+                                       seasonLeaders?.penaltyMinutes?.authProviderImage
+                                    }
+                                 />
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="body2">
+                                    {seasonLeaders?.penaltyMinutes?.fullName}
+                                 </Typography>
+                              </TableCell>
+                              <TableCell align="left">
+                                 <Typography variant="h6">
+                                    {seasonLeaders?.penaltyMinutes?.penaltyMinutes}
+                                 </Typography>
+                              </TableCell>
+                           </TableRow>
+                        </TableBody>
+                     </Table>
+                  </TableContainer>
+               )}
+               <TableContainer>
+                  <Table aria-label="Team">
+                     <TableHead>
+                        <PlayerTableHeader>
+                           <StatHeaderCell order={order} orderBy={orderBy} type="lastName">
+                              Player
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="gamesPlayed"
+                              onClick={() => handleClick("gamesPlayed")}
+                           >
+                              GP
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="goals"
+                              onClick={() => handleClick("goals")}
+                           >
+                              {desktop ? "Goals" : "G"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="assists"
+                              onClick={() => handleClick("assists")}
+                           >
+                              {desktop ? "Assists" : "A"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="points"
+                              onClick={() => handleClick("points")}
+                           >
+                              {desktop ? "Points" : "P"}
+                           </StatHeaderCell>
+                           <StatHeaderCell
+                              order={order}
+                              orderBy={orderBy}
+                              type="penaltyMinutes"
+                              onClick={() => handleClick("penaltyMinutes")}
+                           >
+                              PIM
+                           </StatHeaderCell>
+                        </PlayerTableHeader>
+                     </TableHead>
+                     <PlayerTableBody>
+                        {seasonStats?.stats
+                           ?.sort((a, b) =>
+                              order === "asc"
+                                 ? a?.[orderBy] - b?.[orderBy]
+                                 : b?.[orderBy] - a?.[orderBy]
+                           )
+                           ?.map((player) => (
+                              <Link
+                                 href={`/player/${player.playerId}`}
+                                 key={player?.id || `${player?.firstName}${player?.lastName}`}
+                                 passHref
+                              >
+                                 <TableRow>
+                                    <StatBodyCell component="th" scope="row">
+                                       <PlayerName>
+                                          <Typography variant="caption">{` ${
+                                             desktop
+                                                ? `${player?.firstName} ${
+                                                     player?.nickname ? `"${player?.nickname}"` : ""
+                                                  } ${player?.lastName}`
+                                                : `${player?.firstName.split("")[0]}. ${
+                                                     player?.lastName
+                                                  }`
+                                          }`}</Typography>
+                                          <Typography
+                                             variant="caption"
+                                             sx={{ marginLeft: "5px", color: "grey.main" }}
+                                          >
+                                             {player?.position?.slice(0, 1).toUpperCase()}
+                                          </Typography>
+                                       </PlayerName>
+                                    </StatBodyCell>
+                                    <StatBodyCell align="center">
+                                       {player?.gamesPlayed}
+                                    </StatBodyCell>
+                                    <StatBodyCell align="center">{player?.goals}</StatBodyCell>
+                                    <StatBodyCell align="center">{player?.assists}</StatBodyCell>
+                                    <StatBodyCell align="center">{player?.points}</StatBodyCell>
+                                    <StatBodyCell align="center">
+                                       {player?.penaltyMinutes}
+                                    </StatBodyCell>
+                                 </TableRow>
+                              </Link>
+                           ))}
+                     </PlayerTableBody>
+                  </Table>
+               </TableContainer>
+            </>
+         )}
       </PageContainer>
    );
 };
