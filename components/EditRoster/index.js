@@ -70,8 +70,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
       }
    };
 
-   const rosterOptions = players
-      .map((player) => {
+   const rosterOptions = players?.map((player) => {
          return {
             lastName: player.lastName,
             label: `${player.firstName} ${player.lastName}`,
@@ -101,7 +100,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
                <Stack
                   spacing={2}
                   sx={{
-                     maxHeight: "300px",
+                     maxHeight: "325px",
                      display: "flex",
                      flexDirection: "column",
                      flexWrap: desktop ? "wrap" : "nowrap",
@@ -129,7 +128,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
          </DialogContent>
          <DialogActions>
             <Button
-               disabled={fields.length >= 15}
+               disabled={fields.length >= 18}
                onClick={() => append({ playerId: "", playerName: "" }, { focusIndex: 1 })}
             >
                Add Player
