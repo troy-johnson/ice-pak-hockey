@@ -298,7 +298,7 @@ const Game = () => {
                   <TableHead>
                      <BoxScoreHeader>
                         <BoxScoreCell align="center" sx={{ minWidth: "75px" }}>
-                           {dayjs().isAfter(dayjs.unix(game.date.seconds)) ? "FINAL" : ""}
+                           {dayjs().isAfter(dayjs.unix(game?.date?.seconds)) ? "FINAL" : ""}
                         </BoxScoreCell>
                         <BoxScoreCell align="center">1ST</BoxScoreCell>
                         <BoxScoreCell align="center">2ND</BoxScoreCell>
