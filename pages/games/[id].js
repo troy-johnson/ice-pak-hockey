@@ -297,7 +297,9 @@ const Game = () => {
                <Table aria-label="simple table">
                   <TableHead>
                      <BoxScoreHeader>
-                        <BoxScoreCell align="center">FINAL</BoxScoreCell>
+                        <BoxScoreCell align="center" sx={{ minWidth: "75px" }}>
+                           {dayjs().isAfter(dayjs.unix(game.date.seconds)) ? "FINAL" : ""}
+                        </BoxScoreCell>
                         <BoxScoreCell align="center">1ST</BoxScoreCell>
                         <BoxScoreCell align="center">2ND</BoxScoreCell>
                         <BoxScoreCell align="center">3RD</BoxScoreCell>
