@@ -1,18 +1,14 @@
-import { mutate } from "swr";
-
 const editGameRoster = async (data) => {
-   // console.log("edit penalty", data);
-   const response = await fetch(`/api/games/${data.gameId}`, {
+   console.log("data", data)
+   const response = await fetch(`/api/player-status`, {
       method: "PUT",
       mode: "cors",
       cache: "no-cache",
       headers: {
          "Content-Type": "application/json",
       },
-      body: JSON.stringify({ roster: data.roster }),
+      body: JSON.stringify({ data }),
    });
-
-   mutate(`/api/games/${data.gameId}`);
 
    return response.json();
 };

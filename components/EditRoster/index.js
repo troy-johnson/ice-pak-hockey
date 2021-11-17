@@ -24,7 +24,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    const { control, handleSubmit, reset, watch } = useForm({
       defaultValues: {
          gameId: gameId,
-         roster: gameRoster.length >= 1 ? gameRoster : [],
+         roster: gameRoster?.length >= 1 ? gameRoster : [],
       },
    });
 
@@ -50,11 +50,12 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
-      // console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
+      console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
       try {
          editGameRoster({ gameId, roster: data.roster.map((el) => el.playerId) });
          handleClose();
          mutate(`/api/games/${gameId}`);
+         mutate(`/api/games`);
          setSnackbar({
             open: true,
             type: "success",

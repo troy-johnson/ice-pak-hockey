@@ -10,6 +10,7 @@ export { default as useGetPenaltyInfo } from "./useGetPenaltyInfo";
 export { default as useGetPlayers } from "./useGetPlayers";
 export { default as useGetPlayerStats } from "./useGetPlayerStats";
 export { default as useGetPost } from "./useGetPost";
+export { default as useGetProfile } from "./useGetProfile";
 export { default as useGetSeasons } from "./useGetSeasons";
 export { default as useGetSeasonSchedule } from "./useGetSeasonSchedule";
 export { default as useGetSeasonStats } from "./useGetSeasonStats";

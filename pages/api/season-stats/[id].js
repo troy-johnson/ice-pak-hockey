@@ -1,5 +1,6 @@
 import { collection, doc, documentId, getDoc, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../../config";
+import dayjs from "dayjs";
 
 const seasonStatsHandler = async (req, res) => {
    const { id } = req.query;
@@ -156,7 +157,7 @@ const seasonStatsHandler = async (req, res) => {
                   points:
                      goals.filter((goal) => goal.playerId === player.playerId).length +
                      goals.filter((goal) => goal?.assists?.includes(player.playerId)).length,
-                  gamesPlayed: games.filter((game) => game?.roster?.includes(player.playerId))
+                  gamesPlayed: games.filter((game) => game?.roster?.includes(player.playerId) && dayjs().isAfter(dayjs.unix(game.date.seconds)))
                      .length,
                   penaltyMinutes: penalties?.reduce((sum, currentValue) => {
                      if (currentValue?.playerId === player.playerId) {

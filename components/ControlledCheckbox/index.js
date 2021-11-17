@@ -10,6 +10,7 @@ import { Controller } from "react-hook-form";
 
 const ControlledCheckbox = ({
    control,
+   color,
    disabled,
    label,
    name,
@@ -37,7 +38,13 @@ const ControlledCheckbox = ({
                <FormGroup>
                   <FormControlLabel
                      control={
-                        <Checkbox checked={value} onChange={onChange} name={`${name}-checkbox`} />
+                        <Checkbox
+                           checked={value}
+                           disabled={disabled}
+                           color={color}
+                           onChange={onChange}
+                           name={`${name}-checkbox`}
+                        />
                      }
                      label={label}
                   />

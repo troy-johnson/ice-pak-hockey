@@ -12,6 +12,7 @@ export { default as createComment } from "./createComment";
 export { default as addPenalty } from "./addPenalty";
 export { default as editPenalty } from "./editPenalty";
 export { default as editPlayer } from "./editPlayer";
+export { default as editPlayerGameStatus } from "./editPlayerGameStatus";
 export { default as editGameRoster } from "./editGameRoster";
 export { default as roleCheck } from "./roleCheck";
 export { default as deleteGoal } from "./deleteGoal";

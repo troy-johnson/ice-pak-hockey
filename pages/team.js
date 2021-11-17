@@ -180,7 +180,7 @@ const Team = () => {
                <PlayerTableBody>
                   {players
                      ?.sort((a, b) => a?.jerseyNumber - b?.jerseyNumber)
-                     ?.filter(player => !player?.doNotDisplay)
+                     ?.filter((player) => !player?.doNotDisplay)
                      ?.map((player) => (
                         <Link
                            href={`/player/${player.id}`}
@@ -208,7 +208,9 @@ const Team = () => {
                               <PlayerTableCell align="center">
                                  {player?.jerseyNumber}
                               </PlayerTableCell>
-                              <PlayerTableCell align="center">{player?.position}</PlayerTableCell>
+                              <PlayerTableCell align="center">
+                                 {player?.position?.slice(0, 1)?.toUpperCase()}
+                              </PlayerTableCell>
                               <PlayerTableCell align="center">
                                  {player?.shoots || player?.handedness.slice(0, 1)}
                               </PlayerTableCell>

@@ -1,86 +1,113 @@
-import { doc, updateDoc, collection, addDoc } from "firebase/firestore";
+import { doc, updateDoc, collection, addDoc, getDocs } from "firebase/firestore";
 import { db } from "../../config";
 import dayjs from "dayjs";
 
 const dataMigrationHandler = async (req, res) => {
    // const data = [
    //    {
-   //       goalsAgainst: 29,
-   //       goalsFor: 30,
-   //       losses: 4,
-   //       otl: 0,
-   //       penaltyMinutes: 32,
-   //       wins: 3,
-   //       teamId: "LG3ks7DMXwHXtzupNCsJ",
-   //       teamName: "Flyers",
-   //    },
-   //    {         
-   //       goalsAgainst: 20,
-   //       goalsFor: 36,
+   //       goalsAgainst: 17,
+   //       goalsFor: 33,
    //       losses: 1,
    //       otl: 0,
-   //       penaltyMinutes: 24,
-   //       wins: 6,
-   //       teamId: "LRk405AKU9JV8bHz2Vfm",
-   //       teamName: "Dragon Juice",
-   //    },
-   //    {         
-   //       goalsAgainst: 38,
-   //       goalsFor: 26,
-   //       losses: 6,
-   //       otl: 0,
-   //       penaltyMinutes: 30,
-   //       wins: 2,
-   //       teamId: "zun2S3wUdCVyxYuKDlLJ",
-   //       teamName: "Dew Crew",
-   //    },
-   //    {         
-   //       goalsAgainst: 16,
-   //       goalsFor: 34,
-   //       losses: 2,
-   //       otl: 0,
-   //       penaltyMinutes: 26,
+   //       penaltyMinutes: 34,
    //       wins: 5,
    //       teamId: "QgGjs0EoxaIkizRG6xhH",
    //       teamName: "Skate & Score",
    //    },
-   //    {         
-   //       goalsAgainst: 48,
-   //       goalsFor: 10,
-   //       losses: 6,
+   //    {
+   //       goalsAgainst: 10,
+   //       goalsFor: 36,
+   //       losses: 1,
    //       otl: 1,
-   //       penaltyMinutes: 18,
-   //       wins: 0,
-   //       teamId: "9NJrVlNcnaA7JKNaC3eN",
-   //       teamName: "Wild",
+   //       penaltyMinutes: 34,
+   //       wins: 4,
+   //       teamId: "m196KhSGTj8Vpf0jocK5",
+   //       teamName: "Thirsty Dogs",
    //    },
-   //    {         
-   //       goalsAgainst: 22,
-   //       goalsFor: 31,
+   //    {
+   //       goalsAgainst: 11,
+   //       goalsFor: 28,
    //       losses: 2,
    //       otl: 0,
-   //       penaltyMinutes: 34,
-   //       wins: 5,
-   //       teamId: "UgiUFCBkaPleWL7ZzmgQ",
-   //       teamName: "Rat Pack",
-   //    },
-   //    {         
-   //       goalsAgainst: 25,
-   //       goalsFor: 32,
-   //       losses: 3,
-   //       otl: 0,
-   //       penaltyMinutes: 28,
+   //       penaltyMinutes: 42,
    //       wins: 4,
    //       teamId: "",
    //       teamName: "Ice Pak",
    //    },
+   //    {
+   //       goalsAgainst: 20,
+   //       goalsFor: 30,
+   //       losses: 2,
+   //       otl: 0,
+   //       penaltyMinutes: 26,
+   //       wins: 4,
+   //       teamId: "LG3ks7DMXwHXtzupNCsJ",
+   //       teamName: "Flyers",
+   //    },
+   //    {
+   //       goalsAgainst: 24,
+   //       goalsFor: 21,
+   //       losses: 3,
+   //       otl: 0,
+   //       penaltyMinutes: 93,
+   //       wins: 3,
+   //       teamId: "9NJrVlNcnaA7JKNaC3eN",
+   //       teamName: "Wild",
+   //    },
+   //    {
+   //       goalsAgainst: 26,
+   //       goalsFor: 15,
+   //       losses: 3,
+   //       otl: 0,
+   //       penaltyMinutes: 46,
+   //       wins: 3,
+   //       teamId: "UgiUFCBkaPleWL7ZzmgQ",
+   //       teamName: "Rat Pack",
+   //    },
+   //    {
+   //       goalsAgainst: 39,
+   //       goalsFor: 13,
+   //       losses: 5,
+   //       otl: 0,
+   //       penaltyMinutes: 30,
+   //       wins: 1,
+   //       teamId: "zun2S3wUdCVyxYuKDlLJ",
+   //       teamName: "Dew Crew",
+   //    },
+   //    {
+   //       goalsAgainst: 42,
+   //       goalsFor: 14,
+   //       losses: 5,
+   //       otl: 1,
+   //       penaltyMinutes: 18,
+   //       wins: 0,
+   //       teamId: "2eixQWewhDLL3kJKn1yS",
+   //       teamName: "Murder Hornets",
+   //    },
    // ];
 
+   // const result = await getDocs(collection(db, "players"));
+
+   // // if (result.length) {
+   // let players = [];
+
+   // result.forEach((doc) => {
+   //    players.push({ id: doc.id, ...doc.data() });
+   // });
+
+   // players.forEach(async (el) => {
+   //    await updateDoc(doc(db, "players", el.id), {
+   //       notifications: {
+   //          gameDay: true,
+   //       },
+   //    });
+   // });
+
    // data.forEach(async (el) => {
-      // await updateDoc(doc(db, "seasons", "oCjzhpsvGzzFtUrRihkO"), {
-      //    standings: data,
-      // });
-      // console.log("result", result);
+   // await updateDoc(doc(db, "seasons", "LSdvGKI4dFWUBwgeEC5z"), {
+   //    standings: data,
+   // });
+   // console.log("result", result);
    // });
 
    // const result = await addDoc(docollectionc(db, "games"), {

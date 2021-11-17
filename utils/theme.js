@@ -20,10 +20,10 @@ export const theme = createTheme({
          light: "#e6e6e6",
       },
       success: {
-         main: green.A400
+         main: green[600]
       },
       error: {
-         main: red.A400,
+         main: red[900],
       },
    },
 });

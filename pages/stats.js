@@ -587,7 +587,7 @@ const Stats = () => {
                                              variant="caption"
                                              sx={{ marginLeft: "5px", color: "grey.main" }}
                                           >
-                                             {player?.position?.slice(0, 1).toUpperCase()}
+                                             {player?.jerseyNumber}
                                           </Typography>
                                        </PlayerName>
                                     </StatBodyCell>
