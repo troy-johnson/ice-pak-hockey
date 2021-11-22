@@ -111,10 +111,18 @@ const LeaderStatStack = styled(Stack)`
 
 const Stats = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
-   const [seasonId, setSeasonId] = useState();
+   const [seasonId, setSeasonId] = useState(
+      !seasonsLoading && !seasonsError
+         ? seasons.sort(
+              (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+           )?.[0].id
+         : "LSdvGKI4dFWUBwgeEC5z"
+   );
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
-   const { seasonStats, seasonStatsLoading, seasonStatsError } = useGetSeasonStats(seasonId);
+   const { seasonStats, seasonStatsLoading, seasonStatsError } = useGetSeasonStats(
+      seasonId ?? seasons?.[0]?.id
+   );
    const theme = useTheme();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
    const selectSize = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -166,15 +174,15 @@ const Stats = () => {
 
    console.log("seasonStats", { seasonStats, seasonStatsError });
 
-   useEffect(() => {
-      if (seasons) {
-         setSeasonId(
-            seasons?.sort(
-               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
-            )?.[0].id
-         );
-      }
-   }, [seasons]);
+   // useEffect(() => {
+   //    if (seasons) {
+   //       setSeasonId(
+   //          seasons?.sort(
+   //             (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+   //          )?.[0].id
+   //       );
+   //    }
+   // }, [seasons]);
 
    return (
       <PageContainer pageTitle="Season Stats" small>
