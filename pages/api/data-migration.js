@@ -3,81 +3,82 @@ import { db } from "../../config";
 import dayjs from "dayjs";
 
 const dataMigrationHandler = async (req, res) => {
+   // STANDINGS UPDATE
    // const data = [
    //    {
-   //       goalsAgainst: 17,
-   //       goalsFor: 33,
+   //       goalsAgainst: 18,
+   //       goalsFor: 40,
    //       losses: 1,
    //       otl: 0,
-   //       penaltyMinutes: 34,
-   //       wins: 5,
+   //       penaltyMinutes: 38,
+   //       wins: 6,
    //       teamId: "QgGjs0EoxaIkizRG6xhH",
    //       teamName: "Skate & Score",
    //    },
    //    {
-   //       goalsAgainst: 10,
-   //       goalsFor: 36,
-   //       losses: 1,
+   //       goalsAgainst: 14,
+   //       goalsFor: 38,
+   //       losses: 2,
    //       otl: 1,
-   //       penaltyMinutes: 34,
+   //       penaltyMinutes: 75,
    //       wins: 4,
    //       teamId: "m196KhSGTj8Vpf0jocK5",
    //       teamName: "Thirsty Dogs",
    //    },
    //    {
-   //       goalsAgainst: 11,
-   //       goalsFor: 28,
+   //       goalsAgainst: 13,
+   //       goalsFor: 32,
    //       losses: 2,
    //       otl: 0,
-   //       penaltyMinutes: 42,
-   //       wins: 4,
+   //       penaltyMinutes: 52,
+   //       wins: 5,
    //       teamId: "",
    //       teamName: "Ice Pak",
    //    },
    //    {
-   //       goalsAgainst: 20,
-   //       goalsFor: 30,
+   //       goalsAgainst: 24,
+   //       goalsFor: 35,
    //       losses: 2,
    //       otl: 0,
-   //       penaltyMinutes: 26,
-   //       wins: 4,
+   //       penaltyMinutes: 34,
+   //       wins: 5,
    //       teamId: "LG3ks7DMXwHXtzupNCsJ",
    //       teamName: "Flyers",
    //    },
    //    {
-   //       goalsAgainst: 24,
-   //       goalsFor: 21,
-   //       losses: 3,
+   //       goalsAgainst: 29,
+   //       goalsFor: 22,
+   //       losses: 4,
    //       otl: 0,
-   //       penaltyMinutes: 93,
+   //       penaltyMinutes: 99,
    //       wins: 3,
    //       teamId: "9NJrVlNcnaA7JKNaC3eN",
    //       teamName: "Wild",
    //    },
    //    {
-   //       goalsAgainst: 26,
-   //       goalsFor: 15,
+   //       goalsAgainst: 27,
+   //       goalsFor: 20,
    //       losses: 3,
    //       otl: 0,
-   //       penaltyMinutes: 46,
-   //       wins: 3,
+   //       penaltyMinutes: 52,
+   //       wins: 4,
    //       teamId: "UgiUFCBkaPleWL7ZzmgQ",
    //       teamName: "Rat Pack",
    //    },
    //    {
-   //       goalsAgainst: 39,
-   //       goalsFor: 13,
-   //       losses: 5,
+   //       goalsAgainst: 44,
+   //       goalsFor: 17,
+   //       losses: 6,
    //       otl: 0,
-   //       penaltyMinutes: 30,
+   //       penaltyMinutes: 42,
    //       wins: 1,
    //       teamId: "zun2S3wUdCVyxYuKDlLJ",
    //       teamName: "Dew Crew",
    //    },
    //    {
-   //       goalsAgainst: 42,
-   //       goalsFor: 14,
-   //       losses: 5,
+   //       goalsAgainst: 49,
+   //       goalsFor: 15,
+   //       losses: 6,
    //       otl: 1,
    //       penaltyMinutes: 18,
    //       wins: 0,
@@ -86,32 +87,8 @@ const dataMigrationHandler = async (req, res) => {
    //    },
    // ];
 
-   // const result = await getDocs(collection(db, "players"));
-
-   // // if (result.length) {
-   // let players = [];
-
-   // result.forEach((doc) => {
-   //    players.push({ id: doc.id, ...doc.data() });
-   // });
-
-   // players.forEach(async (el) => {
-   //    await updateDoc(doc(db, "players", el.id), {
-   //       notifications: {
-   //          gameDay: true,
-   //       },
-   //    });
-   // });
-
-   // data.forEach(async (el) => {
    // await updateDoc(doc(db, "seasons", "LSdvGKI4dFWUBwgeEC5z"), {
    //    standings: data,
-   // });
-   // console.log("result", result);
-   // });
-
-   // const result = await addDoc(docollectionc(db, "games"), {
-   //    statBypass: data,
    // });
 
    return res.status(418).json({ message: "This route is not available." });

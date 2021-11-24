@@ -65,7 +65,10 @@ const playerStatsHandler = async (req, res) => {
                      }`,
                      gamesPlayed:
                         gamesData.filter(
-                           (game) => game.seasonId === season.seasonId && game?.roster?.includes(id)
+                           (game) =>
+                              game.seasonId === season.seasonId &&
+                              game?.roster?.includes(id) &&
+                              dayjs().isAfter(dayjs.unix(game.date.seconds))
                         ).length +
                         (seasonBypassStats
                            ?.filter(
