@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useGetProducts } from "../../utils";
 import {
+   Button,
    TextField,
    InputLabel,
    FormControl,
@@ -11,10 +12,13 @@ import {
    Select,
    Skeleton,
    Stack,
+   Tooltip,
    Typography,
+   useMediaQuery,
 } from "@mui/material";
 
 const ProductPage = () => {
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const router = useRouter();
    const { productId } = router.query;
    const [color, setColor] = useState("White");
@@ -90,12 +94,71 @@ const ProductPage = () => {
       setQuantity(event.target.value);
    };
 
+   const addToCart = () => {
+      const storage = window.localStorage;
+      const cart = JSON.parse(storage.getItem("icePakCart"));
+      console.log("LS ", cart);
+
+      let variant;
+
+      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+         variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
+      } else if (product?.sync_product?.name !== "Wordmark Trucker Hat") {
+         variant = product.sync_variants.find(
+            (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
+         );
+      }
+
+      console.log("variant", variant);
+
+      if (!cart || cart.length === 0) {
+         storage.setItem(
+            "icePakCart",
+            JSON.stringify([
+               {
+                  syncProductId: productId,
+                  externalId: variant.external_id,
+                  variantId: variant.variant_id,
+                  id: variant.id,
+                  name: variant.name,
+                  color,
+                  size,
+                  price: quantity * parseFloat(variant.retail_price).toFixed(2),
+                  sku: variant.sku,
+                  quantity: Number(quantity),
+               },
+            ])
+         );
+      } else {
+         storage.setItem(
+            "icePakCart",
+            JSON.stringify([
+               ...cart,
+               {
+                  syncProductId: productId,
+                  externalId: variant.external_id,
+                  variantId: variant.variant_id,
+                  id: variant.id,
+                  color,
+                  size,
+                  price: Number(quantity) * Number(variant.retail_price),
+                  sku: variant.sku,
+                  quantity: Number(quantity),
+               },
+            ])
+         );
+      }
+   };
+
    useEffect(() => {
       console.log("color", getVariantColor(product?.sync_variants?.[0]));
       setProductImage(product?.sync_variants?.[0]?.files?.[1]?.preview_url);
       setBlurImage(product?.sync_variants?.[0]?.files?.[1]?.thumpnail_url);
       if (getVariantColor(product?.sync_variants?.[0])) {
          setColor(getVariantColor(product?.sync_variants?.[0]));
+      }
+      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+         setSize("One Size Fits All")
       }
    }, [product]);
 
@@ -109,8 +172,8 @@ const ProductPage = () => {
 
    return (
       <PageContainer pageTitle={product?.sync_product.name}>
-         <Typography sx={{ ml: 3 }} variant="h6">
-            {product?.sync_variants?.[0]?.product?.name.split("(")[0].trim()}
+         <Typography sx={{ ml: 3 }} variant="h5">
+            {`$${product?.sync_variants?.[0]?.retail_price}`}
          </Typography>
          <Stack direction="column" alignItems="center" spacing={2} sx={{ mb: 2 }}>
             {productImage ? (
@@ -125,7 +188,10 @@ const ProductPage = () => {
             ) : (
                <Skeleton variant="rectangular" width={500} height={500} />
             )}
-            <Stack direction="row" alignItems="center" spacing={1}>
+            <Typography sx={{ pl: 3, pr: 3 }} variant="caption">
+               {product?.sync_variants?.[0]?.product?.name.split("(")[0].trim()}
+            </Typography>
+            <Stack direction={desktop ? "row" : "column"} alignItems={"center"} spacing={1}>
                <FormControl>
                   <InputLabel id="color-select-label">Color</InputLabel>
                   <Select
@@ -133,6 +199,7 @@ const ProductPage = () => {
                      id="color-select"
                      value={color}
                      label="Color"
+                     sx={{ width: 225 }}
                      onChange={handleColorChange}
                   >
                      {options.sort().map((el) => (
@@ -142,37 +209,41 @@ const ProductPage = () => {
                      ))}
                   </Select>
                </FormControl>
-               {product?.sync_product?.name === "Wordmark Trucker Hat" ? null : (
-                  <FormControl>
-                     <InputLabel id="size-select-label">Size</InputLabel>
-                     <Select
-                        labelId="size-select-label"
-                        id="size-select"
-                        value={size}
-                        label="Size"
-                        onChange={handleSizeChange}
-                     >
-                        {options[options.findIndex((el) => el.color === color)]?.sizes
-                           .sort()
-                           .map((el) => (
-                              <MenuItem key={el} value={el}>
-                                 {el}
-                              </MenuItem>
-                           ))}
-                     </Select>
-                  </FormControl>
-               )}
-               <TextField
-                  id="outlined-number"
-                  label="Number"
-                  type="number"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  InputLabelProps={{
-                     shrink: true,
-                  }}
-               />
+               <Stack display="flex" direction="row" justifyItems="center" spacing={1}>
+                  {product?.sync_product?.name === "Wordmark Trucker Hat" ? null : (
+                     <FormControl>
+                        <InputLabel id="size-select-label">Size</InputLabel>
+                        <Select
+                           labelId="size-select-label"
+                           id="size-select"
+                           value={size}
+                           label="Size"
+                           sx={{ width: 75 }}
+                           onChange={handleSizeChange}
+                        >
+                           {options[options.findIndex((el) => el.color === color)]?.sizes
+                              .sort()
+                              .map((el) => (
+                                 <MenuItem key={el} value={el}>
+                                    {el}
+                                 </MenuItem>
+                              ))}
+                        </Select>
+                     </FormControl>
+                  )}
+                  <TextField
+                     id="outlined-number"
+                     label="Quantity"
+                     type="number"
+                     sx={{ width: 75 }}
+                     value={quantity}
+                     onChange={handleQuantityChange}
+                  />
+               </Stack>
             </Stack>
+            <Button variant="contained" onClick={addToCart}>
+               Add to Cart
+            </Button>
          </Stack>
       </PageContainer>
    );

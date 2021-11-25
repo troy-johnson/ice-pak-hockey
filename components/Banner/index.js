@@ -6,18 +6,25 @@ import styled from "@emotion/styled";
 import { useSession } from "next-auth/client";
 import {
    AppBar,
+   Badge,
    Box,
+   Button,
+   Divider,
+   Fab,
    IconButton,
    LinearProgress,
    List,
    ListItem,
    ListItemText,
+   Stack,
    SwipeableDrawer,
    Toolbar,
+   Typography,
    useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Account } from "..";
 import { roleCheck } from "../../utils";
 
@@ -29,23 +36,23 @@ const StyledOpenNav = ({ className, onClick }) => {
    );
 };
 
-const StyledCloseNav = ({ className, onClick }) => {
-   return (
-      <IconButton className={className} onClick={onClick}>
-         <CloseIcon />
-      </IconButton>
-   );
-};
+// const StyledCloseNav = ({ className, onClick }) => {
+//    return (
+//       <IconButton className={className} onClick={onClick}>
+//          <CloseIcon />
+//       </IconButton>
+//    );
+// };
 
 const StyledTextLogo = ({ className, desktop }) => {
    return (
-      <div className={className}>
+      <Stack direction="column" className={className} spacing={1} sx={{ mb: 2 }}>
          <Link href="/" passHref>
             <div>
                <Image src="/icePakTextLogo.png" width={300} height={60} alt="Ice Pak Hockey" />
             </div>
          </Link>
-      </div>
+      </Stack>
    );
 };
 
@@ -63,7 +70,7 @@ const TextLogo = styled(StyledTextLogo)`
 
 const NavMenuBox = styled(Box)`
    background-color: ${(props) => props.theme.palette.primary.main};
-   width: ${(props) => (props.desktop ? 300 : "500px")};
+   width: ${(props) => (props.desktop ? 300 : "100vw")};
    height: 100%;
 `;
 
@@ -90,8 +97,46 @@ const OpenNav = styled(StyledOpenNav)`
    }
 `;
 
+const StyledFixedFab = ({ className, children }) => {
+   return (
+      <Fab color="primary" size="small" aria-label="cart" className={className}>
+         {children}
+      </Fab>
+   );
+};
+
+const StyledOpenCartNav = ({ className, onClick, cartItems }) => {
+   return (
+      <Badge className={className} onClick={onClick} badgeContent={cartItems} color="secondary">
+         <ShoppingCartIcon color="white" />
+      </Badge>
+   );
+};
+
+const OpenCartNav = styled(StyledOpenCartNav)`
+   svg {
+      color: ${(props) => props.theme.palette.white};
+      height: 24px;
+      width: 24px;
+   }
+`;
+
+const CartBox = styled(Box)`
+   background-color: ${(props) => props.theme.palette.white};
+   width: ${(props) => (props.desktop ? 300 : "100vw")};
+   height: 100%;
+`;
+
+const FixedFab = styled(StyledFixedFab)`
+   position: fixed;
+   bottom: 15px;
+   right: 15px;
+`;
+
 const Banner = () => {
    const [open, setOpen] = useState(false);
+   const [cartOpen, setCartOpen] = useState(false);
+   const [cartItems, setCartItems] = useState(0);
    const [showProgress, setShowProgress] = useState(false);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [session, loading] = useSession();
@@ -105,6 +150,10 @@ const Banner = () => {
       const handleStop = () => {
          setShowProgress(false);
       };
+
+      if (router.isReady) {
+         setCartItems(JSON.parse(window?.localStorage?.getItem("icePakCart"))?.length ?? 0);
+      }
 
       router.events.on("routeChangeStart", handleStart);
       router.events.on("routeChangeComplete", handleStop);
@@ -187,6 +236,51 @@ const Banner = () => {
             <Box sx={{ width: "100%" }}>
                <LinearProgress color="secondary" />
             </Box>
+         ) : null}
+         {cartItems >= 1 ? (
+            <FixedFab>
+               <OpenCartNav cartItems={cartItems} onClick={() => setCartOpen(true)} />
+               <SwipeableDrawer
+                  anchor="right"
+                  onOpen={() => {}}
+                  open={cartOpen}
+                  onClose={() => setCartOpen(false)}
+               >
+                  <CartBox
+                     role="presentation"
+                     onClick={() => setCartOpen(false)}
+                     onKeyDown={() => setCartOpen(false)}
+                     desktop={desktop}
+                  >
+                     <Typography variant="h4">Cart</Typography>
+                     <Stack direction="column">
+                        {JSON.parse(window?.localStorage?.getItem("icePakCart"))?.map((el) => {
+                           return (
+                              <div key={el.sku}>
+                                 <Typography variant="body2">Name: {el.name}</Typography>
+                                 <Typography variant="body2">Color: {el.color}</Typography>
+                                 <Typography variant="body2">Size: {el.size}</Typography>
+                                 <Typography variant="body2">Quantity: {el.quantity}</Typography>
+                                 <Typography variant="body2">
+                                    Price: {`$${parseFloat(el.price).toFixed(2)}`}
+                                 </Typography>
+                                 <Divider />
+                              </div>
+                           );
+                        })}
+                        <Typography>
+                           Total:{" $"}
+                           {JSON.parse(window?.localStorage?.getItem("icePakCart"))
+                              ?.reduce((sum, curr) => {
+                                 return Number(sum + curr.price);
+                              }, 0)
+                              .toFixed(2)}
+                        </Typography>
+                        <Button>Order</Button>
+                     </Stack>
+                  </CartBox>
+               </SwipeableDrawer>
+            </FixedFab>
          ) : null}
       </AppBar>
    );
