@@ -17,7 +17,7 @@ const playerStatusHandler = async (req, res) => {
 
    const currentGameRoster = gameResult.data().roster;
 
-   console.log("cGR", currentGameRoster);
+   // console.log("cGR", currentGameRoster);
 
    const isPlayerRostered = currentGameRoster.includes(playerId);
 

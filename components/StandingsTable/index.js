@@ -62,7 +62,7 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
 
    const standings = currentStandings;
 
-   console.log("season type", seasonType);
+   // console.log("season type", seasonType);
 
    const cells =
       seasonType === "Playoffs"

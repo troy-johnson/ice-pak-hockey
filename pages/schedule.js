@@ -55,7 +55,7 @@ const Schedule = () => {
       };
    });
 
-   console.log("gameStatus", profile);
+   // console.log("gameStatus", profile);
 
    if (gamesLoading) {
       return <Loading />;
@@ -64,7 +64,7 @@ const Schedule = () => {
    }
 
    const updateGameRoster = (e, gameId) => {
-      console.log("updateGameRoster", { checked: e.target.checked, gameId });
+      // console.log("updateGameRoster", { checked: e.target.checked, gameId });
       // const otherGames = gameStatus?.filter((el) => el.gameId !== gameId);
       setGameStatus({ gameId, status: e.target.checked });
 

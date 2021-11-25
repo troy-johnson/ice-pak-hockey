@@ -76,10 +76,10 @@ const ProductPage = () => {
    });
 
    const handleColorChange = (event) => {
-      console.log(
-         "test",
-         options.find((el) => el.color === event.target.value)
-      );
+      // console.log(
+      //    "test",
+      //    options.find((el) => el.color === event.target.value)
+      // );
       setColor(event.target.value);
       setSize("M");
       setProductImage(options.find((el) => el.color === event.target.value).image);
@@ -97,7 +97,7 @@ const ProductPage = () => {
    const addToCart = () => {
       const storage = window.localStorage;
       const cart = JSON.parse(storage.getItem("icePakCart"));
-      console.log("LS ", cart);
+      // console.log("LS ", cart);
 
       let variant;
 
@@ -109,7 +109,7 @@ const ProductPage = () => {
          );
       }
 
-      console.log("variant", variant);
+      // console.log("variant", variant);
 
       if (!cart || cart.length === 0) {
          storage.setItem(
@@ -151,7 +151,7 @@ const ProductPage = () => {
    };
 
    useEffect(() => {
-      console.log("color", getVariantColor(product?.sync_variants?.[0]));
+      // console.log("color", getVariantColor(product?.sync_variants?.[0]));
       setProductImage(product?.sync_variants?.[0]?.files?.[1]?.preview_url);
       setBlurImage(product?.sync_variants?.[0]?.files?.[1]?.thumpnail_url);
       if (getVariantColor(product?.sync_variants?.[0])) {
@@ -168,7 +168,7 @@ const ProductPage = () => {
       return <PageContainer>Error loading product. Please try again later.</PageContainer>;
    }
 
-   console.log("options", options);
+   // console.log("options", options);
 
    return (
       <PageContainer pageTitle={product?.sync_product.name}>

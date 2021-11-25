@@ -128,7 +128,7 @@ const Manager = () => {
       );
    }
 
-   console.log("season", currentSeason(seasonId));
+   // console.log("season", currentSeason(seasonId));
 
    return (
       <PageContainer small pageTitle="Manager">

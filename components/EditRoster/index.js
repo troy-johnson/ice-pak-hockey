@@ -50,7 +50,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
-      console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
+      // console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
       try {
          editGameRoster({ gameId, roster: data.roster.map((el) => el.playerId) });
          handleClose();
@@ -91,7 +91,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
          return 0;
       });
 
-   console.log("roster", rosterOptions);
+   // console.log("roster", rosterOptions);
 
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>

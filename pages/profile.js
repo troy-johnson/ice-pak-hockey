@@ -58,7 +58,7 @@ const Profile = () => {
    const onSubmit = (data) => {
       let imageToUpload = image ?? session?.user?.image;
 
-      console.log("data", data);
+      // console.log("data", data);
 
       try {
          editPlayer({
