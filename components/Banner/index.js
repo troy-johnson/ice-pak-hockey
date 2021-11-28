@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
 import { useSession } from "next-auth/client";
+import { useSelector, useDispatch } from "react-redux";
 import {
    AppBar,
    Badge,
@@ -26,7 +27,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Account } from "..";
-import { roleCheck } from "../../utils";
+import { incrementQuantity, decrementQuantity, removeFromCart, roleCheck } from "../../utils";
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
@@ -58,6 +59,7 @@ const StyledTextLogo = ({ className, desktop }) => {
 
 const TextLogo = styled(StyledTextLogo)`
    width: 100%;
+   text-align: center;
    margin: ${(props) => (props.desktop ? "15px 15px 5px 45px" : "15px 0px 5px 15px")};
    display: flex;
    height: 100%;
@@ -105,9 +107,9 @@ const StyledFixedFab = ({ className, children }) => {
    );
 };
 
-const StyledOpenCartNav = ({ className, onClick, cartItems }) => {
+const StyledOpenCartNav = ({ className, onClick, cartLength }) => {
    return (
-      <Badge className={className} onClick={onClick} badgeContent={cartItems} color="secondary">
+      <Badge className={className} onClick={onClick} badgeContent={cartLength} color="secondary">
          <ShoppingCartIcon color="white" />
       </Badge>
    );
@@ -136,12 +138,18 @@ const FixedFab = styled(StyledFixedFab)`
 const Banner = () => {
    const [open, setOpen] = useState(false);
    const [cartOpen, setCartOpen] = useState(false);
-   const [cartItems, setCartItems] = useState(0);
    const [showProgress, setShowProgress] = useState(false);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [session, loading] = useSession();
 
    const router = useRouter();
+
+   const cart = useSelector((state) => state.cart);
+   const dispatch = useDispatch();
+
+   const getTotalPrice = () => {
+      return cart.reduce((accumulator, item) => accumulator + item.quantity * item.price, 0);
+   };
 
    useEffect(() => {
       const handleStart = (url) => {
@@ -150,10 +158,6 @@ const Banner = () => {
       const handleStop = () => {
          setShowProgress(false);
       };
-
-      if (router.isReady) {
-         setCartItems(JSON.parse(window?.localStorage?.getItem("icePakCart"))?.length ?? 0);
-      }
 
       router.events.on("routeChangeStart", handleStart);
       router.events.on("routeChangeComplete", handleStop);
@@ -237,9 +241,9 @@ const Banner = () => {
                <LinearProgress color="secondary" />
             </Box>
          ) : null}
-         {cartItems >= 1 ? (
+         {cart.length >= 1 ? (
             <FixedFab>
-               <OpenCartNav cartItems={cartItems} onClick={() => setCartOpen(true)} />
+               <OpenCartNav cartLength={cart.length} onClick={() => setCartOpen(true)} />
                <SwipeableDrawer
                   anchor="right"
                   onOpen={() => {}}
@@ -254,7 +258,7 @@ const Banner = () => {
                   >
                      <Typography variant="h4">Cart</Typography>
                      <Stack direction="column">
-                        {JSON.parse(window?.localStorage?.getItem("icePakCart"))?.map((el) => {
+                        {cart.map((el) => {
                            return (
                               <div key={el.sku}>
                                  <Typography variant="body2">Name: {el.name}</Typography>
@@ -264,19 +268,15 @@ const Banner = () => {
                                  <Typography variant="body2">
                                     Price: {`$${parseFloat(el.price).toFixed(2)}`}
                                  </Typography>
+                                 <Button onClick={() => dispatch(incrementQuantity(el.id))}>+</Button>
+                                 <Button onClick={() => dispatch(decrementQuantity(el.id))}>-</Button>
+                                 <Button onClick={() => dispatch(removeFromCart(el.id))}>x</Button>
                                  <Divider />
                               </div>
                            );
                         })}
-                        <Typography>
-                           Total:{" $"}
-                           {JSON.parse(window?.localStorage?.getItem("icePakCart"))
-                              ?.reduce((sum, curr) => {
-                                 return Number(sum + curr.price);
-                              }, 0)
-                              .toFixed(2)}
-                        </Typography>
-                        <Button>Order</Button>
+                        <Typography>Total: $ {getTotalPrice()}</Typography>
+                        <Button disabled={cart.length === 0}>Order</Button>
                      </Stack>
                   </CartBox>
                </SwipeableDrawer>

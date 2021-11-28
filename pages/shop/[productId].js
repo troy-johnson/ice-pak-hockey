@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Loading, PageContainer } from "../../components";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useGetProducts } from "../../utils";
+import { useSelector, useDispatch } from "react-redux";
+import { addToCart, useGetProducts } from "../../utils";
 import {
    Button,
    TextField,
@@ -24,6 +25,8 @@ const ProductPage = () => {
    const [color, setColor] = useState("White");
    const [size, setSize] = useState("M");
    const [quantity, setQuantity] = useState(1);
+
+   const dispatch = useDispatch();
 
    const { products, productsLoading, productsError } = useGetProducts();
 
@@ -94,11 +97,7 @@ const ProductPage = () => {
       setQuantity(event.target.value);
    };
 
-   const addToCart = () => {
-      const storage = window.localStorage;
-      const cart = JSON.parse(storage.getItem("icePakCart"));
-      // console.log("LS ", cart);
-
+   const addProductToCart = () => {
       let variant;
 
       if (product?.sync_product?.name === "Wordmark Trucker Hat") {
@@ -110,44 +109,20 @@ const ProductPage = () => {
       }
 
       // console.log("variant", variant);
-
-      if (!cart || cart.length === 0) {
-         storage.setItem(
-            "icePakCart",
-            JSON.stringify([
-               {
-                  syncProductId: productId,
-                  externalId: variant.external_id,
-                  variantId: variant.variant_id,
-                  id: variant.id,
-                  name: variant.name,
-                  color,
-                  size,
-                  price: quantity * parseFloat(variant.retail_price).toFixed(2),
-                  sku: variant.sku,
-                  quantity: Number(quantity),
-               },
-            ])
-         );
-      } else {
-         storage.setItem(
-            "icePakCart",
-            JSON.stringify([
-               ...cart,
-               {
-                  syncProductId: productId,
-                  externalId: variant.external_id,
-                  variantId: variant.variant_id,
-                  id: variant.id,
-                  color,
-                  size,
-                  price: Number(quantity) * Number(variant.retail_price),
-                  sku: variant.sku,
-                  quantity: Number(quantity),
-               },
-            ])
-         );
-      }
+      dispatch(
+         addToCart({
+            syncProductId: productId,
+            externalId: variant.external_id,
+            variantId: variant.variant_id,
+            id: variant.id,
+            name: variant.name,
+            color,
+            size,
+            price: quantity * parseFloat(variant.retail_price).toFixed(2),
+            sku: variant.sku,
+            quantity: Number(quantity),
+         })
+      );
    };
 
    useEffect(() => {
@@ -158,7 +133,7 @@ const ProductPage = () => {
          setColor(getVariantColor(product?.sync_variants?.[0]));
       }
       if (product?.sync_product?.name === "Wordmark Trucker Hat") {
-         setSize("One Size Fits All")
+         setSize("One Size Fits All");
       }
    }, [product]);
 
@@ -241,7 +216,7 @@ const ProductPage = () => {
                   />
                </Stack>
             </Stack>
-            <Button variant="contained" onClick={addToCart}>
+            <Button variant="contained" onClick={addProductToCart}>
                Add to Cart
             </Button>
          </Stack>
