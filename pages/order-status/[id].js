@@ -1,10 +1,10 @@
 import { useRouter } from "next/router";
 import { Typography } from "@mui/material";
-import { PageContainer } from "../components";
+import { PageContainer } from "../../components";
 
 const OrderStatus = () => {
    const router = useRouter();
-   const { status } = router.query;
+   const { id, status } = router.query;
 
    console.log("router query", router.query)
 

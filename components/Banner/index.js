@@ -170,7 +170,13 @@ const Banner = () => {
             },
             redirect: "follow", // manual, *follow, error
             method: "POST",
-            body: JSON.stringify({ items: cart }),
+            body: JSON.stringify({
+               items: cart,
+               user: {
+                  email: session?.user?.email,
+                  fullName: `${session?.user?.firstName} ${session?.user?.lastName}`,
+               },
+            }),
          }
       );
 
@@ -198,6 +204,8 @@ const Banner = () => {
       };
    }, [router]);
 
+   console.log("session", session);
+
    return (
       <AppBar position="sticky">
          <Toolbar>
@@ -211,7 +219,7 @@ const Banner = () => {
                <NavMenuBox
                   role="presentation"
                   // onClick={() => setOpen(false)}
-                  // onKeyDown={() => setOpen(false)}
+                  onKeyDown={() => setOpen(false)}
                   desktop={desktop}
                >
                   {/* <CloseNav onClick={() => setOpen(false)} /> */}
@@ -246,11 +254,11 @@ const Banner = () => {
                            <MenuItem primary="Standings" />
                         </Link>
                      </ListItem>
-                     {/* <ListItem button>
+                     <ListItem button>
                         <Link href="/shop" passHref>
                            <MenuItem primary="Shop" />
                         </Link>
-                     </ListItem> */}
+                     </ListItem>
                      {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager"]) ? (
                         <ListItem button>
                            <Link href="/manager" passHref>
