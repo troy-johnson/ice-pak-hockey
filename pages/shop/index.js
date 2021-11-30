@@ -25,13 +25,13 @@ const Shop = () => {
    const { products, productsLoading, productsError } = useGetProducts();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   console.log("products", products);
+   // console.log("products", products);
 
    return (
       <PageContainer pageTitle="Shop">
          <Stack direction={desktop ? "row" : "column"} sx={{ ml: 2, mb: 2 }} spacing={2}>
             {products?.map((product) => {
-               console.log("product", product);
+               // console.log("product", product);
                return (
                   <Box sx={{ maxWidth: 345 }} key={product?.sync_product.id}>
                      <Card variant="outlined">

@@ -176,10 +176,6 @@ const Banner = () => {
 
       const checkoutSession = await result.json();
 
-      console.log("response", checkoutSession);
-
-      console.log("window", window.origin);
-
       window.location.href = checkoutSession.url;
    };
 

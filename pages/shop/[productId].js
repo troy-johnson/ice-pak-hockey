@@ -86,10 +86,10 @@ const ProductPage = () => {
    });
 
    const handleColorChange = (event) => {
-      console.log(
-         "test",
-         options.find((el) => el.color === event.target.value)
-      );
+      // console.log(
+      //    "test",
+      //    options.find((el) => el.color === event.target.value)
+      // );
       setColor(event.target.value);
       setSize("M");
       setImages(
@@ -130,7 +130,7 @@ const ProductPage = () => {
          );
       }
 
-      console.log("variant", variant);
+      // console.log("variant", variant);
       dispatch(
          addToCart({
             syncProductId: productId,
@@ -165,7 +165,7 @@ const ProductPage = () => {
       return <PageContainer>Error loading product. Please try again later.</PageContainer>;
    }
 
-   console.log("images", images);
+   // console.log("images", images);
 
    return (
       <PageContainer pageTitle={product?.sync_product.name}>

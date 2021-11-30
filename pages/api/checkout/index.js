@@ -6,7 +6,7 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
 const CheckoutHandler = async (req, res) => {
    try {
       const { items } = req.body;
-      console.log("req body", items);
+      // console.log("req body", items);
 
       const redirectURL =
          process.env.NODE_ENV === "development"
@@ -16,15 +16,15 @@ const CheckoutHandler = async (req, res) => {
       const productList = await stripe.products.list();
       const pricesList = await stripe.prices.list();
 
-      console.log("productList", productList);
-      console.log("pricesList", pricesList);
+      // console.log("productList", productList);
+      // console.log("pricesList", pricesList);
 
       const lineItems = items.map((item) => {
          const currentProductId = productList.data.find(
             (el) => el.metadata.printfulId === item.syncProductId
          ).id;
          const description = item.name.split("-")[1];
-         console.log("item", description);
+         // console.log("item", description);
          return {
             price: pricesList.data.find((el) => el.product === currentProductId).id,
             quantity: item.quantity,

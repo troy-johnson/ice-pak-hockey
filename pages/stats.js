@@ -172,7 +172,7 @@ const Stats = () => {
       setOrder(order === "asc" ? "desc" : "asc");
    };
 
-   console.log("seasonStats", { seasonStats, seasonStatsError });
+   // console.log("seasonStats", { seasonStats, seasonStatsError });
 
    // useEffect(() => {
    //    if (seasons) {

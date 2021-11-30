@@ -2,7 +2,7 @@ import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
 const playerHandler = async (req, res) => {
-   console.log("req", { method: req.method, body: req.body });
+   // console.log("req", { method: req.method, body: req.body });
    switch (req.method) {
       case "GET":
          const { id } = req.query;
@@ -36,7 +36,7 @@ const playerHandler = async (req, res) => {
          }
       case "PUT":
          try {
-            console.log("req.body", req.body);
+            // console.log("req.body", req.body);
             await setDoc(doc(db, "players", req.body.id), {
                ...req.body,
             });
