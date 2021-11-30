@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, useGetProducts } from "../../utils";
 import {
+   Box,
    Button,
    TextField,
    InputLabel,
@@ -22,20 +23,10 @@ const ProductPage = () => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const router = useRouter();
    const { productId } = router.query;
-   const [color, setColor] = useState("White");
-   const [size, setSize] = useState("M");
-   const [quantity, setQuantity] = useState(1);
-
-   const dispatch = useDispatch();
 
    const { products, productsLoading, productsError } = useGetProducts();
 
    const product = products?.filter((product) => Number(productId) === product.sync_product.id)[0];
-
-   const [productImage, setProductImage] = useState(product?.sync_product?.preview_url);
-   const [blurImage, setBlurImage] = useState(product?.product?.sync_product?.preview_url);
-
-   console.log("product", product);
 
    const getVariantColor = (variant) => {
       if (product?.sync_product?.name === "Wordmark Trucker Hat") {
@@ -56,7 +47,23 @@ const ProductPage = () => {
       }
       return variant?.product?.name?.split("(")?.[1]?.split("/")?.[1]?.split(")")?.[0].trim();
    };
-   const getIndexOfOption = (color) => options.findIndex((el) => el.color === color);
+
+   const [color, setColor] = useState("Black" ?? "White");
+   const [size, setSize] = useState("M");
+   const [quantity, setQuantity] = useState(1);
+
+   const dispatch = useDispatch();
+
+   const [images, setImages] = useState([]);
+   const [currentImage, setCurrentImage] = useState(
+      images?.find((image) => image.type === "preview")
+   );
+
+   // console.log("currentImage", currentImage);
+   // console.log("product", product);
+   // console.log("color", color, getVariantColor(product?.sync_variants[0]));
+
+   const getImages = (variant) => variant.files.filter((file) => file.type !== "default");
 
    const options = [];
 
@@ -71,31 +78,46 @@ const ProductPage = () => {
          options.push({
             color: getVariantColor(variant),
             sizes: [getVariantSize(variant)],
-            image: variant.files[1].preview_url,
-            blurImage: variant.files[1].thumbnail_url,
+            images: getImages(variant),
+            blurImage: variant.files.filter((file) => file.type === "preview")[0].thumbnail_url,
             brandName: variant.product.name.split("(")[0].trim(),
          });
       }
    });
 
    const handleColorChange = (event) => {
-      // console.log(
-      //    "test",
-      //    options.find((el) => el.color === event.target.value)
-      // );
+      console.log(
+         "test",
+         options.find((el) => el.color === event.target.value)
+      );
       setColor(event.target.value);
       setSize("M");
-      setProductImage(options.find((el) => el.color === event.target.value).image);
-      setBlurImage(options.find((el) => el.color === event.target.value).blurImage);
+      setImages(
+         options
+            .find((el) => el.color === event.target.value)
+            ?.images?.filter((image) => image.type !== "default")
+      );
+      setCurrentImage(
+         options
+            .find((el) => el.color === event.target.value)
+            ?.images?.find((image) => image.type === "preview")
+      );
    };
+
+   // const handleImageChange = () => {
+   //    if (currentImage.type === "preview") {
+   //       setCurrentImage(images?.find((image) => image.type === "back"));
+   //    } else setCurrentImage(images?.find((image) => image.type === "preview"));
+   // };
 
    const handleSizeChange = (event) => {
       setSize(event.target.value);
    };
 
-   const handleQuantityChange = (event) => {
-      setQuantity(event.target.value);
-   };
+   // const handleQuantityChange = (event) => {
+   //    console.log("handle", event.target.value)
+   //    setQuantity(event.target.value);
+   // };
 
    const addProductToCart = () => {
       let variant;
@@ -108,27 +130,27 @@ const ProductPage = () => {
          );
       }
 
-      // console.log("variant", variant);
+      console.log("variant", variant);
       dispatch(
          addToCart({
             syncProductId: productId,
             externalId: variant.external_id,
             variantId: variant.variant_id,
+            image: variant.files.filter((file) => file.type === "preview")[0].thumbnail_url,
             id: variant.id,
             name: variant.name,
             color,
             size,
-            price: quantity * parseFloat(variant.retail_price).toFixed(2),
+            price: parseFloat(variant.retail_price).toFixed(2),
             sku: variant.sku,
-            quantity: Number(quantity),
+            quantity,
          })
       );
    };
 
    useEffect(() => {
-      // console.log("color", getVariantColor(product?.sync_variants?.[0]));
-      setProductImage(product?.sync_variants?.[0]?.files?.[1]?.preview_url);
-      setBlurImage(product?.sync_variants?.[0]?.files?.[1]?.thumpnail_url);
+      setImages(product?.sync_variants?.[0]?.files.filter((file) => file.type !== "default"));
+      setCurrentImage(product?.sync_variants?.[0]?.files.find((file) => file.type === "preview"));
       if (getVariantColor(product?.sync_variants?.[0])) {
          setColor(getVariantColor(product?.sync_variants?.[0]));
       }
@@ -143,7 +165,7 @@ const ProductPage = () => {
       return <PageContainer>Error loading product. Please try again later.</PageContainer>;
    }
 
-   // console.log("options", options);
+   console.log("images", images);
 
    return (
       <PageContainer pageTitle={product?.sync_product.name}>
@@ -151,15 +173,32 @@ const ProductPage = () => {
             {`$${product?.sync_variants?.[0]?.retail_price}`}
          </Typography>
          <Stack direction="column" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-            {productImage ? (
-               <Image
-                  blurDataURL={blurImage ?? productImage}
-                  placeholder="blur"
-                  src={productImage}
-                  height={500}
-                  width={500}
-                  alt={product?.sync_product.name}
-               />
+            {currentImage ? (
+               <Stack direction="column" alignItems="center" spacing={2}>
+                  <Image
+                     blurDataURL={currentImage?.thumbnail_url}
+                     placeholder="blur"
+                     src={currentImage?.preview_url}
+                     height={500}
+                     width={500}
+                     alt={product?.sync_product.name}
+                  />
+                  <Typography variant="caption">
+                     {currentImage.type[0].toUpperCase() + currentImage.type.substring(1)}
+                  </Typography>
+                  <Stack direction="row" spacing={1} style={{ cursor: "pointer" }}>
+                     {images.map((image, index) => (
+                        <Image
+                           key={image.id}
+                           onClick={() => setCurrentImage(images[index])}
+                           src={image?.thumbnail_url}
+                           height={35}
+                           width={35}
+                           alt={product?.sync_product.name}
+                        />
+                     ))}
+                  </Stack>
+               </Stack>
             ) : (
                <Skeleton variant="rectangular" width={500} height={500} />
             )}
@@ -206,14 +245,14 @@ const ProductPage = () => {
                         </Select>
                      </FormControl>
                   )}
-                  <TextField
+                  {/* <TextField
                      id="outlined-number"
                      label="Quantity"
                      type="number"
                      sx={{ width: 75 }}
                      value={quantity}
                      onChange={handleQuantityChange}
-                  />
+                  /> */}
                </Stack>
             </Stack>
             <Button variant="contained" onClick={addProductToCart}>
