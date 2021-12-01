@@ -1,6 +1,6 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -70,7 +70,25 @@ const stripeWebhookHandler = async (req, res) => {
 
          return res.status(202).send("Updated order status.");
       }
-   } else {
+   } 
+   // else if (event.type === "payment_intent.created") {
+   //    console.log("pi created", event.data);
+
+   //    const sessionData = await stripe.checkout.sessions.list({
+   //       payment_intent: event.data.order.external_id,
+   //    });
+
+   //    const orderResult = await getDoc(doc(db, "orders", sessionData.data[0].client_reference_id));
+
+   //    const orderData = orderResult.data();
+
+   //    console.log("sessionData", sessionData);
+
+   //    stripe.paymentIntents.update(event.data.id, {
+   //       receipt_email: orderData.contact.email ?? user.email,
+   //    });
+   // } 
+   else {
       console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
       if (client_reference_id) {
          await updateDoc(doc(db, "orders", client_reference_id), {

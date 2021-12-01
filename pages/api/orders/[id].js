@@ -1,4 +1,4 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
 const stateCodeToFullName = (code) => {
@@ -81,40 +81,40 @@ const ordersHandler = async (req, res) => {
          `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
       );
 
-      console.log("body", {
-         external_id: orderData.referenceId,
-         recipient: {
-            name: orderData.shipping.name,
-            address1: orderData.shipping.address.line1,
-            address2: orderData.shipping.address.line2,
-            city: orderData.shipping.address.city,
-            state_code: orderData.shipping.address.state,
-            state_name: stateCodeToFullName(orderData.shipping.address.state),
-            country_code: "US",
-            country_name: "United States",
-            zip: Number(orderData.shipping.address.postal_code),
-            phone: orderData.contact.phone,
-            email: orderData.contact.email ?? orderData.user.email,
-         },
-         items: orderData.orderedItems.map((item) => {
-            return {
-               id: item.id,
-               external_id: item.externalId,
-               variant_id: item.variantId,
-               sync_variant_id: item.syncVariantId,
-               external_variant_id: item.externalVariantId,
-               warehouse_product_variant_id: item.warehouseProductVariantId,
-               quantity: item.quantity,
-               price: item.price,
-               retail_price: item.retailPrice,
-               name: item.name,
-               product: item.product,
-               files: item.files,
-               options: item.options,
-               sku: item.sku,
-            };
-         }),
-      });
+      // console.log("body", {
+      //    external_id: orderData.referenceId,
+      //    recipient: {
+      //       name: orderData.shipping.name,
+      //       address1: orderData.shipping.address.line1,
+      //       address2: orderData.shipping.address.line2,
+      //       city: orderData.shipping.address.city,
+      //       state_code: orderData.shipping.address.state,
+      //       state_name: stateCodeToFullName(orderData.shipping.address.state),
+      //       country_code: "US",
+      //       country_name: "United States",
+      //       zip: Number(orderData.shipping.address.postal_code),
+      //       phone: orderData.contact.phone,
+      //       email: orderData.contact.email ?? orderData.user.email,
+      //    },
+      //    items: orderData.orderedItems.map((item) => {
+      //       return {
+      //          id: item.id,
+      //          external_id: item.externalId,
+      //          variant_id: item.variantId,
+      //          sync_variant_id: item.syncVariantId,
+      //          external_variant_id: item.externalVariantId,
+      //          warehouse_product_variant_id: item.warehouseProductVariantId,
+      //          quantity: item.quantity,
+      //          price: item.price,
+      //          retail_price: item.retailPrice,
+      //          name: item.name,
+      //          product: item.product,
+      //          files: item.files,
+      //          options: item.options,
+      //          sku: item.sku,
+      //       };
+      //    }),
+      // });
 
       const result = await fetch("https://api.printful.com/orders", {
          method: "POST",
@@ -181,7 +181,14 @@ const ordersHandler = async (req, res) => {
 
          console.log("data", confirmData);
 
-         return res.status(200).json(confirmData);
+         if (confirmData.code === 200) {
+            await updateDoc(doc(db, "orders", orderData.referenceId), {
+               orderStatus: "Order confirmed",
+               shippingStatus: "Waiting for fulfillment",
+               status: "Order confirmed",
+               costBreakdown: data.result.costs,
+            });
+         }
       } else {
          return res.status(data.code).json({ data });
       }

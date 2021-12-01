@@ -65,10 +65,10 @@ const checkoutHandler = async (req, res) => {
 
       await setDoc(doc(db, "orders", clientReferenceId), {
          orderedItems,
-         paymentStatus: "pending payment",
-         orderStatus: "pending payment",
-         shippingStatus: "pending payment",
-         status: "pending payment",
+         paymentStatus: "Pending payment",
+         orderStatus: "Pending payment",
+         shippingStatus: "Pending payment",
+         status: "Pending payment",
          orderAmount: Number(
             items.reduce((prev, curr) => {
                return prev + Number(curr.price) * curr.quantity;
