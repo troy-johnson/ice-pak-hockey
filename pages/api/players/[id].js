@@ -11,7 +11,7 @@ const playerHandler = async (req, res) => {
             const result = await getDoc(db, "players", id);
 
             if (result.exists()) {
-               return res.status(200).json(req.data());
+               return res.status(200).json(result.data());
             }
 
             return res.status(200).send("Player not found!");

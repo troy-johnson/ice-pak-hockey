@@ -130,20 +130,27 @@ const ProductPage = () => {
          );
       }
 
-      // console.log("variant", variant);
+      console.log("variant", variant);
       dispatch(
          addToCart({
-            syncProductId: productId,
+            id: variant.id,
             externalId: variant.external_id,
             variantId: variant.variant_id,
-            image: variant.files.filter((file) => file.type === "preview")[0].thumbnail_url,
-            id: variant.id,
+            syncVariantId: variant.sync_variant_id,
+            externalVariantId: variant.external_variant_id,
+            warehouseProductVariantId: variant.warehouse_product_variant_id,
+            quantity,
+            price: parseFloat(variant.retail_price).toFixed(2),
+            retailPrice: variant.retail_price,
             name: variant.name,
+            product: variant.product,
+            files: variant.files,
+            options: variant.options,
+            sku: variant.sku,
+            image: variant.files.filter((file) => file.type === "preview")[0].thumbnail_url,
+            syncProductId: productId,
             color,
             size,
-            price: parseFloat(variant.retail_price).toFixed(2),
-            sku: variant.sku,
-            quantity,
          })
       );
    };

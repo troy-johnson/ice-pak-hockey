@@ -1,14 +1,14 @@
 import { buffer } from "micro";
 import Stripe from "stripe";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../config";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
 });
 
-// const endpointSecret = "whsec_NKCtywOBX8mUjrbXwq0e6n5pwsI9KVvC";
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const endpointSecret = "whsec_NKCtywOBX8mUjrbXwq0e6n5pwsI9KVvC";
+// const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const config = {
    api: {
@@ -28,15 +28,23 @@ const stripeWebhookHandler = async (req, res) => {
       res.status(400).send(`Webhook Error: ${err.message}`);
    }
 
-   if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object;
-      console.log(`💰 PaymentIntent status: ${paymentIntent.status}`);
+   const dataObject = event.data.object;
 
-      const { id, client_reference_id, shipping } = paymentIntent;
+   const { client_reference_id, customer_details, payment_status, shipping, status } = dataObject;
+
+   if (event.type === "checkout.session.completed") {
+      console.log(`💰 PaymentIntent status: ${dataObject.status}`);
+
+      console.log("paymentIntent", event.data);
 
       if (client_reference_id) {
-         await setDoc(doc(db, "orders", client_reference_id), {
-            status: paymentIntent.status,
+         await updateDoc(doc(db, "orders", client_reference_id), {
+            stripeData: { ...event.data.object },
+            contact: { ...customer_details },
+            orderStatus: "pending order confirmation",
+            paymentStatus: payment_status,
+            shippingStatus: "pending order confirmation",
+            status: "pending order confirmation",
             shipping,
          });
 
@@ -48,42 +56,32 @@ const stripeWebhookHandler = async (req, res) => {
             }/api/orders/${client_reference_id}`
          );
 
-         console.log("submit-order", submitOrderResult);
-
          return res.status(200).send({ message: "Payment success! Submitting order..." });
-      } else {
-         await setDoc(doc(db, "orders", id), {
-            status: paymentIntent.status,
-            shipping,
-         });
-
-         return res.status(200).send({
-            message: `Payment success! No order ID. Please contact troy.johnson57@gmail.com for help (provide this ID: ${id}).`,
-         });
       }
    } else if (event.type === "payment_intent.payment_failed") {
-      const paymentIntent = event.data.object;
-      console.log(`❌ Payment failed: ${paymentIntent.last_payment_error?.message}`);
-
-      const { client_reference_id } = paymentIntent;
+      console.log(`❌ Payment failed: ${dataObject.last_payment_error?.message}`);
 
       if (client_reference_id) {
-         await setDoc(doc(db, "orders", client_reference_id), {
-            status: paymentIntent.status,
+         await updateDoc(doc(db, "orders", client_reference_id), {
+            stripeData: { ...event.data.object },
+            paymentStatus: payment_status,
+            status,
          });
 
-         return res.status(202).send("Payment failure.");
+         return res.status(202).send("Updated order status.");
       }
-   } else if (event.type === "charge.succeeded") {
-      const charge = event.data.object;
-      console.log(`💵 Charge id: ${charge.id}`);
-      return res.status(202).send("Received event. No handling necessary.")
    } else {
       console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
-      return res.status(202).send("Received event. No handling necessary.")
+      if (client_reference_id) {
+         await updateDoc(doc(db, "orders", client_reference_id), {
+            stripeData: { ...event.data.object },
+            status,
+         });
+
+         return res.status(202).send("Updated order status.");
+      }
    }
 
-   // Return a response to acknowledge receipt of the event.
    res.json({ received: true });
 };
 

@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
-import { v4 as uuidv4 } from "uuid";
+import crypto from "crypto"
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
@@ -42,11 +42,14 @@ const checkoutHandler = async (req, res) => {
          };
       });
 
-      const clientReferenceId = uuidv4();
+      const clientReferenceId = crypto.randomBytes(10).toString('hex');
 
       const checkoutSession = await stripe.checkout.sessions.create({
          shipping_address_collection: {
             allowed_countries: ["US"],
+         },
+         phone_number_collection: {
+            enabled: true,
          },
          cancel_url: redirectURL + `/order-status/${clientReferenceId}/?status=cancelled`,
          mode: "payment",
@@ -62,13 +65,16 @@ const checkoutHandler = async (req, res) => {
 
       await setDoc(doc(db, "orders", clientReferenceId), {
          orderedItems,
-         status: "unpaid",
+         paymentStatus: "pending payment",
+         orderStatus: "pending payment",
+         shippingStatus: "pending payment",
+         status: "pending payment",
          orderAmount: Number(
             items.reduce((prev, curr) => {
                return prev + Number(curr.price) * curr.quantity;
             }, 0)
          ),
-         clientReferenceId,
+         referenceId: clientReferenceId,
          user: {
             fullName: user?.fullName,
             email: user?.email,
