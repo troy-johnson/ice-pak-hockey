@@ -53,7 +53,8 @@ const stripeWebhookHandler = async (req, res) => {
                process.env.NODE_ENV === "development"
                   ? "http://localhost:3000"
                   : "https://icepakhockey.com"
-            }/api/orders/${client_reference_id}`
+            }/api/orders/${client_reference_id}`,
+            { method: "POST" }
          );
 
          return res.status(200).send({ message: "Payment success! Submitting order..." });
@@ -70,7 +71,7 @@ const stripeWebhookHandler = async (req, res) => {
 
          return res.status(202).send("Updated order status.");
       }
-   } 
+   }
    // else if (event.type === "payment_intent.created") {
    //    console.log("pi created", event.data);
 
@@ -87,7 +88,7 @@ const stripeWebhookHandler = async (req, res) => {
    //    stripe.paymentIntents.update(event.data.id, {
    //       receipt_email: orderData.contact.email ?? user.email,
    //    });
-   // } 
+   // }
    else {
       console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
       if (client_reference_id) {

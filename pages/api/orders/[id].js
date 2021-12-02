@@ -68,133 +68,151 @@ const ordersHandler = async (req, res) => {
    const { id } = req.query;
    // console.log("orderId", id);
 
-   const orderResult = await getDoc(doc(db, "orders", id));
+   switch (req.method) {
+      case "GET":
+         try {
+            const orderResult = await getDoc(doc(db, "orders", id));
 
-   // console.log("orderResult", orderResult.data());
+            const orderData = orderResult.data();
 
-   const orderData = orderResult.data();
+            return res.status(200).send(orderData);
+         } catch (error) {
+            return res.status(400).send("Order ID not found!")
+         }
 
-   try {
-      const headers = new Headers();
-      headers.append(
-         "Authorization",
-         `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
-      );
+         break;
+      case "POST":
+         const orderResult = await getDoc(doc(db, "orders", id));
 
-      // console.log("body", {
-      //    external_id: orderData.referenceId,
-      //    recipient: {
-      //       name: orderData.shipping.name,
-      //       address1: orderData.shipping.address.line1,
-      //       address2: orderData.shipping.address.line2,
-      //       city: orderData.shipping.address.city,
-      //       state_code: orderData.shipping.address.state,
-      //       state_name: stateCodeToFullName(orderData.shipping.address.state),
-      //       country_code: "US",
-      //       country_name: "United States",
-      //       zip: Number(orderData.shipping.address.postal_code),
-      //       phone: orderData.contact.phone,
-      //       email: orderData.contact.email ?? orderData.user.email,
-      //    },
-      //    items: orderData.orderedItems.map((item) => {
-      //       return {
-      //          id: item.id,
-      //          external_id: item.externalId,
-      //          variant_id: item.variantId,
-      //          sync_variant_id: item.syncVariantId,
-      //          external_variant_id: item.externalVariantId,
-      //          warehouse_product_variant_id: item.warehouseProductVariantId,
-      //          quantity: item.quantity,
-      //          price: item.price,
-      //          retail_price: item.retailPrice,
-      //          name: item.name,
-      //          product: item.product,
-      //          files: item.files,
-      //          options: item.options,
-      //          sku: item.sku,
-      //       };
-      //    }),
-      // });
+         // console.log("orderResult", orderResult.data());
 
-      const result = await fetch("https://api.printful.com/orders", {
-         method: "POST",
-         headers: headers,
-         redirect: "follow",
-         "Content-Type": "application/json",
-         body: JSON.stringify({
-            external_id: orderData.referenceId,
-            recipient: {
-               name: orderData.shipping.name,
-               address1: orderData.shipping.address.line1,
-               address2: orderData.shipping.address.line2,
-               city: orderData.shipping.address.city,
-               state_code: orderData.shipping.address.state,
-               state_name: stateCodeToFullName(orderData.shipping.address.state),
-               country_code: "US",
-               country_name: "United States",
-               zip: Number(orderData.shipping.address.postal_code),
-               phone: orderData.contact.phone,
-               email: orderData.contact.email ?? orderData.user.email,
-            },
-            items: orderData.orderedItems.map((item) => {
-               return {
-                  id: item.id,
-                  external_id: item.externalId,
-                  variant_id: item.variantId,
-                  sync_variant_id: item.syncVariantId,
-                  external_variant_id: item.externalVariantId,
-                  warehouse_product_variant_id: item.warehouseProductVariantId,
-                  quantity: item.quantity,
-                  price: item.price,
-                  retail_price: item.retailPrice,
-                  name: item.name,
-                  product: item.product,
-                  files: item.files,
-                  options: item.options,
-                  sku: item.sku,
-               };
-            }),
-         }),
-      });
+         const orderData = orderResult.data();
 
-      const data = await result.json();
+         try {
+            const headers = new Headers();
+            headers.append(
+               "Authorization",
+               `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
+            );
 
-      if (data.code === 200) {
-         await updateDoc(doc(db, "orders", orderData.referenceId), {
-            orderStatus: "pending order confirmation",
-            shippingStatus: "pending order confirmation",
-            status: "pending order confirmation",
-            costBreakdown: data.result.costs,
-         });
+            // console.log("body", {
+            //    external_id: orderData.referenceId,
+            //    recipient: {
+            //       name: orderData.shipping.name,
+            //       address1: orderData.shipping.address.line1,
+            //       address2: orderData.shipping.address.line2,
+            //       city: orderData.shipping.address.city,
+            //       state_code: orderData.shipping.address.state,
+            //       state_name: stateCodeToFullName(orderData.shipping.address.state),
+            //       country_code: "US",
+            //       country_name: "United States",
+            //       zip: Number(orderData.shipping.address.postal_code),
+            //       phone: orderData.contact.phone,
+            //       email: orderData.contact.email ?? orderData.user.email,
+            //    },
+            //    items: orderData.orderedItems.map((item) => {
+            //       return {
+            //          id: item.id,
+            //          external_id: item.externalId,
+            //          variant_id: item.variantId,
+            //          sync_variant_id: item.syncVariantId,
+            //          external_variant_id: item.externalVariantId,
+            //          warehouse_product_variant_id: item.warehouseProductVariantId,
+            //          quantity: item.quantity,
+            //          price: item.price,
+            //          retail_price: item.retailPrice,
+            //          name: item.name,
+            //          product: item.product,
+            //          files: item.files,
+            //          options: item.options,
+            //          sku: item.sku,
+            //       };
+            //    }),
+            // });
 
-         const confirmResult = await fetch(
-            `https://api.printful.com/orders/${data.result.id}/confirm`,
-            {
+            const result = await fetch("https://api.printful.com/orders", {
                method: "POST",
                headers: headers,
                redirect: "follow",
                "Content-Type": "application/json",
-            }
-         );
-
-         const confirmData = await confirmResult.json();
-
-         console.log("data", confirmData);
-
-         if (confirmData.code === 200) {
-            await updateDoc(doc(db, "orders", orderData.referenceId), {
-               orderStatus: "Order confirmed",
-               shippingStatus: "Waiting for fulfillment",
-               status: "Order confirmed",
-               costBreakdown: data.result.costs,
+               body: JSON.stringify({
+                  external_id: orderData.referenceId,
+                  recipient: {
+                     name: orderData.shipping.name,
+                     address1: orderData.shipping.address.line1,
+                     address2: orderData.shipping.address.line2,
+                     city: orderData.shipping.address.city,
+                     state_code: orderData.shipping.address.state,
+                     state_name: stateCodeToFullName(orderData.shipping.address.state),
+                     country_code: "US",
+                     country_name: "United States",
+                     zip: Number(orderData.shipping.address.postal_code),
+                     phone: orderData.contact.phone,
+                     email: orderData.contact.email ?? orderData.user.email,
+                  },
+                  items: orderData.orderedItems.map((item) => {
+                     return {
+                        id: item.id,
+                        external_id: item.externalId,
+                        variant_id: item.variantId,
+                        sync_variant_id: item.syncVariantId,
+                        external_variant_id: item.externalVariantId,
+                        warehouse_product_variant_id: item.warehouseProductVariantId,
+                        quantity: item.quantity,
+                        price: item.price,
+                        retail_price: item.retailPrice,
+                        name: item.name,
+                        product: item.product,
+                        files: item.files,
+                        options: item.options,
+                        sku: item.sku,
+                     };
+                  }),
+               }),
             });
+
+            const data = await result.json();
+
+            if (data.code === 200) {
+               await updateDoc(doc(db, "orders", orderData.referenceId), {
+                  orderStatus: "pending order confirmation",
+                  shippingStatus: "pending order confirmation",
+                  status: "pending order confirmation",
+                  costBreakdown: data.result.costs,
+               });
+
+               const confirmResult = await fetch(
+                  `https://api.printful.com/orders/${data.result.id}/confirm`,
+                  {
+                     method: "POST",
+                     headers: headers,
+                     redirect: "follow",
+                     "Content-Type": "application/json",
+                  }
+               );
+
+               const confirmData = await confirmResult.json();
+
+               console.log("data", confirmData);
+
+               if (confirmData.code === 200) {
+                  await updateDoc(doc(db, "orders", orderData.referenceId), {
+                     orderStatus: "Order confirmed",
+                     shippingStatus: "Waiting for fulfillment",
+                     status: "Order confirmed",
+                     costBreakdown: data.result.costs,
+                  });
+               }
+            } else {
+               return res.status(data.code).json({ data });
+            }
+         } catch (error) {
+            console.log("BOOOOOO ORDER ERROR", error);
+            return res.status(400).send(error);
          }
-      } else {
-         return res.status(data.code).json({ data });
-      }
-   } catch (error) {
-      console.log("BOOOOOO ORDER ERROR", error);
-      return res.status(400).send(error);
+
+      default:
+         break;
    }
 };
 
