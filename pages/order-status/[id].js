@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import Image from "next/image";
+import { useSession } from "next-auth/client";
 import { Divider, Link, Stack, Typography, useMediaQuery } from "@mui/material";
 import { Loading, PageContainer } from "../../components";
 import { useGetOrder } from "../../utils";
@@ -9,6 +10,7 @@ const OrderStatus = () => {
    const { id } = router.query;
    const { order, orderLoading, orderError } = useGetOrder(id);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const [session, loading] = useSession();
 
    console.log("order", order);
 

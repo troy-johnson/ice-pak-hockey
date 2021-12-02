@@ -175,9 +175,9 @@ const ordersHandler = async (req, res) => {
 
             if (data.code === 200) {
                await updateDoc(doc(db, "orders", orderData.referenceId), {
-                  orderStatus: "pending order confirmation",
-                  shippingStatus: "pending order confirmation",
-                  status: "pending order confirmation",
+                  orderStatus: "Pending order confirmation",
+                  shippingStatus: "Pending order confirmation",
+                  status: "Pending order confirmation",
                   costBreakdown: data.result.costs,
                });
 

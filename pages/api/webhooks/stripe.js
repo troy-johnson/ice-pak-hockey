@@ -41,10 +41,10 @@ const stripeWebhookHandler = async (req, res) => {
          await updateDoc(doc(db, "orders", client_reference_id), {
             stripeData: { ...event.data.object },
             contact: { ...customer_details },
-            orderStatus: "pending order confirmation",
+            orderStatus: "Pending order confirmation",
             paymentStatus: payment_status,
-            shippingStatus: "pending order confirmation",
-            status: "pending order confirmation",
+            shippingStatus: "Pending order confirmation",
+            status: "Pending order confirmation",
             shipping,
          });
 

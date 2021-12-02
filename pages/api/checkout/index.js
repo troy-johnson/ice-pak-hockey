@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
-import crypto from "crypto"
+import crypto from "crypto";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
@@ -42,7 +42,7 @@ const checkoutHandler = async (req, res) => {
          };
       });
 
-      const clientReferenceId = crypto.randomBytes(10).toString('hex');
+      const clientReferenceId = crypto.randomBytes(10).toString("hex");
 
       const checkoutSession = await stripe.checkout.sessions.create({
          shipping_address_collection: {
@@ -51,9 +51,9 @@ const checkoutHandler = async (req, res) => {
          phone_number_collection: {
             enabled: true,
          },
-         cancel_url: redirectURL + `/order-status/${clientReferenceId}/?status=cancelled`,
+         cancel_url: redirectURL + `/order-status/${clientReferenceId}`,
          mode: "payment",
-         success_url: redirectURL + `/order-status/${clientReferenceId}/?status=success`,
+         success_url: redirectURL + `/order-status/${clientReferenceId}`,
          submit_type: "pay",
          payment_method_types: ["card"],
          line_items: lineItems,
