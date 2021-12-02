@@ -169,6 +169,7 @@ const Banner = () => {
                "Content-Type": "application/json",
             },
             redirect: "follow", // manual, *follow, error
+            mode: "cors",
             method: "POST",
             body: JSON.stringify({
                items: cart,
