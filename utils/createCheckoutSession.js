@@ -1,5 +1,8 @@
 const createCheckoutSession = async (data) => {
    console.log("data", data)
+   
+   const fullName = `${data?.user?.firstName} ${data?.user?.lastName}`;
+
    const response = await fetch(
       `${
          process.env.NODE_ENV === "development"
@@ -17,7 +20,9 @@ const createCheckoutSession = async (data) => {
             items: data.cart,
             user: {
                email: data?.user?.email,
-               fullName: `${data?.user?.firstName} ${data?.user?.lastName}`,
+               firstName: data?.user?.firstname,
+               lastName: data?.user?.lastName,
+               fullName
             },
          }),
       }
