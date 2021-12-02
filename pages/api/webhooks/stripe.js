@@ -7,8 +7,8 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
 });
 
-const endpointSecret = "whsec_NKCtywOBX8mUjrbXwq0e6n5pwsI9KVvC";
-// const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// const endpointSecret = "whsec_NKCtywOBX8mUjrbXwq0e6n5pwsI9KVvC";
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export const config = {
    api: {
