@@ -15,7 +15,7 @@ const checkoutHandler = async (req, res) => {
       const redirectURL =
          process.env.NODE_ENV === "development"
             ? "http://localhost:3000"
-            : "https://icepakhockey.com";
+            : "https://www.icepakhockey.com";
 
       const productList = await stripe.products.list();
       const pricesList = await stripe.prices.list();
