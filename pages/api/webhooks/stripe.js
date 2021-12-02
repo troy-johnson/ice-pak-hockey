@@ -71,25 +71,19 @@ const stripeWebhookHandler = async (req, res) => {
 
          return res.status(202).send("Updated order status.");
       }
-   }
-   // else if (event.type === "payment_intent.created") {
-   //    console.log("pi created", event.data);
+   } else if (event.type === "charge.succeeded") {
+      if (dataObject.payment_intent) {
+         const paymentIntent = await stripe.paymentIntents.retrieve(dataObject.payment_intent);
 
-   //    const sessionData = await stripe.checkout.sessions.list({
-   //       payment_intent: event.data.order.external_id,
-   //    });
+         const session = await stripe.checkout.sessions.list({
+            payment_intent: dataObject.payment_intent,
+         });
 
-   //    const orderResult = await getDoc(doc(db, "orders", sessionData.data[0].client_reference_id));
-
-   //    const orderData = orderResult.data();
-
-   //    console.log("sessionData", sessionData);
-
-   //    stripe.paymentIntents.update(event.data.id, {
-   //       receipt_email: orderData.contact.email ?? user.email,
-   //    });
-   // }
-   else {
+         await updateDoc(doc(db, "orders", session.data[0].client_reference_id), {
+            receiptUrl: paymentIntent.data.receipt_url,
+         });
+      }
+   } else {
       console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
       if (client_reference_id) {
          await updateDoc(doc(db, "orders", client_reference_id), {

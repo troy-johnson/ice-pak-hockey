@@ -27,6 +27,7 @@ const OrderStatus = () => {
          <Stack
             display="flex"
             direction={desktop ? "row" : "column"}
+            justifyContent="center"
             divider={
                <Divider
                   sx={{ m: 1, mr: 2 }}
@@ -35,9 +36,9 @@ const OrderStatus = () => {
                />
             }
             spacing={2}
-            sx={{ ml: 2 }}
+            sx={{ ml: 2, mr: 2 }}
          >
-            <Stack direction="column">
+            <Stack direction="column" sx={{ width: 1 }}>
                <Typography variant="h6">Order Information</Typography>
                <Typography variant="subtitle1">Order #: {id}</Typography>
                <Typography variant="subtitle1">
@@ -47,8 +48,15 @@ const OrderStatus = () => {
                <Typography variant="subtitle1">
                   Order Amount: {`$${Number(order.orderAmount).toFixed(2)}`}
                </Typography>
+               {order?.receipt ? (
+                  <Typography variant="subtitle1">
+                     <Link href={order?.receipt} target="_blank" rel="noopener noreferrer">
+                        Receipt
+                     </Link>
+                  </Typography>
+               ) : null}
             </Stack>
-            <Stack direction="column">
+            <Stack direction="column" sx={{ width: 1 }}>
                <Typography variant="h6">Shipping Information</Typography>
                <Typography variant="subtitle1">
                   Shipping Status:{" "}
