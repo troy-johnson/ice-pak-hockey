@@ -1,6 +1,7 @@
 import { SWRConfig } from "swr";
 import { Provider } from "next-auth/client";
 import { Provider as ReduxProvider } from "react-redux";
+import { SimpleDialog } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { Layout } from "../components";

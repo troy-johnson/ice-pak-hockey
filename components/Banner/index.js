@@ -19,12 +19,14 @@ import {
    ListItemText,
    Stack,
    SwipeableDrawer,
+   Drawer,
    Toolbar,
    Typography,
    useMediaQuery,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
+import { RiAddFill, RiSubtractFill, RiDeleteBin5Line } from "react-icons/ri";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Account } from "..";
 import { incrementQuantity, decrementQuantity, removeFromCart, roleCheck } from "../../utils";
@@ -125,7 +127,7 @@ const OpenCartNav = styled(StyledOpenCartNav)`
 
 const CartBox = styled(Box)`
    background-color: ${(props) => props.theme.palette.white};
-   width: ${(props) => (props.desktop ? 300 : "100vw")};
+   width: ${(props) => (props.desktop ? "50vw" : "100vw")};
    height: 100%;
 `;
 
@@ -151,6 +153,38 @@ const Banner = () => {
       return cart.reduce((accumulator, item) => accumulator + item.quantity * item.price, 0);
    };
 
+   const getTotalItems = () => {
+      return cart.reduce((accumulator, item) => accumulator + item.quantity, 0);
+   };
+
+   const handleCheckout = async () => {
+      const result = await fetch(
+         `${
+            process.env.NODE_ENV === "development"
+               ? "http://localhost:3000"
+               : "https://icepakhockey.com"
+         }/api/checkout`,
+         {
+            headers: {
+               "Content-Type": "application/json",
+            },
+            redirect: "follow", // manual, *follow, error
+            method: "POST",
+            body: JSON.stringify({
+               items: cart,
+               user: {
+                  email: session?.user?.email,
+                  fullName: `${session?.user?.firstName} ${session?.user?.lastName}`,
+               },
+            }),
+         }
+      );
+
+      const checkoutSession = await result.json();
+
+      window.location.href = checkoutSession.url;
+   };
+
    useEffect(() => {
       const handleStart = (url) => {
          setShowProgress(true);
@@ -170,6 +204,8 @@ const Banner = () => {
       };
    }, [router]);
 
+   console.log("session", session);
+
    return (
       <AppBar position="sticky">
          <Toolbar>
@@ -182,7 +218,7 @@ const Banner = () => {
             >
                <NavMenuBox
                   role="presentation"
-                  onClick={() => setOpen(false)}
+                  // onClick={() => setOpen(false)}
                   onKeyDown={() => setOpen(false)}
                   desktop={desktop}
                >
@@ -218,11 +254,11 @@ const Banner = () => {
                            <MenuItem primary="Standings" />
                         </Link>
                      </ListItem>
-                     {/* <ListItem button>
+                     <ListItem button>
                         <Link href="/shop" passHref>
                            <MenuItem primary="Shop" />
                         </Link>
-                     </ListItem> */}
+                     </ListItem>
                      {!!roleCheck(session, ["Admins", "Manager", "Assistant Manager"]) ? (
                         <ListItem button>
                            <Link href="/manager" passHref>
@@ -243,40 +279,67 @@ const Banner = () => {
          ) : null}
          {cart.length >= 1 ? (
             <FixedFab>
-               <OpenCartNav cartLength={cart.length} onClick={() => setCartOpen(true)} />
+               <OpenCartNav cartLength={getTotalItems()} onClick={() => setCartOpen(true)} />
                <SwipeableDrawer
                   anchor="right"
                   onOpen={() => {}}
                   open={cartOpen}
                   onClose={() => setCartOpen(false)}
                >
-                  <CartBox
-                     role="presentation"
-                     onClick={() => setCartOpen(false)}
-                     onKeyDown={() => setCartOpen(false)}
-                     desktop={desktop}
-                  >
-                     <Typography variant="h4">Cart</Typography>
-                     <Stack direction="column">
+                  <CartBox role="presentation" desktop={desktop}>
+                     <Typography variant="h4" sx={{ ml: 2, mt: 2, mb: 2 }}>
+                        Cart
+                     </Typography>
+                     <Stack direction="column" sx={{ ml: 2, mr: 2 }} spacing={2}>
                         {cart.map((el) => {
                            return (
-                              <div key={el.sku}>
-                                 <Typography variant="body2">Name: {el.name}</Typography>
-                                 <Typography variant="body2">Color: {el.color}</Typography>
-                                 <Typography variant="body2">Size: {el.size}</Typography>
-                                 <Typography variant="body2">Quantity: {el.quantity}</Typography>
-                                 <Typography variant="body2">
-                                    Price: {`$${parseFloat(el.price).toFixed(2)}`}
-                                 </Typography>
-                                 <Button onClick={() => dispatch(incrementQuantity(el.id))}>+</Button>
-                                 <Button onClick={() => dispatch(decrementQuantity(el.id))}>-</Button>
-                                 <Button onClick={() => dispatch(removeFromCart(el.id))}>x</Button>
+                              <>
+                                 <Stack direction="row" key={el.sku} sx={{ mb: 2 }}>
+                                    <Image src={el.image} width={100} height={100} alt={el.name} />
+                                    <Stack direction="column" sx={{ ml: 2 }}>
+                                       <Typography variant="body1">
+                                          {el.name.split("-")[0].trim()}
+                                       </Typography>
+                                       <Typography variant="body1">
+                                          {el.color} / {el.size}
+                                       </Typography>
+                                       <Typography variant="body1">
+                                          {`$${(parseFloat(el.price) * el.quantity).toFixed(2)}`}
+                                       </Typography>
+                                       <Stack direction="row" alignItems="center">
+                                          <Button
+                                             onClick={() => dispatch(decrementQuantity(el.id))}
+                                          >
+                                             <RiSubtractFill />
+                                          </Button>
+                                          {el.quantity}
+                                          <Button
+                                             onClick={() => dispatch(incrementQuantity(el.id))}
+                                          >
+                                             <RiAddFill />
+                                          </Button>
+                                          <Button onClick={() => dispatch(removeFromCart(el.id))}>
+                                             <RiDeleteBin5Line />
+                                          </Button>
+                                       </Stack>
+                                    </Stack>
+                                 </Stack>
                                  <Divider />
-                              </div>
+                              </>
                            );
                         })}
-                        <Typography>Total: $ {getTotalPrice()}</Typography>
-                        <Button disabled={cart.length === 0}>Order</Button>
+                        <Typography variant="h5" sx={{ mt: 3 }}>
+                           Total*: {`$${getTotalPrice().toFixed(2)}`}
+                        </Typography>
+                        <Typography variant="caption">*Includes tax & shipping</Typography>
+                        <Button
+                           disabled={cart.length === 0}
+                           variant="contained"
+                           sx={{ maxWidth: "200px" }}
+                           onClick={handleCheckout}
+                        >
+                           Check Out
+                        </Button>
                      </Stack>
                   </CartBox>
                </SwipeableDrawer>

@@ -17,8 +17,12 @@ import {
    useMediaQuery,
 } from "@mui/material";
 // import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { PageContainer } from "../../components";
+import { Loading, PageContainer } from "../../components";
 import { useGetProducts } from "../../utils";
+
+const FlexStack = styled(Stack)`
+   flex-wrap: wrap;
+`;
 
 const Shop = () => {
    // const [cartOpen, setCartOpen] = useState(false);
@@ -27,38 +31,63 @@ const Shop = () => {
 
    console.log("products", products);
 
+   if (productsLoading) {
+      return <Loading />;
+   }
+
    return (
-      <PageContainer pageTitle="Shop">
-         <Stack direction={desktop ? "row" : "column"} sx={{ ml: 2, mb: 2 }} spacing={2}>
+      <PageContainer pageTitle="Shop" sx={{ m: 2 }}>
+         <FlexStack
+            direction={desktop ? "row" : "column"}
+            justifyContent="flex-start"
+            sx={{ m: 2 }}
+         >
             {products?.map((product) => {
-               console.log("product", product);
+               // console.log("product", product);
                return (
-                  <Box sx={{ maxWidth: 345 }} key={product?.sync_product.id}>
-                     <Card variant="outlined">
-                        <CardContent>
-                           <Image
-                              src={product?.sync_product.thumbnail_url}
-                              height={125}
-                              width={125}
-                              alt={product?.sync_product.name}
-                           />
-                           <Typography variant="h6" gutterBottom>
-                              {product?.sync_product.name}
-                           </Typography>
-                           <Typography variant="h6">
-                              {`$${product?.sync_variants?.[0].retail_price}`}
-                           </Typography>
-                        </CardContent>
-                        <CardActions>
-                           <Link href={`shop/${product.sync_product.id}`} passHref>
-                              <Button size="small">View Item</Button>
-                           </Link>
-                        </CardActions>
+                  <Box
+                     sx={{
+                        width: 200,
+                        minHeight: 265,
+                        m: 1,
+                     }}
+                     key={product?.sync_product.id}
+                  >
+                     <Card
+                        sx={{
+                           minHeight: 265,
+                           cursor: "pointer",
+                           transition: "0.3s",
+                           "&:hover": {
+                              color: "white",
+                              backgroundColor: "#1D315F",
+                           },
+                        }}
+                        variant="outlined"
+                     >
+                        <Link href={`shop/${product.sync_product.id}`} passHref>
+                           <CardContent>
+                              <Typography sx={{ height: 50 }} variant="subtitle1" gutterBottom>
+                                 {product?.sync_product.name}
+                              </Typography>
+                              <Typography variant="subtitle2">
+                                 {`$${product?.sync_variants?.[0].retail_price}`}
+                              </Typography>
+                              <Stack alignItems="center" sx={{ m: 1 }}>
+                                 <Image
+                                    src={product?.sync_product.thumbnail_url}
+                                    height={125}
+                                    width={125}
+                                    alt={product?.sync_product.name}
+                                 />
+                              </Stack>
+                           </CardContent>
+                        </Link>
                      </Card>
                   </Box>
                );
             })}
-         </Stack>
+         </FlexStack>
          {/* <FixedFab>
             <OpenCartNav onClick={() => setCartOpen(true)} />
             <SwipeableDrawer

@@ -6,7 +6,7 @@ const penaltyHandler = async (req, res) => {
 
    switch (req.method) {
       case "GET":
-         console.log("id", id);
+         // console.log("id", id);
 
          try {
             const result = await getDoc(doc(db, "penalties", id));
