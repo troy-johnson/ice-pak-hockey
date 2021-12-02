@@ -29,7 +29,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { RiAddFill, RiSubtractFill, RiDeleteBin5Line } from "react-icons/ri";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Account } from "..";
-import { incrementQuantity, decrementQuantity, removeFromCart, roleCheck } from "../../utils";
+import {
+   createCheckoutSession,
+   incrementQuantity,
+   decrementQuantity,
+   removeFromCart,
+   roleCheck,
+} from "../../utils";
 
 const StyledOpenNav = ({ className, onClick }) => {
    return (
@@ -158,31 +164,14 @@ const Banner = () => {
    };
 
    const handleCheckout = async () => {
-      const result = await fetch(
-         `${
-            process.env.NODE_ENV === "development"
-               ? "http://localhost:3000"
-               : "https://icepakhockey.com"
-         }/api/checkout`,
-         {
-            headers: {
-               "Content-Type": "application/json",
-            },
-            redirect: "follow", // manual, *follow, error
-            mode: "cors",
-            method: "POST",
-            body: JSON.stringify({
-               items: cart,
-               user: {
-                  email: session?.user?.email,
-                  fullName: `${session?.user?.firstName} ${session?.user?.lastName}`,
-               },
-            }),
-         }
-      );
-
-      const checkoutSession = await result.json();
-
+      const checkoutSession = await createCheckoutSession({
+         cart,
+         user: {
+            email: session?.user?.email,
+            fullName: `${session?.user?.firstName} ${session?.user?.lastName}`,
+         },
+      });
+      
       window.location.href = checkoutSession.url;
    };
 

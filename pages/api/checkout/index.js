@@ -2,15 +2,34 @@ import Stripe from "stripe";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
 import crypto from "crypto";
+import Cors from "cors";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
 });
 
+const cors = Cors({
+   methods: ["GET", "HEAD", "OPTIONS", "POST"],
+});
+
+const runMiddleware = (req, res, fn) => {
+   return new Promise((resolve, reject) => {
+      fn(req, res, (result) => {
+         if (result instanceof Error) {
+            return reject(result);
+         }
+
+         return resolve(result);
+      });
+   });
+};
+
 const checkoutHandler = async (req, res) => {
+   await runMiddleware(req, res, cors);
+
    try {
       const { user, items } = req.body;
-      // console.log("req body", items);
+      console.log("req body", items);
 
       const redirectURL =
          process.env.NODE_ENV === "development"
@@ -20,17 +39,22 @@ const checkoutHandler = async (req, res) => {
       const productList = await stripe.products.list();
       const pricesList = await stripe.prices.list();
 
-      // console.log("productList", productList);
-      // console.log("pricesList", pricesList);
+      console.log("productList", productList);
+      console.log("pricesList", pricesList);
+
+      // console.log("productList md", productList.map(el => console.log("metadata", el.metadata)))
 
       const orderedItems = [];
 
       const lineItems = items.map((item) => {
+
+         console.log("item", item)
+   
          const currentProductId = productList.data.find(
             (el) => el.metadata.printfulId === item.syncProductId
          ).id;
          const description = item.name.split("-")[1];
-         // console.log("item", description);
+         console.log("item", { description, currentProductId });
          orderedItems.push({
             ...item,
             stripePriceId: pricesList.data.find((el) => el.product === currentProductId).id,

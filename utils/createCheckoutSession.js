@@ -1,0 +1,29 @@
+const createCheckoutSession = async (data) => {
+   console.log("data", data)
+   const response = await fetch(
+      `${
+         process.env.NODE_ENV === "development"
+            ? "http://localhost:3000"
+            : "https://icepakhockey.com"
+      }/api/checkout/`,
+      {
+         mode: "cors",
+         cache: "no-cache",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         method: "POST",
+         body: JSON.stringify({
+            items: data.cart,
+            user: {
+               email: data?.user?.email,
+               fullName: `${data?.user?.firstName} ${data?.user?.lastName}`,
+            },
+         }),
+      }
+   );
+
+   return response.json();
+};
+
+export default createCheckoutSession;

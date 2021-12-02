@@ -76,9 +76,13 @@ const OrderStatus = () => {
                   </Typography>
                ) : null}
                <Typography variant="subtitle1">Shipping Address:</Typography>
-               <Typography variant="subtitle2">{order.shipping.name}</Typography>
-               <Typography variant="subtitle2">{order.shipping.address.line1}</Typography>
-               <Typography variant="subtitle2">{`${order.shipping.address.city}, ${order.shipping.address.state} ${order.shipping.address.postal_code}`}</Typography>
+               {order.shipping ? (
+                  <>
+                     <Typography variant="subtitle2">{order.shipping?.name}</Typography>
+                     <Typography variant="subtitle2">{order.shipping.address.line1}</Typography>
+                     <Typography variant="subtitle2">{`${order.shipping.address.city}, ${order.shipping.address.state} ${order.shipping.address.postal_code}`}</Typography>
+                  </>
+               ) : null}
             </Stack>
          </Stack>
          <Divider sx={{ m: 2 }} />
