@@ -29,7 +29,7 @@ const ProductPage = () => {
    const product = products?.filter((product) => Number(productId) === product.sync_product.id)[0];
 
    const getVariantColor = (variant) => {
-      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+      if (product?.sync_product?.name === "Wordmark Trucker Hat")  {
          return variant?.product?.name
             ?.split("(")[1]
             .split(")")[0]
@@ -42,7 +42,10 @@ const ProductPage = () => {
    };
 
    const getVariantSize = (variant) => {
-      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+      if (
+         product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Toque"
+      ) {
          return "One Size Fits All";
       }
       return variant?.product?.name?.split("(")?.[1]?.split("/")?.[1]?.split(")")?.[0].trim();
@@ -122,9 +125,9 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
-      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+      if (product?.sync_product?.name === "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
-      } else if (product?.sync_product?.name !== "Wordmark Trucker Hat") {
+      } else if (product?.sync_product?.name !== "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
          variant = product.sync_variants.find(
             (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
          );
@@ -161,7 +164,10 @@ const ProductPage = () => {
       if (getVariantColor(product?.sync_variants?.[0])) {
          setColor(getVariantColor(product?.sync_variants?.[0]));
       }
-      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
+      if (
+         product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Toque"
+      ) {
          setSize("One Size Fits All");
       }
    }, [product]);
@@ -231,7 +237,8 @@ const ProductPage = () => {
                   </Select>
                </FormControl>
                <Stack display="flex" direction="row" justifyItems="center" spacing={1}>
-                  {product?.sync_product?.name === "Wordmark Trucker Hat" ? null : (
+                  {product?.sync_product?.name === "Wordmark Trucker Hat" ||
+                  product?.sync_product?.name === "Toque" ? null : (
                      <FormControl>
                         <InputLabel id="size-select-label">Size</InputLabel>
                         <Select
