@@ -22,7 +22,6 @@
       "@sanity/block-content-to-react": "^3.0.0",
       "@stripe/react-stripe-js": "^1.6.0",
       "@stripe/stripe-js": "^1.21.1",
-      "cors": "^2.8.5",
       "dayjs": "^1.10.7",
       "firebase": "^9.0.0",
       "micro": "^9.3.4",

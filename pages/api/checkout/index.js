@@ -2,31 +2,12 @@ import Stripe from "stripe";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../../config";
 import crypto from "crypto";
-import Cors from "cors";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
    apiVersion: "2020-08-27",
 });
 
-const cors = Cors({
-   methods: ["GET", "HEAD", "OPTIONS", "POST"],
-});
-
-const runMiddleware = (req, res, fn) => {
-   return new Promise((resolve, reject) => {
-      fn(req, res, (result) => {
-         if (result instanceof Error) {
-            return reject(result);
-         }
-
-         return resolve(result);
-      });
-   });
-};
-
 const checkoutHandler = async (req, res) => {
-   await runMiddleware(req, res, cors);
-
    try {
       const { user, items } = req.body;
       console.log("req body", items);
