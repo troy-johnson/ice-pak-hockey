@@ -63,7 +63,7 @@ const ProductPage = () => {
    );
 
    // console.log("currentImage", currentImage);
-   // console.log("product", product);
+   console.log("product", product);
    // console.log("color", color, getVariantColor(product?.sync_variants[0]));
 
    const getImages = (variant) => variant.files.filter((file) => file.type !== "default");
@@ -127,6 +127,7 @@ const ProductPage = () => {
 
       if (product?.sync_product?.name === "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
+         setSize("One Size Fits All")
       } else if (product?.sync_product?.name !== "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
          variant = product.sync_variants.find(
             (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
