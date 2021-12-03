@@ -29,7 +29,7 @@ const ProductPage = () => {
    const product = products?.filter((product) => Number(productId) === product.sync_product.id)[0];
 
    const getVariantColor = (variant) => {
-      if (product?.sync_product?.name === "Wordmark Trucker Hat")  {
+      if (product?.sync_product?.name === "Wordmark Trucker Hat") {
          return variant?.product?.name
             ?.split("(")[1]
             .split(")")[0]
@@ -94,7 +94,12 @@ const ProductPage = () => {
       //    options.find((el) => el.color === event.target.value)
       // );
       setColor(event.target.value);
-      setSize("M");
+      if (
+         product?.sync_product?.name !== "Wordmark Trucker Hat" &&
+         product?.sync_product?.name !== "Toque"
+      ) {
+         setSize("M");
+      }
       setImages(
          options
             .find((el) => el.color === event.target.value)
@@ -125,10 +130,16 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
-      if (product?.sync_product?.name === "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
+      if (
+         product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Toque"
+      ) {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
-         setSize("One Size Fits All")
-      } else if (product?.sync_product?.name !== "Wordmark Trucker Hat" || product?.sync_product?.name === "Toque") {
+         setSize("One Size Fits All");
+      } else if (
+         product?.sync_product?.name !== "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Toque"
+      ) {
          variant = product.sync_variants.find(
             (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
          );
