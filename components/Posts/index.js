@@ -1,11 +1,11 @@
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { Button, Stack, Typography, useMediaQuery } from "@mui/material";
-import { useGetPosts } from "../../utils";
+import { useGetAllPosts } from "../../utils";
 import { FeaturedPost, Loading, PageContainer } from "..";
 
 const Posts = () => {
-   const { posts, postsLoading, postsError } = useGetPosts();
+   const { posts, postsLoading, postsError } = useGetAllPosts();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const mostRecentPost = posts?.[0];

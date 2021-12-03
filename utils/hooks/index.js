@@ -1,4 +1,5 @@
 export { default as useGetAllGames } from "./useGetAllGames";
+export { default as useGetAllPosts } from "./useGetAllPosts";
 export { default as useGetAssists } from "./useGetAssists";
 export { default as useGetGameInfo } from "./useGetGameInfo";
 export { default as useGetGoals } from "./useGetGoals";
