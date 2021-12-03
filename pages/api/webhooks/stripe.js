@@ -87,8 +87,10 @@ const stripeWebhookHandler = async (req, res) => {
             console.log("session", session)
 
             await updateDoc(doc(db, "orders", session.data[0].client_reference_id), {
-               receiptUrl: paymentIntent.data.receipt_url,
+               receiptUrl: dataObject.receipt_url,
             });
+
+            return res.status(202).send("Updated receipt url.");
          }
       } else {
          console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
