@@ -8,6 +8,8 @@ const printfulWebhookHandler = async (req, res) => {
    try {
       const { type, data } = req.body;
 
+      console.log("event type", type)
+
       const orderResult = await getDoc(doc(db, "orders", data.order.external_id));
 
       const orderData = orderResult.data();
