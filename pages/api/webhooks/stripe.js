@@ -88,6 +88,7 @@ const stripeWebhookHandler = async (req, res) => {
 
             await updateDoc(doc(db, "orders", session.data[0].client_reference_id), {
                receiptUrl: dataObject.receipt_url,
+               "stripeData.billingDetails": dataObject.billing_details
             });
 
             return res.status(202).send("Updated receipt url.");
