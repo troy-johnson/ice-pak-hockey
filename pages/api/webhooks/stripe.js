@@ -74,6 +74,7 @@ const stripeWebhookHandler = async (req, res) => {
             return res.status(202).send("Updated order status.");
          }
       } else if (event.type === "charge.succeeded") {
+         console.log("charge suceeded", dataObject)
          if (dataObject.payment_intent) {
             const paymentIntent = await stripe.paymentIntents.retrieve(dataObject.payment_intent);
 
