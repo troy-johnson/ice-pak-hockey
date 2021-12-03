@@ -210,7 +210,7 @@ const Banner = () => {
             >
                <NavMenuBox
                   role="presentation"
-                  // onClick={() => setOpen(false)}
+                  onClick={() => setOpen(false)}
                   onKeyDown={() => setOpen(false)}
                   desktop={desktop}
                >
