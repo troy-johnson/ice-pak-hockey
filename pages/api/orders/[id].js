@@ -68,7 +68,7 @@ const ordersHandler = async (req, res) => {
    const { id } = req.query;
    // console.log("orderId", id);
 
-   console.log("request", req.query, req.method)
+   console.log("request", req.query, req.method);
 
    switch (req.method) {
       case "GET":
@@ -79,7 +79,7 @@ const ordersHandler = async (req, res) => {
 
             return res.status(200).send(orderData);
          } catch (error) {
-            return res.status(400).send("Order ID not found!")
+            return res.status(400).send("Order ID not found!");
          }
 
          break;
@@ -132,6 +132,8 @@ const ordersHandler = async (req, res) => {
                }),
             });
 
+            const threadColors = ["#FFFFFF", "#96A1A8", "#333366", "#3399FF"];
+
             const result = await fetch("https://api.printful.com/orders", {
                method: "POST",
                headers: headers,
@@ -166,7 +168,18 @@ const ordersHandler = async (req, res) => {
                         name: item.name,
                         product: item.product,
                         files: item.files,
-                        options: item.options,
+                        options:
+                           item.name.includes("Hat") || item.name.includes("Toque")
+                              ? item.options.map((option) => {
+                                   if (option.id === "thread_colors") {
+                                      return {
+                                         id: option.id,
+                                         value: threadColors,
+                                      };
+                                   }
+                                   return option;
+                                })
+                              : item.options,
                         sku: item.sku,
                      };
                   }),
@@ -175,7 +188,7 @@ const ordersHandler = async (req, res) => {
 
             const data = await result.json();
 
-            console.log("order data", data)
+            console.log("order data", data);
 
             if (data.code === 200) {
                await updateDoc(doc(db, "orders", orderData.referenceId), {
