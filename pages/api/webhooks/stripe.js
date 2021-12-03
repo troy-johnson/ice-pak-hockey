@@ -50,7 +50,7 @@ const stripeWebhookHandler = async (req, res) => {
                shipping,
             });
 
-            const submitOrderResult = await fetch(
+            await fetch(
                `${
                   process.env.NODE_ENV === "development"
                      ? "http://localhost:3000"

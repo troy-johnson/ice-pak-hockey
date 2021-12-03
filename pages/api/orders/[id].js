@@ -68,6 +68,8 @@ const ordersHandler = async (req, res) => {
    const { id } = req.query;
    // console.log("orderId", id);
 
+   console.log("request", req.query, req.method)
+
    switch (req.method) {
       case "GET":
          try {
@@ -84,7 +86,7 @@ const ordersHandler = async (req, res) => {
       case "POST":
          const orderResult = await getDoc(doc(db, "orders", id));
 
-         // console.log("orderResult", orderResult.data());
+         console.log("orderResult", orderResult.data());
 
          const orderData = orderResult.data();
 
@@ -95,40 +97,40 @@ const ordersHandler = async (req, res) => {
                `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
             );
 
-            // console.log("body", {
-            //    external_id: orderData.referenceId,
-            //    recipient: {
-            //       name: orderData.shipping.name,
-            //       address1: orderData.shipping.address.line1,
-            //       address2: orderData.shipping.address.line2,
-            //       city: orderData.shipping.address.city,
-            //       state_code: orderData.shipping.address.state,
-            //       state_name: stateCodeToFullName(orderData.shipping.address.state),
-            //       country_code: "US",
-            //       country_name: "United States",
-            //       zip: Number(orderData.shipping.address.postal_code),
-            //       phone: orderData.contact.phone,
-            //       email: orderData.contact.email ?? orderData.user.email,
-            //    },
-            //    items: orderData.orderedItems.map((item) => {
-            //       return {
-            //          id: item.id,
-            //          external_id: item.externalId,
-            //          variant_id: item.variantId,
-            //          sync_variant_id: item.syncVariantId,
-            //          external_variant_id: item.externalVariantId,
-            //          warehouse_product_variant_id: item.warehouseProductVariantId,
-            //          quantity: item.quantity,
-            //          price: item.price,
-            //          retail_price: item.retailPrice,
-            //          name: item.name,
-            //          product: item.product,
-            //          files: item.files,
-            //          options: item.options,
-            //          sku: item.sku,
-            //       };
-            //    }),
-            // });
+            console.log("body", {
+               external_id: orderData.referenceId,
+               recipient: {
+                  name: orderData.shipping.name,
+                  address1: orderData.shipping.address.line1,
+                  address2: orderData.shipping.address.line2,
+                  city: orderData.shipping.address.city,
+                  state_code: orderData.shipping.address.state,
+                  state_name: stateCodeToFullName(orderData.shipping.address.state),
+                  country_code: "US",
+                  country_name: "United States",
+                  zip: Number(orderData.shipping.address.postal_code),
+                  phone: orderData.contact.phone,
+                  email: orderData.contact.email ?? orderData.user.email,
+               },
+               items: orderData.orderedItems.map((item) => {
+                  return {
+                     id: item.id,
+                     external_id: item.externalId,
+                     variant_id: item.variantId,
+                     sync_variant_id: item.syncVariantId,
+                     external_variant_id: item.externalVariantId,
+                     warehouse_product_variant_id: item.warehouseProductVariantId,
+                     quantity: item.quantity,
+                     price: item.price,
+                     retail_price: item.retailPrice,
+                     name: item.name,
+                     product: item.product,
+                     files: item.files,
+                     options: item.options,
+                     sku: item.sku,
+                  };
+               }),
+            });
 
             const result = await fetch("https://api.printful.com/orders", {
                method: "POST",
@@ -173,6 +175,8 @@ const ordersHandler = async (req, res) => {
 
             const data = await result.json();
 
+            console.log("order data", data)
+
             if (data.code === 200) {
                await updateDoc(doc(db, "orders", orderData.referenceId), {
                   orderStatus: "Pending order confirmation",
@@ -193,7 +197,7 @@ const ordersHandler = async (req, res) => {
 
                const confirmData = await confirmResult.json();
 
-               console.log("data", confirmData);
+               console.log("order confirmation data", confirmData);
 
                if (confirmData.code === 200) {
                   await updateDoc(doc(db, "orders", orderData.referenceId), {
