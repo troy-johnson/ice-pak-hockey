@@ -50,9 +50,9 @@ const OrderStatus = () => {
                <Typography variant="subtitle1">
                   Order Amount: {`$${Number(order.orderAmount).toFixed(2)}`}
                </Typography>
-               {order?.receipt ? (
+               {order?.receiptUrl ? (
                   <Typography variant="subtitle1">
-                     <Link href={order?.receipt} target="_blank" rel="noopener noreferrer">
+                     <Link href={order?.receiptUrl} target="_blank" rel="noopener noreferrer">
                         Receipt
                      </Link>
                   </Typography>
