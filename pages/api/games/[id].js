@@ -10,9 +10,12 @@ import {
    updateDoc,
    where,
 } from "firebase/firestore";
+import { getSession } from "next-auth/client";
 import { db } from "../../../config";
 
 const gameHandler = async (req, res) => {
+   const session = await getSession({ req })
+
    const { id } = req.query;
 
    switch (req.method) {
