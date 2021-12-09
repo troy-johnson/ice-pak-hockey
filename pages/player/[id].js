@@ -188,23 +188,55 @@ const Player = () => {
             />
             <Typography variant={desktop ? "h4" : "h5"}>{`${player?.firstName} ${
                player?.nickname ? `"${player?.nickname}"` : ""
-            } ${player?.lastName} | #${player?.jerseyNumber}`}</Typography>
-            <Typography variant={desktop ? "h5" : "h6"}>{`${
-               player?.shoots === "L" ? "Left" : "Right"
-            } | ${player?.homeTown}`}</Typography>
+            } ${player?.lastName} | #${player?.number ?? player?.jerseyNumber}`}</Typography>
+            {player?.handedness ? (
+               <Typography variant="subtitle1">
+                  <b>Shoots: </b>
+                  {player?.handedness ?? player?.shoots}
+               </Typography>
+            ) : null}
+            {player?.born ? (
+               <Typography variant="subtitle1">
+                  <b>Born: </b>
+                  {dayjs.unix(player?.born?.seconds).format("MMM D, YYYY")}
+               </Typography>
+            ) : null}
+            {player?.height ? (
+               <Typography variant="subtitle1">
+                  <b>Height: </b>
+                  {player?.height}
+               </Typography>
+            ) : null}
+            {player?.hometown ? (
+               <Typography variant="subtitle1">
+                  <b>Hometown: </b>
+                  {player?.hometown}
+               </Typography>
+            ) : null}
+            {player?.born ? (
+               <Typography variant="subtitle1">
+                  <b></b>
+               </Typography>
+            ) : null}
+            {player?.born ? (
+               <Typography variant="subtitle1">
+                  <b></b>
+               </Typography>
+            ) : null}
+            {player?.born ? (
+               <Typography variant="subtitle1">
+                  <b></b>
+               </Typography>
+            ) : null}
          </Stack>
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                  <Tab label="Bio" />
                   <Tab label="Career Stats" />
                   <Tab label="Game Log" />
                </Tabs>
             </TabBox>
             <TabPanel desktop={desktop} value={value} index={0}>
-               <Typography>{player?.bio ? player?.bio : "No bio. Login and write one!"}</Typography>
-            </TabPanel>
-            <TabPanel desktop={desktop} value={value} index={1}>
                <Typography variant="subtitle2" sx={{ ml: 2 }}>
                   Career Totals
                </Typography>
@@ -245,103 +277,107 @@ const Player = () => {
                   Season Stats
                </Typography>
                <Container sx={{ mb: 2 }}>
-               <TableContainer component={TableComponent}>
-                  <Table aria-label="Team">
-                     <TableHead>
-                        <PlayerTableHeader>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="season"
-                              onClick={() => handleClick("gamesPlayed")}
-                           >
-                              Season
-                           </StatHeaderCell>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="gamesPlayed"
-                              onClick={() => handleClick("gamesPlayed")}
-                           >
-                              GP
-                           </StatHeaderCell>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="goals"
-                              onClick={() => handleClick("goals")}
-                           >
-                              {desktop ? "Goals" : "G"}
-                           </StatHeaderCell>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="assists"
-                              onClick={() => handleClick("assists")}
-                           >
-                              {desktop ? "Assists" : "A"}
-                           </StatHeaderCell>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="points"
-                              onClick={() => handleClick("points")}
-                           >
-                              {desktop ? "Points" : "P"}
-                           </StatHeaderCell>
-                           <StatHeaderCell
-                              order={order}
-                              orderBy={orderBy}
-                              type="penaltyMinutes"
-                              onClick={() => handleClick("penaltyMinutes")}
-                           >
-                              PIM
-                           </StatHeaderCell>
-                        </PlayerTableHeader>
-                     </TableHead>
-                     <PlayerTableBody>
-                        {playerStats?.seasonStats
-                           ?.sort((a, b) =>
-                              order === "asc"
-                                 ? a?.[orderBy] - b?.[orderBy]
-                                 : b?.[orderBy] - a?.[orderBy]
-                           )
-                           ?.map((season) => (
-                              <TableRow key={season.seasonId}>
-                                 <StatBodyCell component="th" scope="row">
-                                    {desktop ? (
-                                       <Typography variant="caption">
-                                          {`${season.leagueName} ${season.shortYear} ${season.type}`}
-                                       </Typography>
-                                    ) : (
-                                       <Stack direction="column" alignItems="left">
+                  <TableContainer component={TableComponent}>
+                     <Table aria-label="Team">
+                        <TableHead>
+                           <PlayerTableHeader>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="season"
+                                 onClick={() => handleClick("gamesPlayed")}
+                              >
+                                 Season
+                              </StatHeaderCell>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="gamesPlayed"
+                                 onClick={() => handleClick("gamesPlayed")}
+                              >
+                                 GP
+                              </StatHeaderCell>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="goals"
+                                 onClick={() => handleClick("goals")}
+                              >
+                                 {desktop ? "Goals" : "G"}
+                              </StatHeaderCell>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="assists"
+                                 onClick={() => handleClick("assists")}
+                              >
+                                 {desktop ? "Assists" : "A"}
+                              </StatHeaderCell>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="points"
+                                 onClick={() => handleClick("points")}
+                              >
+                                 {desktop ? "Points" : "P"}
+                              </StatHeaderCell>
+                              <StatHeaderCell
+                                 order={order}
+                                 orderBy={orderBy}
+                                 type="penaltyMinutes"
+                                 onClick={() => handleClick("penaltyMinutes")}
+                              >
+                                 PIM
+                              </StatHeaderCell>
+                           </PlayerTableHeader>
+                        </TableHead>
+                        <PlayerTableBody>
+                           {playerStats?.seasonStats
+                              ?.sort((a, b) =>
+                                 order === "asc"
+                                    ? a?.[orderBy] - b?.[orderBy]
+                                    : b?.[orderBy] - a?.[orderBy]
+                              )
+                              ?.map((season) => (
+                                 <TableRow key={season.seasonId}>
+                                    <StatBodyCell component="th" scope="row">
+                                       {desktop ? (
                                           <Typography variant="caption">
-                                             {season.leagueName}
+                                             {`${season.leagueName} ${season.shortYear} ${season.type}`}
                                           </Typography>
-                                          <Typography variant="caption">
-                                             {season.shortYear}
-                                          </Typography>
-                                          <Typography variant="caption">{season.type}</Typography>
-                                       </Stack>
-                                    )}
-                                 </StatBodyCell>
-                                 <StatBodyCell align="center">{season?.gamesPlayed}</StatBodyCell>
-                                 <StatBodyCell align="center">{season?.goals}</StatBodyCell>
-                                 <StatBodyCell align="center">{season?.assists}</StatBodyCell>
-                                 <StatBodyCell align="center">
-                                    {season?.goals + season?.assists}
-                                 </StatBodyCell>
-                                 <StatBodyCell align="center">
-                                    {season?.penaltyMinutes}
-                                 </StatBodyCell>
-                              </TableRow>
-                           ))}
-                     </PlayerTableBody>
-                  </Table>
-               </TableContainer>
+                                       ) : (
+                                          <Stack direction="column" alignItems="left">
+                                             <Typography variant="caption">
+                                                {season.leagueName}
+                                             </Typography>
+                                             <Typography variant="caption">
+                                                {season.shortYear}
+                                             </Typography>
+                                             <Typography variant="caption">
+                                                {season.type}
+                                             </Typography>
+                                          </Stack>
+                                       )}
+                                    </StatBodyCell>
+                                    <StatBodyCell align="center">
+                                       {season?.gamesPlayed}
+                                    </StatBodyCell>
+                                    <StatBodyCell align="center">{season?.goals}</StatBodyCell>
+                                    <StatBodyCell align="center">{season?.assists}</StatBodyCell>
+                                    <StatBodyCell align="center">
+                                       {season?.goals + season?.assists}
+                                    </StatBodyCell>
+                                    <StatBodyCell align="center">
+                                       {season?.penaltyMinutes}
+                                    </StatBodyCell>
+                                 </TableRow>
+                              ))}
+                        </PlayerTableBody>
+                     </Table>
+                  </TableContainer>
                </Container>
             </TabPanel>
-            <TabPanel desktop={desktop} value={value} index={2}>
+            <TabPanel desktop={desktop} value={value} index={1}>
                <Container sx={{ mb: 2 }}>
                   <TableContainer component={TableComponent}>
                      <Table aria-label="Game Log">

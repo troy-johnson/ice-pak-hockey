@@ -102,10 +102,10 @@ const GameTicker = () => {
                                     }}
                                  >
                                     <Image
-                                       alt="Ice Pak Penalty"
-                                       src="/jerseyLogo.png"
-                                       height={20}
-                                       width={23}
+                                       alt="Ice Pak Game"
+                                       src="/shortTextLogo.png"
+                                       height={15}
+                                       width={25}
                                        layout="fixed"
                                     />
                                     <Typography
@@ -187,10 +187,10 @@ const GameTicker = () => {
                                     sx={{ display: "flex", alignItems: "center" }}
                                  >
                                     <Image
-                                       alt="Ice Pak Penalty"
-                                       src="/jerseyLogo.png"
-                                       height={20}
-                                       width={23}
+                                       alt="Ice Pak Game"
+                                       src="/shortTextLogo.png"
+                                       height={15}
+                                       width={25}
                                        layout="fixed"
                                     />
                                     <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>

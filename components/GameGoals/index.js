@@ -121,10 +121,10 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, setSnackbar, opponentNa
                                     >
                                        {goal?.playerName ? (
                                           <Image
-                                             alt="Ice Pak Penalty"
-                                             src="/jerseyLogo.png"
-                                             width={35}
-                                             height={30}
+                                             alt="Ice Pak Goal"
+                                             src="/shortTextLogo.png"
+                                             width={40}
+                                             height={25}
                                           />
                                        ) : null}
                                     </TableCell>

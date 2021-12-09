@@ -108,9 +108,9 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar }) => {
                                        {penalty?.playerName ? (
                                           <Image
                                              alt="Ice Pak Penalty"
-                                             src="/jerseyLogo.png"
-                                             width={35}
-                                             height={30}
+                                             src="/shortTextLogo.png"
+                                             width={40}
+                                             height={25}
                                           />
                                        ) : null}
                                     </TableCell>

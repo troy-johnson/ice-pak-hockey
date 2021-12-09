@@ -206,7 +206,7 @@ const Team = () => {
                                  </PlayerName>
                               </PlayerTableCell>
                               <PlayerTableCell align="center">
-                                 {player?.jerseyNumber}
+                                 {player?.number ?? player?.jerseyNumber}
                               </PlayerTableCell>
                               <PlayerTableCell align="center">
                                  {player?.position?.slice(0, 1)?.toUpperCase()}
@@ -216,7 +216,7 @@ const Team = () => {
                               </PlayerTableCell>
                               {desktop ? (
                                  <PlayerTableCell align="center">
-                                    {player?.homeTown}
+                                    {player?.hometown}
                                  </PlayerTableCell>
                               ) : null}
                            </TableRow>
@@ -285,7 +285,7 @@ const Team = () => {
                <ControlledInput
                   control={control}
                   label="Jersey Number"
-                  name="jerseyNumber"
+                  name="number"
                   variant="outlined"
                   type="number"
                   required
