@@ -223,6 +223,7 @@ const Post = () => {
          >
             <Alert
                onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+               variant="filled"
                severity={snackbar.type}
                sx={{ width: "100%" }}
             >

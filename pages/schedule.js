@@ -22,18 +22,16 @@ import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import { Loading, PageContainer } from "../components";
-import { editPlayerGameStatus, useGetAllGames, useGetProfile } from "../utils";
+import { editPlayerGameStatus, useGetAllGames, useGetProfile, useGetSeasons } from "../utils";
 
 const ArrowButton = styled(IconButton)`
    color: ${(props) => props.theme.palette.black};
 `;
 
-// TODO: Figure out card background image using data:image/png;base64,game.locationImage
-
 const Schedule = () => {
    const [date, setDate] = useState(dayjs());
-   const [gameStatus, setGameStatus] = useState({});
    const { games, gamesLoading, gamesError } = useGetAllGames();
+   const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { profile, profileLoading, profileError } = useGetProfile();
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -47,40 +45,34 @@ const Schedule = () => {
       return "L";
    };
 
-   const schedule = games.map((game) => {
-      return {
-         date: game?.date?.seconds,
-         opponentName: game?.opponentName,
-         locationName: game?.locationName,
-      };
-   });
-
-   // console.log("gameStatus", profile);
-
    if (gamesLoading) {
       return <Loading />;
    } else if (gamesError) {
       return <Alert severity="error">Error retrieving schedule. Please try again later.</Alert>;
    }
 
-   const updateGameRoster = (e, gameId) => {
-      // console.log("updateGameRoster", { checked: e.target.checked, gameId });
-      // const otherGames = gameStatus?.filter((el) => el.gameId !== gameId);
-      setGameStatus({ gameId, status: e.target.checked });
+   const updateGameRoster = async (e, gameId) => {
+      const seasonId = games?.filter((game) => game.id === gameId)?.[0]?.seasonId;
+      const seasonPlayerData = seasons
+         ?.find((season) => season.id === seasonId)
+         ?.roster?.find((player) => player.playerId === profile.playerId);
 
       try {
-         editPlayerGameStatus({
+         await editPlayerGameStatus({
             gameId,
             playerId: profile.playerId,
-            status: e.target.checked ? "in" : "out",
+            fullName: seasonPlayerData?.fullName,
+            jerseyNumber: seasonPlayerData?.jerseyNumber,
+            position: seasonPlayerData?.position,
+            seasonStatus: seasonPlayerData?.seasonStatus,
+            gameStatus: e.target.checked ? "in" : "out",
          });
-         mutate(`/api/games`);
          setSnackbar({
             open: true,
             type: "success",
-            message: `You've checked ${e.target.checked ? "in" : "out"}!`,
+            message: `You've checked ${e.target.checked ? "out" : "in"}!`,
          });
-         setGameStatus({})
+         mutate(`/api/games`);
       } catch (error) {
          console.log("Roster update error: ", error);
          setSnackbar({
@@ -88,8 +80,11 @@ const Schedule = () => {
             type: "error",
             message: "An error has occurred. Please try again.",
          });
-         setGameStatus({})
       }
+   };
+
+   const isPlayerRostered = (game) => {
+      return game.roster.includes(profile?.playerId);
    };
 
    return (
@@ -112,7 +107,7 @@ const Schedule = () => {
             {games
                ?.filter(
                   (game) =>
-                     dayjs.unix(game?.date.seconds).isAfter(date) &&
+                     dayjs.unix(game?.date.seconds).isAfter(date.date(1)) &&
                      dayjs.unix(game?.date.seconds).isBefore(date.add(1, "M").date(1))
                )
                ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
@@ -139,7 +134,7 @@ const Schedule = () => {
                            justifyContent="space-between"
                         >
                            <Typography gutterBottom variant="h5">
-                              {game?.opponentName}
+                              vs. {game?.opponentName}
                            </Typography>
                            {profile ? (
                               <FormControlLabel
@@ -148,13 +143,7 @@ const Schedule = () => {
                                  control={
                                     <Checkbox
                                        icon={<IndeterminateCheckBoxIcon />}
-                                       checked={
-                                          gameStatus.gameId === game.id
-                                             ? gameStatus?.status
-                                             : games
-                                                  ?.filter((el) => game.id === el.id)?.[0]
-                                                  ?.roster.includes(profile?.playerId)
-                                       }
+                                       checked={isPlayerRostered(game)}
                                        sx={{
                                           color: dayjs().isAfter(dayjs.unix(game?.date.seconds))
                                              ? grey[500]
@@ -206,6 +195,7 @@ const Schedule = () => {
             <Alert
                onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
                severity={snackbar.type}
+               variant="filled"
                sx={{ width: "100%" }}
             >
                {snackbar.message}

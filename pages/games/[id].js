@@ -34,7 +34,7 @@ import {
    PageContainer,
 } from "../../components";
 import { FaClipboardList } from "react-icons/fa";
-import { roleCheck, upsertGame, useGetGameInfo } from "../../utils";
+import { roleCheck, upsertGame, useGetGameInfo, useGetProfile } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
@@ -143,7 +143,9 @@ const Game = () => {
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const { id } = router.query;
    const { game, gameLoading, gameError } = useGetGameInfo(id);
+   const { profile, profileLoading, profileError } = useGetProfile();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   // const isPlayerRostered = game?.roster?.includes(profile?.playerId)
 
    const handleChange = (event, newValue) => setValue(newValue);
 
@@ -279,10 +281,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   // console.log("game", game);
-   // console.log("icePakGoals", icePakGoals);
-   // console.log("oppGoals", opponentGoals);
-   // console.log("desktop", desktop);
+   console.log("game", game);
 
    if (gameLoading) {
       return <Loading />;
@@ -548,6 +547,7 @@ const Game = () => {
             >
                <Alert
                   onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+                  variant="filled"
                   severity={snackbar.type}
                   sx={{ width: "100%" }}
                >

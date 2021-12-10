@@ -2,26 +2,32 @@ import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config";
 
 const playerStatusHandler = async (req, res) => {
-   const { playerId, gameId, status } = req.body.data;
-
-   // console.log("req.body", req.body)
+   const { gameId, playerId, fullName, jerseyNumber, position, seasonStatus, gameStatus } =
+      req.body.data;
 
    const gameResult = await getDoc(doc(db, "games", gameId));
 
-   // if (gameResult.exists()) {
-   //    console.log("Document data:", gameResult.data());
-   //  } else {
-   //    // doc.data() will be undefined in this case
-   //    console.log("No such document!");
-   //  }
-
    const currentGameRoster = gameResult.data().roster;
-
-   // console.log("cGR", currentGameRoster);
+   const currentFullRoster = gameResult.data().fullRoster;
 
    const isPlayerRostered = currentGameRoster.includes(playerId);
 
-   if (status === "in") {
+   const fullRosterPlayerIndex = currentFullRoster.findIndex(
+      (player) => player.playerId === playerId
+   );
+
+   const updatedFullRoster = currentFullRoster;
+
+   updatedFullRoster[fullRosterPlayerIndex] = {
+      playerId,
+      fullName,
+      jerseyNumber,
+      position,
+      gameStatus,
+      seasonStatus,
+   };
+
+   if (gameStatus === "in") {
       if (isPlayerRostered) {
          return res.status(200).json({ message: "Player already rostered." });
       }
@@ -29,6 +35,7 @@ const playerStatusHandler = async (req, res) => {
       try {
          await updateDoc(doc(db, "games", gameId), {
             roster: [...currentGameRoster, playerId],
+            fullRoster: updatedFullRoster,
          });
 
          return res.status(200).json({ message: "Player successfully rostered." });
@@ -44,6 +51,7 @@ const playerStatusHandler = async (req, res) => {
       try {
          await updateDoc(doc(db, "games", gameId), {
             roster: currentGameRoster.filter((el) => el !== playerId),
+            fullRoster: updatedFullRoster,
          });
 
          return res.status(200).json({ message: "Player successfully scratched." });

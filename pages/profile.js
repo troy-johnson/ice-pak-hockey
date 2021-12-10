@@ -88,7 +88,7 @@ const Profile = () => {
          setValue("firstName", player?.firstName);
          setValue("nickname", player?.nickname);
          setValue("lastName", player?.lastName);
-         setValue("homeTown", player?.homeTown);
+         setValue("hometown", player?.hometown);
          setValue("preferredEmail", player?.preferredEmail ?? player?.email);
          setValue("preferredPhone", player?.preferredPhone ?? player?.phoneNumber);
          setValue("preferredJerseyNumber", player?.preferredJerseyNumber ?? player?.jerseyNumber);
@@ -216,8 +216,8 @@ const Profile = () => {
                               control={control}
                               fullWidth
                               size="small"
-                              name="homeTown"
-                              label="Home Town"
+                              name="hometown"
+                              label="Hometown"
                            />
                            <ControlledInput
                               control={control}
@@ -380,6 +380,7 @@ const Profile = () => {
          >
             <Alert
                onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+               variant="filled"
                severity={snackbar.type}
                sx={{ width: "100%" }}
             >

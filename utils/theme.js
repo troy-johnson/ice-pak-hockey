@@ -20,7 +20,7 @@ export const theme = createTheme({
          light: "#e6e6e6",
       },
       success: {
-         main: green[600]
+         main: green[600],
       },
       error: {
          main: red[900],
