@@ -8,15 +8,15 @@ const playerStatusHandler = async (req, res) => {
    const gameResult = await getDoc(doc(db, "games", gameId));
 
    const currentGameRoster = gameResult.data().roster;
-   const currentFullRoster = gameResult.data().fullRoster;
+   const currentFullRoster = gameResult.data()?.fullRoster;
 
    const isPlayerRostered = currentGameRoster.includes(playerId);
 
-   const fullRosterPlayerIndex = currentFullRoster.findIndex(
+   const fullRosterPlayerIndex = currentFullRoster?.findIndex(
       (player) => player.playerId === playerId
    );
 
-   const updatedFullRoster = currentFullRoster;
+   let updatedFullRoster = currentFullRoster;
 
    updatedFullRoster[fullRosterPlayerIndex] = {
       playerId,
@@ -26,6 +26,13 @@ const playerStatusHandler = async (req, res) => {
       gameStatus,
       seasonStatus,
    };
+
+   if (fullRosterPlayerIndex === -1) {
+      updatedFullRoster = [
+         ...updatedFullRoster,
+         { playerId, fullName, jerseyNumber, position, gameStatus, seasonStatus },
+      ];
+   }
 
    if (gameStatus === "in") {
       if (isPlayerRostered) {
