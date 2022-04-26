@@ -10,7 +10,7 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
 const checkoutHandler = async (req, res) => {
    try {
       const { user, items } = req.body;
-      console.log("req body", items);
+      console.log("req body", req.body);
 
       const redirectURL =
          process.env.NODE_ENV === "development"
@@ -81,8 +81,8 @@ const checkoutHandler = async (req, res) => {
          ),
          referenceId: clientReferenceId,
          user: {
-            fullName: user?.fullName,
-            email: user?.email,
+            fullName: user?.fullName ?? "", 
+            email: user?.email ?? "",
          },
       });
 

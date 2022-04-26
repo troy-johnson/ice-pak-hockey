@@ -167,10 +167,10 @@ const Banner = () => {
       const checkoutSession = await createCheckoutSession({
          cart,
          user: {
-            email: session?.user?.email,
-            firstName: session?.user?.firstName,
-            lastName: session?.user?.lastName,
-            fullName: `${session?.user?.firstName} ${session?.user?.lastName}`,
+            email: session?.user?.email ?? "",
+            firstName: session?.user?.firstName ?? "",
+            lastName: session?.user?.lastName ?? "",
+            fullName: session?.user ? `${session?.user?.firstName} ${session?.user?.lastName}` : "",
          },
       });
       

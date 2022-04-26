@@ -110,7 +110,7 @@ const ordersHandler = async (req, res) => {
                   country_name: "United States",
                   zip: Number(orderData.shipping.address.postal_code),
                   phone: orderData.contact.phone,
-                  email: orderData.contact.email ?? orderData.user.email,
+                  email: orderData.contact.email ?? orderData?.user?.email,
                },
                items: orderData.orderedItems.map((item) => {
                   return {
@@ -152,7 +152,7 @@ const ordersHandler = async (req, res) => {
                      country_name: "United States",
                      zip: Number(orderData.shipping.address.postal_code),
                      phone: orderData.contact.phone,
-                     email: orderData.contact.email ?? orderData.user.email,
+                     email: orderData.contact.email ?? orderData?.user?.email,
                   },
                   items: orderData.orderedItems.map((item) => {
                      return {
