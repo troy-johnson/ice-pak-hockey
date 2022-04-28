@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../config";
+import { db } from "../../../config";
 
-const seasonsHandler = async(req, res) => {
+const seasonHandler = async(req, res) => {
    const result = await getDocs(collection(db, "seasons"));
 
    let seasons = [];
@@ -14,4 +14,4 @@ const seasonsHandler = async(req, res) => {
 }
 
 
-export default seasonsHandler;
+export default seasonHandler;

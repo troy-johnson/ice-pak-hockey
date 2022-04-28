@@ -44,6 +44,7 @@ const ProductPage = () => {
    const getVariantSize = (variant) => {
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
          product?.sync_product?.name === "Toque"
       ) {
          return "One Size Fits All";
@@ -134,6 +135,9 @@ const ProductPage = () => {
 
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
          product?.sync_product?.name === "Toque"
       ) {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
@@ -145,7 +149,10 @@ const ProductPage = () => {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
          setSize("");
       } else if (
-         product?.sync_product?.name !== "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
          product?.sync_product?.name === "Toque"
       ) {
          variant = product.sync_variants.find(
@@ -187,6 +194,9 @@ const ProductPage = () => {
       }
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
+         product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
          product?.sync_product?.name === "Toque"
       ) {
          setSize("One Size Fits All");
@@ -241,7 +251,9 @@ const ProductPage = () => {
             </Typography>
             <Stack direction={desktop ? "row" : "column"} alignItems={"center"} spacing={1}>
                <FormControl>
-                  <InputLabel id="color-select-label">{product?.sync_product?.name?.includes("Sticker") ? "Size" : "Color"}</InputLabel>
+                  <InputLabel id="color-select-label">
+                     {product?.sync_product?.name?.includes("Sticker") ? "Size" : "Color"}
+                  </InputLabel>
                   <Select
                      labelId="color-select-label"
                      id="color-select"
@@ -259,6 +271,9 @@ const ProductPage = () => {
                </FormControl>
                <Stack display="flex" direction="row" justifyItems="center" spacing={1}>
                   {product?.sync_product?.name === "Wordmark Trucker Hat" ||
+                  product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
+                  product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
+                  product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
                   product?.sync_product?.name === "Toque" ||
                   product?.sync_product?.name === "Ice Pak Hockey Sticker" ||
                   product?.sync_product?.name === "Jersey Logo Sticker" ? null : (

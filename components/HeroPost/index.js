@@ -52,7 +52,7 @@ const HeroPost = ({ title, body, coverImage, date, author, excerpt, slug }) => {
                   />
                   <Link href={`/posts/${slug}`} passHref>
                      <Button variant="contained" sx={{ alignSelf: "center", maxWidth: "200px" }}>
-                        View More
+                        Read More
                      </Button>
                   </Link>
                </Stack>

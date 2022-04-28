@@ -72,7 +72,13 @@ const TabBox = styled(Box)`
 const Manager = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   const [seasonId, setSeasonId] = useState("");
+   const [seasonId, setSeasonId] = useState(
+      !seasonsLoading && !seasonsError
+         ? seasons.sort(
+              (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+           )?.[0].id
+         : "LSdvGKI4dFWUBwgeEC5z"
+   );
    const [tabValue, setTabValue] = useState(0);
    const [session, loading] = useSession();
 
@@ -89,15 +95,14 @@ const Manager = () => {
    const handleChange = (event, newValue) => setTabValue(newValue);
 
    const seasonOptions = seasons
-      ?.sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
-      ?.map((season) => {
-         return {
-            label: `${season?.leagueName} ${season?.name} ${season?.type}`,
-            value: season?.id,
-         };
+      .sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
+      .map((season) => {
+         return { label: `${season.leagueName} ${season.name} ${season.type}`, value: season.id };
       });
 
    const currentSeason = (id) => seasons?.filter((season) => season.id === id)?.[0];
+
+   console.log("curSeason", currentSeason(seasonId))
 
    const updateValues = (id) => {
       setValue(
@@ -128,7 +133,8 @@ const Manager = () => {
       );
    }
 
-   // console.log("season", currentSeason(seasonId));
+   console.log("season", currentSeason(seasonId));
+   console.log("seasonOptions", seasonOptions);
 
    return (
       <PageContainer small pageTitle="Manager">
