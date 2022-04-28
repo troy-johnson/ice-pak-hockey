@@ -94,8 +94,7 @@ const Manager = () => {
 
    const handleChange = (event, newValue) => setTabValue(newValue);
 
-   const seasonOptions = seasons
-      .sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
+   const seasonOptions = seasons?.sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
       .map((season) => {
          return { label: `${season.leagueName} ${season.name} ${season.type}`, value: season.id };
       });
