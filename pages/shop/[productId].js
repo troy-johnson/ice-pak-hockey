@@ -130,12 +130,20 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
+      console.log("color", color);
+
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
          product?.sync_product?.name === "Toque"
       ) {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
          setSize("One Size Fits All");
+      } else if (
+         product?.sync_product?.name === "Ice Pak Hockey Sticker" ||
+         product?.sync_product?.name === "Jersey Logo Sticker"
+      ) {
+         variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
+         setSize("");
       } else if (
          product?.sync_product?.name !== "Wordmark Trucker Hat" ||
          product?.sync_product?.name === "Toque"
@@ -146,6 +154,7 @@ const ProductPage = () => {
       }
 
       console.log("variant", variant);
+      console.log("productId", productId);
       dispatch(
          addToCart({
             id: variant.id,
@@ -232,7 +241,7 @@ const ProductPage = () => {
             </Typography>
             <Stack direction={desktop ? "row" : "column"} alignItems={"center"} spacing={1}>
                <FormControl>
-                  <InputLabel id="color-select-label">Color</InputLabel>
+                  <InputLabel id="color-select-label">{product?.sync_product?.name?.includes("Sticker") ? "Size" : "Color"}</InputLabel>
                   <Select
                      labelId="color-select-label"
                      id="color-select"
@@ -250,7 +259,9 @@ const ProductPage = () => {
                </FormControl>
                <Stack display="flex" direction="row" justifyItems="center" spacing={1}>
                   {product?.sync_product?.name === "Wordmark Trucker Hat" ||
-                  product?.sync_product?.name === "Toque" ? null : (
+                  product?.sync_product?.name === "Toque" ||
+                  product?.sync_product?.name === "Ice Pak Hockey Sticker" ||
+                  product?.sync_product?.name === "Jersey Logo Sticker" ? null : (
                      <FormControl>
                         <InputLabel id="size-select-label">Size</InputLabel>
                         <Select

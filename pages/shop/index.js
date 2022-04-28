@@ -75,7 +75,7 @@ const Shop = () => {
                               </Typography>
                               <Stack alignItems="center" sx={{ m: 1 }}>
                                  <Image
-                                    src={product?.sync_product.thumbnail_url}
+                                    src={product?.sync_product?.thumbnail_url}
                                     height={125}
                                     width={125}
                                     alt={product?.sync_product.name}
