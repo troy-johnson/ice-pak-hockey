@@ -37,6 +37,9 @@ const ProductPage = () => {
             .split("")
             .filter((el) => el !== " ")
             .join("");
+      } else if (product?.sync_product?.name === "Ice Pak Hockey Trucker Hat") {
+         // console.log("split", variant?.product?.name?.split("-"));
+         return variant?.product?.name?.split("(")[1].split(")")[0].trim();
       }
       return variant?.product?.name?.split("(")?.[1]?.split("/")?.[0]?.split(")")?.[0].trim();
    };
@@ -64,7 +67,7 @@ const ProductPage = () => {
    );
 
    // console.log("currentImage", currentImage);
-   console.log("product", product);
+   // console.log("product", product);
    // console.log("color", color, getVariantColor(product?.sync_variants[0]));
 
    const getImages = (variant) => variant.files.filter((file) => file.type !== "default");
@@ -72,6 +75,7 @@ const ProductPage = () => {
    const options = [];
 
    product?.sync_variants.forEach((variant) => {
+      // console.log("variant", variant);
       const currentColor = options.findIndex((el) => el.color === getVariantColor(variant));
       // console.log("currColor", currentColor);
       if (currentColor > -1) {
@@ -88,6 +92,8 @@ const ProductPage = () => {
          });
       }
    });
+
+   // console.log("options", options);
 
    const handleColorChange = (event) => {
       // console.log(
@@ -131,7 +137,7 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
-      console.log("color", color);
+      // console.log("color", color);
 
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
@@ -160,8 +166,8 @@ const ProductPage = () => {
          );
       }
 
-      console.log("variant", variant);
-      console.log("productId", productId);
+      // console.log("variant", variant);
+      // console.log("productId", productId);
       dispatch(
          addToCart({
             id: variant.id,
