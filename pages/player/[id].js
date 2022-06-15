@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import styled from "@emotion/styled";
+import { useSession } from "next-auth/client";
 import {
    Avatar,
    Box,
+   Button,
    Container,
    Paper,
    Divider,
@@ -20,9 +22,15 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { Loading, PageContainer } from "../../components";
+import { EditPlayer, Loading, PageContainer } from "../../components";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import { useGetAssists, useGetGoals, useGetPlayers, useGetPlayerStats } from "../../utils";
+import {
+   roleCheck,
+   useGetAssists,
+   useGetGoals,
+   useGetPlayers,
+   useGetPlayerStats,
+} from "../../utils";
 
 const SortArrow = styled(ArrowDropUpIcon)`
    transform: ${(props) => (props.order === "asc" ? "rotate(0deg)" : "rotate(180deg)")};
@@ -146,16 +154,21 @@ const CareerStatStack = styled(Stack)`
 const Player = () => {
    const router = useRouter();
    const { id } = router.query;
+
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
    const [value, setValue] = useState(0);
+   // const [editPlayerDialog, setEditPlayerDialog] = useState(false);
+
+   const [session, loading] = useSession();
    const { players, playersLoading, playersError } = useGetPlayers();
    const { assists, assistsLoading, assistsError } = useGetAssists();
    const { goals, goalsLoading, goalsError } = useGetGoals();
    const { playerStats, playerStatsLoading, playerStatsError } = useGetPlayerStats(id);
+
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   const loading = playersLoading || assistsLoading || goalsLoading;
+   const rosterLoading = playersLoading || assistsLoading || goalsLoading;
    const error = playersError || assistsError || goalsError;
 
    const handleChange = (event, newValue) => setValue(newValue);
@@ -170,7 +183,7 @@ const Player = () => {
    // console.log("player", player);
    // console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
 
-   if (loading) {
+   if (rosterLoading) {
       return <Loading />;
    } else if (error) {
       return <div>An error occurred. Please try again.</div>;
@@ -234,6 +247,9 @@ const Player = () => {
                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Career Stats" />
                   <Tab label="Game Log" />
+                  {!!roleCheck(session, ["Admins"]) ? (
+                              <Tab label="Edit Player" />
+         ) : null}
                </Tabs>
             </TabBox>
             <TabPanel desktop={desktop} value={value} index={0}>
@@ -338,6 +354,7 @@ const Player = () => {
                                     ? a?.[orderBy] - b?.[orderBy]
                                     : b?.[orderBy] - a?.[orderBy]
                               )
+                              ?.filter((season) => season?.gamesPlayed >= 1)
                               ?.map((season) => (
                                  <TableRow key={season.seasonId}>
                                     <StatBodyCell component="th" scope="row">
@@ -420,7 +437,13 @@ const Player = () => {
                   </TableContainer>
                </Container>
             </TabPanel>
+            <TabPanel desktop={desktop} value={value} index={2}>Edit Player</TabPanel>
          </TabContainer>
+         {/* <EditPlayer
+            open={editPlayerDialog}
+            close={() => setEditPlayerDialog(false)}
+            player={player}
+         /> */}
       </PageContainer>
    );
 };

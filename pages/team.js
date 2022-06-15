@@ -132,7 +132,7 @@ const Team = () => {
       reset({
          email: "",
          firstName: "",
-         homeTown: "",
+         hometown: "",
          image: "",
          jerseyNumber: "",
          lastName: "",
@@ -265,7 +265,7 @@ const Team = () => {
                <ControlledInput
                   control={control}
                   label="Home Town"
-                  name="homeTown"
+                  name="hometown"
                   variant="outlined"
                />
                <ControlledSelect
@@ -287,7 +287,6 @@ const Team = () => {
                   label="Jersey Number"
                   name="number"
                   variant="outlined"
-                  type="number"
                   required
                />
             </AddPlayerContent>

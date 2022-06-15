@@ -29,7 +29,7 @@ const Section = styled.section`
    box-shadow: none;
 `;
 
-const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar }) => {
+const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, opponentLogo }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [session, loading] = useSession();
 
@@ -108,9 +108,17 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar }) => {
                                        {penalty?.playerName ? (
                                           <Image
                                              alt="Ice Pak Penalty"
-                                             src="/shortTextLogo.png"
+                                             src="/jerseyLogo.png"
                                              width={40}
-                                             height={25}
+                                             height={40}
+                                          />
+                                       ) : null}
+                                       {opponentLogo && !penalty?.playerName ? (
+                                          <Image
+                                             alt={`${penalty?.opponentName} Penalty`}
+                                             src={opponentLogo}
+                                             width={40}
+                                             height={40}
                                           />
                                        ) : null}
                                     </TableCell>

@@ -34,7 +34,7 @@ import {
    PageContainer,
 } from "../../components";
 import { FaClipboardList } from "react-icons/fa";
-import { roleCheck, upsertGame, useGetGameInfo, useGetProfile } from "../../utils";
+import { roleCheck, upsertGame, useGetGameInfo, useGetOpponents, useGetProfile } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
@@ -131,7 +131,8 @@ const BoxScoreCell = styled(TableCell)`
 
 const Game = () => {
    const router = useRouter();
-   const [session, loading] = useSession();
+   const { id } = router.query;
+
    const [value, setValue] = useState(0);
    const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
@@ -141,10 +142,14 @@ const Game = () => {
    const [goal, setGoal] = useState(null);
    const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
-   const { id } = router.query;
+   
+   const [session, loading] = useSession();
    const { game, gameLoading, gameError } = useGetGameInfo(id);
+   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
    const { profile, profileLoading, profileError } = useGetProfile();
+   
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   
    // const isPlayerRostered = game?.roster?.includes(profile?.playerId)
 
    const handleChange = (event, newValue) => setValue(newValue);
@@ -280,6 +285,10 @@ const Game = () => {
          };
       })
       .sort((a, b) => b.points - a.points);
+
+   const opponent = opponents?.filter(opp => opp.id === game?.opponentId)[0]
+
+   console.log("opponents", {opponents, opponent})
 
    console.log("game", game);
 
@@ -427,6 +436,7 @@ const Game = () => {
                         <Tabs value={value} onChange={handleChange} aria-label="game-tabs">
                            <Tab label="Summary" />
                            <Tab label="Team Stats" />
+                           <Tab label="Highlights" />
                            <Tab label="Game Video" />
                         </Tabs>
                      </TabBox>
@@ -437,10 +447,12 @@ const Game = () => {
                               openUpsertGoal={openUpsertGoal}
                               goalsSorted={goalsSorted}
                               opponentName={game?.opponentName}
+                              opponentLogo={opponent?.logo}
                               setSnackbar={setSnackbar}
                            />
                            <GamePenalties
                               penaltiesByPeriod={penaltiesByPeriod}
+                              opponentLogo={opponent?.logo}
                               handleClickOpen={openMutatePenalty}
                               setSnackbar={setSnackbar}
                            />
@@ -470,7 +482,24 @@ const Game = () => {
                      </TabPanel>
                      <TabPanel desktop={desktop ? 2 : 0} value={value} index={2}>
                         <Container>
-                           {game?.video ? (
+                           {game?.highlightLink ? (
+                              <iframe
+                                 width="100%"
+                                 height={desktop ? "359" : "200"}
+                                 src={game?.highlightLink}
+                                 title={`Ice Pak vs. ${game?.opponentName}`}
+                                 frameBorder="0"
+                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                 allowFullScreen
+                              ></iframe>
+                           ) : (
+                              <Typography>No highlights found for this game.</Typography>
+                           )}
+                        </Container>
+                     </TabPanel>
+                     <TabPanel desktop={desktop ? 3 : 0} value={value} index={3}>
+                        <Container>
+                           {game?.embedLink ? (
                               <iframe
                                  width="100%"
                                  height={desktop ? "359" : "200"}

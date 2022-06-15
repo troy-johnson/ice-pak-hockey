@@ -73,6 +73,8 @@ const TabBox = styled(Box)`
 const Manager = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { leagues, leaguesLoading, leaguesError } = useGetLeagues();
+   const { players, playersLoading, playersError } = useGetPlayers();
+
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [seasonId, setSeasonId] = useState(
       !seasonsLoading && !seasonsError
@@ -178,6 +180,7 @@ const Manager = () => {
    // console.log("leagueNameInfo", { watchLeagueName });
    // console.log("form values", getValues())
    // console.log("seasonOptions", seasonOptions);
+   // console.log("players", players);
 
    return (
       <PageContainer small pageTitle="Manager">
@@ -185,7 +188,7 @@ const Manager = () => {
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                <Tabs value={tabValue} onChange={handleChange} aria-label="manager-tabs">
                   <Tab label="Seasons" />
-                  <Tab label="Players" />
+                  <Tab label="Tab 2" />
                </Tabs>
             </TabBox>
             <TabPanel value={tabValue} index={0}>
@@ -214,36 +217,21 @@ const Manager = () => {
                      name="startDate"
                      label="Start Date"
                   />
-                  <ControlledInput
-                     control={control}
-                     size="small"
-                     name="endDate"
-                     label="End Date"
-                  />
+                  <ControlledInput control={control} size="small" name="endDate" label="End Date" />
                   <ControlledSelect
                      control={control}
                      label="League Name"
                      name="leagueName"
                      options={leagueOptions}
                   />
-                  <ControlledInput
-                     control={control}
-                     size="small"
-                     name="name"
-                     label="Name"
-                  />
+                  <ControlledInput control={control} size="small" name="name" label="Name" />
                   <ControlledSelect
                      control={control}
                      label="Type"
                      name="type"
                      options={typeOptions}
                   />
-                  <ControlledInput
-                     control={control}
-                     size="small"
-                     name="result"
-                     label="Result"
-                  />
+                  <ControlledInput control={control} size="small" name="result" label="Result" />
                   <ControlledInput
                      control={control}
                      size="small"
@@ -252,16 +240,16 @@ const Manager = () => {
                   />
                   <Button
                      type="submit"
-                     variant="outlined"
+                     variant="contained"
                      sx={{ maxWidth: "350px" }}
                      onClick={handleSubmit(onSubmit)}
                   >
-                     Save Profile
+                     Save
                   </Button>
                </Stack>
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-               Players
+               Tab 2
             </TabPanel>
          </TabContainer>
       </PageContainer>

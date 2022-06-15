@@ -20,7 +20,14 @@ import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import { FaHockeyPuck } from "react-icons/fa";
 import { deleteGoal, roleCheck } from "../../utils";
 
-const GameGoals = ({ goals, goalsSorted, openUpsertGoal, setSnackbar, opponentName }) => {
+const GameGoals = ({
+   goals,
+   goalsSorted,
+   openUpsertGoal,
+   setSnackbar,
+   opponentName,
+   opponentLogo,
+}) => {
    const [session, loading] = useSession();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -122,9 +129,17 @@ const GameGoals = ({ goals, goalsSorted, openUpsertGoal, setSnackbar, opponentNa
                                        {goal?.playerName ? (
                                           <Image
                                              alt="Ice Pak Goal"
-                                             src="/shortTextLogo.png"
+                                             src="/jerseyLogo.png"
                                              width={40}
-                                             height={25}
+                                             height={40}
+                                          />
+                                       ) : null}
+                                       {opponentLogo && !goal?.playerName ? (
+                                          <Image
+                                             alt={`${opponentName} Goal`}
+                                             src={opponentLogo}
+                                             width={40}
+                                             height={40}
                                           />
                                        ) : null}
                                     </TableCell>

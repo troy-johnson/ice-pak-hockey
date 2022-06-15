@@ -7,6 +7,7 @@ export { default as ControlledRadio } from "./ControlledRadio";
 export { default as ControlledSelect } from "./ControlledSelect";
 export { default as Disclaimer  } from "./Disclaimer";
 export { default as EditGame } from "./EditGame";
+export { default as EditPlayer } from "./EditPlayer";
 export { default as EditRoster } from "./EditRoster";
 export { default as FeaturedPost } from "./FeaturedPost";
 export { default as GameGoals } from "./GameGoals";
