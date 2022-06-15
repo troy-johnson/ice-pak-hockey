@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { IconButton, Paper, Stack, Typography, useMediaQuery } from "@mui/material";
+import { IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
 import { useGetAllGames, useGetGoals, useGetOpponents } from "../../utils";
 import { IoArrowBackSharp, IoArrowForwardSharp } from "react-icons/io5";
@@ -56,6 +56,14 @@ const GameTicker = () => {
       setMobileSlice([mobileSlice[0] + 1, mobileSlice[1] + 1]);
    };
 
+   const Skeletons = () => (
+      <Stack spacing={1} direction="row">
+         <Skeleton variant="rectangular" width={210} height={85} />
+         <Skeleton variant="rectangular" width={210} height={85} />
+         <Skeleton variant="rectangular" width={210} height={85} />
+      </Stack>
+   );
+
    console.log("gamesToShow", gamesToShow);
 
    return (
@@ -70,14 +78,17 @@ const GameTicker = () => {
             alignItems: "center",
          }}
       >
-         <IconButton
-            aria-label="Previous game"
-            sx={{ height: "40px" }}
-            disabled={desktop ? desktopSlice[0] <= 0 : mobileSlice[0] <= 0}
-            onClick={handleGameBack}
-         >
-            <IoArrowBackSharp fontSize="inherit" />
-         </IconButton>
+         {gamesLoading ? null : (
+            <IconButton
+               aria-label="Previous game"
+               sx={{ height: "40px" }}
+               disabled={desktop ? desktopSlice[0] <= 0 : mobileSlice[0] <= 0}
+               onClick={handleGameBack}
+            >
+               <IoArrowBackSharp fontSize="inherit" />
+            </IconButton>
+         )}
+         {gamesLoading ? <Skeletons /> : null}
          {gamesToShow?.map((game) => {
             return (
                <Link key={game.id} href={`/games/${game.id}`} passHref>
@@ -215,16 +226,18 @@ const GameTicker = () => {
                </Link>
             );
          })}
-         <IconButton
-            ria-label="Previous game"
-            sx={{ height: "40px" }}
-            disabled={
-               desktop ? desktopSlice[0] >= games.length - 5 : mobileSlice[0] >= games.length - 1
-            }
-            onClick={handleGameForward}
-         >
-            <IoArrowForwardSharp />
-         </IconButton>
+         {gamesLoading ? null : (
+            <IconButton
+               ria-label="Previous game"
+               sx={{ height: "40px" }}
+               disabled={
+                  desktop ? desktopSlice[0] >= games.length - 5 : mobileSlice[0] >= games.length - 1
+               }
+               onClick={handleGameForward}
+            >
+               <IoArrowForwardSharp />
+            </IconButton>
+         )}
       </Stack>
    );
 };
