@@ -20,7 +20,7 @@ import {
    useMediaQuery,
 } from "@mui/material";
 import { Loading, ControlledInput, ControlledSelect, PageContainer } from "../components";
-import { roleCheck, useGetLeagues, useGetSeasons } from "../utils";
+import { roleCheck, useGetLeagues, useGetPlayers, useGetSeasons } from "../utils";
 
 const StyledTabPanel = (props) => {
    const { children, className, desktop, value, index, ...other } = props;
