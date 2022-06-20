@@ -40,7 +40,7 @@ const GameTicker = () => {
          );
 
          if (nextGame !== -1) {
-            setDesktopSlice([nextGame - 1, nextGame + 4]);
+            setDesktopSlice([nextGame - 2, nextGame + 3]);
             setMobileSlice([nextGame, nextGame + 1]);
          }
       }
@@ -218,6 +218,15 @@ const GameTicker = () => {
                                     Ice Pak
                                  </Typography>
                               </Stack>
+                              {game?.opponentLogo ? (
+                                    <Image
+                                       alt={game?.opponentName}
+                                       src={game?.opponentLogo}
+                                       height={25}
+                                       width={25}
+                                       layout="fixed"
+                                    />
+                                 ) : null}
                               <Typography variant="subtitle1">{game?.opponentName}</Typography>
                            </>
                         )}
