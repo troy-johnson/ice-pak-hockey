@@ -218,7 +218,8 @@ const GameTicker = () => {
                                     Ice Pak
                                  </Typography>
                               </Stack>
-                              {game?.opponentLogo ? (
+                              <Stack direction="row">
+                                 {game?.opponentLogo ? (
                                     <Image
                                        alt={game?.opponentName}
                                        src={game?.opponentLogo}
@@ -227,7 +228,10 @@ const GameTicker = () => {
                                        layout="fixed"
                                     />
                                  ) : null}
-                              <Typography variant="subtitle1">{game?.opponentName}</Typography>
+                                 <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>
+                                    {game?.opponentName}
+                                 </Typography>
+                              </Stack>
                            </>
                         )}
                      </Stack>
