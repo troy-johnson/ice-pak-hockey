@@ -16,7 +16,7 @@ const ControlledSelect = ({
    options,
    required,
    rules,
-   variant,
+   variant
 }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 

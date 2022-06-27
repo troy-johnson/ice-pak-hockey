@@ -85,9 +85,10 @@ const AddPlayerContent = styled(DialogContent)`
 
 const Team = () => {
    const [open, setOpen] = useState(false);
+   const [formErrors, setFormErrors] = useState(false);
    const {
       control,
-      formState: { errors },
+      formState: { errors, isValid },
       handleSubmit,
       reset,
    } = useForm();
@@ -113,12 +114,16 @@ const Team = () => {
    ];
 
    const onSubmit = (data) => {
-      // console.log(data);
+      console.log(data);
 
       try {
-         addPlayer(data);
-         mutate(`/api/players`, [...players, data], true);
-         handleClose();
+         if (isValid) {
+            addPlayer({ ...data, jerseyNumber: data?.number, number: Number(data?.number) });
+            mutate(`/api/players`, [...players, data], true);
+            handleClose();
+         } else {
+            setFormErrors(true);
+         }
       } catch (error) {
          console.log("error", error);
       }
@@ -227,12 +232,15 @@ const Team = () => {
          </TableContainer>
          <Dialog onClose={handleClose} open={open}>
             <DialogTitle>Add New Player</DialogTitle>
+            {formErrors ? "Missing some required fields." : null}
             <AddPlayerContent>
                <ControlledInput
                   control={control}
                   label="First Name"
                   name="firstName"
                   variant="outlined"
+                  errorMessage="This is required."
+                  rules={{ required: true, minLength: 3 }}
                   required
                />
                <ControlledInput
@@ -246,6 +254,7 @@ const Team = () => {
                   label="Last Name"
                   name="lastName"
                   variant="outlined"
+                  rules={{ required: true, minLength: 3 }}
                   required
                />
                <ControlledInput
@@ -253,6 +262,7 @@ const Team = () => {
                   label="Email Address"
                   name="email"
                   variant="outlined"
+                  rules={{ required: true, minLength: 3, pattern: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ }}
                   required
                />
                <ControlledInput
@@ -260,6 +270,7 @@ const Team = () => {
                   label="Phone Number"
                   name="phoneNumber"
                   variant="outlined"
+                  rules={{ required: true, pattern: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im }}
                   required
                />
                <ControlledInput
@@ -274,6 +285,8 @@ const Team = () => {
                   label="Position"
                   options={posOptions}
                   variant="outlined"
+                  rules={{ required: true }}
+                  required
                />
                <ControlledInput
                   control={control}
@@ -281,12 +294,15 @@ const Team = () => {
                   label="Shoots"
                   options={shootsOptions}
                   variant="outlined"
+                  rules={{ required: true }}
+                  required
                />
                <ControlledInput
                   control={control}
                   label="Jersey Number"
                   name="number"
                   variant="outlined"
+                  rules={{ required: true, min: 0, max: 99 }}
                   required
                />
             </AddPlayerContent>

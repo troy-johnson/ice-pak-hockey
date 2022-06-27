@@ -59,8 +59,8 @@ const GameTicker = () => {
    const Skeletons = () => (
       <Stack spacing={1} direction="row">
          <Skeleton variant="rectangular" width={210} height={85} />
-         <Skeleton variant="rectangular" width={210} height={85} />
-         <Skeleton variant="rectangular" width={210} height={85} />
+         {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
+         {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
       </Stack>
    );
 
