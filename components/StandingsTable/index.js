@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Image from "next/image";
 import dayjs from "dayjs";
 import styled from "@emotion/styled";
 import {
@@ -22,7 +23,7 @@ import {
 } from "@mui/material";
 // import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading } from "..";
-import { useGetSeasons } from "../../utils";
+import { useGetSeasons, useGetOpponents } from "../../utils";
 
 const TableComponent = ({ children }) => <Paper variant="outlined">{children}</Paper>;
 
@@ -38,6 +39,27 @@ const PlayerTableHeader = styled(TableRow)`
    }
 `;
 
+const TeamRow = styled(TableRow)`
+   th {
+      position: relative;
+   }
+
+   th:before {
+      content: " ";
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.25;
+      background-image: url(${(props) => props.logo});
+      background-repeat: no-repeat;
+      background-position: 50% 50%;
+      background-size: cover;
+   }
+`;
+
 const PlayerTableBody = styled(TableBody)`
    tr {
       cursor: pointer;
@@ -50,12 +72,13 @@ const PlayerTableBody = styled(TableBody)`
 
 const StandingsTable = ({ currentStandings, seasonType }) => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
+   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
    const [seasonId, setSeasonId] = useState(
       !seasonsLoading && !seasonsError
          ? seasons.sort(
               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
            )?.[0].id
-         : "LSdvGKI4dFWUBwgeEC5z"
+         : "cdLeQs6Y8Q5fjY0Fx7jI"
    );
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -88,9 +111,9 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                               <TableCell align="center">L</TableCell>
                               {/* {desktop ? (
                                  <> */}
-                                    <TableCell align="center">GF</TableCell>
-                                    <TableCell align="center">GA</TableCell>
-                                 {/* </>
+                              <TableCell align="center">GF</TableCell>
+                              <TableCell align="center">GA</TableCell>
+                              {/* </>
                               ) : null} */}
                            </>
                         ) : (
@@ -111,25 +134,41 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                   <PlayerTableBody>
                      {seasonType === "Playoffs"
                         ? currentStandings?.map((team, index) => (
-                             <TableRow key={team.teamId}>
+                             <TeamRow
+                                key={team.teamId}
+                                logo={
+                                   opponents?.filter((opponent) => opponent.id === team.teamId)?.[0]
+                                      ?.logo
+                                }
+                             >
                                 <TableCell component="th" scope="row">
-                                {team?.teamName}
+                                   <Typography variant={desktop ? "h6" : "subtitle2"}>
+                                      {team?.teamName}
+                                   </Typography>
                                 </TableCell>
                                 {/* <TableCell align="center">{team?.result}</TableCell> */}
                                 <TableCell align="center">{team?.wins}</TableCell>
                                 <TableCell align="center">{team?.losses}</TableCell>
                                 {/* {desktop ? (
                                    <> */}
-                                      <TableCell align="center">{team?.goalsFor}</TableCell>
-                                      <TableCell align="center">{team?.goalsAgainst}</TableCell>
-                                   {/* </>
+                                <TableCell align="center">{team?.goalsFor}</TableCell>
+                                <TableCell align="center">{team?.goalsAgainst}</TableCell>
+                                {/* </>
                                 ) : null} */}
-                             </TableRow>
+                             </TeamRow>
                           ))
                         : currentStandings?.map((team, index) => (
-                             <TableRow key={team.teamId}>
+                             <TeamRow
+                                key={team.teamId}
+                                logo={
+                                   opponents?.filter((opponent) => opponent.id === team.teamId)?.[0]
+                                      ?.logo
+                                }
+                             >
                                 <TableCell component="th" scope="row">
-                                   {team?.teamName}
+                                   <Typography variant={desktop ? "h6" : "subtitle2"}>
+                                      {team?.teamName}
+                                   </Typography>
                                 </TableCell>
                                 <TableCell align="center">
                                    {team?.wins + team?.losses + team?.otl}
@@ -143,7 +182,7 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                                 <TableCell align="center">{team?.goalsFor}</TableCell>
                                 <TableCell align="center">{team?.goalsAgainst}</TableCell>
                                 <TableCell align="center">{team?.penaltyMinutes}</TableCell>
-                             </TableRow>
+                             </TeamRow>
                           ))}
                   </PlayerTableBody>
                </Table>
