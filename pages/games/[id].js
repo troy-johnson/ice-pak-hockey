@@ -460,7 +460,6 @@ const Game = () => {
                            <Tab label="Summary" />
                            <Tab label="Team Stats" />
                            <Tab label="Highlights" />
-                           <Tab label="Game Video" />
                         </Tabs>
                      </TabBox>
                      <TabPanel desktop={desktop ? 1 : 0} value={value} index={0}>
@@ -517,23 +516,6 @@ const Game = () => {
                               ></iframe>
                            ) : (
                               <Typography>No highlights found for this game.</Typography>
-                           )}
-                        </Container>
-                     </TabPanel>
-                     <TabPanel desktop={desktop ? 3 : 0} value={value} index={3}>
-                        <Container>
-                           {game?.embedLink ? (
-                              <iframe
-                                 width="100%"
-                                 height={desktop ? "359" : "200"}
-                                 src={game?.embedLink}
-                                 title={`Ice Pak vs. ${game?.opponentName}`}
-                                 frameBorder="0"
-                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                 allowFullScreen
-                              ></iframe>
-                           ) : (
-                              <Typography>No video found for this game.</Typography>
                            )}
                         </Container>
                      </TabPanel>
