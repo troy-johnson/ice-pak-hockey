@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
@@ -123,6 +124,25 @@ const BoxScoreHeader = styled(TableRow)`
 
 const BoxScoreRow = styled(TableRow)`
    text-align: center;
+
+   th {
+      position: relative;
+   }
+
+   th:before {
+      content: " ";
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 200%;
+      height: 100%;
+      opacity: 0.25;
+      background-image: url(${(props) => props.logo});
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+   }
 `;
 
 const BoxScoreCell = styled(TableCell)`
@@ -142,14 +162,14 @@ const Game = () => {
    const [goal, setGoal] = useState(null);
    const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
-   
+
    const [session, loading] = useSession();
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
    const { profile, profileLoading, profileError } = useGetProfile();
-   
+
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   
+
    // const isPlayerRostered = game?.roster?.includes(profile?.playerId)
 
    const handleChange = (event, newValue) => setValue(newValue);
@@ -218,6 +238,7 @@ const Game = () => {
    const goalRows = [
       {
          name: "Ice Pak",
+         logo: opponents?.filter((opp) => opp.id === "0SBVU2RK2pKDKagEBCWv")?.[0]?.logo,
          periodOne: icePakGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: icePakGoals?.filter((goal) => goal.period === 2).length,
          periodThree: icePakGoals?.filter((goal) => goal.period === 3).length,
@@ -226,6 +247,7 @@ const Game = () => {
       },
       {
          name: game?.opponentName,
+         logo: opponents?.filter((opp) => opp.id === game?.opponentId)?.[0]?.logo,
          periodOne: opponentGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: opponentGoals?.filter((goal) => goal.period === 2).length,
          periodThree: opponentGoals?.filter((goal) => goal.period === 3).length,
@@ -286,9 +308,9 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   const opponent = opponents?.filter(opp => opp.id === game?.opponentId)[0]
+   const opponent = opponents?.filter((opp) => opp.id === game?.opponentId)[0];
 
-   console.log("opponents", {opponents, opponent})
+   console.log("opponents", { opponents, opponent });
 
    console.log("game", game);
 
@@ -326,6 +348,7 @@ const Game = () => {
                                  border: 0,
                               },
                            }}
+                           logo={row.logo}
                         >
                            <BoxScoreCell component="th" scope="row">
                               {row.name}

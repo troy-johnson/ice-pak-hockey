@@ -50,12 +50,12 @@ const TeamRow = styled(TableRow)`
       position: absolute;
       left: 0;
       top: 0;
-      width: 100%;
+      width: 125%;
       height: 100%;
       opacity: 0.25;
       background-image: url(${(props) => props.logo});
       background-repeat: no-repeat;
-      background-position: 50% 50%;
+      background-position: center;
       background-size: cover;
    }
 `;
