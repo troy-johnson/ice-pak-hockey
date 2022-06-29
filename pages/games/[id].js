@@ -127,6 +127,7 @@ const BoxScoreRow = styled(TableRow)`
 
    th {
       position: relative;
+      padding: 8px;
    }
 
    th:before {
@@ -135,7 +136,7 @@ const BoxScoreRow = styled(TableRow)`
       position: absolute;
       left: 0;
       top: 0;
-      width: 200%;
+      width: 400%;
       height: 100%;
       opacity: 0.25;
       background-image: url(${(props) => props.logo});
