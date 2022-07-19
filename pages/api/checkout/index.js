@@ -17,7 +17,7 @@ const checkoutHandler = async (req, res) => {
             ? "http://localhost:3000"
             : "https://www.icepakhockey.com";
 
-      const productList = await stripe.products.list();
+      const productList = await stripe.products.list({ limit: 50 });
       const pricesList = await stripe.prices.list();
 
       console.log("productList", productList);
@@ -30,12 +30,17 @@ const checkoutHandler = async (req, res) => {
       const lineItems = items.map((item) => {
 
          console.log("item", item)
+
+         productList.data.forEach(el => console.log("printfulId", el.metadata.printfulId))
    
          const currentProductId = productList.data.find(
             (el) => el.metadata.printfulId === item.syncProductId
-         ).id;
+         )?.id;
+
+         console.log("currentProductId", currentProductId)
+
          const description = item.name.split("-")[1];
-         console.log("item", { description, currentProductId });
+         console.log("item info", { description, currentProductId });
          orderedItems.push({
             ...item,
             stripePriceId: pricesList.data.find((el) => el.product === currentProductId).id,

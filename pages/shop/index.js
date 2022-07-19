@@ -51,7 +51,7 @@ const Shop = () => {
                         minHeight: 265,
                         m: 1,
                      }}
-                     key={product?.sync_product.id}
+                     key={product?.id}
                   >
                      <Card
                         sx={{
@@ -65,20 +65,20 @@ const Shop = () => {
                         }}
                         variant="outlined"
                      >
-                        <Link href={`shop/${product.sync_product.id}`} passHref>
+                        <Link href={`shop/${product?.id}`} passHref>
                            <CardContent>
                               <Typography sx={{ height: 50 }} variant="subtitle1" gutterBottom>
-                                 {product?.sync_product.name}
+                                 {product?.name}
                               </Typography>
-                              <Typography variant="subtitle2">
+                              {/* <Typography variant="subtitle2">
                                  {`$${product?.sync_variants?.[0].retail_price}`}
-                              </Typography>
+                              </Typography> */}
                               <Stack alignItems="center" sx={{ m: 1 }}>
                                  <Image
-                                    src={product?.sync_product?.thumbnail_url}
+                                    src={product?.thumbnail_url}
                                     height={125}
                                     width={125}
-                                    alt={product?.sync_product.name}
+                                    alt={product?.name}
                                  />
                               </Stack>
                            </CardContent>

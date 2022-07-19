@@ -3,7 +3,7 @@ import { Loading, PageContainer } from "../../components";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart, useGetProducts } from "../../utils";
+import { addToCart, useGetProductData } from "../../utils";
 import {
    Box,
    Button,
@@ -24,9 +24,12 @@ const ProductPage = () => {
    const router = useRouter();
    const { productId } = router.query;
 
-   const { products, productsLoading, productsError } = useGetProducts();
+   // const { products, productsLoading, productsError } = useGetProducts();
+   const { productData, productDataLoading, productDataError } = useGetProductData(productId);
 
-   const product = products?.filter((product) => Number(productId) === product.sync_product.id)[0];
+   const product = productData;
+
+   console.log("product", { productData, productDataLoading, productDataError })
 
    const getVariantColor = (variant) => {
       if (product?.sync_product?.name === "Wordmark Trucker Hat") {
@@ -137,7 +140,8 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
-      // console.log("color", color);
+      console.log("color", color);
+      console.log("size", size);
 
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
@@ -154,20 +158,27 @@ const ProductPage = () => {
       ) {
          variant = product.sync_variants.find((el) => getVariantColor(el).includes(color));
          setSize("");
-      } else if (
-         product?.sync_product?.name === "Wordmark Trucker Hat" ||
-         product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
-         product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
-         product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
-         product?.sync_product?.name === "Toque"
-      ) {
+      } else 
+      // if (
+      //    product?.sync_product?.name === "Wordmark Trucker Hat" ||
+      //    product?.sync_product?.name === "Ice Pak Hockey Trucker Hat" ||
+      //    product?.sync_product?.name === "Ice Pak Hockey Snapback Hat" ||
+      //    product?.sync_product?.name === "Ice Pak Hockey Dad Hat" ||
+      //    product?.sync_product?.name === "Toque"
+      // ) {
+      //    variant = product.sync_variants.find(
+      //       (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
+      //    );
+      // } 
+      // else 
+      {
          variant = product.sync_variants.find(
             (el) => getVariantColor(el).includes(color) && getVariantSize(el).includes(size)
          );
       }
 
-      // console.log("variant", variant);
-      // console.log("productId", productId);
+      console.log("variant", variant);
+      console.log("productId", productId);
       dispatch(
          addToCart({
             id: variant.id,
@@ -209,9 +220,9 @@ const ProductPage = () => {
       }
    }, [product]);
 
-   if (productsLoading) {
+   if (productDataLoading) {
       return <Loading />;
-   } else if (productsError) {
+   } else if (productDataError) {
       return <PageContainer>Error loading product. Please try again later.</PageContainer>;
    }
 

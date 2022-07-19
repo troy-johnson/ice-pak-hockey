@@ -12,6 +12,7 @@ export { default as useGetPenaltyInfo } from "./useGetPenaltyInfo";
 export { default as useGetPlayers } from "./useGetPlayers";
 export { default as useGetPlayerStats } from "./useGetPlayerStats";
 export { default as useGetPost } from "./useGetPost";
+export { default as useGetProductData } from "./useGetProductData";
 export { default as useGetProducts } from "./useGetProducts";
 export { default as useGetProfile } from "./useGetProfile";
 export { default as useGetSeasons } from "./useGetSeasons";
