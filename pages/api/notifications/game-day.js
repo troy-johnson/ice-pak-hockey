@@ -72,9 +72,9 @@ const gameDayNotificationHandler = async (req, res) => {
                const utc = require("dayjs/plugin/utc");
                dayjs.extend(utc);
 
-               // let listToNotify = players?.filter((player) => gameDay.roster.includes(player.id));
+               let listToNotify = players?.filter((player) => gameDay.roster.includes(player.id));
 
-               let listToNotify = players?.filter((player) => player.id === 'R5wl3igCXV6MN3J4LEJb');
+               // let listToNotify = players?.filter((player) => player.id === 'R5wl3igCXV6MN3J4LEJb');
 
                const result = [];
 
