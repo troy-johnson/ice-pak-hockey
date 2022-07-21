@@ -32,10 +32,12 @@ const seasonStatsHandler = async (req, res) => {
                   });
             }
 
+            // console.log("seasonData", seasonData)
+
             let gameBatches = [
-               seasonData?.games.slice(0, 9),
-               seasonData?.games.slice(10, 19),
-               seasonData?.games.slice(20, 29),
+               seasonData?.games.slice(0, 10),
+               seasonData?.games.slice(10, 20),
+               seasonData?.games.slice(20, 30),
             ];
 
             const goalBatchOne = await getDocs(
@@ -53,6 +55,8 @@ const seasonStatsHandler = async (req, res) => {
             let goalBatchTwo;
             let gameBatchTwo;
             let penaltyBatchTwo;
+
+            console.log("gameBatches", gameBatches)
 
             if (gameBatches[1].length >= 1) {
                goalBatchTwo = await getDocs(

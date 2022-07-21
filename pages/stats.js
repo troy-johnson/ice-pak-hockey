@@ -130,7 +130,7 @@ const Stats = () => {
    // console.log("uMQ", theme)
 
    // console.log("seasons", seasons);
-   // console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals)[0]);
+   // console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals));
 
    const leaderStats = (stat) => {
       return seasonStats?.stats?.sort((a, b) => {
