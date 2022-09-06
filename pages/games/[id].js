@@ -129,26 +129,26 @@ const BoxScoreRow = styled(TableRow)`
       position: relative;
       padding: 8px;
    }
-
-   th:before {
-      content: " ";
-      display: block;
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 400%;
-      height: 100%;
-      opacity: 0.25;
-      background-image: url(${(props) => props.logo});
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-   }
 `;
 
 const BoxScoreCell = styled(TableCell)`
    width: ${(props) => (props.desktop ? "100%" : "25px")};
 `;
+
+// th:before {
+//    content: " ";
+//    display: block;
+//    position: absolute;
+//    left: 0;
+//    top: 0;
+//    width: 400%;
+//    height: 100%;
+//    opacity: 0.25;
+//    background-image: url(${(props) => props.logo});
+//    background-repeat: no-repeat;
+//    background-position: center;
+//    background-size: cover;
+// }
 
 const Game = () => {
    const router = useRouter();
@@ -429,6 +429,8 @@ const Game = () => {
          </TableContainer>
       );
    };
+
+   // console.log("game", game)
 
    return (
       <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`} small>

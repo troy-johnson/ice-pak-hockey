@@ -42,6 +42,9 @@ const GameTicker = () => {
          if (nextGame !== -1) {
             setDesktopSlice([nextGame - 2, nextGame + 3]);
             setMobileSlice([nextGame, nextGame + 1]);
+         } else {
+            setDesktopSlice([games.length - 4, games.length])
+            setMobileSlice([games.length - 1, games.length])
          }
       }
    }, [gamesLoading, gamesError]);
@@ -63,8 +66,6 @@ const GameTicker = () => {
          {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
       </Stack>
    );
-
-   console.log("gamesToShow", gamesToShow);
 
    return (
       <Stack
@@ -96,7 +97,7 @@ const GameTicker = () => {
                      elevation={3}
                      sx={{
                         minHeight: "50px",
-                        minWidth: desktop ? "175px" : "250px",
+                        minWidth: desktop ? "210px" : "250px",
                         padding: "5px",
                         cursor: "pointer",
                      }}

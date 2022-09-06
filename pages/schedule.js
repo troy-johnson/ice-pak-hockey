@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/client";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { mutate } from "swr";
@@ -21,8 +22,9 @@ import { green, grey, red } from "@mui/material/colors";
 import ArrowLeftIcon from "@mui/icons-material/ArrowLeft";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
-import { Loading, PageContainer } from "../components";
-import { editPlayerGameStatus, useGetAllGames, useGetProfile, useGetSeasons } from "../utils";
+import { FaCalendarDay } from "react-icons/fa";
+import { Loading, PageContainer, UpsertGame } from "../components";
+import { editPlayerGameStatus, roleCheck, useGetAllGames, useGetProfile, useGetSeasons } from "../utils";
 
 const ArrowButton = styled(IconButton)`
    color: ${(props) => props.theme.palette.black};
@@ -30,10 +32,16 @@ const ArrowButton = styled(IconButton)`
 
 const Schedule = () => {
    const [date, setDate] = useState(dayjs());
+   const [game, setGame] = useState(null);
+   const [gameAction, setGameAction] = useState("add");
+   const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
+   const [upsertGameDialog, setUpsertGameDialog] = useState(false);
+
+   const [session, loading] = useSession();
    const { games, gamesLoading, gamesError } = useGetAllGames();
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { profile, profileLoading, profileError } = useGetProfile();
-   const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
+
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const isWin = (icePakGoals, opponentGoals) => {
@@ -87,6 +95,29 @@ const Schedule = () => {
       return game.roster.includes(profile?.playerId);
    };
 
+   const openUpsertGame = (action, game) => {
+      setGameAction(action);
+      setGame(game);
+      setUpsertGameDialog(true);
+   };
+
+   const handleDelete = (data) => {
+      try {
+         deleteGame(data);
+         setSnackbar({
+            open: true,
+            type: "success",
+            message: "Game successfully deleted!",
+         });
+      } catch (error) {
+         setSnackbar({
+            open: true,
+            type: "error",
+            message: "An error has occurred. Please try again.",
+         });
+      }
+   };
+
    return (
       <PageContainer pageTitle="Schedule" small>
          <Stack direction="row" display="flex" alignItems="center">
@@ -97,6 +128,15 @@ const Schedule = () => {
             <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
                <ArrowRightIcon fontSize="large" />
             </ArrowButton>
+            {!!roleCheck(session, ["Admins"]) ? (
+               <Button
+                  variant="outlined"
+                  onClick={() => openUpsertGame("add")}
+                  endIcon={<FaCalendarDay />}
+               >
+                  Add Game
+               </Button>
+            ) : null}
          </Stack>
          <Stack
             direction="column"
@@ -186,6 +226,20 @@ const Schedule = () => {
                      </Stack>
                   );
                })}
+            {upsertGameDialog ? (
+               <UpsertGame
+                  gameAction={gameAction}
+                  close={() => {
+                     setGame(null);
+                     setUpsertGameDialog(false);
+                  }}
+                  open={upsertGameDialog}
+                  game={game}
+                  setSnackbar={setSnackbar}
+                  opponentId={game?.opponentId}
+                  opponentName={game?.opponentName}
+               />
+            ) : null}
          </Stack>
          <Snackbar
             open={snackbar.open}

@@ -1,10 +1,8 @@
 import { mutate } from "swr";
 
-const editGoal = async (data) => {
-   console.log("edit game", data)
-
-   const response = await fetch(`/api/games/${data.gameId}`, {
-      method: "PUT",
+const addGame = async (data) => {
+   const response = await fetch("/api/games", {
+      method: "POST",
       mode: "cors",
       cache: "no-cache",
       headers: {
@@ -13,9 +11,9 @@ const editGoal = async (data) => {
       body: JSON.stringify(data),
    });
 
-   mutate(`/api/games/${data.gameId}`);
+   mutate("/api/games");
 
    return response.json();
 };
 
-export default editGoal;
+export default addGame;

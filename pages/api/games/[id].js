@@ -140,6 +140,7 @@ const gameHandler = async (req, res) => {
                gameId: gameResult.id,
                locationName: locationData.name,
                opponentName: opponentData.teamName,
+               opponentLogo: opponentData.logo,
                seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
                penalties,
                goals,

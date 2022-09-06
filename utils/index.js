@@ -6,6 +6,7 @@ export * from "./cartSlice"
 
 export { theme } from "./theme";
 
+export { default as addGame } from "./addGame";
 export { default as addGoal } from "./addGoal";
 export { default as addPenalty } from "./addPenalty";
 export { default as addPlayer } from "./addPlayer";
