@@ -131,7 +131,7 @@ const Schedule = () => {
                <ArrowButton onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}>
                   <ArrowLeftIcon fontSize="large" />
                </ArrowButton>
-               <Typography variant="h5">{date.format(desktop ? "MMMM YYYY" : "MMM YY")}</Typography>
+               <Typography variant="h5">{date.format(desktop ? "MMMM YYYY" : "MMM YYYY")}</Typography>
                <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
                   <ArrowRightIcon fontSize="large" />
                </ArrowButton>
