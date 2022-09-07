@@ -19,27 +19,28 @@ const useGetAllGames = () => {
       // });
       games.push({
          ...game,
-         icePakGoals: goals?.filter((goal) => goal.gameId === game.id && goal.playerId).length,
-         opponentGoals: goals?.filter((goal) => goal.gameId === game.id && goal.opponentId).length,
-         locationName: locations?.filter((location) => location.id === game.locationId)[0]?.name,
+         id: game.id,
+         icePakGoals: goals?.filter((goal) => goal.pgGameId === game.id && goal.pgPlayerId).length,
+         opponentGoals: goals?.filter((goal) => goal.pgGameId === game.id && goal.pgOpponentId).length,
+         locationName: locations?.filter((location) => game.pgLocationId === location.id)[0]?.name,
          // locationImage: locations?.filter(
          //    (location) => location.id === game.locationId
          // )[0]?.image,
-         locationMapLink: locations?.filter((location) => location.id === game.locationId)[0]
+         locationMapLink: locations?.filter((location) => location.id === game.pgLocationId)[0]
             ?.googleMapsLink,
-         opponentName: opponents?.filter((opponent) => opponent.id === game.opponentId)[0]
+         opponentName: opponents?.filter((opponent) => opponent.id === game.pgOpponentId)[0]
             ?.teamName,
-         seasonName: `${seasons?.filter((season) => season.id === game.seasonId)[0]?.leagueName} ${
-            seasons?.filter((season) => season.id === game.seasonId)[0]?.name
-         } ${seasons?.filter((season) => season.id === game.seasonId)[0]?.type}`,
+         seasonName: `${seasons?.filter((season) => season.id === game.pgSeasonId)[0]?.leagueName} ${
+            seasons?.filter((season) => season.id === game.pgSeasonId)[0]?.name
+         } ${seasons?.filter((season) => season.id === game.pgSeasonId)[0]?.type}`,
       });
    });
-
-   // console.log("games", games)
 
    const isError = error | goalsError | opponentsError | locationsError | seasonsError;
    const isLoading =
       goalsLoading | opponentsLoading | locationsLoading | seasonsLoading | !error && !data;
+
+   console.log("games", games)
 
    return {
       games,

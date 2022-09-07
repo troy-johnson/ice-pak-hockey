@@ -113,10 +113,7 @@ const Stats = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const [seasonId, setSeasonId] = useState(
       !seasonsLoading && !seasonsError
-         ? seasons.sort(
-              (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
-           )?.[0].id
-         : "LSdvGKI4dFWUBwgeEC5z"
+         ? seasons?.length - 1 : "9"
    );
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
@@ -126,11 +123,6 @@ const Stats = () => {
    const theme = useTheme();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
    const selectSize = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-
-   // console.log("uMQ", theme)
-
-   // console.log("seasons", seasons);
-   // console.log("seasonStats", seasonStats?.stats?.sort((a, b) => b.goals - a.goals));
 
    const leaderStats = (stat) => {
       return seasonStats?.stats?.sort((a, b) => {
@@ -156,12 +148,10 @@ const Stats = () => {
    }
 
    const seasonOptions = seasons
-      .sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
+      ?.sort((a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds))
       .map((season) => {
          return { label: `${season.leagueName} ${season.name} ${season.type}`, value: season.id };
       });
-
-   // console.log("seasons", seasons);
 
    const handleSeasonChange = (e) => {
       setSeasonId(e.target.value);
@@ -197,7 +187,7 @@ const Stats = () => {
                   variant="outlined"
                   onChange={handleSeasonChange}
                >
-                  {seasonOptions.map((option) => (
+                  {seasonOptions?.map((option) => (
                      <MenuItem key={option.value} value={option.value}>
                         {option.label}
                      </MenuItem>
@@ -210,7 +200,7 @@ const Stats = () => {
                   label="Season"
                   onChange={handleSeasonChange}
                >
-                  {seasonOptions.map((option) => (
+                  {seasonOptions?.map((option) => (
                      <option key={option.value} value={option.value}>
                         {option.label}
                      </option>
@@ -576,7 +566,7 @@ const Stats = () => {
                            )
                            ?.map((player) => (
                               <Link
-                                 href={`/player/${player.playerId}`}
+                                 href={`/player/${player.pgPlayerId}`}
                                  key={player?.id || `${player?.firstName}${player?.lastName}`}
                                  passHref
                               >

@@ -120,16 +120,118 @@ const dataMigrationHandler = async (req, res) => {
    //    video: ""
    // });
 
+   const seasonsQuery = await getDocs(collection(db, "seasons"));
+   const leaguesQuery = await getDocs(collection(db, "leagues"));
+   const locationsQuery = await getDocs(collection(db, "locations"));
+   const gamesQuery = await getDocs(collection(db, "games"));
+   const opponentsQuery = await getDocs(collection(db, "opponents"));
+   const playersQuery = await getDocs(collection(db, "players"));
+   const penaltiesQuery = await getDocs(collection(db, "penalties"));
+   const goalsQuery = await getDocs(collection(db, "goals"));
+
+   let seasons = [];
+   let leagues = [];
+   let locations = [];
+   let games = [];
+   let opponents = [];
+   let players = [];
+   let penalties = [];
+   let goals = [];
+
+   seasonsQuery.forEach((doc) => {
+      seasons.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   leaguesQuery.forEach((doc) => {
+      leagues.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   locationsQuery.forEach((doc) => {
+      locations.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   gamesQuery.forEach((doc) => {
+      games.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   opponentsQuery.forEach((doc) => {
+      opponents.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   playersQuery.forEach((doc) => {
+      players.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   penaltiesQuery.forEach((doc) => {
+      penalties.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   goalsQuery.forEach((doc) => {
+      goals.push({
+         ...doc.data(),
+         firebaseId: doc.id,
+      });
+   });
+
+   // // Seasons Update
+   // for (const el of seasons) {
+   //    let ref = doc(db, "seasons", el.firebaseId);
+
+   //    let standings = [];
+   //    let statBypass = [];
+   //    // let pgGames = [];
+   //    let roster = [];
+
+   //    // console.log("el", el)
+
+   //    const firebaseGames = games.filter(game => game.pgSeasonId === el.id).map(game => {
+   //       return game.firebaseId
+   //    });
+
+   //    const pgGames = games.filter(game => game.pgSeasonId === el.id).map(game => {
+   //       return game.id
+   //    });
+
+   //    console.log(`season ${el.id} firebase games`, firebaseGames);
+   //    console.log(`season ${el.id} postgres games`, pgGames);
+
+   //    await updateDoc(ref, {
+   //       games: firebaseGames,
+   //       pgGames
+   //    });
+   // }
+
+   // console.log("games", { gamesFiltered, length: games.length });
+
    try {
       // await updateDoc(doc(db, "seasons", "cdLeQs6Y8Q5fjY0Fx7jI"), {
       //    standings: data,
       // });
 
-      return res
-         .status(200)
-         .json({
-            message: "This route is not available. Please contact troy.johnson57@gmail.com.",
-         });
+      return res.status(200).json({
+         message: "This route is not available. Please contact troy.johnson57@gmail.com.",
+      });
    } catch (error) {
       return res.status(400).json({ message: "Error." });
    }

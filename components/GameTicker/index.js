@@ -21,16 +21,16 @@ const GameTicker = () => {
          desktop ? desktopSlice[1] : mobileSlice[1]
       )
       .map((game) => {
-         const opponentLogo = opponents?.filter((opp) => opp.id === game?.opponentId)[0]?.logo;
+         const opponentLogo = opponents?.filter((opp) => opp.id === game?.pgOpponentId)[0]?.logo;
          return { ...game, opponentLogo };
       });
 
    const getIcePakGoals = (game) => {
-      return goals?.filter((goal) => goal.gameId === game.id && !!goal.playerId).length;
+      return goals?.filter((goal) => goal.pgGameId === game.id && !!goal.pgPlayerId).length;
    };
 
    const getOpponentGoals = (game) => {
-      return goals?.filter((goal) => goal.gameId === game.id && !!goal.opponentId).length;
+      return goals?.filter((goal) => goal.pgGameId === game.id && !!goal.pgOpponentId).length;
    };
 
    useEffect(() => {
