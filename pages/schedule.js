@@ -24,7 +24,13 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import { FaCalendarDay } from "react-icons/fa";
 import { Loading, PageContainer, UpsertGame } from "../components";
-import { editPlayerGameStatus, roleCheck, useGetAllGames, useGetProfile, useGetSeasons } from "../utils";
+import {
+   editPlayerGameStatus,
+   roleCheck,
+   useGetAllGames,
+   useGetProfile,
+   useGetSeasons,
+} from "../utils";
 
 const ArrowButton = styled(IconButton)`
    color: ${(props) => props.theme.palette.black};
@@ -120,19 +126,22 @@ const Schedule = () => {
 
    return (
       <PageContainer pageTitle="Schedule" small>
-         <Stack direction="row" display="flex" alignItems="center">
-            <ArrowButton onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}>
-               <ArrowLeftIcon fontSize="large" />
-            </ArrowButton>
-            <Typography variant="h5">{date.format("MMMM YYYY")}</Typography>
-            <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
-               <ArrowRightIcon fontSize="large" />
-            </ArrowButton>
+         <Stack direction="row" display="flex" alignItems="center" justifyContent="space-between">
+            <Stack direction="row" display="flex" alignItems="center">
+               <ArrowButton onClick={() => setDate(dayjs(date).subtract(1, "M").date(1))}>
+                  <ArrowLeftIcon fontSize="large" />
+               </ArrowButton>
+               <Typography variant="h5">{date.format(desktop ? "MMMM YYYY" : "MMM YY")}</Typography>
+               <ArrowButton onClick={() => setDate(dayjs(date).add(1, "M").date(1))}>
+                  <ArrowRightIcon fontSize="large" />
+               </ArrowButton>
+            </Stack>
             {!!roleCheck(session, ["Admins"]) ? (
                <Button
                   variant="outlined"
                   onClick={() => openUpsertGame("add")}
                   endIcon={<FaCalendarDay />}
+                  sx={{ marginRight: "5px" }}
                >
                   Add Game
                </Button>
