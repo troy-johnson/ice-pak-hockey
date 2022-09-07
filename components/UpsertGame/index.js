@@ -59,7 +59,7 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
-      console.log("data", { ...data, date: dayjs(data?.date).format() });
+      // console.log("data", { ...data, date: dayjs(data?.date).format() });
       try {
          if (gameAction === "add") {
             addGame({
@@ -87,7 +87,7 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
             message: `Game successfully ${gameAction === "add" ? "added" : "updated"}!`,
          });
       } catch (error) {
-         console.log("error", error);
+         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

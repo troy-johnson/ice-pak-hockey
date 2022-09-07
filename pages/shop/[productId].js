@@ -29,7 +29,7 @@ const ProductPage = () => {
 
    const product = productData;
 
-   console.log("product", { productData, productDataLoading, productDataError })
+   // console.log("product", { productData, productDataLoading, productDataError })
 
    const getVariantColor = (variant) => {
       if (product?.sync_product?.name === "Wordmark Trucker Hat") {

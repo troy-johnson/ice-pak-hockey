@@ -114,7 +114,7 @@ const Team = () => {
    ];
 
    const onSubmit = (data) => {
-      console.log(data);
+      // console.log(data);
 
       try {
          if (isValid) {
@@ -125,7 +125,7 @@ const Team = () => {
             setFormErrors(true);
          }
       } catch (error) {
-         console.log("error", error);
+         // console.log("error", error);
       }
    };
 

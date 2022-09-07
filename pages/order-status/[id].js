@@ -12,7 +12,7 @@ const OrderStatus = () => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const [session, loading] = useSession();
 
-   console.log("order", order);
+   // console.log("order", order);
 
    if (orderLoading) {
       return <Loading />;

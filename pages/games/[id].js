@@ -311,9 +311,9 @@ const Game = () => {
 
    const opponent = opponents?.filter((opp) => opp.id === game?.opponentId)[0];
 
-   console.log("opponents", { opponents, opponent });
+   // console.log("opponents", { opponents, opponent });
 
-   console.log("game", game);
+   // console.log("game", game);
 
    if (gameLoading) {
       return <Loading />;

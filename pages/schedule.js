@@ -88,7 +88,7 @@ const Schedule = () => {
          });
          mutate(`/api/games`);
       } catch (error) {
-         console.log("Roster update error: ", error);
+         // console.log("Roster update error: ", error);
          setSnackbar({
             open: true,
             type: "error",

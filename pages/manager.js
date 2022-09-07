@@ -145,7 +145,7 @@ const Manager = () => {
    };
 
    const onSubmit = (data) => {
-      console.log("data", data);
+      // console.log("data", data);
 
       // TODO: Figure out correct league ID and update value
 
