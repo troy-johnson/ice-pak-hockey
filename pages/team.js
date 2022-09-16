@@ -150,7 +150,7 @@ const Team = () => {
       setOpen(false);
    };
 
-   // console.log("players", players);
+   console.log("players", players);
 
    if (playersLoading) {
       return <Loading />;
@@ -189,8 +189,8 @@ const Team = () => {
                      ?.filter((player) => !player?.doNotDisplay)
                      ?.map((player) => (
                         <Link
-                           href={`/player/${player.id}`}
-                           key={player?.id || `${player?.firstName}${player?.lastName}`}
+                           href={`/player/${player.firebaseId}`}
+                           key={player?.firebaseId || `${player?.firstName}${player?.lastName}`}
                            passHref
                         >
                            <TableRow>

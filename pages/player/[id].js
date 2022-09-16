@@ -37,6 +37,7 @@ const SortArrow = styled(ArrowDropUpIcon)`
 `;
 
 const StyledTabPanel = (props) => {
+   console.log("children", props);
    const { children, className, desktop, value, index, ...other } = props;
 
    return (
@@ -160,8 +161,8 @@ const Player = () => {
    const [value, setValue] = useState(0);
    // const [editPlayerDialog, setEditPlayerDialog] = useState(false);
 
-   const { data: session, status } = useSession()
-   const loading = status === "loading"
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
    const { players, playersLoading, playersError } = useGetPlayers();
    const { assists, assistsLoading, assistsError } = useGetAssists();
    const { goals, goalsLoading, goalsError } = useGetGoals();
@@ -179,7 +180,7 @@ const Player = () => {
       setOrder(order === "asc" ? "desc" : "asc");
    };
 
-   const player = players?.filter((player) => player.id === id)[0];
+   const player = players?.filter((player) => player.firebaseId === id)[0];
 
    // console.log("player", player);
    // console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
@@ -248,9 +249,7 @@ const Player = () => {
                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                   <Tab label="Career Stats" />
                   <Tab label="Game Log" />
-                  {!!roleCheck(session, ["Admins"]) ? (
-                              <Tab label="Edit Player" />
-         ) : null}
+                  {!!roleCheck(session, ["Admins"]) ? <Tab label="Edit Player" /> : null}
                </Tabs>
             </TabBox>
             <TabPanel desktop={desktop} value={value} index={0}>
@@ -438,7 +437,9 @@ const Player = () => {
                   </TableContainer>
                </Container>
             </TabPanel>
-            <TabPanel desktop={desktop} value={value} index={2}>Edit Player</TabPanel>
+            <TabPanel desktop={desktop} value={value} index={2}>
+               <div>Edit Player</div>
+            </TabPanel>
          </TabContainer>
          {/* <EditPlayer
             open={editPlayerDialog}

@@ -8,7 +8,7 @@ const playersHandler = async (req, res) => {
    let players = [];
 
    result.forEach((doc) => {
-      players.push({ id: doc.id, ...doc.data() });
+      players.push({ ...doc.data(), firebaseId: doc.id });
    });
 
    return res.status(200).json(players);
