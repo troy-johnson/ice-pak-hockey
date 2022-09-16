@@ -49,7 +49,7 @@ const StyledTabPanel = (props) => {
          aria-labelledby={`simple-tab-${index}`}
          {...other}
       >
-         {value === index && <div desktop={desktop}>{children}</div>}
+         {value === index && <div desktop={desktop || window?.innerWidth > 650}>{children}</div>}
       </div>
    );
 };
@@ -252,7 +252,7 @@ const Player = () => {
                   {!!roleCheck(session, ["Admins"]) ? <Tab label="Edit Player" /> : null}
                </Tabs>
             </TabBox>
-            <TabPanel desktop={desktop} value={value} index={0}>
+            <TabPanel desktop={desktop || window?.innerWidth > 650} value={value} index={0}>
                <Typography variant="subtitle2" sx={{ ml: 2 }}>
                   Career Totals
                </Typography>
@@ -394,7 +394,7 @@ const Player = () => {
                   </TableContainer>
                </Container>
             </TabPanel>
-            <TabPanel desktop={desktop} value={value} index={1}>
+            <TabPanel desktop={desktop || window?.innerWidth > 650} value={value} index={1}>
                <Container sx={{ mb: 2 }}>
                   <TableContainer component={TableComponent}>
                      <Table aria-label="Game Log">
@@ -437,7 +437,7 @@ const Player = () => {
                   </TableContainer>
                </Container>
             </TabPanel>
-            <TabPanel desktop={desktop} value={value} index={2}>
+            <TabPanel desktop={desktop || window?.innerWidth > 650} value={value} index={2}>
                <div>Edit Player</div>
             </TabPanel>
          </TabContainer>
