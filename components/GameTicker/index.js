@@ -92,7 +92,7 @@ const GameTicker = () => {
          {gamesLoading ? <Skeletons /> : null}
          {gamesToShow?.map((game) => {
             return (
-               <Link key={game.id} href={`/games/${game.id}`} passHref>
+               <Link key={game.firebaseId} href={`/games/${game.firebaseId}`} passHref>
                   <Paper
                      elevation={3}
                      sx={{

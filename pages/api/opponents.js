@@ -7,7 +7,7 @@ const opponentsHandler = async(req, res) => {
    let opponents = [];
 
    result.forEach((doc) => {
-      opponents.push({ id: doc.id, ...doc.data() });
+      opponents.push({ firebaseId: doc.id, ...doc.data() });
    });
 
    return res.status(200).json(opponents);

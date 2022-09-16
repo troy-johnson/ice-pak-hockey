@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { Button, Container, CircularProgress, Divider, Stack, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,8 @@ import { ControlledInput } from "..";
 import { createComment } from "../../utils";
 
 const AddComment = ({ postId, setSnackbar }) => {
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const [isSubmitting, setIsSubmitting] = useState(false);
    const [errorMessage, setErrorMessage] = useState(false);
    const [success, setSuccess] = useState(false);

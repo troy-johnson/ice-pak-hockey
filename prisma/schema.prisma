@@ -1,0 +1,163 @@
+generator client {
+   provider = "prisma-client-js"
+}
+
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+model games {
+   id                 BigInt      @id @default(autoincrement())
+   created_at         DateTime?   @default(now()) @db.Timestamptz(6)
+   firebaseId         String?     @default("")
+   date               DateTime?   @default(now()) @db.Timestamptz(6)
+   firebaseLocationId String?     @default("")
+   locationId         BigInt?
+   firebaseOpponentId String?     @default("")
+   opponentId         BigInt?
+   firebaseSeasonId   String?     @default("")
+   seasonId           BigInt?
+   embedLink          String?     @default("")
+   video              String?     @default("")
+   roster             Json?       @default("[]")
+   firebaseRoster     Json?       @default("[]")
+   locations          locations?  @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   teams              teams?      @relation(fields: [opponentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   seasons            seasons?    @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   goals              goals[]
+   penalties          penalties[]
+}
+
+model goals {
+   id                            BigInt    @id @default(autoincrement())
+   firebaseId                    String?
+   firebaseGameId                String?   @default("")
+   firebaseOpponentId            String?   @default("")
+   period                        Int?      @db.SmallInt
+   gameId                        BigInt?
+   opponentId                    BigInt?
+   playerId                      BigInt?
+   team                          String?   @default("")
+   teamId                        BigInt?
+   firebaseTeamId                String?
+   time                          String?   @default("")
+   ytLink                        String?   @default("")
+   created_at                    DateTime? @default(now()) @db.Timestamptz(6)
+   assists                       Json?     @default("[]")
+   firebaseAssists               Json?     @default("[]")
+   games                         games?    @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   teams_goals_opponentIdToteams teams?    @relation("goals_opponentIdToteams", fields: [opponentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   players                       players?  @relation(fields: [playerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   teams_goals_teamIdToteams     teams?    @relation("goals_teamIdToteams", fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model leagues {
+   id         BigInt    @id @default(autoincrement())
+   created_at DateTime? @default(now()) @db.Timestamptz(6)
+   name       String?
+   firebaseId String?
+   seasons    seasons[]
+}
+
+model locations {
+   id             BigInt    @id @default(autoincrement())
+   created_at     DateTime? @default(now()) @db.Timestamptz(6)
+   code           String?   @default("")
+   googleMapsLink String?   @default("")
+   firebaseId     String?   @default("")
+   name           String?   @default("")
+   plusCode       String?   @default("")
+   games          games[]
+}
+
+model orders {
+   id             BigInt    @id @default(autoincrement())
+   created_at     DateTime? @default(now()) @db.Timestamptz(6)
+   orderAmount    Float?    @default(0) @db.Real
+   orderStatus    String?   @default("")
+   orderedItems   Json?     @default("[]")
+   paymentStatus  String?   @default("")
+   referenceId    String?   @default("")
+   shippingStatus String?   @default("")
+   status         String?   @default("")
+   user           Json?     @default("{\"email\": \"\", \"fullName\": \"\"}")
+}
+
+model penalties {
+   id                 BigInt    @id @default(autoincrement())
+   created_at         DateTime? @default(now()) @db.Timestamptz(6)
+   firebaseId         String?
+   firebaseGameId     String?   @default("")
+   gameId             BigInt?
+   minutes            Int?      @db.SmallInt
+   firebaseOpponentId String?   @default("")
+   firebasePlayerId   String?   @default("")
+   playerId           BigInt?
+   team               String?   @default("")
+   teamId             BigInt?
+   games              games?    @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   players            players?  @relation(fields: [playerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   teams              teams?    @relation(fields: [teamId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model players {
+   id                    BigInt      @id @default(autoincrement())
+   created_at            DateTime?   @default(now()) @db.Timestamptz(6)
+   email                 String?     @default("")
+   firebaseId            String?     @default("")
+   firstName             String?     @default("")
+   lastName              String?     @default("")
+   homeTown              String?     @default("")
+   image                 String?     @default("") @db.VarChar
+   jerseyNumber          String?     @default("")
+   nickname              String?     @default("")
+   number                Int?        @db.SmallInt
+   phoneNumber           String?     @default("")
+   position              String?     @default("")
+   roles                 Json[]
+   auth0AccountId        String?     @default("")
+   born                  DateTime?   @default(now()) @db.Timestamptz(6)
+   favoriteNhlTeam       String?     @default("")
+   favoritePlayer        String?     @default("")
+   gameDayNotifications  Boolean     @default(true)
+   jerseySize            String?     @default("")
+   preferredEmail        String?     @default("")
+   preferredJerseyNumber Int?        @db.SmallInt
+   preferredPhone        String?     @default("")
+   tShirtSize            String?     @default("")
+   goals                 goals[]
+   penalties             penalties[]
+}
+
+model seasons {
+   id                   BigInt    @id @default(autoincrement())
+   created_at           DateTime? @default(now()) @db.Timestamptz(6)
+   endDate              DateTime? @db.Timestamptz(6)
+   games                Json?     @default("[]")
+   leagueId             BigInt?
+   firebaseLeagueId     String?
+   leagueName           String?   @default("")
+   name                 String?   @default("")
+   startDate            DateTime? @db.Timestamptz(6)
+   roster               Json?     @default("[]")
+   firebaseRoster       Json?     @default("[]")
+   firebaseGames        Json?     @default("[]")
+   standings            Json?     @default("[]")
+   statBypass           Json?     @default("[]")
+   type                 String?   @default("")
+   leagues              leagues?  @relation(fields: [leagueId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+   games_gamesToseasons games[]
+}
+
+model teams {
+   id                            BigInt      @id @default(autoincrement())
+   created_at                    DateTime?   @default(now()) @db.Timestamptz(6)
+   firebaseId                    String?     @default("")
+   logo                          String?     @default("") @db.VarChar
+   teamName                      String?     @default("")
+   games                         games[]
+   goals_goals_opponentIdToteams goals[]     @relation("goals_opponentIdToteams")
+   goals_goals_teamIdToteams     goals[]     @relation("goals_teamIdToteams")
+   penalties                     penalties[]
+}

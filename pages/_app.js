@@ -1,5 +1,5 @@
 import { SWRConfig } from "swr";
-import { Provider } from "next-auth/client";
+import { SessionProvider } from "next-auth/react";
 import { Provider as ReduxProvider } from "react-redux";
 import { SimpleDialog } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
@@ -10,7 +10,7 @@ import { store, theme } from "../utils";
 function IcePakHockey({ Component, pageProps }) {
    return (
       <ReduxProvider store={store}>
-         <Provider session={pageProps.session}>
+         <SessionProvider session={pageProps.session} refetchInterval={5 * 60}>
             <SWRConfig
                value={{
                   revalidateOnMount: true,
@@ -25,7 +25,7 @@ function IcePakHockey({ Component, pageProps }) {
                   </Layout>
                </ThemeProvider>
             </SWRConfig>
-         </Provider>
+         </SessionProvider>
       </ReduxProvider>
    );
 }

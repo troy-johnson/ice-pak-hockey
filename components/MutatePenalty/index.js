@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
 import { addPenalty, editPenalty } from "../../utils";
 
-const InputWithMargin = styled(ControlledInput)`
+const InputWithMargin = styled(props => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 

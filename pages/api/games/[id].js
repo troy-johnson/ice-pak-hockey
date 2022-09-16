@@ -10,7 +10,7 @@ import {
    updateDoc,
    where,
 } from "firebase/firestore";
-import { getSession } from "next-auth/client";
+import { getSession } from "next-auth/react";
 import { db } from "../../../config";
 
 const gameHandler = async (req, res) => {

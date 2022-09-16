@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import styled from "@emotion/styled";
 import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
-import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
+import { ControlledInput, ControlledRadio, ControlledSelect } from "../";
 import { addGoal, editGoal } from "../../utils";
 
-const InputWithMargin = styled(ControlledInput)`
+const InputWithMargin = styled(props => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 

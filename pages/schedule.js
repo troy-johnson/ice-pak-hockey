@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
 import { mutate } from "swr";
@@ -43,7 +43,9 @@ const Schedule = () => {
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const [upsertGameDialog, setUpsertGameDialog] = useState(false);
 
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
+
    const { games, gamesLoading, gamesError } = useGetAllGames();
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { profile, profileLoading, profileError } = useGetProfile();
@@ -124,6 +126,8 @@ const Schedule = () => {
       }
    };
 
+   // console.log("games", games)
+
    return (
       <PageContainer pageTitle="Schedule" small>
          <Stack direction="row" display="flex" alignItems="center" justifyContent="space-between">
@@ -162,7 +166,7 @@ const Schedule = () => {
                ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
                .map((game) => {
                   return (
-                     <Stack direction="column" key={game?.id}>
+                     <Stack direction="column" key={game?.firebaseId}>
                         <Stack direction="row" display="flex" justifyContent="space-between">
                            <Typography variant="overline" sx={{ fontSize: 14 }}>
                               {dayjs.unix(game?.date.seconds).format("ddd M/D h:mm A")}
@@ -228,7 +232,7 @@ const Schedule = () => {
                                  {game?.locationName}
                               </MuiLink>
                            </Typography>
-                           <Link href={`/games/${game?.id}`} passHref>
+                           <Link href={`/games/${game?.firebaseId}`} passHref>
                               <Button variant="contained">View Game</Button>
                            </Link>
                         </Stack>

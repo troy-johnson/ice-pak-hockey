@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
 import {
@@ -87,7 +87,8 @@ const Manager = () => {
       !leaguesLoading && !leaguesError ? leagues[0].id : "VgasoqbCwK96Q4eQeOMi"
    );
    const [tabValue, setTabValue] = useState(0);
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
 
    const currentSeason = (id) => seasons?.filter((season) => season.id === id)?.[0];
 

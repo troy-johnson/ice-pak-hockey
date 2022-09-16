@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { useSWRConfig } from "swr";
 import { useForm } from "react-hook-form";
 import {
@@ -95,7 +95,8 @@ const Team = () => {
    const { players, playersLoading, playersError } = useGetPlayers();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const { mutate } = useSWRConfig();
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
 
    const shootsOptions = [
       { label: "L", value: "L" },

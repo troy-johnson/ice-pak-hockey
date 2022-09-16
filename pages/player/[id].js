@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import dayjs from "dayjs";
 import styled from "@emotion/styled";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import {
    Avatar,
    Box,
@@ -160,7 +160,8 @@ const Player = () => {
    const [value, setValue] = useState(0);
    // const [editPlayerDialog, setEditPlayerDialog] = useState(false);
 
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const { players, playersLoading, playersError } = useGetPlayers();
    const { assists, assistsLoading, assistsError } = useGetAssists();
    const { goals, goalsLoading, goalsError } = useGetGoals();

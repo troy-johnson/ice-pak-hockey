@@ -1,8 +1,9 @@
 import useSWR from "swr";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 
 const useGetProfile = () => {
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
 
    const { data, error } = useSWR(`/api/profile/${session?.user?.sub}`);
 

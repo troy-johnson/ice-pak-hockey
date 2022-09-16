@@ -23,7 +23,7 @@ import {
    useGetSeasons,
 } from "../../utils";
 
-const InputWithMargin = styled(ControlledInput)`
+const InputWithMargin = styled(props => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 

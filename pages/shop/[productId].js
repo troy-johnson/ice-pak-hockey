@@ -140,8 +140,8 @@ const ProductPage = () => {
    const addProductToCart = () => {
       let variant;
 
-      console.log("color", color);
-      console.log("size", size);
+      // console.log("color", color);
+      // console.log("size", size);
 
       if (
          product?.sync_product?.name === "Wordmark Trucker Hat" ||
@@ -177,8 +177,8 @@ const ProductPage = () => {
          );
       }
 
-      console.log("variant", variant);
-      console.log("productId", productId);
+      // console.log("variant", variant);
+      // console.log("productId", productId);
       dispatch(
          addToCart({
             id: variant.id,

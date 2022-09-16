@@ -25,7 +25,7 @@ const gamesHandler = async (req, res) => {
          let games = [];
       
          result.forEach((doc) => {
-            games.push({ id: doc.id, ...doc.data() });
+            games.push({ ...doc.data(), firebaseId: doc.id });
          });
       
          return res.status(200).json(games);

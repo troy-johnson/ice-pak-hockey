@@ -1,43 +1,49 @@
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import Auth0Provider from "next-auth/providers/auth0";
+
+// console.log("envs", {
+//    clientId: process.env.AUTH0_CLIENT_ID,
+//    clientSecret: process.env.AUTH0_CLIENT_SECRET,
+//    issuer: process.env.AUTH0_DOMAIN,
+// });
 
 export default NextAuth({
    debug: true,
    session: {
-      jwt: true,
+      strategy: "jwt",
    },
    callbacks: {
-      async session(session, user) {
-         // console.log("session", { session, user });
+      async session({ session, token, user }) {
+         // console.log("session", { session, token, user });
          session.user.metadata = {};
 
-         if (user?.firstName) {
-            session.user.firstName = user.firstName;
+         if (token?.firstName) {
+            session.user.firstName = token.firstName;
          }
 
-         if (user?.lastName) {
-            session.user.lastName = user.lastName;
+         if (token?.lastName) {
+            session.user.lastName = token.lastName;
          }
 
-         if (user?.groups) {
-            session.user.groups = user.groups;
+         if (token?.groups) {
+            session.user.groups = token.groups;
          }
 
-         if (user?.user_metadata) {
-            session.user.metadata.user = user.user_metadata;
+         if (token?.user_metadata) {
+            session.user.metadata.user = token.user_metadata;
          }
 
-         if (user?.app_metadata) {
-            session.user.metadata.app = user.app_metadata;
+         if (token?.app_metadata) {
+            session.user.metadata.app = token.app_metadata;
          }
 
-         if (user?.sub) {
-            session.user.sub = user.sub;
+         if (token?.sub) {
+            session.user.sub = token.sub;
          }
 
          return session;
       },
-      async jwt(token, user, account, profile, isNewUser) {
+      async jwt({ token, user, account, profile, isNewUser }) {
          // console.log("jwt", { token, user, account, profile, isNewUser });
          if (user?.firstName) {
             token.firstName = user.firstName;
@@ -66,10 +72,10 @@ export default NextAuth({
       },
    },
    providers: [
-      Providers.Auth0({
+      Auth0Provider({
          clientId: process.env.AUTH0_CLIENT_ID,
          clientSecret: process.env.AUTH0_CLIENT_SECRET,
-         domain: process.env.AUTH0_DOMAIN,
+         issuer: process.env.AUTH0_DOMAIN,
          profile(profile, tokens) {
             // console.log("profile", { profile, tokens });
             return {
@@ -86,4 +92,5 @@ export default NextAuth({
          },
       }),
    ],
+   secret: "jREkJF4YNWIJK7P7IMroSgpMG6iwUweOp2RwgdAlF3k=",
 });

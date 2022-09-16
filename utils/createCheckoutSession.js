@@ -1,5 +1,5 @@
 const createCheckoutSession = async (data) => {
-   console.log("data", data);
+   // console.log("data", data);
 
    const fullName = `${data?.user?.firstName} ${data?.user?.lastName}`;
 

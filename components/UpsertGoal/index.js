@@ -15,7 +15,7 @@ import { IoMdTrash } from "react-icons/io";
 import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
 import { addGoal, editGoal } from "../../utils";
 
-const InputWithMargin = styled(ControlledInput)`
+const InputWithMargin = styled(props => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 

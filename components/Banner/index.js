@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { useSelector, useDispatch } from "react-redux";
 import {
    AppBar,
@@ -148,7 +148,8 @@ const Banner = () => {
    const [cartOpen, setCartOpen] = useState(false);
    const [showProgress, setShowProgress] = useState(false);
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
 
    const router = useRouter();
 

@@ -92,9 +92,11 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
          ? ["Team", "Result", "W", "L", "GF", "GA"]
          : ["Team", "GP", "W", "L", "OTL", "P", "GF", "GA", "PIM"];
 
+   // console.log('teams', {currentStandings, opponents })
+
    return (
       <>
-         {!standings ? (
+         {!standings || standings.length === 0 ? (
             <Typography sx={{ ml: 2, mt: 2, mb: 2 }}>
                Standings not found for selected season. Please select another season.
             </Typography>
@@ -161,7 +163,7 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                              <TeamRow
                                 key={team.teamId}
                                 logo={
-                                   opponents?.filter((opponent) => opponent.id === team.teamId)?.[0]
+                                   opponents?.filter((opponent) => opponent.firebaseId === team.teamId)?.[0]
                                       ?.logo
                                 }
                              >

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import {
    Button,
    Divider,
@@ -28,7 +28,8 @@ const GameGoals = ({
    opponentName,
    opponentLogo,
 }) => {
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const goalsByPeriod = [

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import styled from "@emotion/styled";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import {
    Alert,
    Box,
@@ -164,7 +164,8 @@ const Game = () => {
    const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
 
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
    const { profile, profileLoading, profileError } = useGetProfile();

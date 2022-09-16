@@ -16,7 +16,7 @@ const productsHandler = async (req, res) => {
 
       const data = await result.json();
 
-      console.log('productData', data)
+      // console.log('productData', data)
 
       return res.status(200).send(data.result);
    } catch (error) {

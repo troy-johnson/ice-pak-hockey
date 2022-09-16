@@ -58,7 +58,7 @@ const seasonStatsHandler = async (req, res) => {
             let gameBatchTwo;
             let penaltyBatchTwo;
 
-            console.log("gameBatches", gameBatches);
+            // console.log("gameBatches", gameBatches);
 
             if (gameBatches[1].length >= 1) {
                goalBatchTwo = await getDocs(

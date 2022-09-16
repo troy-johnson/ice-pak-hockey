@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import dayjs from "dayjs";
 import {
    FormControl,
@@ -16,13 +17,7 @@ import { useGetSeasons } from "../utils";
 
 const Standings = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
-   const [seasonId, setSeasonId] = useState(
-      !seasonsLoading && !seasonsError
-         ? seasons.sort(
-              (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
-           )?.[0].id
-         : "LSdvGKI4dFWUBwgeEC5z"
-   );
+   const [seasonId, setSeasonId] = useState(1);
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -35,6 +30,16 @@ const Standings = () => {
    const handleSeasonChange = (e) => {
       setSeasonId(e.target.value);
    };
+
+   useEffect(() => {
+      if (!seasonsLoading && !seasonsError && seasons.length > 0) {
+         setSeasonId(
+            seasons.sort(
+               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+            )?.[0].id
+         );
+      }
+   }, [seasons]);
 
    if (seasonsLoading) {
       return <Loading />;
@@ -111,7 +116,13 @@ const Standings = () => {
                </Link>
             ) : null}
          </Stack>
-         <StandingsTable currentStandings={standings} seasonType={seasonType} />
+         {seasonType === "Playoffs" ? (
+            <Typography sx={{ ml: 2, mt: 2, mb: 2 }}>
+               Standings not found for selected season. Please select another season.
+            </Typography>
+         ) : (
+            <StandingsTable currentStandings={standings} seasonType={seasonType} />
+         )}
       </PageContainer>
    );
 };

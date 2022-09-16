@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import {
    Avatar,
    Box,
@@ -18,7 +18,9 @@ import Logout from "@mui/icons-material/Logout";
 
 const Account = () => {
    const [anchorEl, setAnchorEl] = useState(null);
-   const [session, loading] = useSession();
+
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
    const open = Boolean(anchorEl);
@@ -31,7 +33,7 @@ const Account = () => {
       setAnchorEl(null);
    };
 
-   // console.log("account info", session)
+   // console.log("account info", session?.user?.image);
 
    return (
       <>
@@ -39,9 +41,9 @@ const Account = () => {
             <Tooltip title="Profile">
                <IconButton onClick={handleClick} size="small" sx={{ ml: 2 }}>
                   <Avatar
-                     src={session?.user?.image}
+                     src={`${session?.user?.image}`}
                      sx={{ width: desktop ? 32 : 28, height: desktop ? 32 : 28 }}
-                  />
+                  ></Avatar>
                </IconButton>
             </Tooltip>
          </Box>
@@ -82,7 +84,7 @@ const Account = () => {
             {session ? (
                <Link href="/profile" passHref>
                   <MenuItem>
-                     <Avatar /> Profile
+                     <Avatar src={session?.user?.image} /> Profile
                   </MenuItem>
                </Link>
             ) : null}

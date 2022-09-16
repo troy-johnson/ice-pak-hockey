@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import styled from "@emotion/styled";
 import {
@@ -32,7 +32,8 @@ const Comment = styled(StyledComment)`
 
 const Post = () => {
    const router = useRouter();
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
    const { slug } = router.query;
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));

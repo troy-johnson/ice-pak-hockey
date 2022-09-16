@@ -18,8 +18,9 @@ const useGetAllGames = () => {
       //    opponentGoals: goals?.filter((goal) => goal.gameId === game.id && goal.opponentId)?.length,
       // });
       games.push({
-         ...game,
          id: game.id,
+         ...game,
+         pgId: game.id,
          icePakGoals: goals?.filter((goal) => goal.pgGameId === game.id && goal.pgPlayerId).length,
          opponentGoals: goals?.filter((goal) => goal.pgGameId === game.id && goal.pgOpponentId).length,
          locationName: locations?.filter((location) => game.pgLocationId === location.id)[0]?.name,

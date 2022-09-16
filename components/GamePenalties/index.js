@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import {
    Button,
    Divider,
@@ -31,7 +31,8 @@ const Section = styled.section`
 
 const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, opponentLogo }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
 
    const handleDelete = (data) => {
       try {

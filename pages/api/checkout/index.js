@@ -10,7 +10,7 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
 const checkoutHandler = async (req, res) => {
    try {
       const { user, items } = req.body;
-      console.log("req body", req.body);
+      // console.log("req body", req.body);
 
       const redirectURL =
          process.env.NODE_ENV === "development"
@@ -20,8 +20,8 @@ const checkoutHandler = async (req, res) => {
       const productList = await stripe.products.list({ limit: 50 });
       const pricesList = await stripe.prices.list();
 
-      console.log("productList", productList);
-      console.log("pricesList", pricesList);
+      // console.log("productList", productList);
+      // console.log("pricesList", pricesList);
 
       // console.log("productList md", productList.map(el => console.log("metadata", el.metadata)))
 
@@ -29,7 +29,7 @@ const checkoutHandler = async (req, res) => {
 
       const lineItems = items.map((item) => {
 
-         console.log("item", item)
+         // console.log("item", item)
 
          productList.data.forEach(el => console.log("printfulId", el.metadata.printfulId))
    
@@ -37,10 +37,10 @@ const checkoutHandler = async (req, res) => {
             (el) => el.metadata.printfulId === item.syncProductId
          )?.id;
 
-         console.log("currentProductId", currentProductId)
+         // console.log("currentProductId", currentProductId)
 
          const description = item.name.split("-")[1];
-         console.log("item info", { description, currentProductId });
+         // console.log("item info", { description, currentProductId });
          orderedItems.push({
             ...item,
             stripePriceId: pricesList.data.find((el) => el.product === currentProductId).id,

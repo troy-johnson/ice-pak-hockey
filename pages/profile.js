@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import {
    Avatar,
    Button,
@@ -25,7 +25,8 @@ import { editPlayer, useGetPlayers } from "../utils";
 
 const Profile = () => {
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
-   const [session, loading] = useSession();
+   const { data: session, status } = useSession()
+   const loading = status === "loading"
    const { players, playersError, playersLoading } = useGetPlayers();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
