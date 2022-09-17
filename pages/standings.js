@@ -12,6 +12,7 @@ import {
    Typography,
    useMediaQuery,
 } from "@mui/material";
+import Tree from "react-d3-tree";
 import { Loading, PageContainer, StandingsTable } from "../components";
 import { useGetSeasons } from "../utils";
 
@@ -28,7 +29,7 @@ const Standings = () => {
       });
 
    const handleSeasonChange = (e) => {
-      setSeasonId(e.target.value);
+      setSeasonId(Number(e.target.value));
    };
 
    useEffect(() => {
@@ -120,6 +121,16 @@ const Standings = () => {
             <Typography sx={{ ml: 2, mt: 2, mb: 2 }}>
                Standings not found for selected season. Please select another season.
             </Typography>
+                     //    <Stack direction="column">
+                     //    <Tree
+                     //       data={orgChart}
+                     //       collapsible={false}
+                     //       zoomable={false}
+                     //       depthFactor={-250}
+                     //       zoom={0.6}
+                     //       pathFunc={"step"}
+                     //    />
+                     // </Stack>
          ) : (
             <StandingsTable currentStandings={standings} seasonType={seasonType} />
          )}
