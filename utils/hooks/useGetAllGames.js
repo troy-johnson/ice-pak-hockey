@@ -41,7 +41,7 @@ const useGetAllGames = () => {
    const isLoading =
       goalsLoading | opponentsLoading | locationsLoading | seasonsLoading | !error && !data;
 
-   // console.log("games", games)
+   console.log("games", games)
 
    return {
       games,
