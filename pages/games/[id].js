@@ -164,8 +164,8 @@ const Game = () => {
    const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
 
-   const { data: session, status } = useSession()
-   const loading = status === "loading"
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
    const { game, gameLoading, gameError } = useGetGameInfo(id);
    const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
    const { profile, profileLoading, profileError } = useGetProfile();
@@ -212,8 +212,12 @@ const Game = () => {
          })
    );
 
-   const icePakGoals = goalsSorted?.filter((goal) => goal?.playerId);
-   const opponentGoals = goalsSorted?.filter((goal) => goal?.opponentId);
+   const icePakGoals = goalsSorted?.filter(
+      (goal) => goal?.teamId === "3683b632-c5c3-4e97-a7d4-6002a72839e1"
+   );
+   const opponentGoals = goalsSorted?.filter(
+      (goal) => goal?.teamId !== "3683b632-c5c3-4e97-a7d4-6002a72839e1"
+   );
 
    const penaltiesByPeriod = [
       {
@@ -239,8 +243,8 @@ const Game = () => {
 
    const goalRows = [
       {
-         name: "Ice Pak",
-         logo: opponents?.filter((opp) => opp.id === "0SBVU2RK2pKDKagEBCWv")?.[0]?.logo,
+         name: game?.teams[1]?.teamName,
+         logo: opponents?.filter((opp) => opp.id === game?.teams[1]?.teamName)?.[0]?.logo,
          periodOne: icePakGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: icePakGoals?.filter((goal) => goal.period === 2).length,
          periodThree: icePakGoals?.filter((goal) => goal.period === 3).length,
@@ -248,8 +252,8 @@ const Game = () => {
          total: icePakGoals?.length,
       },
       {
-         name: game?.opponentName,
-         logo: opponents?.filter((opp) => opp.id === game?.opponentId)?.[0]?.logo,
+         name: game?.teams[0]?.teamName,
+         logo: opponents?.filter((opp) => opp.id === game?.teams[0]?.teamName)?.[0]?.logo,
          periodOne: opponentGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: opponentGoals?.filter((goal) => goal.period === 2).length,
          periodThree: opponentGoals?.filter((goal) => goal.period === 3).length,
@@ -258,11 +262,11 @@ const Game = () => {
       },
    ];
 
-   const getPlayerGoals = (playerId) => {
+   const getPlayerGoals = (id) => {
       let goalCount = 0;
 
       icePakGoals?.forEach((goal) => {
-         if (goal.playerId === playerId) {
+         if (goal.playerId === id) {
             goalCount++;
          }
       });
@@ -296,16 +300,16 @@ const Game = () => {
    };
 
    const teamStats = game?.roster
-      ?.filter((player) => !player.doNotDisplay)
+      ?.filter((player) => player.id !== "6aca0d5e-2896-4ea7-b42c-9d683ff8adce")
       ?.map((player) => {
          return {
             jerseyNumber: player?.playerJerseyNumber || 0,
-            playerId: player?.playerId,
+            playerId: player?.id,
             playerName: player?.playerName,
-            goals: getPlayerGoals(player.playerId),
-            assists: getPlayerAssists(player.playerId),
-            points: getPlayerGoals(player.playerId) + getPlayerAssists(player.playerId),
-            penaltyMinutes: getPlayerPenaltyMinutes(player.playerId),
+            goals: getPlayerGoals(player.id),
+            assists: getPlayerAssists(player.id),
+            points: getPlayerGoals(player.id) + getPlayerAssists(player.id),
+            penaltyMinutes: getPlayerPenaltyMinutes(player.id),
          };
       })
       .sort((a, b) => b.points - a.points);
@@ -314,7 +318,7 @@ const Game = () => {
 
    // console.log("opponents", { opponents, opponent });
 
-   // console.log("game", game);
+   console.log("game", game);
 
    if (gameLoading) {
       return <Loading />;
@@ -330,7 +334,7 @@ const Game = () => {
                   <TableHead>
                      <BoxScoreHeader>
                         <BoxScoreCell align="center" sx={{ minWidth: "75px" }}>
-                           {dayjs().isAfter(dayjs.unix(game?.date?.seconds)) ? "FINAL" : ""}
+                           {dayjs().isAfter(dayjs(game?.date)) ? "FINAL" : ""}
                         </BoxScoreCell>
                         <BoxScoreCell align="center">1ST</BoxScoreCell>
                         <BoxScoreCell align="center">2ND</BoxScoreCell>
@@ -434,7 +438,10 @@ const Game = () => {
    // console.log("game", game)
 
    return (
-      <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`} small>
+      <PageContainer
+         pageTitle={`${game?.teams?.[1]?.teamName} vs. ${game?.teams?.[0]?.teamName}`}
+         small
+      >
          <Stack
             direction="column"
             ml={3}
@@ -445,7 +452,7 @@ const Game = () => {
             alignItems="flex-start"
          >
             <Typography sx={{ textAlign: "left" }} variant="subtitle1">
-               {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY @ h:mm a")}
+               {dayjs(game?.date).format("MMMM D, YYYY @ h:mm a")}
             </Typography>
             <Typography sx={{ textAlign: "left" }} variant="subtitle1">
                {game?.seasonName}
@@ -472,13 +479,12 @@ const Game = () => {
                               goals={game?.goals}
                               openUpsertGoal={openUpsertGoal}
                               goalsSorted={goalsSorted}
-                              opponentName={game?.opponentName}
-                              opponentLogo={opponent?.logo}
+                              teams={game?.teams}
                               setSnackbar={setSnackbar}
                            />
                            <GamePenalties
                               penaltiesByPeriod={penaltiesByPeriod}
-                              opponentLogo={opponent?.logo}
+                              opponentLogo={game?.teams?.logo}
                               handleClickOpen={openMutatePenalty}
                               setSnackbar={setSnackbar}
                            />

@@ -1,150 +1,187 @@
-import {
-   collection,
-   deleteDoc,
-   doc,
-   documentId,
-   getDoc,
-   getDocs,
-   query,
-   setDoc,
-   updateDoc,
-   where,
-} from "firebase/firestore";
 import { getSession } from "next-auth/react";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const gameHandler = async (req, res) => {
-   const session = await getSession({ req })
+   const session = await getSession({ req });
 
    const { id } = req.query;
 
    switch (req.method) {
       case "GET":
          try {
-            const gameResult = await getDoc(doc(db, "games", id));
-            const gameData = gameResult.data();
+            const gameData = await prisma.games.findUnique({
+               where: {
+                  id,
+               },
+               select: {
+                  date: true,
+                  embedLink: true,
+                  video: true,
+                  roster: true,
+                  locationId: true,
+                  seasonId: true,
+                  opponentId: true,
+                  goals: {
+                     select: {
+                        period: true,
+                        team: true,
+                        time: true,
+                        ytLink: true,
+                        assists: true,
+                        teamId: true,
+                        playerId: true,
+                        gameId: true,
+                        players: {
+                           select: {
+                              firstName: true,
+                              lastName: true,
+                              nickname: true,
+                              number: true,
+                              jerseyNumber: true,
+                           },
+                        },
+                        teams: {
+                           select: {
+                              teamName: true,
+                           },
+                        },
+                     },
+                  },
+                  penalties: {
+                     select: {
+                        minutes: true,
+                        team: true,
+                        gameId: true,
+                        teamId: true,
+                        playerId: true,
+                        penaltyType: true,
+                        period: true,
+                        time: true,
+                        ytLink: true,
+                        players: {
+                           select: {
+                              firstName: true,
+                              lastName: true,
+                              nickname: true,
+                              number: true,
+                              jerseyNumber: true,
+                           },
+                        },
+                        teams: {
+                           select: {
+                              teamName: true,
+                           },
+                        },
+                     },
+                  },
+                  teams: {
+                     select: {
+                        id: true,
+                        logo: true,
+                        teamName: true,
+                     },
+                  },
+                  seasons: {
+                     select: {
+                        leagueName: true,
+                        type: true,
+                        name: true,
+                     },
+                  },
+                  locations: {
+                     select: {
+                        name: true,
+                        code: true,
+                        googleMapsLink: true,
+                     },
+                  },
+               },
+            });
 
-            const locationResult = await getDoc(doc(db, "locations", gameData?.locationId));
-            const locationData = locationResult?.data();
+            const rosterData = await prisma.players.findMany({
+               where: {
+                  id: { in: gameData.roster },
+               },
+               select: {
+                  id: true,
+                  firstName: true,
+                  lastName: true,
+                  nickname: true,
+                  number: true,
+                  jerseyNumber: true,
+                  position: true,
+               },
+            });
 
-            const seasonResult = await getDoc(doc(db, "seasons", gameData?.seasonId));
-            const seasonData = seasonResult?.data();
+            const icePakData = await prisma.teams.findUnique({
+               where: {
+                  id: "3683b632-c5c3-4e97-a7d4-6002a72839e1",
+               },
+               select: {
+                  id: true,
+                  logo: true,
+                  teamName: true,
+               },
+            });
 
-            const opponentResult = await getDoc(doc(db, "opponents", gameData?.opponentId));
-            const opponentData = opponentResult?.data();
+            const newRoster = gameData.roster.map((rosterPlayer) => {
+               return {
+                  firstName: rosterData.filter((player) => player.id === rosterPlayer)[0].firstName,
+                  lastName: rosterData.filter((player) => player.id === rosterPlayer)[0].lastName,
+                  nickname: rosterData.filter((player) => player.id === rosterPlayer)[0].nickname,
+                  jerseyNumber: rosterData.filter((player) => player.id === rosterPlayer)[0]
+                     .jerseyNumber,
+                  goals: gameData.goals.filter((goal) => goal.playerId === rosterPlayer).length,
+                  assists: gameData.goals.filter((goal) => goal.assists?.includes(rosterPlayer))
+                     .length,
+                  penaltyMinutes: gameData.penalties
+                     .filter((penalty) => penalty.playerId === rosterPlayer)
+                     .reduce((sum, currentValue) => {
+                        if (currentValue?.playerId === rosterPlayer) {
+                           return sum + parseFloat(currentValue?.minutes);
+                        }
+                        return sum;
+                     }, 0),
+               };
+            });
 
-            let roster = [];
-            let goals = [];
-            let penalties = [];
+            const newGoals = gameData.goals.map((goal) => {
+               let newAssists = [];
 
-            if (gameData?.roster?.length >= 1) {
-               const goalsResult = await getDocs(
-                  query(collection(db, "goals"), where("gameId", "==", id))
+               goal.assists.forEach((assist) =>
+                  newAssists.push({
+                     firstName: rosterData.filter((player) => player.id === assist)[0].firstName,
+                     lastName: rosterData.filter((player) => player.id === assist)[0].lastName,
+                     nickname: rosterData.filter((player) => player.id === assist)[0].nickname,
+                     jerseyNumber: rosterData.filter((player) => player.id === assist)[0]
+                        .jerseyNumber,
+                  })
                );
 
-               const penaltiesResult = await getDocs(
-                  query(collection(db, "penalties"), where("gameId", "==", id))
-               );
+               return {
+                  ...goal,
+                  assists: newAssists,
+               };
+            });
 
-               let playerBatches = [gameData?.roster.slice(0, 10), gameData?.roster.slice(10, 20)];
-
-               const batchResultOne = await getDocs(
-                  query(collection(db, "players"), where(documentId(), "in", playerBatches[0]))
-               );
-
-               let batchResultTwo;
-
-               if (playerBatches[1].length >= 1) {
-                  batchResultTwo = await getDocs(
-                     query(collection(db, "players"), where(documentId(), "in", playerBatches[1]))
-                  );
-               }
-
-               batchResultOne?.forEach((player) => {
-                  roster.push({
-                     playerId: player?.id,
-                     doNotDisplay: player?.data().doNotDisplay,
-                     image: player?.data()?.image,
-                     playerName: `${player?.data()?.firstName}${
-                        player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
-                     }${player?.data()?.lastName}`,
-                     playerJerseyNumber: player?.data()?.jerseyNumber,
-                     position: player?.data()?.position
-                  });
-               });
-
-               batchResultTwo?.forEach((player) => {
-                  roster.push({
-                     playerId: player?.id,
-                     doNotDisplay: player?.data().doNotDisplay,
-                     image: player?.data()?.image,
-                     playerName: `${player?.data()?.firstName}${
-                        player?.data()?.nickname ? ` "${player?.data()?.nickname}" ` : " "
-                     }${player?.data()?.lastName}`,
-                     playerJerseyNumber: player?.data()?.jerseyNumber,
-                     position: player?.data()?.position
-                  });
-               });
-
-               penaltiesResult?.forEach((penalty) => {
-                  penalties.push({
-                     ...penalty.data(),
-                     penaltyId: penalty.id,
-                     opponentName: penalty.data().opponentId ? opponentData?.teamName : undefined,
-                     playerName: roster?.filter(
-                        (player) => player?.playerId === penalty.data().playerId
-                     )?.[0]?.playerName,
-                     playerJerseyNumber: roster.filter(
-                        (player) => player.playerId === penalty.data().playerId
-                     )?.[0]?.jerseyNumber,
-                     playerImage: roster.filter(
-                        (player) => player.playerId === penalty.data().playerId
-                     )?.[0]?.image,
-                  });
-               });
-
-               goalsResult?.forEach((goal) => {
-                  let assists = [];
-
-                  goal.data().assists?.forEach((assist) => {
-                     assists.push({
-                        playerId: assist,
-                        playerName: roster.filter((player) => player.playerId === assist)[0]
-                           ?.playerName,
-                        playerJerseyNumber: roster.filter((player) => player.playerId === assist)[0]
-                           ?.jerseyNumber,
-                        playerImage: roster.filter((player) => player.playerId === assist)[0]
-                           ?.image,
-                     });
-                  });
-
-                  goals.push({
-                     ...goal.data(),
-                     assists,
-                     goalId: goal.id,
-                     playerName: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.playerName,
-                     playerJerseyNumber: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.jerseyNumber,
-                     playerImage: roster.filter(
-                        (player) => player.playerId === goal.data().playerId
-                     )?.[0]?.image,
-                  });
-               });
-            }
+            // console.log("gameData", gameData);
+            // console.log("rosterData", { rosterData, length: rosterData.length });
 
             const gameInfo = {
                ...gameData,
-               gameId: gameResult.id,
-               locationName: locationData.name,
-               opponentName: opponentData.teamName,
-               opponentLogo: opponentData.logo,
-               seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
-               penalties,
-               goals,
-               roster,
+               gameId: gameData.id,
+               locationName: gameData.locations.name,
+               seasonName: `${gameData.seasons.leagueName} ${gameData.seasons.name} ${gameData.seasons.type}`,
+               goals: newGoals,
+               roster: newRoster,
+               teams: [
+                  {
+                     id: gameData.teams.id,
+                     logo: gameData.teams.logo,
+                     teamName: gameData.teams.teamName,
+                  },
+                  icePakData,
+               ],
             };
 
             if (gameInfo) {
@@ -153,13 +190,18 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).send("Game not found!");
          } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":
          try {
-            await updateDoc(doc(db, "games", id), {
-               ...req.body,
+            await prisma.games.update({
+               where: {
+                  id: id,
+               },
+               data: {
+                  ...req.body,
+               },
             });
 
             return res.status(200).json({ ...req.body });
@@ -168,7 +210,11 @@ const gameHandler = async (req, res) => {
          }
       case "DELETE":
          try {
-            await deleteDoc(doc(db, "games", id));
+            await prisma.games.delete({
+               where: {
+                  id: id,
+               },
+            });
 
             return res.status(200).json();
          } catch (error) {

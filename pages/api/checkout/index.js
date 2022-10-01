@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { db, prisma } from "../../../config";
 import crypto from "crypto";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY, {
@@ -90,6 +90,26 @@ const checkoutHandler = async (req, res) => {
             email: user?.email ?? "",
          },
       });
+
+      await prisma.orders.create({
+         data: {
+            orderedItems,
+            paymentStatus: "Pending payment",
+            orderStatus: "Pending payment",
+            shippingStatus: "Pending payment",
+            status: "Pending payment",
+            orderAmount: Number(
+               items.reduce((prev, curr) => {
+                  return prev + Number(curr.price) * curr.quantity;
+               }, 0)
+            ),
+            referenceId: clientReferenceId,
+            user: {
+               fullName: user?.fullName ?? "", 
+               email: user?.email ?? "",
+            },
+         }
+      })
 
       res.status(200).json(checkoutSession);
    } catch (err) {

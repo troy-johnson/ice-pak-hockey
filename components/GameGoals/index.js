@@ -25,8 +25,7 @@ const GameGoals = ({
    goalsSorted,
    openUpsertGoal,
    setSnackbar,
-   opponentName,
-   opponentLogo,
+   teams
 }) => {
    const { data: session, status } = useSession()
    const loading = status === "loading"
@@ -127,22 +126,12 @@ const GameGoals = ({
                                        sx={{ width: "30px", padding: "5px 0 0 0" }}
                                        align="center"
                                     >
-                                       {goal?.playerName ? (
                                           <Image
-                                             alt="Ice Pak Goal"
-                                             src="/jerseyLogo.png"
+                                             alt={`${goal?.team} Goal`}
+                                             src={teams?.filter(team => team.id === goal?.teamId)?.[0]?.logo}
                                              width={40}
                                              height={40}
                                           />
-                                       ) : null}
-                                       {opponentLogo && !goal?.playerName ? (
-                                          <Image
-                                             alt={`${opponentName} Goal`}
-                                             src={opponentLogo}
-                                             width={40}
-                                             height={40}
-                                          />
-                                       ) : null}
                                     </TableCell>
                                     <TableCell align="left" sx={{ padding: 0 }}>
                                        <Stack ml={2} direction="column">
@@ -150,14 +139,11 @@ const GameGoals = ({
                                              variant={desktop ? "h6" : "subtitle2"}
                                              fontWeight={400}
                                           >
-                                             {goal?.playerName
+                                             {goal?.team === "Ice Pak"
                                                 ? desktop
-                                                   ? goal?.playerName
-                                                   : `${goal.playerName.charAt(0)}. ${
-                                                        goal.playerName.split(" ")[2] ||
-                                                        goal.playerName.split(" ")[1]
-                                                     }`
-                                                : opponentName}
+                                                   ? `${goal?.players?.firstName} ${goal?.players?.lastName}`
+                                                   : `${goal.players?.firstName.charAt(0)}. ${goal?.players.lastName}`
+                                                : goal?.team}
                                           </Typography>
                                           <Stack direction="row">
                                              {goal?.assists?.map((assist, index) => {
@@ -169,11 +155,8 @@ const GameGoals = ({
                                                       ml={index === 1 ? 1 : 0}
                                                    >
                                                       {desktop
-                                                         ? assist?.playerName
-                                                         : `${assist.playerName.charAt(0)}. ${
-                                                              assist.playerName.split(" ")[2] ||
-                                                              assist.playerName.split(" ")[1]
-                                                           }`}
+                                                         ? `${assist?.firstName} ${assist?.lastName}`
+                                                         : `${assist?.firstName.charAt(0)}. ${assist?.lastName}`}
                                                       {`${
                                                          goal?.assists?.length > 1 && index === 0
                                                             ? ","
