@@ -303,9 +303,9 @@ const Game = () => {
       ?.filter((player) => player.id !== "6aca0d5e-2896-4ea7-b42c-9d683ff8adce")
       ?.map((player) => {
          return {
-            jerseyNumber: player?.playerJerseyNumber || 0,
-            playerId: player?.id,
-            playerName: player?.playerName,
+            jerseyNumber: player?.jerseyNumber || 0,
+            id: player?.id,
+            playerName: `${player?.firstName} ${player?.lastName}`,
             goals: getPlayerGoals(player.id),
             assists: getPlayerAssists(player.id),
             points: getPlayerGoals(player.id) + getPlayerAssists(player.id),
@@ -318,7 +318,7 @@ const Game = () => {
 
    // console.log("opponents", { opponents, opponent });
 
-   console.log("game", game);
+   console.log("game", { game, teamStats });
 
    if (gameLoading) {
       return <Loading />;
@@ -389,8 +389,8 @@ const Game = () => {
                <BoxScoreBody>
                   {teamStats?.map((row) => (
                      <Link
-                        key={"team-stats-row" + row.playerId}
-                        href={`/player/${row.playerId}`}
+                        key={"team-stats-row" + row.id}
+                        href={`/player/${row.id}`}
                         passHref
                      >
                         <BoxScoreRow
@@ -483,8 +483,9 @@ const Game = () => {
                               setSnackbar={setSnackbar}
                            />
                            <GamePenalties
+                              penalties={game?.penalties}
                               penaltiesByPeriod={penaltiesByPeriod}
-                              opponentLogo={game?.teams?.logo}
+                              teams={game?.teams}
                               handleClickOpen={openMutatePenalty}
                               setSnackbar={setSnackbar}
                            />

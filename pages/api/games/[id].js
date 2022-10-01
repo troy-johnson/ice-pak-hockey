@@ -23,6 +23,7 @@ const gameHandler = async (req, res) => {
                   opponentId: true,
                   goals: {
                      select: {
+                        id: true,
                         period: true,
                         team: true,
                         time: true,
@@ -33,6 +34,7 @@ const gameHandler = async (req, res) => {
                         gameId: true,
                         players: {
                            select: {
+                              id: true,
                               firstName: true,
                               lastName: true,
                               nickname: true,
@@ -49,6 +51,7 @@ const gameHandler = async (req, res) => {
                   },
                   penalties: {
                      select: {
+                        id: true,
                         minutes: true,
                         team: true,
                         gameId: true,
@@ -60,6 +63,7 @@ const gameHandler = async (req, res) => {
                         ytLink: true,
                         players: {
                            select: {
+                              id: true,
                               firstName: true,
                               lastName: true,
                               nickname: true,
@@ -126,6 +130,7 @@ const gameHandler = async (req, res) => {
 
             const newRoster = gameData.roster.map((rosterPlayer) => {
                return {
+                  id: rosterPlayer,
                   firstName: rosterData.filter((player) => player.id === rosterPlayer)[0].firstName,
                   lastName: rosterData.filter((player) => player.id === rosterPlayer)[0].lastName,
                   nickname: rosterData.filter((player) => player.id === rosterPlayer)[0].nickname,

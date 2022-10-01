@@ -29,10 +29,10 @@ const Section = styled.section`
    box-shadow: none;
 `;
 
-const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, opponentLogo }) => {
+const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, teams }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-   const { data: session, status } = useSession()
-   const loading = status === "loading"
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
 
    const handleDelete = (data) => {
       try {
@@ -86,7 +86,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, oppone
                            {period?.penalties?.map((penalty) => {
                               return (
                                  <TableRow
-                                    key={"box-score-row-" + penalty.penaltyId}
+                                    key={"box-score-row-" + penalty.id}
                                     sx={{
                                        padding: 0,
                                        border: "hidden",
@@ -106,22 +106,16 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, oppone
                                        sx={{ width: "30px", padding: "5px 0 0 0" }}
                                        align="center"
                                     >
-                                       {penalty?.playerName ? (
-                                          <Image
-                                             alt="Ice Pak Penalty"
-                                             src="/jerseyLogo.png"
-                                             width={40}
-                                             height={40}
-                                          />
-                                       ) : null}
-                                       {opponentLogo && !penalty?.playerName ? (
-                                          <Image
-                                             alt={`${penalty?.opponentName} Penalty`}
-                                             src={opponentLogo}
-                                             width={40}
-                                             height={40}
-                                          />
-                                       ) : null}
+                                       <Image
+                                          alt={`${penalty?.team} Penalty`}
+                                          src={
+                                             teams?.filter(
+                                                (team) => team.id === penalty?.teamId
+                                             )?.[0]?.logo
+                                          }
+                                          width={40}
+                                          height={40}
+                                       />
                                     </TableCell>
                                     <TableCell align="left" sx={{ padding: 0 }}>
                                        <Stack ml={2} direction="column">
@@ -129,23 +123,27 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, oppone
                                              variant={desktop ? "h6" : "subtitle2"}
                                              fontWeight={400}
                                           >
-                                             {penalty?.playerName
+                                             {penalty?.players
                                                 ? desktop
-                                                   ? penalty?.playerName
-                                                   : `${penalty.playerName.charAt(0)}. ${
-                                                        penalty.playerName.split(" ")[2] ||
-                                                        penalty.playerName.split(" ")[1]
+                                                   ? `${penalty?.players?.firstName} ${penalty?.players?.lastName}`
+                                                   : `${penalty.players?.firstName.charAt(0)}. ${
+                                                        penalty?.players.lastName
                                                      }`
-                                                : penalty?.opponentName}
+                                                : penalty?.team}
                                           </Typography>
 
                                           <Typography
                                              variant={desktop ? "body2" : "caption"}
                                              fontStyle="italic"
-                                          >{`${penalty?.penaltyType} (${
-                                             Number.isInteger(penalty?.minutes)
-                                                ? `${penalty?.minutes}:00`
-                                                : `${Math.floor(penalty?.minutes)}:30`
+                                          >{`${penalty?.penaltyType} (${parseInt(
+                                             penalty?.minutes
+                                          )}:${
+                                             penalty?.minutes - parseInt(penalty?.minutes) === 0
+                                                ? "00"
+                                                : ((penalty?.minutes - parseInt(penalty?.minutes)) *
+                                                     100 *
+                                                     60) /
+                                                  100
                                           })`}</Typography>
                                        </Stack>
                                     </TableCell>

@@ -58,7 +58,7 @@ const StyledTextLogo = ({ className, desktop }) => {
       <Stack direction="column" className={className} spacing={1} sx={{ mb: 2 }}>
          <Link href="/" passHref>
             <div>
-               <Image src="/icePakTextLogo.png" width={300} height={60} alt="Ice Pak Hockey" />
+               <Image src="/icePakTextLogo.png" priority width={300} height={60} alt="Ice Pak Hockey" />
             </div>
          </Link>
       </Stack>

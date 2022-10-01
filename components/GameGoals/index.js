@@ -46,6 +46,8 @@ const GameGoals = ({
       },
    ];
 
+   console.log("goals", { goalsByPeriod, goalsSorted })
+
    if (goalsSorted?.filter((goal) => goal.period === 4).length >= 1) {
       goalsByPeriod.push({
          period: "OT",
@@ -106,7 +108,7 @@ const GameGoals = ({
                            {period?.goals?.map((goal) => {
                               return (
                                  <TableRow
-                                    key={"box-score-row-" + goal.goalId}
+                                    key={"box-score-row-" + goal.id}
                                     sx={{
                                        padding: 0,
                                        border: "hidden",
