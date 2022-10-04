@@ -14,6 +14,7 @@ const gameHandler = async (req, res) => {
                   id,
                },
                select: {
+                  id: true,
                   date: true,
                   embedLink: true,
                   video: true,
@@ -174,7 +175,6 @@ const gameHandler = async (req, res) => {
 
             const gameInfo = {
                ...gameData,
-               gameId: gameData.id,
                locationName: gameData.locations.name,
                seasonName: `${gameData.seasons.leagueName} ${gameData.seasons.name} ${gameData.seasons.type}`,
                goals: newGoals,
@@ -195,7 +195,7 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).send("Game not found!");
          } catch (error) {
-            console.log("error", error);
+            console.log("gameInfo error", error);
             return res.status(400).send(error);
          }
       case "PUT":

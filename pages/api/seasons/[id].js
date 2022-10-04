@@ -1,5 +1,5 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
+import { db, prisma } from "../../../config";
 
 const seasonsHandler = async (req, res) => {
    // console.log("req", { method: req.method, body: req.body });
@@ -8,13 +8,13 @@ const seasonsHandler = async (req, res) => {
          const { id } = req.query;
 
          try {
-            const result = await getDoc(db, "seasons", id);
+            const season = await prisma.seasons.findUnique({
+               where: {
+                  id,
+               },
+            });
 
-            if (result.exists()) {
-               return res.status(200).json(result.data());
-            }
-
-            return res.status(200).send("Player not found!");
+            return res.status(200).send(season);
          } catch (error) {
             return res.status(400).send(error);
          }
@@ -31,7 +31,7 @@ const seasonsHandler = async (req, res) => {
                standings: req.body.standings,
                standingsLink: req.body.standingsLink,
                startDate: req.body.startDate,
-               type: req.body.type
+               type: req.body.type,
             });
 
             return res.status(200).json({ ...req.body });

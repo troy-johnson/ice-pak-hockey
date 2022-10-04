@@ -1,16 +1,13 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const seasonHandler = async(req, res) => {
-   const result = await getDocs(collection(db, "seasons"));
-
-   let seasons = [];
-
-   result.forEach((doc) => {
-      seasons.push({ id: doc.id, ...doc.data() });
-   });
-
-   return res.status(200).json(seasons);
+   try {
+      const seasons = prisma.seasons.findMany();
+      
+      return res.status(200).json(seasons);
+   } catch (error) {
+      return res.status(400).json(error);
+   }
 }
 
 

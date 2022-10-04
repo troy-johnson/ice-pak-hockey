@@ -1,5 +1,5 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { db, prisma } from "../../../config";
 
 const playerHandler = async (req, res) => {
    // console.log("req", { method: req.method, body: req.body });
@@ -8,13 +8,9 @@ const playerHandler = async (req, res) => {
          const { id } = req.query;
 
          try {
-            const result = await getDoc(db, "players", id);
+            const profile = prisma.players.findUnique({ where: { id } });
 
-            if (result.exists()) {
-               return res.status(200).json(result.data());
-            }
-
-            return res.status(200).send("Player not found!");
+            return res.status(200).json(profile);
          } catch (error) {
             return res.status(400).send(error);
          }

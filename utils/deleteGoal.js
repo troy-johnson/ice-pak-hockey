@@ -1,7 +1,7 @@
 import { mutate } from "swr";
 
 const deleteGoal = async (data) => {
-   const response = await fetch(`/api/goals/${data.goalId}`, {
+   const response = await fetch(`/api/goals/${data.id}`, {
       method: "DELETE",
       mode: "cors",
       cache: "no-cache",

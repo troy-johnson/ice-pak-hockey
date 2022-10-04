@@ -153,7 +153,7 @@ const GameGoals = ({
                                                    <Typography
                                                       variant={desktop ? "body2" : "caption"}
                                                       fontStyle="italic"
-                                                      key={goal?.goalId + assist?.playerId}
+                                                      key={`${goal?.id}-${assist.firstName}-${assist.lastName}`}
                                                       ml={index === 1 ? 1 : 0}
                                                    >
                                                       {desktop

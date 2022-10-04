@@ -1,5 +1,4 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const goalHandler = async (req, res) => {
    const { id } = req.query;
@@ -9,39 +8,38 @@ const goalHandler = async (req, res) => {
          // console.log("id", id);
 
          try {
-            const result = await getDoc(doc(db, "goals", id));
+            const goal = prisma.goals.findUnique({ where: { id } });
 
-            const penalty = { ...result.data() };
-
-            if (penalty) {
-               return res.status(200).json(penalty);
-            }
-
-            return res.status(200).send("Goals not found!");
+            return res.status(200).json(goal);
          } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":
+         const { assists, gameId, period, playerId, team, teamId, time, ytLink } = req.body;
+
          try {
-            await setDoc(doc(db, "goals", id), {
-               ...req.body,
+            await prisma.goals.update({
+               where: { id },
+               data: { assists, gameId, period, playerId, team, teamId, time, ytLink },
             });
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
             return res.status(400).send(error);
          }
       case "DELETE":
          try {
-            await deleteDoc(doc(db, "goals", id), {
-               ...req.body,
+            console.log("id", id)
+
+            await prisma.goals.delete({
+               where: { id },
             });
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
             return res.status(400).send(error);
          }
       default:

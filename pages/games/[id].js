@@ -388,11 +388,7 @@ const Game = () => {
                </TableHead>
                <BoxScoreBody>
                   {teamStats?.map((row) => (
-                     <Link
-                        key={"team-stats-row" + row.id}
-                        href={`/player/${row.id}`}
-                        passHref
-                     >
+                     <Link key={"team-stats-row" + row.id} href={`/player/${row.id}`} passHref>
                         <BoxScoreRow
                            sx={{
                               "&:last-child td, &:last-child th": {
@@ -549,15 +545,15 @@ const Game = () => {
                         setMutatePenaltyDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.opponentId}
-                     opponentName={game?.opponentName}
+                     opponentId={game?.teams?.id}
+                     opponentName={game?.teams?.teamName}
                      open={mutatePenaltyDialog}
                   />
                ) : null}
                {upsertGoalDialog ? (
                   <UpsertGoal
                      goalAction={goalAction}
-                     gameId={game?.gameId}
+                     gameId={game?.id}
                      gameRoster={game?.roster}
                      goal={goal}
                      onClose={() => {
@@ -569,8 +565,8 @@ const Game = () => {
                         setUpsertGoalDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.opponentId}
-                     opponentName={game?.opponentName}
+                     opponentId={game?.teams?.id}
+                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")[0].teamName}
                      open={upsertGoalDialog}
                   />
                ) : null}
