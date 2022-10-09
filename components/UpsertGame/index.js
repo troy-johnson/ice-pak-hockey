@@ -19,11 +19,11 @@ import {
    editGame,
    editSeason,
    useGetLocations,
-   useGetOpponents,
+   useGetTeams,
    useGetSeasons,
 } from "../../utils";
 
-const InputWithMargin = styled(props => <ControlledInput {...props} />)`
+const InputWithMargin = styled((props) => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 
@@ -34,7 +34,7 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
    const { seasons } = useGetSeasons();
    const { locations } = useGetLocations();
-   const { opponents } = useGetOpponents();
+   const { teams } = useGetTeams();
 
    const { control, handleSubmit, reset, watch } = useForm({
       defaultValues: {
@@ -96,8 +96,32 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
       }
    };
 
+   const alphabeticalSort = (a, b) => {
+      let key = "teamName";
+
+      if (a?.name) {
+         key = "name";
+      }
+
+      const nameA = a[key]?.toUpperCase();
+      const nameB = b[key]?.toUpperCase();
+      if (nameA < nameB) {
+         return -1;
+      }
+      if (nameA > nameB) {
+         return 1;
+      }
+
+      return 0;
+   };
+
+   console.log("seasons", {
+      seasons,
+      sorted: seasons?.sort((a, b) => dayjs(b.endDate).unix() - dayjs(a.endDate).unix()),
+   });
+
    const seasonOptions = seasons
-      ?.sort((a, b) => a.endDate.seconds > b.endDate.seconds)
+      ?.sort((a, b) => dayjs(a.endDate).isAfter(dayjs(b.endDate)))
       ?.map((season) => {
          return {
             label: `${season?.leagueName} ${season?.name} ${season?.type}`,
@@ -105,19 +129,20 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
          };
       });
 
-   const locationOptions = locations?.map((location) => {
+   const locationOptions = locations?.sort(alphabeticalSort)?.map((location) => {
       return {
          label: location?.name,
          value: location?.id,
       };
    });
 
-   const opponentOptions = opponents
-      ?.filter((opponent) => opponent.teamName !== "Ice Pak")
-      ?.map((opponent) => {
+   const teamOptions = teams
+      ?.sort(alphabeticalSort)
+      ?.filter((team) => team.teamName !== "Ice Pak")
+      ?.map((team) => {
          return {
-            label: opponent?.teamName,
-            value: opponent?.id,
+            label: team?.teamName,
+            value: team?.id,
          };
       });
 
@@ -144,8 +169,8 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
                   <ControlledSelect
                      control={control}
                      name="opponentId"
-                     label="Opponent"
-                     options={opponentOptions}
+                     label="Team"
+                     options={teamOptions}
                      variant="outlined"
                   />
                   <InputWithMargin

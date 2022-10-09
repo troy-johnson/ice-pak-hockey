@@ -103,20 +103,7 @@ const gameHandler = async (req, res) => {
                },
             });
 
-            const rosterData = await prisma.players.findMany({
-               where: {
-                  id: { in: gameData.roster },
-               },
-               select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  nickname: true,
-                  number: true,
-                  jerseyNumber: true,
-                  position: true,
-               },
-            });
+            // console.log("gameData", gameData)
 
             const icePakData = await prisma.teams.findUnique({
                where: {
@@ -129,46 +116,75 @@ const gameHandler = async (req, res) => {
                },
             });
 
-            const newRoster = gameData.roster.map((rosterPlayer) => {
-               return {
-                  id: rosterPlayer,
-                  firstName: rosterData.filter((player) => player.id === rosterPlayer)[0].firstName,
-                  lastName: rosterData.filter((player) => player.id === rosterPlayer)[0].lastName,
-                  nickname: rosterData.filter((player) => player.id === rosterPlayer)[0].nickname,
-                  jerseyNumber: rosterData.filter((player) => player.id === rosterPlayer)[0]
-                     .jerseyNumber,
-                  goals: gameData.goals.filter((goal) => goal.playerId === rosterPlayer).length,
-                  assists: gameData.goals.filter((goal) => goal.assists?.includes(rosterPlayer))
-                     .length,
-                  penaltyMinutes: gameData.penalties
-                     .filter((penalty) => penalty.playerId === rosterPlayer)
-                     .reduce((sum, currentValue) => {
-                        if (currentValue?.playerId === rosterPlayer) {
-                           return sum + parseFloat(currentValue?.minutes);
-                        }
-                        return sum;
-                     }, 0),
-               };
-            });
+            let newRoster = [];
+            let newGoals = [];
 
-            const newGoals = gameData.goals.map((goal) => {
-               let newAssists = [];
+            if (gameData.roster) {
+               const rosterData = await prisma.players.findMany({
+                  where: {
+                     id: { in: gameData?.roster || undefined },
+                  },
+                  select: {
+                     id: true,
+                     firstName: true,
+                     lastName: true,
+                     nickname: true,
+                     number: true,
+                     jerseyNumber: true,
+                     position: true,
+                  },
+               });
 
-               goal.assists.forEach((assist) =>
-                  newAssists.push({
-                     firstName: rosterData.filter((player) => player.id === assist)[0].firstName,
-                     lastName: rosterData.filter((player) => player.id === assist)[0].lastName,
-                     nickname: rosterData.filter((player) => player.id === assist)[0].nickname,
-                     jerseyNumber: rosterData.filter((player) => player.id === assist)[0]
+               newRoster = gameData.roster.map((rosterPlayer) => {
+                  return {
+                     id: rosterPlayer,
+                     firstName: rosterData.filter((player) => player.id === rosterPlayer)[0]
+                        .firstName,
+                     lastName: rosterData.filter((player) => player.id === rosterPlayer)[0]
+                        .lastName,
+                     nickname: rosterData.filter((player) => player.id === rosterPlayer)[0]
+                        .nickname,
+                     jerseyNumber: rosterData.filter((player) => player.id === rosterPlayer)[0]
                         .jerseyNumber,
-                  })
-               );
+                     goals: gameData.goals.filter((goal) => goal.playerId === rosterPlayer).length,
+                     assists: gameData.goals.filter((goal) => goal.assists?.includes(rosterPlayer))
+                        .length,
+                     penaltyMinutes: gameData.penalties
+                        .filter((penalty) => penalty.playerId === rosterPlayer)
+                        .reduce((sum, currentValue) => {
+                           if (currentValue?.playerId === rosterPlayer) {
+                              return sum + parseFloat(currentValue?.minutes);
+                           }
+                           return sum;
+                        }, 0),
+                  };
+               });
 
-               return {
-                  ...goal,
-                  assists: newAssists,
-               };
-            });
+               if (gameData.goals) {
+                  newGoals = gameData.goals.map((goal) => {
+                     let newAssists = [];
+
+                     goal.assists.forEach((assist) =>
+                        newAssists.push({
+                           playerId: rosterData.filter((player) => player.id === assist)[0].id,
+                           firstName: rosterData.filter((player) => player.id === assist)[0]
+                              .firstName,
+                           lastName: rosterData.filter((player) => player.id === assist)[0]
+                              .lastName,
+                           nickname: rosterData.filter((player) => player.id === assist)[0]
+                              .nickname,
+                           jerseyNumber: rosterData.filter((player) => player.id === assist)[0]
+                              .jerseyNumber,
+                        })
+                     );
+
+                     return {
+                        ...goal,
+                        assists: newAssists,
+                     };
+                  });
+               }
+            }
 
             // console.log("gameData", gameData);
             // console.log("rosterData", { rosterData, length: rosterData.length });
@@ -189,16 +205,13 @@ const gameHandler = async (req, res) => {
                ],
             };
 
-            if (gameInfo) {
-               return res.status(200).json(gameInfo);
-            }
-
-            return res.status(200).send("Game not found!");
+            return res.status(200).json(gameInfo);
          } catch (error) {
             console.log("gameInfo error", error);
             return res.status(400).send(error);
          }
       case "PUT":
+         console.log("game update", { id, body: req.body });
          try {
             await prisma.games.update({
                where: {
@@ -211,6 +224,7 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
+            console.log("error", error);
             return res.status(400).send(error);
          }
       case "DELETE":

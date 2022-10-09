@@ -1,7 +1,7 @@
 import { mutate } from "swr";
 
 const editPenalty = async (data) => {
-   // console.log("edit penalty", data);
+   console.log("edit penalty", data);
    const response = await fetch(`/api/penalties/${data.penaltyId}`, {
       method: "PUT",
       mode: "cors",

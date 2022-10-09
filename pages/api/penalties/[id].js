@@ -1,31 +1,38 @@
-import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const penaltyHandler = async (req, res) => {
    const { id } = req.query;
 
+   console.log("id", id);
+
    switch (req.method) {
       case "GET":
-         // console.log("id", id);
-
          try {
-            const result = await getDoc(doc(db, "penalties", id));
+            const penalty = prisma.penalties.findUnique({ where: { id } });
 
-            const penalty = { ...result.data() };
-
-            if (penalty) {
-               return res.status(200).json(penalty);
-            }
-
-            return res.status(200).send("Penalty not found!");
+            return res.status(200).json(penalty);
          } catch (error) {
             console.log("error", error);
             return res.status(400).send(error);
          }
       case "PUT":
+         const { minutes, team, penaltyType, period, time, ytLink, teamId, gameId, playerId } =
+            req.body;
+
          try {
-            await setDoc(doc(db, "penalties", id), {
-               ...req.body,
+            await prisma.penalties.update({
+               where: { id },
+               data: {
+                  minutes,
+                  team,
+                  penaltyType,
+                  period,
+                  time,
+                  ytLink,
+                  teamId,
+                  gameId,
+                  playerId,
+               },
             });
 
             return res.status(200).json({ ...req.body });
@@ -35,8 +42,8 @@ const penaltyHandler = async (req, res) => {
          }
       case "DELETE":
          try {
-            await deleteDoc(doc(db, "penalties", id), {
-               ...req.body,
+            await prisma.penalties.delete({
+               where: { id },
             });
 
             return res.status(200).json({ ...req.body });

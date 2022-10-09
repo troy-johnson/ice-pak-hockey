@@ -2,10 +2,11 @@ import { prisma } from "../../../config";
 
 const seasonHandler = async(req, res) => {
    try {
-      const seasons = prisma.seasons.findMany();
+      const seasons = await prisma.seasons.findMany();
       
       return res.status(200).json(seasons);
    } catch (error) {
+      console.log("error", error)
       return res.status(400).json(error);
    }
 }

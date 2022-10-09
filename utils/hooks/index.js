@@ -5,7 +5,7 @@ export { default as useGetGameInfo } from "./useGetGameInfo";
 export { default as useGetGoals } from "./useGetGoals";
 export { default as useGetLeagues } from "./useGetLeagues";
 export { default as useGetLocations } from "./useGetLocations";
-export { default as useGetOpponents } from "./useGetOpponents";
+export { default as useGetTeams } from "./useGetTeams";
 export { default as useGetOrder } from "./useGetOrder";
 export { default as useGetPenalties } from "./useGetPenalties";
 export { default as useGetPenaltyInfo } from "./useGetPenaltyInfo";

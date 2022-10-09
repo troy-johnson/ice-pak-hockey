@@ -1,14 +1,42 @@
-import { collection, addDoc, getDocs } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const penaltiesHandler = async (req, res) => {
    switch (req.method) {
       case "POST":
-         // console.log("got to post penalty")
+         const {
+            minutes,
+            team,
+            penaltyType,
+            period,
+            time,
+            ytLink,
+            teamId,
+            gameId,
+            playerId,
+            firebaseGameId,
+            firebaseId,
+            firebasePlayerId,
+         } = req.body;
+
          try {
-            await addDoc(collection(db, "penalties"), {
-               ...req.body,
+            await prisma.penalties.create({
+               data: {
+                  minutes,
+                  team,
+                  penaltyType,
+                  period,
+                  time,
+                  ytLink,
+                  teamId,
+                  gameId,
+                  playerId,
+                  firebaseGameId,
+                  firebaseId,
+                  firebasePlayerId,
+               },
             });
+
+            console.log("penalty body", req.body);
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
@@ -16,15 +44,14 @@ const penaltiesHandler = async (req, res) => {
             return res.status(400).send(error);
          }
       case "GET":
-         const result = await getDocs(collection(db, "penalties"));
+         try {
+            const penaltyData = await prisma.penalties.findMany();
 
-         let penalties = [];
-
-         result.forEach((doc) => {
-            penalties.push({ id: doc.id, ...doc.data() });
-         });
-
-         return res.status(200).json(penalties);
+            return res.status(200).json(penaltyData);
+         } catch (error) {
+            console.log("error", error);
+            return res.status(400).send(error);
+         }
    }
 };
 

@@ -2,7 +2,7 @@ import { prisma } from "../../config";
 
 const leaguesHandler = async(req, res) => {
    try {
-      const leagues = prisma.leagues.findMany();
+      const leagues = await prisma.leagues.findMany();
 
       return res.status(200).json(leagues);
    } catch (error) {

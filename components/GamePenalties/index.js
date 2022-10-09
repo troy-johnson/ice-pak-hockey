@@ -35,6 +35,7 @@ const GamePenalties = ({ handleClickOpen, penaltiesByPeriod, setSnackbar, teams 
    const loading = status === "loading";
 
    const handleDelete = (data) => {
+      console.log("penalty", data)
       try {
          deletePenalty(data);
          setSnackbar({

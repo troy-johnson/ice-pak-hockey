@@ -2,7 +2,7 @@ import { prisma } from "../../config";
 
 const locationsHandler = async (req, res) => {
    try {
-      const locations = prisma.locations.findMany()
+      const locations = await prisma.locations.findMany()
 
       return res.status(200).json(locations);  
    } catch (error) {

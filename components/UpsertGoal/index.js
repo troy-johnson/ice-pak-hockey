@@ -46,7 +46,7 @@ const UpsertGoal = ({
       },
    });
 
-   console.log('data', { goal, gameId })
+   console.log('data', { goal, gameId, opponentId })
 
    const { fields, append, remove } = useFieldArray({
       name: "assists",
@@ -82,7 +82,7 @@ const UpsertGoal = ({
                playerId: data.team === "Ice Pak" ? data.playerId : null,
                team: data.team,
                teamId:
-                  data.teamId === opponentName
+                  data.team === opponentName
                      ? opponentId
                      : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
                time: data.time,

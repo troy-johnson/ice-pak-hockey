@@ -5,22 +5,26 @@ const gamesHandler = async (req, res) => {
    switch (req.method) {
       case "POST":
          try {
-            const result = await addDoc(collection(db, "games"), {
-               ...req.body,
-               date: Timestamp.fromDate(new Date(req.body.date)),
+            const createGame = await prisma.games.create({
+               data: {
+                  ...req.body,
+               },
             });
 
-            const seasonData = await getDoc(doc(db, "seasons", req.body.seasonId));
+            console.log("createGame", createGame)
 
-            await setDoc(
-               doc(db, "seasons", req.body.seasonId),
-               { games: [...seasonData.data().games, result.id] },
-               { merge: true }
-            );
+            await prisma.seasons.update({
+               where: { id: req.body.seasonId },
+               data: {
+                  games: {
+                     push: createGame.id,
+                  },
+               },
+            });
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            // console.log("error", error);
+            console.log("error", error);
             return res.status(400).send(error);
          }
       case "GET":

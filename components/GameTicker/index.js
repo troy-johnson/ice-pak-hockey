@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
-import { useGetAllGames, useGetGoals, useGetOpponents } from "../../utils";
+import { useGetAllGames, useGetGoals } from "../../utils";
 import { IoArrowBackSharp, IoArrowForwardSharp } from "react-icons/io5";
 
 const GameTicker = () => {

@@ -28,14 +28,14 @@ import {
 import {
    EditRoster,
    UpsertGoal,
-   MutatePenalty,
+   UpsertPenalty,
    GameGoals,
    GamePenalties,
    Loading,
    PageContainer,
 } from "../../components";
 import { FaClipboardList } from "react-icons/fa";
-import { roleCheck, upsertGame, useGetGameInfo, useGetOpponents, useGetProfile } from "../../utils";
+import { roleCheck, upsertGame, useGetGameInfo, useGetTeams, useGetProfile } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
@@ -155,7 +155,7 @@ const Game = () => {
    const { id } = router.query;
 
    const [value, setValue] = useState(0);
-   const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
+   const [upsertPenaltyDialog, setUpsertPenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
    const [penaltyAction, setPenaltyAction] = useState("add");
    const [upsertGoalDialog, setUpsertGoalDialog] = useState(false);
@@ -167,7 +167,7 @@ const Game = () => {
    const { data: session, status } = useSession();
    const loading = status === "loading";
    const { game, gameLoading, gameError } = useGetGameInfo(id);
-   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
+   const { teams, teamsLoading, teamsError } = useGetTeams();
    const { profile, profileLoading, profileError } = useGetProfile();
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -176,10 +176,10 @@ const Game = () => {
 
    const handleChange = (event, newValue) => setValue(newValue);
 
-   const openMutatePenalty = (action, penalty) => {
+   const openUpsertPenalty = (action, penalty) => {
       setPenaltyAction(action);
       setPenalty(penalty);
-      setMutatePenaltyDialog(true);
+      setUpsertPenaltyDialog(true);
    };
 
    const openUpsertGoal = (action, goal) => {
@@ -243,8 +243,8 @@ const Game = () => {
 
    const goalRows = [
       {
-         name: game?.teams[1]?.teamName,
-         logo: opponents?.filter((opp) => opp.id === game?.teams[1]?.teamName)?.[0]?.logo,
+         name: game?.teams?.[1]?.teamName,
+         logo: teams?.filter((opp) => opp.id === game?.teams?.[1]?.teamName)?.[0]?.logo,
          periodOne: icePakGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: icePakGoals?.filter((goal) => goal.period === 2).length,
          periodThree: icePakGoals?.filter((goal) => goal.period === 3).length,
@@ -252,8 +252,8 @@ const Game = () => {
          total: icePakGoals?.length,
       },
       {
-         name: game?.teams[0]?.teamName,
-         logo: opponents?.filter((opp) => opp.id === game?.teams[0]?.teamName)?.[0]?.logo,
+         name: game?.teams?.[0]?.teamName,
+         logo: teams?.filter((opp) => opp.id === game?.teams?.[0]?.teamName)?.[0]?.logo,
          periodOne: opponentGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: opponentGoals?.filter((goal) => goal.period === 2).length,
          periodThree: opponentGoals?.filter((goal) => goal.period === 3).length,
@@ -314,7 +314,7 @@ const Game = () => {
       })
       .sort((a, b) => b.points - a.points);
 
-   const opponent = opponents?.filter((opp) => opp.id === game?.opponentId)[0];
+   const opponent = teams?.filter((opp) => opp.id === game?.opponentId)[0];
 
    // console.log("opponents", { opponents, opponent });
 
@@ -482,7 +482,7 @@ const Game = () => {
                               penalties={game?.penalties}
                               penaltiesByPeriod={penaltiesByPeriod}
                               teams={game?.teams}
-                              handleClickOpen={openMutatePenalty}
+                              handleClickOpen={openUpsertPenalty}
                               setSnackbar={setSnackbar}
                            />
                         </Stack>
@@ -530,24 +530,25 @@ const Game = () => {
                </>
 
                {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
-               {mutatePenaltyDialog ? (
-                  <MutatePenalty
+               {upsertPenaltyDialog ? (
+                  <UpsertPenalty
                      penaltyAction={penaltyAction}
-                     gameId={game?.gameId}
+                     gameId={game?.id}
+                     penaltyId={penalty?.id}
                      gameRoster={game?.roster}
                      penalty={penalty}
                      onClose={() => {
                         setPenalty(null);
-                        setMutatePenaltyDialog(false);
+                        setUpsertPenaltyDialog(false);
                      }}
                      close={() => {
                         setPenalty(null);
-                        setMutatePenaltyDialog(false);
+                        setUpsertPenaltyDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.teams?.id}
-                     opponentName={game?.teams?.teamName}
-                     open={mutatePenaltyDialog}
+                     opponentId={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0]?.id}
+                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0].teamName}
+                     open={upsertPenaltyDialog}
                   />
                ) : null}
                {upsertGoalDialog ? (
@@ -565,14 +566,14 @@ const Game = () => {
                         setUpsertGoalDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.teams?.id}
-                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")[0].teamName}
+                     opponentId={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0]?.id}
+                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0].teamName}
                      open={upsertGoalDialog}
                   />
                ) : null}
                {editRosterDialog ? (
                   <EditRoster
-                     gameId={game?.gameId}
+                     gameId={game?.id}
                      gameRoster={game?.roster}
                      onClose={() => setEditRosterDialog(false)}
                      close={() => setEditRosterDialog(false)}

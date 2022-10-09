@@ -1,7 +1,7 @@
 import { mutate } from "swr";
 
 const deletePenalty = async (data) => {
-   const response = await fetch(`/api/penalties/${data.penaltyId}`, {
+   const response = await fetch(`/api/penalties/${data.id}`, {
       method: "DELETE",
       mode: "cors",
       cache: "no-cache",

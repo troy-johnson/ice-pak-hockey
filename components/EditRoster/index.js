@@ -52,7 +52,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    const onSubmit = (data) => {
       // console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
       try {
-         editGameRoster({ gameId, roster: data.roster.map((el) => el.playerId) });
+         editGameRoster({ gameId, roster: data.roster.map((el) => el.id) });
          handleClose();
          mutate(`/api/games/${gameId}`);
          mutate(`/api/games`);
@@ -91,7 +91,7 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
          return 0;
       });
 
-   // console.log("roster", rosterOptions);
+   console.log("roster", rosterOptions);
 
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>
@@ -108,11 +108,12 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
                   }}
                >
                   {controlledFields.map((field, index) => {
+                     console.log("field", field)
                      return (
-                        <Stack direction="row" key={field.id} sx={{ mt: 2 }}>
+                        <Stack direction="row" key={`${field.id}-${index}`} sx={{ mt: 2 }}>
                            <ControlledSelect
                               control={control}
-                              name={`roster.${index}.playerId`}
+                              name={`roster.${index}.id`}
                               variant="outlined"
                               label={`Player No. ${index + 1}`}
                               options={rosterOptions}
