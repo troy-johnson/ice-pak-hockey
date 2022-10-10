@@ -22,6 +22,7 @@ model games {
   locationId         String?     @db.Uuid
   seasonId           String?     @db.Uuid
   opponentId         String?     @db.Uuid
+  rosterArr          String[]    @db.Uuid
   locations          locations?  @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   teams              teams?      @relation(fields: [opponentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   seasons            seasons?    @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -88,7 +89,7 @@ model penalties {
   created_at       DateTime? @default(now()) @db.Timestamptz(6)
   firebaseId       String?
   firebaseGameId   String?
-  minutes          String?
+  minutes          Float?    @db.Real
   firebasePlayerId String?   @default("")
   team             String?   @default("")
   id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
@@ -144,7 +145,6 @@ model seasons {
   leagueName           String?   @default("")
   name                 String?   @default("")
   startDate            DateTime? @db.Timestamptz(6)
-  roster               Json?     @default("[]")
   firebaseRoster       Json?     @default("[]")
   firebaseGames        Json?     @default("[]")
   standings            Json?     @default("[]")
@@ -154,6 +154,7 @@ model seasons {
   leagueId             String?   @db.Uuid
   standingsLink        String?   @default("")
   firebaseId           String?
+  roster               String[]  @db.Uuid
   leagues              leagues?  @relation(fields: [leagueId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   games_gamesToseasons games[]
 }

@@ -48,6 +48,7 @@ const GameTicker = () => {
          console.log("game", game);
 
          const logo = allGames?.teamsData?.filter((team) => team.id === game?.teams?.id)[0]?.logo;
+         console.log("gTS", { ...game, teams: { ...game.teams, logo } })
          return { ...game, teams: { ...game.teams, logo } };
       });
 
@@ -161,10 +162,10 @@ const GameTicker = () => {
                                           : "black",
                                  }}
                               >
-                                 {game?.opponentLogo ? (
+                                 {game?.teams?.logo ? (
                                     <Image
                                        alt={game?.teams?.teamName}
-                                       src={game?.teams?.teamLogo}
+                                       src={game?.teams?.logo}
                                        height={25}
                                        width={25}
                                        layout="fixed"
