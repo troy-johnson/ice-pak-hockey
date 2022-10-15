@@ -29,8 +29,6 @@ const Shop = () => {
    const { products, productsLoading, productsError } = useGetProducts();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   console.log("products", products);
-
    if (productsLoading) {
       return <Loading />;
    }
@@ -43,7 +41,6 @@ const Shop = () => {
             sx={{ m: 2 }}
          >
             {products?.map((product) => {
-               // console.log("product", product);
                return (
                   <Box
                      sx={{

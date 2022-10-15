@@ -13,7 +13,7 @@ const LayoutMain = styled.main`
 const Layout = ({ children }) => {
    const { data: session, status } = useSession()
    const loading = status === "loading"
-   // console.log("session", session)
+
    return (
       <>
          <Banner />

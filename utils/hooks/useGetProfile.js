@@ -7,6 +7,8 @@ const useGetProfile = () => {
 
    const { data, error } = useSWR(`/api/profile/${session?.user?.sub}`);
 
+   console.log('data', data)
+
    const profile = {
       email: data?.preferredEmail ?? data?.email,
       phone: data?.preferredPhone ?? data?.phoneNumber,

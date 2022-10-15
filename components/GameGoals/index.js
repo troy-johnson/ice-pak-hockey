@@ -46,8 +46,6 @@ const GameGoals = ({
       },
    ];
 
-   console.log("goals", { goalsByPeriod, goalsSorted })
-
    if (goalsSorted?.filter((goal) => goal.period === 4).length >= 1) {
       goalsByPeriod.push({
          period: "OT",

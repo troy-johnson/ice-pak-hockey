@@ -1,5 +1,5 @@
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../../config";
+import { db, prisma } from "../../../config";
 
 const stateCodeToFullName = (code) => {
    const data = {
@@ -66,14 +66,17 @@ const stateCodeToFullName = (code) => {
 
 const ordersHandler = async (req, res) => {
    const { id } = req.query;
-   // console.log("orderId", id);
-
-   console.log("request", req.query, req.method);
 
    switch (req.method) {
       case "GET":
          try {
-            const orderResult = await getDoc(doc(db, "orders", id));
+            // const orderResult = await getDoc(doc(db, "orders", id));
+
+            const orderResult = await prisma.orders.findUnique({
+               where: {
+                  id
+               }
+            })
 
             const orderData = orderResult.data();
 
@@ -85,8 +88,6 @@ const ordersHandler = async (req, res) => {
          break;
       case "POST":
          const orderResult = await getDoc(doc(db, "orders", id));
-
-         console.log("orderResult", orderResult.data());
 
          const orderData = orderResult.data();
 
@@ -187,8 +188,6 @@ const ordersHandler = async (req, res) => {
             });
 
             const data = await result.json();
-
-            console.log("order data", data);
 
             if (data.code === 200) {
                await updateDoc(doc(db, "orders", orderData.referenceId), {

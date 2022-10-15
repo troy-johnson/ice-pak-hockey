@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 
 const seasonStatsHandler = async (req, res) => {
    const { id } = req.query;
-   console.log("id", id);
 
    switch (req.method) {
       case "GET":

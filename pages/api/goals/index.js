@@ -19,8 +19,6 @@ const goalsHandler = async (req, res) => {
                },
             });
 
-            console.log("goal body", req.body);
-
             return res.status(200).json({ ...req.body });
          } catch (error) {
             console.log("error", error);

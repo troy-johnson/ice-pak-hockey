@@ -1,5 +1,4 @@
 const editSeason = async (data) => {
-   // console.log("EDIT SEASON", {id: data.id, ...data})
    const response = await fetch(`/api/seasons/${data.id}`, {
       method: "PUT",
       mode: "cors",

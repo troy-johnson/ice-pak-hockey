@@ -115,7 +115,6 @@ const Team = () => {
    ];
 
    const onSubmit = (data) => {
-      // console.log(data);
 
       try {
          if (isValid) {
@@ -125,9 +124,7 @@ const Team = () => {
          } else {
             setFormErrors(true);
          }
-      } catch (error) {
-         // console.log("error", error);
-      }
+      } catch (error) {}
    };
 
    const handleClickOpen = () => {
@@ -149,8 +146,6 @@ const Team = () => {
       });
       setOpen(false);
    };
-
-   console.log("players", players);
 
    if (playersLoading) {
       return <Loading />;

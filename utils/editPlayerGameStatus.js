@@ -1,5 +1,4 @@
 const editGameRoster = async (data) => {
-   // console.log("data", data)
    const response = await fetch(`/api/player-status`, {
       method: "PUT",
       mode: "cors",

@@ -6,8 +6,6 @@ const useGetAllGames = () => {
    const isError = error
    const isLoading = !data && !error;
 
-   console.log('data', data)
-
    return {
       allGames: data,
       allGamesLoading: isLoading,

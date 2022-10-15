@@ -46,8 +46,6 @@ const UpsertPenalty = ({
       },
    });
 
-   console.log('penalty', penalty)
-
    const team = watch("team");
 
    const handleClose = () => {
@@ -87,7 +85,6 @@ const UpsertPenalty = ({
          setSnackbar({ open: true, type: "success", message: "Penalty successfully updated!" });
          mutate(`/api/games/${penalty?.id}`);
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

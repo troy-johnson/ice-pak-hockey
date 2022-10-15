@@ -59,7 +59,6 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
-      // console.log("data", { ...data, date: dayjs(data?.date).format() });
       try {
          if (gameAction === "add") {
             addGame({
@@ -87,7 +86,6 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
             message: `Game successfully ${gameAction === "add" ? "added" : "updated"}!`,
          });
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -114,11 +112,6 @@ const UpsertGame = ({ gameAction = "add", close, open, game, setSnackbar }) => {
 
       return 0;
    };
-
-   console.log("seasons", {
-      seasons,
-      sorted: seasons?.sort((a, b) => dayjs(b.endDate).unix() - dayjs(a.endDate).unix()),
-   });
 
    const seasonOptions = seasons
       ?.sort((a, b) => dayjs(a.endDate).isAfter(dayjs(b.endDate)))

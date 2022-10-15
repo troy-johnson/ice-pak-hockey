@@ -1,5 +1,4 @@
-import { collection, addDoc, getDoc, getDocs, setDoc, Timestamp, doc } from "firebase/firestore";
-import { db, prisma } from "../../../config";
+import { prisma } from "../../../config";
 
 const gamesHandler = async (req, res) => {
    switch (req.method) {
@@ -10,8 +9,6 @@ const gamesHandler = async (req, res) => {
                   ...req.body,
                },
             });
-
-            console.log("createGame", createGame)
 
             await prisma.seasons.update({
                where: { id: req.body.seasonId },
@@ -24,7 +21,6 @@ const gamesHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
             return res.status(400).send(error);
          }
       case "GET":
@@ -36,6 +32,7 @@ const gamesHandler = async (req, res) => {
                   locationId: true,
                   seasonId: true,
                   opponentId: true,
+                  roster: true,
                   goals: {
                      select: {
                         id: true,
@@ -89,7 +86,6 @@ const gamesHandler = async (req, res) => {
                return res.status(200).json(gameInfo);
             }
          } catch (error) {
-            console.log("all games error", error);
             return res.status(400).send(error);
          }
    }

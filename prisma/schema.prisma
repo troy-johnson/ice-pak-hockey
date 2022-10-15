@@ -22,7 +22,6 @@ model games {
   locationId         String?     @db.Uuid
   seasonId           String?     @db.Uuid
   opponentId         String?     @db.Uuid
-  rosterArr          String[]    @db.Uuid
   locations          locations?  @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   teams              teams?      @relation(fields: [opponentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   seasons            seasons?    @relation(fields: [seasonId], references: [id], onDelete: NoAction, onUpdate: NoAction)

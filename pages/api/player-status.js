@@ -47,7 +47,6 @@ const playerStatusHandler = async (req, res) => {
 
          return res.status(200).json({ message: "Player successfully rostered." });
       } catch (error) {
-         // console.log("error", error);
          return res.status(400).send(error);
       }
    } else {
@@ -63,7 +62,6 @@ const playerStatusHandler = async (req, res) => {
 
          return res.status(200).json({ message: "Player successfully scratched." });
       } catch (error) {
-         // console.log("error", error);
          return res.status(400).send(error);
       }
    }

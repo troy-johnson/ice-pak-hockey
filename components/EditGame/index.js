@@ -14,8 +14,6 @@ const EditGame = ({ game, onClose, open }) => {
    const { mutate } = useSWRConfig();
 
    const onSubmit = (data) => {
-      // console.log(data);
-
       try {
          editGame(data);
          mutate(`/api/games/${game?.gameId}`, [...players, data], true);

@@ -103,8 +103,6 @@ const gameHandler = async (req, res) => {
                },
             });
 
-            // console.log("gameData", gameData)
-
             const icePakData = await prisma.teams.findUnique({
                where: {
                   id: "3683b632-c5c3-4e97-a7d4-6002a72839e1",
@@ -186,8 +184,6 @@ const gameHandler = async (req, res) => {
                }
             }
 
-            // console.log("gameData", gameData);
-            // console.log("rosterData", { rosterData, length: rosterData.length });
 
             const gameInfo = {
                ...gameData,
@@ -207,11 +203,9 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).json(gameInfo);
          } catch (error) {
-            console.log("gameInfo error", error);
             return res.status(400).send(error);
          }
       case "PUT":
-         console.log("game update", { id, body: req.body });
          try {
             await prisma.games.update({
                where: {
@@ -224,7 +218,6 @@ const gameHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
             return res.status(400).send(error);
          }
       case "DELETE":

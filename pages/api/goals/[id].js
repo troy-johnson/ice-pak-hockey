@@ -5,7 +5,6 @@ const goalHandler = async (req, res) => {
 
    switch (req.method) {
       case "GET":
-         console.log("id", id);
 
          try {
             const goal = prisma.goals.findUnique({ where: { id } });
@@ -31,8 +30,6 @@ const goalHandler = async (req, res) => {
          }
       case "DELETE":
          try {
-            console.log("id", id)
-
             await prisma.goals.delete({
                where: { id },
             });

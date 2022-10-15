@@ -85,14 +85,10 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
 
    const standings = currentStandings;
 
-   // console.log("season type", seasonType);
-
    const cells =
       seasonType === "Playoffs"
          ? ["Team", "Result", "W", "L", "GF", "GA"]
          : ["Team", "GP", "W", "L", "OTL", "P", "GF", "GA", "PIM"];
-
-   // console.log('teams', {currentStandings, opponents })
 
    return (
       <>

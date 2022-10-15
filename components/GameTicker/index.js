@@ -45,10 +45,7 @@ const GameTicker = () => {
          desktop ? desktopSlice[1] : mobileSlice[1]
       )
       .map((game) => {
-         console.log("game", game);
-
          const logo = allGames?.teamsData?.filter((team) => team.id === game?.teams?.id)[0]?.logo;
-         console.log("gTS", { ...game, teams: { ...game.teams, logo } })
          return { ...game, teams: { ...game.teams, logo } };
       });
 
@@ -59,8 +56,6 @@ const GameTicker = () => {
          {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
       </Stack>
    );
-
-   console.log("allGames", { allGames, gamesToShow });
 
    const icePakGoals = (game) => game.goals.filter((goal) => goal.team === "Ice Pak").length;
    const opponentGoals = (game) => game.goals.filter((goal) => goal.team !== "Ice Pak").length;
