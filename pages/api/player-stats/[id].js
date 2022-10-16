@@ -84,6 +84,8 @@ const playerStatsHandler = async (req, res) => {
                },
             });
 
+            const seasonsData = await prisma.seasons.findMany({})
+
             console.log("player stats", { playerData, goalsData, gamesData });
 
             // let seasonData = [];
@@ -116,14 +118,14 @@ const playerStatsHandler = async (req, res) => {
             //    opponentsData.push({ opponentId: opponent.id, ...opponent.data() })
             // );
 
-            // const seasonYear = (season) => season?.name.split(" ")[1];
+            const seasonYear = (season) => season?.name.split(" ")[1];
 
-            // const seasonBypassStats = seasonData?.filter((season) => !!season.statBypass);
+            const seasonBypassStats = seasonsData?.filter((season) => !!season.statBypass);
 
             // // console.log("seasonBypassStats", seasonBypassStats);
 
-            // let seasonStats = seasonData
-            //    .sort((a, b) => dayjs.unix(b.endDate.seconds) - dayjs.unix(a.endDate.seconds))
+            // let seasonStats = seasonsData
+            //    .sort((a, b) => dayjs(b.endDate) - dayjs(a.endDate))
             //    .map((season) => {
             //       return {
             //          ...season,
@@ -135,26 +137,26 @@ const playerStatsHandler = async (req, res) => {
             //          gamesPlayed:
             //             gamesData.filter(
             //                (game) =>
-            //                   game.seasonId === season.seasonId &&
+            //                   game.seasonId === season.id &&
             //                   game?.roster?.includes(id) &&
-            //                   dayjs().isAfter(dayjs.unix(game.date.seconds))
+            //                   dayjs().isAfter(dayjs(game.date))
             //             ).length +
             //             (seasonBypassStats
             //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.seasonId
+            //                   (seasonBypass) => seasonBypass.seasonId === season.id
             //                )?.[0]
             //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]
             //                ?.gamesPlayed ?? 0),
             //          goals:
-            //             careerGoals.filter((goal) => season?.games?.includes(goal.gameId)).length +
+            //             goalsData.filter((goal) => goal.seasonId === id && goal.playerId === id).length +
             //             (seasonBypassStats
             //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.seasonId
+            //                   (seasonBypass) => seasonBypass.seasonId === season.id
             //                )?.[0]
             //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]?.goals ??
             //                0),
             //          assists:
-            //             careerAssists.filter((goal) => season?.games?.includes(goal.gameId))
+            //             goalsData.filter((goal) => season?.games?.includes(goal.gameId))
             //                .length +
             //             (seasonBypassStats
             //                ?.filter(
@@ -163,8 +165,7 @@ const playerStatsHandler = async (req, res) => {
             //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]?.assists ??
             //                0),
             //          penaltyMinutes:
-            //             careerPenalties
-            //                .filter((penalty) => season?.games?.includes(penalty.gameId))
+            //             playerData?.penalties?.filter((penalty) => season?.games?.includes(penalty.gameId))
             //                ?.reduce(
             //                   (sum, currentValue) => sum + parseFloat(currentValue.minutes),
             //                   0
@@ -177,6 +178,8 @@ const playerStatsHandler = async (req, res) => {
             //                ?.penaltyMinutes ?? 0),
             //       };
             //    });
+
+            // TODO: Fix season by season stats
 
             const gameLog = gamesData
                .sort((a, b) => dayjs(b.date) - dayjs(a.date))
@@ -195,8 +198,6 @@ const playerStatsHandler = async (req, res) => {
                         ?.reduce((sum, currentValue) => sum + parseFloat(currentValue.minutes), 0),
                   };
                });
-
-            console.log("gameLog", gameLog);
 
             const careerStats = {
                gamesPlayed: gamesData.length,
