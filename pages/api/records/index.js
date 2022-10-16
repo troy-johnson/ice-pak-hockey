@@ -38,8 +38,6 @@ const recordsHandler = async (req, res) => {
          };
       });
 
-      console.log("goals", { statList });
-
       return res.status(200).json(statList);
    } catch (error) {
       console.log(error);

@@ -15,7 +15,7 @@ const GameTicker = () => {
    useEffect(() => {
       if (!allGamesLoading && !allGamesError) {
          const nextGame = allGames?.gamesData?.findIndex((game) =>
-            dayjs.unix(game.date.seconds).isAfter(dayjs())
+            dayjs(game.date).isAfter(dayjs())
          );
 
          if (nextGame !== -1) {

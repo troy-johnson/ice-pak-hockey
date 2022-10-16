@@ -184,8 +184,8 @@ const Team = () => {
                      ?.filter((player) => !player?.doNotDisplay)
                      ?.map((player) => (
                         <Link
-                           href={`/player/${player.firebaseId}`}
-                           key={player?.firebaseId || `${player?.firstName}${player?.lastName}`}
+                           href={`/player/${player.id}`}
+                           key={player?.id || `${player?.firstName}${player?.lastName}`}
                            passHref
                         >
                            <TableRow>
