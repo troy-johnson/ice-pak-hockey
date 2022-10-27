@@ -60,7 +60,7 @@ const UpsertPenalty = ({
          if (penaltyAction === "add") {
             addPenalty({
                gameId: data.gameId,
-               minutes: data.minutes.toString(),
+               minutes: parseFloat(data.minutes),
                penaltyType: data.penaltyType,
                period: Number(data.period),
                playerId: data.team === "Ice Pak" ? data.playerId : null,
@@ -75,7 +75,7 @@ const UpsertPenalty = ({
          } else if (penaltyAction === "edit") {
             editPenalty({
                ...data,
-               minutes: data.minutes.toString(),
+               minutes: data.minutes,
                period: Number(data.period),
                playerId: data.team === opponentName ? null : data.playerId,
                teamId: data.team === opponentName ? opponentId : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
