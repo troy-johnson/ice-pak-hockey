@@ -45,6 +45,11 @@ const playerStatsHandler = async (req, res) => {
                         gameId: true,
                         penaltyType: true,
                         minutes: true,
+                        games: {
+                           select: {
+                              seasonId: true,
+                           },
+                        },
                      },
                   },
                },
@@ -67,6 +72,11 @@ const playerStatsHandler = async (req, res) => {
                   teamId: true,
                   id: true,
                   assists: true,
+                  games: {
+                     select: {
+                        seasons: true,
+                     },
+                  },
                },
             });
 
@@ -84,15 +94,56 @@ const playerStatsHandler = async (req, res) => {
                },
             });
 
-            const seasonsData = await prisma.seasons.findMany({})
+            const seasonsData = await prisma.seasons.findMany({
+               select: {
+                  id: true,
+                  leagueName: true,
+                  name: true,
+                  type: true,
+                  games: true,
+                  endDate: true,
+               },
+            });
 
             console.log("player stats", { playerData, goalsData, gamesData });
 
             // let seasonData = [];
 
-            // seasonResult.forEach((season) =>
-            //    seasonData.push({ seasonId: season.id, ...season.data() })
-            // );
+            const seasonYear = (season) => season?.name.split(" ")[1];
+
+            const seasonStats = seasonsData
+               ?.sort((a, b) => dayjs(b.endDate) - dayjs(a.endDate))
+               ?.map((season) => {
+                  return {
+                     assists: goalsData.filter(
+                        (goal) =>
+                           goal?.games?.seasons?.id === season.id && goal?.assists?.includes(id)
+                     )?.length,
+                     gamesPlayed: gamesData.filter(
+                        (game) =>
+                           game.roster.includes(id) &&
+                           game.seasonId === season.id &&
+                           dayjs().isAfter(dayjs(game.date))
+                     )?.length,
+                     goals: goalsData.filter(
+                        (goal) => goal?.games?.seasons?.id === season.id && goal.playerId === id
+                     )?.length,
+                     id: season.id,
+                     leagueName: season.leagueName,
+                     name: season.name,
+                     peanltyMinutes: playerData?.penalties
+                        ?.filter((penalty) => penalty?.games?.seasonId === season.id)
+                        ?.reduce((sum, currentValue) => sum + parseFloat(currentValue.minutes), 0),
+                     shortYear: `${season?.name.split(" ")[0]} ${
+                        seasonYear(season).includes("-")
+                           ? seasonYear(season).slice(2, 4) + "-" + seasonYear(season).slice(6 - 8)
+                           : seasonYear(season)
+                     }`,
+                     type: season.type,
+                  };
+               });
+
+            console.log("seasonStats", seasonStats);
 
             // let goalData = [];
 
@@ -118,9 +169,9 @@ const playerStatsHandler = async (req, res) => {
             //    opponentsData.push({ opponentId: opponent.id, ...opponent.data() })
             // );
 
-            const seasonYear = (season) => season?.name.split(" ")[1];
+            // const seasonYear = (season) => season?.name.split(" ")[1];
 
-            const seasonBypassStats = seasonsData?.filter((season) => !!season.statBypass);
+            // const seasonBypassStats = seasonsData?.filter((season) => !!season.statBypass);
 
             // // console.log("seasonBypassStats", seasonBypassStats);
 
@@ -211,7 +262,7 @@ const playerStatsHandler = async (req, res) => {
             const finalResult = {
                player: playerData,
                careerStats,
-               seasonStats: [],
+               seasonStats,
                gameLog,
             };
 
