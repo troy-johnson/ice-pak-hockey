@@ -107,8 +107,6 @@ const playerStatsHandler = async (req, res) => {
 
             console.log("player stats", { playerData, goalsData, gamesData });
 
-            // let seasonData = [];
-
             const seasonYear = (season) => season?.name.split(" ")[1];
 
             const seasonStats = seasonsData
@@ -131,7 +129,7 @@ const playerStatsHandler = async (req, res) => {
                      id: season.id,
                      leagueName: season.leagueName,
                      name: season.name,
-                     peanltyMinutes: playerData?.penalties
+                     penaltyMinutes: playerData?.penalties
                         ?.filter((penalty) => penalty?.games?.seasonId === season.id)
                         ?.reduce((sum, currentValue) => sum + parseFloat(currentValue.minutes), 0),
                      shortYear: `${season?.name.split(" ")[0]} ${
@@ -143,97 +141,9 @@ const playerStatsHandler = async (req, res) => {
                   };
                });
 
-            console.log("seasonStats", seasonStats);
-
-            // let goalData = [];
-
-            // goalsResult.forEach((goal) => goalData.push({ goalId: goal.id, ...goal.data() }));
-
-            // let penaltyData = [];
-
-            // penaltiesResult.forEach((penalty) =>
-            //    penaltyData.push({ penaltyId: penalty.id, ...penalty.data() })
-            // );
-
-            // // let gamesData = [];
-
-            // gamesResult.forEach((game) => gamesData.push({ gameId: game.id, ...game.data() }));
-
-            // let careerGoals = goalData?.filter((goal) => goal.playerId === id);
-            // let careerAssists = goalData?.filter((goal) => goal?.assists?.includes(id));
-            // let careerPenalties = penaltyData.filter((penalty) => penalty.playerId === id);
-
-            // let opponentsData = [];
-
-            // opponentsResult.forEach((opponent) =>
-            //    opponentsData.push({ opponentId: opponent.id, ...opponent.data() })
-            // );
-
-            // const seasonYear = (season) => season?.name.split(" ")[1];
-
-            // const seasonBypassStats = seasonsData?.filter((season) => !!season.statBypass);
-
-            // // console.log("seasonBypassStats", seasonBypassStats);
-
-            // let seasonStats = seasonsData
-            //    .sort((a, b) => dayjs(b.endDate) - dayjs(a.endDate))
-            //    .map((season) => {
-            //       return {
-            //          ...season,
-            //          shortYear: `${season?.name.split(" ")[0]} ${
-            //             seasonYear(season).includes("-")
-            //                ? seasonYear(season).slice(2, 4) + "-" + seasonYear(season).slice(6 - 8)
-            //                : seasonYear(season)
-            //          }`,
-            //          gamesPlayed:
-            //             gamesData.filter(
-            //                (game) =>
-            //                   game.seasonId === season.id &&
-            //                   game?.roster?.includes(id) &&
-            //                   dayjs().isAfter(dayjs(game.date))
-            //             ).length +
-            //             (seasonBypassStats
-            //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.id
-            //                )?.[0]
-            //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]
-            //                ?.gamesPlayed ?? 0),
-            //          goals:
-            //             goalsData.filter((goal) => goal.seasonId === id && goal.playerId === id).length +
-            //             (seasonBypassStats
-            //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.id
-            //                )?.[0]
-            //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]?.goals ??
-            //                0),
-            //          assists:
-            //             goalsData.filter((goal) => season?.games?.includes(goal.gameId))
-            //                .length +
-            //             (seasonBypassStats
-            //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.seasonId
-            //                )?.[0]
-            //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]?.assists ??
-            //                0),
-            //          penaltyMinutes:
-            //             playerData?.penalties?.filter((penalty) => season?.games?.includes(penalty.gameId))
-            //                ?.reduce(
-            //                   (sum, currentValue) => sum + parseFloat(currentValue.minutes),
-            //                   0
-            //                ) +
-            //             (seasonBypassStats
-            //                ?.filter(
-            //                   (seasonBypass) => seasonBypass.seasonId === season.seasonId
-            //                )?.[0]
-            //                ?.statBypass?.filter((player) => player.playerId === id)?.[0]
-            //                ?.penaltyMinutes ?? 0),
-            //       };
-            //    });
-
-            // TODO: Fix season by season stats
-
             const gameLog = gamesData
                .sort((a, b) => dayjs(b.date) - dayjs(a.date))
+               .filter(game => dayjs().isAfter(dayjs(game.date)))
                .map((game) => {
                   return {
                      date: game.date,
