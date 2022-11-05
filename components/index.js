@@ -5,6 +5,7 @@ export { default as ControlledCheckbox } from "./ControlledCheckbox";
 export { default as ControlledInput } from "./ControlledInput";
 export { default as ControlledRadio } from "./ControlledRadio";
 export { default as ControlledSelect } from "./ControlledSelect";
+export { default as ControlledSwitch } from "./ControlledSwitch";
 export { default as Disclaimer  } from "./Disclaimer";
 export { default as EditGame } from "./EditGame";
 export { default as EditPlayer } from "./EditPlayer";

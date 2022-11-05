@@ -15,6 +15,7 @@ export { default as useGetPost } from "./useGetPost";
 export { default as useGetProductData } from "./useGetProductData";
 export { default as useGetProducts } from "./useGetProducts";
 export { default as useGetProfile } from "./useGetProfile";
+export { default as useGetSeason } from "./useGetSeason";
 export { default as useGetSeasons } from "./useGetSeasons";
 export { default as useGetSeasonSchedule } from "./useGetSeasonSchedule";
 export { default as useGetSeasonStats } from "./useGetSeasonStats";

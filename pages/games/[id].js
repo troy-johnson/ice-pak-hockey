@@ -578,6 +578,7 @@ const Game = () => {
                      onClose={() => setEditRosterDialog(false)}
                      close={() => setEditRosterDialog(false)}
                      open={editRosterDialog}
+                     seasonId={game?.seasonId}
                      setSnackbar={setSnackbar}
                   />
                ) : null}

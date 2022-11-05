@@ -1,269 +1,39 @@
-import { doc, updateDoc, collection, addDoc, getDocs, documentId } from "firebase/firestore";
-import { db, prisma } from "../../config";
+import { prisma } from "../../config";
 import dayjs from "dayjs";
 import { batch } from "react-redux";
 
 const migrateData = async () => {
-   const seasonsQuery = await getDocs(collection(db, "seasons"));
-   const leaguesQuery = await getDocs(collection(db, "leagues"));
-   const locationsQuery = await getDocs(collection(db, "locations"));
-   const gamesQuery = await getDocs(collection(db, "games"));
-   const opponentsQuery = await getDocs(collection(db, "opponents"));
-   const playersQuery = await getDocs(collection(db, "players"));
-   const penaltiesQuery = await getDocs(collection(db, "penalties"));
-   const goalsQuery = await getDocs(collection(db, "goals"));
-   const ordersQuery = await getDocs(collection(db, "orders"));
-
-   let seasons = [];
-   let leagues = [];
-   let locations = [];
-   let games = [];
-   let opponents = [];
-   let players = [];
-   let penalties = [];
-   let goals = [];
-   let orders = [];
-
-   seasonsQuery.forEach((doc) => {
-      seasons.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
+   await prisma.seasons.update({
+      where: {
+         id: "91385e9d-638b-4b32-92b4-382921e7d8fd",
+      },
+      data: {
+         roster: [
+            "de29cb3c-ef2a-4d57-85f3-5bed1d8de590",
+            "c76eac51-7107-4f26-b12a-a7603e9bfb1a",
+            "6aca8aef-47b6-413f-ad0a-648e36904100",
+            "7a324a2a-6202-42ab-bf8a-031a1c16dc67",
+            "6002f0aa-676b-4592-be6e-f84e06f33087",
+            "226a7aba-886a-4c91-bf00-f09193174733",
+            "329c924a-96f8-4a4b-bb56-40345cf59a43",
+            "13112f91-c586-488e-9355-aed047c7ca5f",
+            "b3c6ef3f-f6ac-4860-9294-512ccba99bdb",
+            "4a4a603c-5139-4030-aed1-8c0629cda73b",
+            "f9585060-105f-4ec1-b528-c9dfaa9ca8e8",
+            "cf42ed3a-214e-447b-aa0e-dd5e2520069a",
+            "a47502b3-1db3-4465-9682-ef042259ecce",
+            "feb7db66-05d3-4fc0-be84-a5e2772ff305",
+            "048a353d-1a9c-4c5e-b0e5-b034aa15b2c7",
+            "b7c925f3-8f31-455e-a402-41dbd8d42bf8",
+            "7f22d8f9-8d11-4119-a86e-3362c76f0089",
+            "30f91440-f727-4744-b04b-1cb07c7eebe0",
+            "a95088fb-7f22-4392-9a9d-93b17e849e8d",
+            "420ea60d-326a-4e83-935f-6fd675211e2a",
+            "057f3718-8bd1-486c-87ae-3c0666a8d6de",
+            "6aca0d5e-2896-4ea7-b42c-9d683ff8adce",
+         ],
+      },
    });
-
-   leaguesQuery.forEach((doc) => {
-      leagues.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   locationsQuery.forEach((doc) => {
-      locations.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   gamesQuery.forEach((doc) => {
-      games.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   opponentsQuery.forEach((doc) => {
-      opponents.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   playersQuery.forEach((doc) => {
-      players.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   penaltiesQuery.forEach((doc) => {
-      penalties.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   goalsQuery.forEach((doc) => {
-      goals.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   ordersQuery.forEach((doc) => {
-      orders.push({
-         ...doc.data(),
-         firebaseId: doc.id,
-      });
-   });
-
-   // Games
-   // for (const el of games) {
-   //    await prisma.games.create({
-   //       data: {
-   //          id: el.gameGuid,
-   //          date: el.pgDate,
-   //          embedLink: el.embedLink,
-   //          video: el.video,
-   //          roster: el.rosterGuids,
-   //          locationId: el.locationGuid,
-   //          seasonId: el.seasonGuid,
-   //          opponentId: el.opponentGuid,
-   //          firebaseLocationId: el.locationId,
-   //          firebaseOpponentId: el.opponentId,
-   //          firebaseSeasonId: el.seasonId,
-   //          firebaseRoster: el.roster,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Goals
-   // for (const el of goals) {
-   //    await prisma.goals.create({
-   //       data: {
-   //          id: el.goalGuid,
-   //          gameId: el.gameGuid,
-   //          assists: el.assistGuids,
-   //          teamId: el.teamGuid,
-   //          time: el.time,
-   //          ytLink: el.ytLink,
-   //          playerId: el.playerGuid,
-   //          period: el.period,
-   //          team: el.team,
-   //          firebaseTeamId: el.opponentId,
-   //          firebaseGameId: el.gameId,
-   //          firebaseAssists: el.assists,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Leagues
-   // for (const el of leagues) {
-   //    await prisma.leagues.create({
-   //       data: {
-   //          id: el.leagueGuid,
-   //          name: el.name,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Locations
-   // for (const el of locations) {
-   //    await prisma.locations.create({
-   //       data: {
-   //          id: el.locationGuid,
-   //          code: el.code,
-   //          googleMapsLink: el.googleMapsLink,
-   //          name: el.name,
-   //          googlePlusCode: el.googlePlusCode,
-   //          googlePhotoReference: el.googlePhotoReference,
-   //          googlePlaceId: el.googlePlaceId,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Orders
-   // for (const el of orders) {
-   //    await prisma.orders.create({
-   //       data: {
-   //          id: el.orderGuid,
-   //          orderAmount: el.orderAmount,
-   //          orderStatus: el.orderStatus,
-   //          orderedItems: el.orderedItems,
-   //          paymentStatus: el.paymentStatus,
-   //          referenceId: el.referenceId,
-   //          shippingStatus: el.shippingStatus,
-   //          status: el.status,
-   //          user: el.user,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Penalties
-   // for (const el of penalties) {
-   //    await prisma.penalties.create({
-   //       data: {
-   //          id: el.penaltyGuid,
-   //          gameId: el.gameGuid,
-   //          minutes: el.minutes.toString(),
-   //          teamId: el.teamGuid,
-   //          penaltyType: el.penaltyType,
-   //          period: el.period,
-   //          playerId: el.playerGuid,
-   //          team: el.team,
-   //          time: el.time,
-   //          ytLink: el.ytLink,
-   //          firebasePlayerId: el.playerId,
-   //          firebaseGameId: el.gameId,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Players
-   // for (const el of players) {
-   //    await prisma.players.create({
-   //       data: {
-   //          id: el.playerGuid,
-   //          email: el.email,
-   //          firstName: el.firstName,
-   //          lastName: el.lastName,
-   //          hometown: el.hometown || el.homeTown,
-   //          image: el.image,
-   //          nickname: el.nickname,
-   //          number: parseInt(el.number) || null,
-   //          phoneNumber: el.phoneNumber,
-   //          position: el.position,
-   //          roles: el.roles,
-   //          auth0AccountId: el.auth0AccountId,
-   //          born: null,
-   //          favoriteNhlTeam: el.favoriteNhlTeam,
-   //          favoritePlayer: el.favoritePlayer,
-   //          gameDayNotifications: el.gameDayNotifications,
-   //          jerseySize: el.jerseySize,
-   //          preferredEmail: el.preferredEmail,
-   //          preferredJerseyNumber: el.preferredJerseyNumber,
-   //          preferredPhone: el.preferredPhone,
-   //          tShirtSize: el.tShirtSize,
-   //          handedness: el.handedness,
-   //          height: el.height,
-   //          notifications: el.notifications,
-   //          jerseyNumber: parseInt(el.jerseyNumber) || null,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Seasons
-   // for (const el of seasons) {
-   //    await prisma.seasons.create({
-   //       data: {
-   //          id: el.seasonGuid,
-   //          endDate: el.pgEndDate,
-   //          games: el.gamesGuids,
-   //          firebaseGames: el.games,
-   //          firebaseLeagueId: el.leagueId,
-   //          leagueId: el.leagueGuid,
-   //          leagueName: el.leagueName,
-   //          name: el.name,
-   //          startDate: el.pgStartDate,
-   //          roster: el.rosterGuids,
-   //          firebaseRoster: el.roster,
-   //          standings: el.standings,
-   //          statBypass: el.statBypass,
-   //          type: el.type,
-   //          standingsLink: el.standingsLink,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
-
-   // Teams
-   // for (const el of opponents) {
-   //    await prisma.teams.create({
-   //       data: {
-   //          id: el.opponentGuid,
-   //          logo: el.logo,
-   //          teamName: el.teamName,
-   //          firebaseId: el.firebaseId,
-   //       },
-   //    });
-   // }
 };
 
 const dataMigrationHandler = async (req, res) => {
@@ -371,24 +141,7 @@ const dataMigrationHandler = async (req, res) => {
       },
    ];
 
-   // const data = await addDoc(collection(db, "games"), {
-   //    date: new Date("7/19/22 8:45 PM"),
-   //    embedLink: "",
-   //    goals: [],
-   //    locationId: "gxvZcjH4pjfc6WUroHSE",
-   //    opponentId: "2eixQWewhDLL3kJKn1yS",
-   //    opponentName: "Murder Hornets",
-   //    penalties: [],
-   //    roster: [],
-   //    seasonId: "cdLeQs6Y8Q5fjY0Fx7jI",
-   //    video: ""
-   // });
-
    try {
-      // const ref = doc(db, "seasons", "");
-
-      // await updateDoc(ref, { pgDate, pgLocationId, pgOpponentId, pgSeasonId, pgRoster })
-
       await migrateData();
 
       return res.status(200).json({ message: "success" });
