@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import dayjs from "dayjs";
+import styled from "@emotion/styled";
 import {
    Divider,
    FormControl,
@@ -18,9 +19,21 @@ import Tree from "react-d3-tree";
 import { Loading, PageContainer, StandingsTable } from "../components";
 import { useGetSeasons } from "../utils";
 
+const TeamStack = styled(Stack)`
+   &:before {
+      background-image: url(${(props) => props.logo});
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      opacity: 0.25;
+   }
+
+   opacity: 1;
+`;
+
 const Standings = () => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
-   const [seasonId, setSeasonId] = useState(1);
+   const [seasonId, setSeasonId] = useState("91385e9d-638b-4b32-92b4-382921e7d8fd");
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -31,14 +44,14 @@ const Standings = () => {
       });
 
    const handleSeasonChange = (e) => {
-      setSeasonId(Number(e.target.value));
+      setSeasonId(e.target.value);
    };
 
    useEffect(() => {
       if (!seasonsLoading && !seasonsError && seasons.length > 0) {
          setSeasonId(
             seasons.sort(
-               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
+               (a, b) => dayjs(b.startDate) - dayjs(a.startDate)
             )?.[0].id
          );
       }
@@ -78,8 +91,12 @@ const Standings = () => {
                id: 1,
                teamOne: "Ice Pak",
                teamOneGoals: 4,
+               teamOneLogo:
+                  "https://ilwuklresurtumqszppp.supabase.co/storage/v1/object/public/logos/icepak.png",
                teamTwo: "Murder Hornets",
                teamTwoGoals: 2,
+               teamTwoLogo:
+                  "https://ilwuklresurtumqszppp.supabase.co/storage/v1/object/public/logos/ratpack.png",
             },
             {
                id: 2,
@@ -180,7 +197,13 @@ const Standings = () => {
                               alignSelf: "center",
                            }}
                         >
-                           <Stack sx={{ alignItems: "flex-end", width: "100%" }}>
+                           <TeamStack
+                              sx={{
+                                 alignItems: "flex-end",
+                                 width: "100%"
+                              }}
+                              logo={game.teamOneLogo}
+                           >
                               <Typography
                                  variant={desktop ? "subtitle1" : "caption"}
                                  sx={{
@@ -205,7 +228,7 @@ const Standings = () => {
                               >
                                  {game.teamOneGoals}
                               </Typography>
-                           </Stack>
+                           </TeamStack>
                            <Stack
                               sx={{ justifyContent: "center", alignItems: "center", width: "50%" }}
                            >
@@ -222,7 +245,7 @@ const Standings = () => {
                                  vs.
                               </Typography>
                            </Stack>
-                           <Stack sx={{ width: "100%" }}>
+                           <TeamStack sx={{ width: "100%" }} logo={game.teamTwoLogo}>
                               <Typography
                                  variant={desktop ? "subtitle1" : "caption"}
                                  sx={{
@@ -247,7 +270,7 @@ const Standings = () => {
                               >
                                  {game.teamTwoGoals}
                               </Typography>
-                           </Stack>
+                           </TeamStack>
                         </Paper>
                      ))}
                   </>

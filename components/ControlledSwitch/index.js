@@ -21,16 +21,6 @@ const ControlledSwitch = ({
          defaultValue={false}
          rules={rules}
          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            // <FormControlLabel
-            //    disabled={disabled}
-            //    error={error}
-            //    margin="none"
-            //    required={required}
-            //    size="small"
-            //    fullWidth
-            //    variant={variant}
-            //    control={<Switch color="primary" />}
-            // >
             <FormGroup>
                <FormControlLabel
                   control={<Switch checked={checked} onChange={onChange} />}
