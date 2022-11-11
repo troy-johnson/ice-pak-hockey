@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import dayjs from "dayjs";
 import styled from "@emotion/styled";
 import {
@@ -21,13 +22,22 @@ import { useGetSeasons } from "../utils";
 
 const TeamStack = styled(Stack)`
    &:before {
+      content: "";
       background-image: url(${(props) => props.logo});
-      background-repeat: no-repeat;
-      background-position: center;
       background-size: cover;
-      opacity: 0.25;
+      background-position: center;
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      left: 0px;
+      opacity: 0.35;
    }
 
+   position: relative;
+   display: flex;
+   align-items: center;
+   justify-content: center;
    opacity: 1;
 `;
 
@@ -49,11 +59,7 @@ const Standings = () => {
 
    useEffect(() => {
       if (!seasonsLoading && !seasonsError && seasons.length > 0) {
-         setSeasonId(
-            seasons.sort(
-               (a, b) => dayjs(b.startDate) - dayjs(a.startDate)
-            )?.[0].id
-         );
+         setSeasonId(seasons.sort((a, b) => dayjs(b.startDate) - dayjs(a.startDate))?.[0].id);
       }
    }, [seasons]);
 
@@ -177,7 +183,8 @@ const Standings = () => {
                divider={<Divider orientation="horizontal" flexItem />}
                sx={{ ml: 2, mr: 2, mb: 2 }}
             >
-               {testStandings?.map((round) => (
+               Standings not found for selected season. Please select another season.
+               {/* {testStandings?.map((round) => (
                   <>
                      <Typography variant="h5" key={round.name}>
                         {round?.name}
@@ -198,14 +205,15 @@ const Standings = () => {
                            }}
                         >
                            <TeamStack
+                              direction="row"
                               sx={{
-                                 alignItems: "flex-end",
-                                 width: "100%"
+                                 justifyContent: "flex-end",
+                                 width: "100%",
                               }}
                               logo={game.teamOneLogo}
                            >
                               <Typography
-                                 variant={desktop ? "subtitle1" : "caption"}
+                                 variant={desktop ? "h6" : "subtitle1"}
                                  sx={{
                                     mt: 1,
                                     ml: 1,
@@ -217,7 +225,7 @@ const Standings = () => {
                                  {game.teamOne}
                               </Typography>
                               <Typography
-                                 variant="subtitle1"
+                                 variant="h5"
                                  sx={{
                                     mt: 1,
                                     ml: 1,
@@ -240,26 +248,19 @@ const Standings = () => {
                                     mr: 1,
                                     textTransform: "uppercase",
                                     letterSpacing: ".075rem",
+                                    textAlign: "center"
                                  }}
                               >
                                  vs.
                               </Typography>
                            </Stack>
-                           <TeamStack sx={{ width: "100%" }} logo={game.teamTwoLogo}>
+                           <TeamStack
+                              direction="row"
+                              sx={{ justifyContent: "flex-start", width: "100%" }}
+                              logo={game.teamTwoLogo}
+                           >
                               <Typography
-                                 variant={desktop ? "subtitle1" : "caption"}
-                                 sx={{
-                                    mt: 1,
-                                    ml: 1,
-                                    mr: 1,
-                                    textTransform: "uppercase",
-                                    letterSpacing: ".075rem",
-                                 }}
-                              >
-                                 {game.teamTwo}
-                              </Typography>
-                              <Typography
-                                 variant="subtitle1"
+                                 variant="h5"
                                  sx={{
                                     mt: 1,
                                     ml: 1,
@@ -270,11 +271,23 @@ const Standings = () => {
                               >
                                  {game.teamTwoGoals}
                               </Typography>
+                              <Typography
+                                 variant={desktop ? "h6" : "subtitle1"}
+                                 sx={{
+                                    mt: 1,
+                                    ml: 1,
+                                    mr: 1,
+                                    textTransform: "uppercase",
+                                    letterSpacing: ".075rem",
+                                 }}
+                              >
+                                 {game.teamTwo}
+                              </Typography>
                            </TeamStack>
                         </Paper>
                      ))}
                   </>
-               ))}
+               ))} */}
             </Stack>
          ) : (
             <StandingsTable currentStandings={standings} seasonType={seasonType} />
