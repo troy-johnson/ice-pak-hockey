@@ -362,7 +362,9 @@ const Game = () => {
                            <BoxScoreCell align="center">{row.periodOne}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.periodTwo}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.periodThree}</BoxScoreCell>
-                           {row.overTime ? <BoxScoreCell>{row.overTime}</BoxScoreCell> : null}
+                           {goalRows[0].overTime >= 1 || goalRows[1].overTime >= 1 ? (
+                              <BoxScoreCell align="center">{row.overTime}</BoxScoreCell>
+                           ) : null}
                            <BoxScoreCell align="center">{row.total}</BoxScoreCell>
                         </BoxScoreRow>
                      ))}
@@ -546,8 +548,12 @@ const Game = () => {
                         setUpsertPenaltyDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0]?.id}
-                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0].teamName}
+                     opponentId={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0]?.id
+                     }
+                     opponentName={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0].teamName
+                     }
                      open={upsertPenaltyDialog}
                   />
                ) : null}
@@ -566,8 +572,12 @@ const Game = () => {
                         setUpsertGoalDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0]?.id}
-                     opponentName={game?.teams?.filter(team => team.teamName !== "Ice Pak")?.[0].teamName}
+                     opponentId={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0]?.id
+                     }
+                     opponentName={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0].teamName
+                     }
                      open={upsertGoalDialog}
                   />
                ) : null}

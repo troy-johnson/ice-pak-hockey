@@ -93,7 +93,7 @@ const seasonStatsHandler = async (req, res) => {
 
             allPlayers.forEach((player) => {
                stats.push({
-                  playerId: player.playerId,
+                  id: player.id,
                   firstName: player.firstName,
                   lastName: player.lastName,
                   fullName: `${player.firstName} ${player.lastName}`,

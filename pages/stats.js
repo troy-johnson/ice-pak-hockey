@@ -155,6 +155,8 @@ const Stats = () => {
       return <div>An error occurred. Please try again.</div>;
    }
 
+   console.log("seasonStats", seasonStats);
+
    return (
       <PageContainer pageTitle="Season Stats" small>
          <FormControl sx={{ marginLeft: "15px", marginBottom: "15px", maxWidth: "350px" }}>
@@ -547,7 +549,7 @@ const Stats = () => {
                            )
                            ?.map((player) => (
                               <Link
-                                 href={`/player/${player.pgPlayerId}`}
+                                 href={`/player/${player?.id}`}
                                  key={player?.id || `${player?.firstName}${player?.lastName}`}
                                  passHref
                               >
