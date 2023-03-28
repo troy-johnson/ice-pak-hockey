@@ -1,20 +1,14 @@
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const playersHandler = async (req, res) => {
-   const result = await getDocs(collection(db, "players"));
+   try {
+      const players = await prisma.players.findMany();
 
-   // if (result.length) {
-   let players = [];
-
-   result.forEach((doc) => {
-      players.push({ ...doc.data(), firebaseId: doc.id });
-   });
-
-   return res.status(200).json(players);
-   // }
-
-   // return res.status(400).json(result);
+      return res.status(200).json(players);  
+   } catch (error) {
+      console.log(error)
+      return res.status(400).json(error); 
+   }
 };
 
 export default playersHandler;

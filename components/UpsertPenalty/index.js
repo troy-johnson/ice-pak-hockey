@@ -17,10 +17,11 @@ const InputWithMargin = styled(props => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 
-const MutatePenalty = ({
+const UpsertPenalty = ({
    penaltyAction = "add",
    close,
    gameId,
+   penaltyId,
    gameRoster,
    open,
    opponentId,
@@ -34,18 +35,18 @@ const MutatePenalty = ({
       defaultValues: {
          gameId: gameId,
          minutes: penaltyAction === "add" ? 2 : penalty?.minutes,
-         penaltyId: penaltyAction === "add" ? null : penalty?.penaltyId,
+         penaltyId: penaltyAction === "add" ? null : penalty?.id,
          penaltyType: penaltyAction === "add" ? "Tripping" : penalty?.penaltyType,
          period: penaltyAction === "add" ? 1 : penalty?.period,
          playerId: penaltyAction === "add" ? null : penalty?.playerId,
          time: penaltyAction === "add" ? "10:00" : penalty?.time,
-         team: penaltyAction === "add" ? opponentName : penalty?.team,
+         team: penaltyAction === "add" ? "Ice Pak" : penalty?.team,
+         teamId: penaltyAction === "add" ? "3683b632-c5c3-4e97-a7d4-6002a72839e1" : penalty?.teamId,
          ytLink: penaltyAction === "add" ? "" : penalty?.ytLink,
       },
    });
 
    const team = watch("team");
-   const playerId = watch("playerId");
 
    const handleClose = () => {
       reset({
@@ -59,28 +60,31 @@ const MutatePenalty = ({
          if (penaltyAction === "add") {
             addPenalty({
                gameId: data.gameId,
-               minutes: data.minutes,
-               opponentId: data.team === opponentName ? opponentId : null,
+               minutes: parseFloat(data.minutes),
                penaltyType: data.penaltyType,
                period: Number(data.period),
                playerId: data.team === "Ice Pak" ? data.playerId : null,
                team: data.team,
+               teamId:
+                  data.team === opponentName
+                     ? opponentId
+                     : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
                time: data.time,
                ytLink: data.ytLink,
             });
          } else if (penaltyAction === "edit") {
             editPenalty({
                ...data,
+               minutes: data.minutes,
                period: Number(data.period),
-               opponentId: team === opponentName ? opponentId : null,
-               playerId: team === opponentName ? null : playerId,
+               playerId: data.team === opponentName ? null : data.playerId,
+               teamId: data.team === opponentName ? opponentId : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
             });
          }
          close();
          setSnackbar({ open: true, type: "success", message: "Penalty successfully updated!" });
-         mutate(`/api/games/${penalty?.gameId}`);
+         mutate(`/api/games/${penalty?.id}`);
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -91,8 +95,8 @@ const MutatePenalty = ({
 
    const playerOptions = gameRoster?.map((player) => {
       return {
-         label: player?.playerName,
-         value: player?.playerId,
+         label: `${player?.firstName} ${player?.lastName}`,
+         value: player?.id,
       };
    });
 
@@ -162,4 +166,4 @@ const MutatePenalty = ({
    );
 };
 
-export default MutatePenalty;
+export default UpsertPenalty;

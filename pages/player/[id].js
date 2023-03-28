@@ -37,7 +37,6 @@ const SortArrow = styled(ArrowDropUpIcon)`
 `;
 
 const StyledTabPanel = (props) => {
-   console.log("children", props);
    const { children, className, desktop, value, index, ...other } = props;
 
    return (
@@ -163,15 +162,9 @@ const Player = () => {
 
    const { data: session, status } = useSession();
    const loading = status === "loading";
-   const { players, playersLoading, playersError } = useGetPlayers();
-   const { assists, assistsLoading, assistsError } = useGetAssists();
-   const { goals, goalsLoading, goalsError } = useGetGoals();
    const { playerStats, playerStatsLoading, playerStatsError } = useGetPlayerStats(id);
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-
-   const rosterLoading = playersLoading || assistsLoading || goalsLoading;
-   const error = playersError || assistsError || goalsError;
 
    const handleChange = (event, newValue) => setValue(newValue);
 
@@ -180,14 +173,11 @@ const Player = () => {
       setOrder(order === "asc" ? "desc" : "asc");
    };
 
-   const player = players?.filter((player) => player.firebaseId === id)[0];
+   console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
 
-   // console.log("player", player);
-   // console.log("player stats", { playerStats, playerStatsLoading, playerStatsError });
-
-   if (rosterLoading) {
+   if (playerStatsLoading) {
       return <Loading />;
-   } else if (error) {
+   } else if (playerStatsError) {
       return <div>An error occurred. Please try again.</div>;
    }
 
@@ -195,52 +185,37 @@ const Player = () => {
       <PageContainer small>
          <Stack display="flex" alignItems="center">
             <Avatar
-               alt={`${player?.firstName} ${player?.nickname ? player?.nickname : ""} ${
-                  player?.lastName
+               alt={`${playerStats?.player?.firstName} ${playerStats?.player?.nickname ? playerStats?.player?.nickname : ""} ${
+                  playerStats?.player?.lastName
                }`}
-               src={player?.image || player?.authProviderImage}
+               src={playerStats?.player?.image || playerStats?.player?.authProviderImage}
                sx={{ width: desktop ? 160 : 100, height: desktop ? 160 : 100 }}
             />
-            <Typography variant={desktop ? "h4" : "h5"}>{`${player?.firstName} ${
-               player?.nickname ? `"${player?.nickname}"` : ""
-            } ${player?.lastName} | #${player?.number ?? player?.jerseyNumber}`}</Typography>
-            {player?.handedness ? (
+            <Typography variant={desktop ? "h4" : "h5"}>{`${playerStats?.player?.firstName} ${
+               playerStats?.player?.nickname ? `"${playerStats?.player?.nickname}"` : ""
+            } ${playerStats?.player?.lastName} | #${playerStats?.player?.number ?? playerStats?.player?.jerseyNumber}`}</Typography>
+            {playerStats?.player?.handedness ? (
                <Typography variant="subtitle1">
                   <b>Shoots: </b>
-                  {player?.handedness ?? player?.shoots}
+                  {playerStats?.player?.handedness ?? playerStats?.player?.shoots}
                </Typography>
             ) : null}
-            {player?.born ? (
+            {playerStats?.player?.born ? (
                <Typography variant="subtitle1">
                   <b>Born: </b>
-                  {dayjs.unix(player?.born?.seconds).format("MMM D, YYYY")}
+                  {dayjs(playerStats?.player?.born).format("MMM D, YYYY")}
                </Typography>
             ) : null}
-            {player?.height ? (
+            {playerStats?.player?.height ? (
                <Typography variant="subtitle1">
                   <b>Height: </b>
-                  {player?.height}
+                  {playerStats?.player?.height}
                </Typography>
             ) : null}
-            {player?.hometown ? (
+            {playerStats?.player?.hometown ? (
                <Typography variant="subtitle1">
                   <b>Hometown: </b>
-                  {player?.hometown}
-               </Typography>
-            ) : null}
-            {player?.born ? (
-               <Typography variant="subtitle1">
-                  <b></b>
-               </Typography>
-            ) : null}
-            {player?.born ? (
-               <Typography variant="subtitle1">
-                  <b></b>
-               </Typography>
-            ) : null}
-            {player?.born ? (
-               <Typography variant="subtitle1">
-                  <b></b>
+                  {playerStats?.player?.hometown}
                </Typography>
             ) : null}
          </Stack>
@@ -414,12 +389,12 @@ const Player = () => {
                            </GameLogHeader>
                         </TableHead>
                         <PlayerTableBody>
-                           {playerStats?.gameLog.map((game, index) => (
+                           {playerStats?.gameLog?.map((game, index) => (
                               <TableRow key={`game-log-${index}`}>
                                  <StatBodyCell component="th" scope="row">
                                     <PlayerName>
                                        <Typography variant="caption">
-                                          {dayjs.unix(game.date.seconds).format("MMM D")}
+                                          {dayjs(game.date).format("MMM D")}
                                        </Typography>
                                     </PlayerName>
                                  </StatBodyCell>

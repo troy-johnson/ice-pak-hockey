@@ -54,12 +54,8 @@ const Profile = () => {
 
    // const gameDay = watch("gameDayNotifications");
 
-   // console.log("gameDayNotifications", gameDay);
-
    const onSubmit = (data) => {
       let imageToUpload = image ?? session?.user?.image;
-
-      // console.log("data", data);
 
       try {
          editPlayer({
@@ -74,7 +70,6 @@ const Profile = () => {
          setSnackbar({ open: true, type: "success", message: "Profile successfully updated!" });
          mutate(`/api/players`);
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

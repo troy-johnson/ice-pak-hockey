@@ -33,8 +33,6 @@ const Account = () => {
       setAnchorEl(null);
    };
 
-   // console.log("account info", session?.user?.image);
-
    return (
       <>
          <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>

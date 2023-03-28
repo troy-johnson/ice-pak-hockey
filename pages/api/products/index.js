@@ -33,11 +33,7 @@ const productsHandler = async (req, res) => {
       //    finalProductsList.push(productData.result);
       // }
 
-      // console.log("fPL", finalProductList)
-
       const data = await result.json();
-
-      console.log("new data", data)
    
       return res.status(200).send(data.result);      
    } catch (error) {

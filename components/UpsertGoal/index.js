@@ -15,7 +15,7 @@ import { IoMdTrash } from "react-icons/io";
 import { ControlledInput, ControlledRadio, ControlledSelect } from "..";
 import { addGoal, editGoal } from "../../utils";
 
-const InputWithMargin = styled(props => <ControlledInput {...props} />)`
+const InputWithMargin = styled((props) => <ControlledInput {...props} />)`
    margin-bottom: 10px;
 `;
 
@@ -36,11 +36,12 @@ const UpsertGoal = ({
       defaultValues: {
          gameId: gameId,
          assists: goalAction === "add" ? [] : goal?.assists,
-         goalId: goalAction === "add" ? null : goal?.goalId,
+         goalId: goalAction === "add" ? null : goal?.id,
          period: goalAction === "add" ? 1 : goal?.period,
          playerId: goalAction === "add" ? gameRoster[0]?.playerId : goal?.playerId,
          time: goalAction === "add" ? "10:00" : goal?.time,
-         team: goalAction === "add" ? opponentName : goal?.team,
+         team: goalAction === "add" ? "Ice Pak" : goal?.team,
+         teamId: goalAction === "add" ? "3683b632-c5c3-4e97-a7d4-6002a72839e1" : goal?.teamId,
          ytLink: goalAction === "add" ? "" : goal?.ytLink,
       },
    });
@@ -69,27 +70,29 @@ const UpsertGoal = ({
    };
 
    const onSubmit = (data) => {
-      // console.log("data", data);
       try {
          if (goalAction === "add") {
             addGoal({
                gameId: data.gameId,
-               assists: data.assists.map(assist => assist.playerId),
-               opponentId: data.team === opponentName ? opponentId : null,
+               assists: data.assists.map((assist) => assist.playerId),
                period: Number(data.period),
                playerId: data.team === "Ice Pak" ? data.playerId : null,
                team: data.team,
+               teamId:
+                  data.team === opponentName
+                     ? opponentId
+                     : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
                time: data.time,
                ytLink: data.ytLink,
             });
          } else if (goalAction === "edit") {
             editGoal({
                ...data,
-               period: Number(data.period),
                assists:
                   data.team === opponentName ? [] : data.assists.map((assist) => assist.playerId),
-               opponentId: data.team === opponentName ? opponentId : null,
+               period: Number(data.period),
                playerId: data.team === opponentName ? null : data.playerId,
+               teamId: data.team === opponentName ? opponentId : "3683b632-c5c3-4e97-a7d4-6002a72839e1",
             });
          }
          close();
@@ -100,7 +103,6 @@ const UpsertGoal = ({
             message: `Goal successfully ${goalAction === "add" ? "added" : "updated"}!`,
          });
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -111,8 +113,8 @@ const UpsertGoal = ({
 
    const playerOptions = gameRoster?.map((player) => {
       return {
-         label: player?.playerName,
-         value: player?.playerId,
+         label: `${player?.firstName} ${player?.lastName}`,
+         value: player?.id,
       };
    });
 
@@ -156,7 +158,9 @@ const UpsertGoal = ({
                                     name={`assists.${index}.playerId`}
                                     label="Assisted By"
                                     variant="outlined"
-                                    options={playerOptions?.filter(player => player.playerId !== scoredById)}
+                                    options={playerOptions?.filter(
+                                       (player) => player.playerId !== scoredById
+                                    )}
                                     {...{ control, index, field }}
                                  />
                                  <IconButton onClick={() => remove(index)}>

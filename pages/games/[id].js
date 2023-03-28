@@ -28,14 +28,14 @@ import {
 import {
    EditRoster,
    UpsertGoal,
-   MutatePenalty,
+   UpsertPenalty,
    GameGoals,
    GamePenalties,
    Loading,
    PageContainer,
 } from "../../components";
 import { FaClipboardList } from "react-icons/fa";
-import { roleCheck, upsertGame, useGetGameInfo, useGetOpponents, useGetProfile } from "../../utils";
+import { roleCheck, upsertGame, useGetGameInfo, useGetTeams, useGetProfile } from "../../utils";
 
 const objectSupport = require("dayjs/plugin/objectSupport");
 dayjs.extend(objectSupport);
@@ -155,7 +155,7 @@ const Game = () => {
    const { id } = router.query;
 
    const [value, setValue] = useState(0);
-   const [mutatePenaltyDialog, setMutatePenaltyDialog] = useState(false);
+   const [upsertPenaltyDialog, setUpsertPenaltyDialog] = useState(false);
    const [penalty, setPenalty] = useState(null);
    const [penaltyAction, setPenaltyAction] = useState("add");
    const [upsertGoalDialog, setUpsertGoalDialog] = useState(false);
@@ -164,10 +164,10 @@ const Game = () => {
    const [goalAction, setGoalAction] = useState("add");
    const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
 
-   const { data: session, status } = useSession()
-   const loading = status === "loading"
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
    const { game, gameLoading, gameError } = useGetGameInfo(id);
-   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
+   const { teams, teamsLoading, teamsError } = useGetTeams();
    const { profile, profileLoading, profileError } = useGetProfile();
 
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -176,10 +176,10 @@ const Game = () => {
 
    const handleChange = (event, newValue) => setValue(newValue);
 
-   const openMutatePenalty = (action, penalty) => {
+   const openUpsertPenalty = (action, penalty) => {
       setPenaltyAction(action);
       setPenalty(penalty);
-      setMutatePenaltyDialog(true);
+      setUpsertPenaltyDialog(true);
    };
 
    const openUpsertGoal = (action, goal) => {
@@ -212,8 +212,12 @@ const Game = () => {
          })
    );
 
-   const icePakGoals = goalsSorted?.filter((goal) => goal?.playerId);
-   const opponentGoals = goalsSorted?.filter((goal) => goal?.opponentId);
+   const icePakGoals = goalsSorted?.filter(
+      (goal) => goal?.teamId === "3683b632-c5c3-4e97-a7d4-6002a72839e1"
+   );
+   const opponentGoals = goalsSorted?.filter(
+      (goal) => goal?.teamId !== "3683b632-c5c3-4e97-a7d4-6002a72839e1"
+   );
 
    const penaltiesByPeriod = [
       {
@@ -239,8 +243,8 @@ const Game = () => {
 
    const goalRows = [
       {
-         name: "Ice Pak",
-         logo: opponents?.filter((opp) => opp.id === "0SBVU2RK2pKDKagEBCWv")?.[0]?.logo,
+         name: game?.teams?.[1]?.teamName,
+         logo: teams?.filter((opp) => opp.id === game?.teams?.[1]?.teamName)?.[0]?.logo,
          periodOne: icePakGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: icePakGoals?.filter((goal) => goal.period === 2).length,
          periodThree: icePakGoals?.filter((goal) => goal.period === 3).length,
@@ -248,8 +252,8 @@ const Game = () => {
          total: icePakGoals?.length,
       },
       {
-         name: game?.opponentName,
-         logo: opponents?.filter((opp) => opp.id === game?.opponentId)?.[0]?.logo,
+         name: game?.teams?.[0]?.teamName,
+         logo: teams?.filter((opp) => opp.id === game?.teams?.[0]?.teamName)?.[0]?.logo,
          periodOne: opponentGoals?.filter((goal) => goal.period === 1).length,
          periodTwo: opponentGoals?.filter((goal) => goal.period === 2).length,
          periodThree: opponentGoals?.filter((goal) => goal.period === 3).length,
@@ -258,11 +262,11 @@ const Game = () => {
       },
    ];
 
-   const getPlayerGoals = (playerId) => {
+   const getPlayerGoals = (id) => {
       let goalCount = 0;
 
       icePakGoals?.forEach((goal) => {
-         if (goal.playerId === playerId) {
+         if (goal.playerId === id) {
             goalCount++;
          }
       });
@@ -296,25 +300,25 @@ const Game = () => {
    };
 
    const teamStats = game?.roster
-      ?.filter((player) => !player.doNotDisplay)
+      ?.filter((player) => player.id !== "6aca0d5e-2896-4ea7-b42c-9d683ff8adce")
       ?.map((player) => {
          return {
-            jerseyNumber: player?.playerJerseyNumber || 0,
-            playerId: player?.playerId,
-            playerName: player?.playerName,
-            goals: getPlayerGoals(player.playerId),
-            assists: getPlayerAssists(player.playerId),
-            points: getPlayerGoals(player.playerId) + getPlayerAssists(player.playerId),
-            penaltyMinutes: getPlayerPenaltyMinutes(player.playerId),
+            jerseyNumber: player?.jerseyNumber || 0,
+            id: player?.id,
+            playerName: `${player?.firstName} ${player?.lastName}`,
+            goals: getPlayerGoals(player.id),
+            assists: getPlayerAssists(player.id),
+            points: getPlayerGoals(player.id) + getPlayerAssists(player.id),
+            penaltyMinutes: getPlayerPenaltyMinutes(player.id),
          };
       })
       .sort((a, b) => b.points - a.points);
 
-   const opponent = opponents?.filter((opp) => opp.id === game?.opponentId)[0];
+   const opponent = teams?.filter((opp) => opp.id === game?.opponentId)[0];
 
    // console.log("opponents", { opponents, opponent });
 
-   // console.log("game", game);
+   console.log("game", { game, teamStats });
 
    if (gameLoading) {
       return <Loading />;
@@ -330,7 +334,7 @@ const Game = () => {
                   <TableHead>
                      <BoxScoreHeader>
                         <BoxScoreCell align="center" sx={{ minWidth: "75px" }}>
-                           {dayjs().isAfter(dayjs.unix(game?.date?.seconds)) ? "FINAL" : ""}
+                           {dayjs().isAfter(dayjs(game?.date)) ? "FINAL" : ""}
                         </BoxScoreCell>
                         <BoxScoreCell align="center">1ST</BoxScoreCell>
                         <BoxScoreCell align="center">2ND</BoxScoreCell>
@@ -358,7 +362,9 @@ const Game = () => {
                            <BoxScoreCell align="center">{row.periodOne}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.periodTwo}</BoxScoreCell>
                            <BoxScoreCell align="center">{row.periodThree}</BoxScoreCell>
-                           {row.overTime ? <BoxScoreCell>{row.overTime}</BoxScoreCell> : null}
+                           {goalRows[0].overTime >= 1 || goalRows[1].overTime >= 1 ? (
+                              <BoxScoreCell align="center">{row.overTime}</BoxScoreCell>
+                           ) : null}
                            <BoxScoreCell align="center">{row.total}</BoxScoreCell>
                         </BoxScoreRow>
                      ))}
@@ -384,11 +390,7 @@ const Game = () => {
                </TableHead>
                <BoxScoreBody>
                   {teamStats?.map((row) => (
-                     <Link
-                        key={"team-stats-row" + row.playerId}
-                        href={`/player/${row.playerId}`}
-                        passHref
-                     >
+                     <Link key={"team-stats-row" + row.id} href={`/player/${row.id}`} passHref>
                         <BoxScoreRow
                            sx={{
                               "&:last-child td, &:last-child th": {
@@ -434,7 +436,10 @@ const Game = () => {
    // console.log("game", game)
 
    return (
-      <PageContainer pageTitle={`Ice Pak vs. ${game?.opponentName}`} small>
+      <PageContainer
+         pageTitle={`${game?.teams?.[1]?.teamName} vs. ${game?.teams?.[0]?.teamName}`}
+         small
+      >
          <Stack
             direction="column"
             ml={3}
@@ -445,7 +450,7 @@ const Game = () => {
             alignItems="flex-start"
          >
             <Typography sx={{ textAlign: "left" }} variant="subtitle1">
-               {dayjs.unix(game?.date?.seconds).format("MMMM D, YYYY @ h:mm a")}
+               {dayjs(game?.date).format("MMMM D, YYYY @ h:mm a")}
             </Typography>
             <Typography sx={{ textAlign: "left" }} variant="subtitle1">
                {game?.seasonName}
@@ -472,14 +477,14 @@ const Game = () => {
                               goals={game?.goals}
                               openUpsertGoal={openUpsertGoal}
                               goalsSorted={goalsSorted}
-                              opponentName={game?.opponentName}
-                              opponentLogo={opponent?.logo}
+                              teams={game?.teams}
                               setSnackbar={setSnackbar}
                            />
                            <GamePenalties
+                              penalties={game?.penalties}
                               penaltiesByPeriod={penaltiesByPeriod}
-                              opponentLogo={opponent?.logo}
-                              handleClickOpen={openMutatePenalty}
+                              teams={game?.teams}
+                              handleClickOpen={openUpsertPenalty}
                               setSnackbar={setSnackbar}
                            />
                         </Stack>
@@ -527,30 +532,35 @@ const Game = () => {
                </>
 
                {/* <EditGame game={game} onClose={() => setOpen(false)} open={open} /> */}
-               {mutatePenaltyDialog ? (
-                  <MutatePenalty
+               {upsertPenaltyDialog ? (
+                  <UpsertPenalty
                      penaltyAction={penaltyAction}
-                     gameId={game?.gameId}
+                     gameId={game?.id}
+                     penaltyId={penalty?.id}
                      gameRoster={game?.roster}
                      penalty={penalty}
                      onClose={() => {
                         setPenalty(null);
-                        setMutatePenaltyDialog(false);
+                        setUpsertPenaltyDialog(false);
                      }}
                      close={() => {
                         setPenalty(null);
-                        setMutatePenaltyDialog(false);
+                        setUpsertPenaltyDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.opponentId}
-                     opponentName={game?.opponentName}
-                     open={mutatePenaltyDialog}
+                     opponentId={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0]?.id
+                     }
+                     opponentName={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0].teamName
+                     }
+                     open={upsertPenaltyDialog}
                   />
                ) : null}
                {upsertGoalDialog ? (
                   <UpsertGoal
                      goalAction={goalAction}
-                     gameId={game?.gameId}
+                     gameId={game?.id}
                      gameRoster={game?.roster}
                      goal={goal}
                      onClose={() => {
@@ -562,18 +572,23 @@ const Game = () => {
                         setUpsertGoalDialog(false);
                      }}
                      setSnackbar={setSnackbar}
-                     opponentId={game?.opponentId}
-                     opponentName={game?.opponentName}
+                     opponentId={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0]?.id
+                     }
+                     opponentName={
+                        game?.teams?.filter((team) => team.teamName !== "Ice Pak")?.[0].teamName
+                     }
                      open={upsertGoalDialog}
                   />
                ) : null}
                {editRosterDialog ? (
                   <EditRoster
-                     gameId={game?.gameId}
+                     gameId={game?.id}
                      gameRoster={game?.roster}
                      onClose={() => setEditRosterDialog(false)}
                      close={() => setEditRosterDialog(false)}
                      open={editRosterDialog}
+                     seasonId={game?.seasonId}
                      setSnackbar={setSnackbar}
                   />
                ) : null}

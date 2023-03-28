@@ -3,7 +3,6 @@ import { HeroPost } from "../components";
 import { getAllPostsForHome } from "../utils/sanityApi";
 
 const Home = ({ allPosts, preview }) => {
-   // console.log("INDEX", { allPosts, preview });
 
    return (
       <>

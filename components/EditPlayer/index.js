@@ -57,7 +57,6 @@ const EditPlayer = ({ close, player, open }) => {
    };
 
    const onSubmit = (data) => {
-      // console.log("data", data);
       try {
          editPlayer({
             ...data,
@@ -70,7 +69,6 @@ const EditPlayer = ({ close, player, open }) => {
             message: `Player successfully updated!`,
          });
       } catch (error) {
-         // console.log("error", error);
          setSnackbar({
             open: true,
             type: "error",

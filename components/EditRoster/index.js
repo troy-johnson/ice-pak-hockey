@@ -5,42 +5,37 @@ import {
    DialogContent,
    DialogTitle,
    Dialog,
-   IconButton,
+   Skeleton,
    Stack,
-   Switch,
-   Typography,
    useMediaQuery,
 } from "@mui/material";
 import styled from "@emotion/styled";
-import { useForm, useFieldArray, Controller, useWatch } from "react-hook-form";
-import { ControlledSelect } from "..";
-import { IoMdTrash } from "react-icons/io";
-import { editGameRoster, useGetPlayers } from "../../utils";
+import { useForm } from "react-hook-form";
+import { ControlledSwitch } from "..";
+import { editGameRoster, useGetPlayers, useGetSeason } from "../../utils";
 
-const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
+const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar, seasonId }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("md"));
    const { players, playersLoading, playersError } = useGetPlayers();
+   const { season, seasonLoading, seasonError } = useGetSeason(seasonId);
+
+   const defaultRoster = {};
+
+   gameRoster.forEach((player) => (defaultRoster[player.id] = true));
 
    const { control, handleSubmit, reset, watch } = useForm({
       defaultValues: {
          gameId: gameId,
-         roster: gameRoster?.length >= 1 ? gameRoster : [],
+         roster: gameRoster?.length >= 1 ? defaultRoster : [],
       },
-   });
-
-   const { fields, append, remove } = useFieldArray({
-      name: "roster",
-      control,
    });
 
    const roster = watch("roster");
 
-   const controlledFields = fields.map((field, index) => {
-      return {
-         ...field,
-         ...roster[index],
-      };
-   });
+   const handleChange = (e) => {
+      e.preventDefault();
+      console.log("e", e.target.value);
+   };
 
    const handleClose = () => {
       reset({
@@ -50,9 +45,14 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
    };
 
    const onSubmit = (data) => {
-      // console.log("data", { ...data, roster: data.roster.map((el) => el.playerId) });
+      const activeRoster = Object.keys(data.roster).filter((key) => {
+         if (data.roster[key] === true) {
+            return key;
+         }
+      });
+
       try {
-         editGameRoster({ gameId, roster: data.roster.map((el) => el.playerId) });
+         editGameRoster({ gameId, roster: activeRoster });
          handleClose();
          mutate(`/api/games/${gameId}`);
          mutate(`/api/games`);
@@ -62,7 +62,6 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
             message: "Roster successfully updated!",
          });
       } catch (error) {
-         // console.log("Roster update error: ", error);
          setSnackbar({
             open: true,
             type: "error",
@@ -70,28 +69,6 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
          });
       }
    };
-
-   const rosterOptions = players?.map((player) => {
-         return {
-            lastName: player.lastName,
-            label: `${player.firstName} ${player.lastName}`,
-            value: player.id,
-         };
-      })
-      .sort((a, b) => {
-         const nameA = a.lastName.toUpperCase();
-         const nameB = b.lastName.toUpperCase();
-         if (nameA < nameB) {
-            return -1;
-         }
-         if (nameA > nameB) {
-            return 1;
-         }
-
-         return 0;
-      });
-
-   // console.log("roster", rosterOptions);
 
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>
@@ -107,33 +84,28 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar }) => {
                      flexWrap: desktop ? "wrap" : "nowrap",
                   }}
                >
-                  {controlledFields.map((field, index) => {
-                     return (
-                        <Stack direction="row" key={field.id} sx={{ mt: 2 }}>
-                           <ControlledSelect
-                              control={control}
-                              name={`roster.${index}.playerId`}
-                              variant="outlined"
-                              label={`Player No. ${index + 1}`}
-                              options={rosterOptions}
-                              {...{ control, index, field }}
+                  {playersLoading ? (
+                     <Skeleton height={325} />
+                  ) : (
+                     season?.roster?.map((player, index) => {
+                        return (
+                           <ControlledSwitch
+                              checked={roster[player] === true}
+                              onChange={handleChange}
+                              name={`roster.${player}`}
+                              key={player}
+                              label={`#${players?.filter((el) => el.id === player)[0].number} ${
+                                 players?.filter((el) => el.id === player)[0].firstName
+                              } ${players?.filter((el) => el.id === player)[0].lastName}`}
+                              {...{ control, index, player }}
                            />
-                           <IconButton onClick={() => remove(index)}>
-                              <IoMdTrash />
-                           </IconButton>
-                        </Stack>
-                     );
-                  })}
+                        );
+                     })
+                  )}
                </Stack>
             </Stack>
          </DialogContent>
          <DialogActions>
-            <Button
-               disabled={fields.length >= 18}
-               onClick={() => append({ playerId: "", playerName: "" }, { focusIndex: 1 })}
-            >
-               Add Player
-            </Button>
             <Button type="submit" onClick={handleSubmit(onSubmit)}>
                Submit
             </Button>

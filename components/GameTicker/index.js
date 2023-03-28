@@ -3,51 +3,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
-import { useGetAllGames, useGetGoals, useGetOpponents } from "../../utils";
+import { useGetAllGames, useGetGoals } from "../../utils";
 import { IoArrowBackSharp, IoArrowForwardSharp } from "react-icons/io5";
 
 const GameTicker = () => {
    const [desktopSlice, setDesktopSlice] = useState([0, 4]);
    const [mobileSlice, setMobileSlice] = useState([0, 1]);
-   const { games, gamesLoading, gamesError } = useGetAllGames();
-   const { goals, goalsLoading, goalsError } = useGetGoals();
-   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
+   const { allGames, allGamesLoading, allGamesError } = useGetAllGames();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
-   const gamesToShow = games
-      ?.sort((a, b) => dayjs(a.date.seconds) - dayjs(b.date.seconds))
-      ?.slice(
-         desktop ? desktopSlice[0] : mobileSlice[0],
-         desktop ? desktopSlice[1] : mobileSlice[1]
-      )
-      .map((game) => {
-         const opponentLogo = opponents?.filter((opp) => opp.id === game?.pgOpponentId)[0]?.logo;
-         return { ...game, opponentLogo };
-      });
-
-   const getIcePakGoals = (game) => {
-      return goals?.filter((goal) => goal.pgGameId === game.id && !!goal.pgPlayerId).length;
-   };
-
-   const getOpponentGoals = (game) => {
-      return goals?.filter((goal) => goal.pgGameId === game.id && !!goal.pgOpponentId).length;
-   };
-
    useEffect(() => {
-      if (!gamesLoading && !gamesError) {
-         const nextGame = games?.findIndex((game) =>
-            dayjs.unix(game.date.seconds).isAfter(dayjs())
+      if (!allGamesLoading && !allGamesError) {
+         const nextGame = allGames?.gamesData?.findIndex((game) =>
+            dayjs(game.date).isAfter(dayjs())
          );
 
          if (nextGame !== -1) {
             setDesktopSlice([nextGame - 2, nextGame + 3]);
             setMobileSlice([nextGame, nextGame + 1]);
          } else {
-            setDesktopSlice([games.length - 4, games.length])
-            setMobileSlice([games.length - 1, games.length])
+            setDesktopSlice([allGames?.gamesData?.length - 4, allGames?.gamesData?.length]);
+            setMobileSlice([allGames?.gamesData?.length - 1, allGames?.gamesData?.length]);
          }
       }
-   }, [gamesLoading, gamesError]);
+   }, [allGamesLoading, allGamesError]);
 
    const handleGameBack = () => {
       setDesktopSlice([desktopSlice[0] - 1, desktopSlice[1] - 1]);
@@ -59,6 +38,17 @@ const GameTicker = () => {
       setMobileSlice([mobileSlice[0] + 1, mobileSlice[1] + 1]);
    };
 
+   const gamesToShow = allGames?.gamesData
+      ?.sort((a, b) => dayjs(a.date) - dayjs(b.date))
+      ?.slice(
+         desktop ? desktopSlice[0] : mobileSlice[0],
+         desktop ? desktopSlice[1] : mobileSlice[1]
+      )
+      .map((game) => {
+         const logo = allGames?.teamsData?.filter((team) => team.id === game?.teams?.id)[0]?.logo;
+         return { ...game, teams: { ...game.teams, logo } };
+      });
+
    const Skeletons = () => (
       <Stack spacing={1} direction="row">
          <Skeleton variant="rectangular" width={210} height={85} />
@@ -66,6 +56,9 @@ const GameTicker = () => {
          {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
       </Stack>
    );
+
+   const icePakGoals = (game) => game.goals.filter((goal) => goal.team === "Ice Pak").length;
+   const opponentGoals = (game) => game.goals.filter((goal) => goal.team !== "Ice Pak").length;
 
    return (
       <Stack
@@ -79,7 +72,7 @@ const GameTicker = () => {
             alignItems: "center",
          }}
       >
-         {gamesLoading ? null : (
+         {allGamesLoading ? null : (
             <IconButton
                aria-label="Previous game"
                sx={{ height: "40px" }}
@@ -89,10 +82,10 @@ const GameTicker = () => {
                <IoArrowBackSharp fontSize="inherit" />
             </IconButton>
          )}
-         {gamesLoading ? <Skeletons /> : null}
+         {allGamesLoading ? <Skeletons /> : null}
          {gamesToShow?.map((game) => {
             return (
-               <Link key={game.firebaseId} href={`/games/${game.firebaseId}`} passHref>
+               <Link key={game.id} href={`/games/${game.id}`} passHref>
                   <Paper
                      elevation={3}
                      sx={{
@@ -103,11 +96,11 @@ const GameTicker = () => {
                      }}
                   >
                      <Stack direction="column">
-                        {dayjs() > dayjs.unix(game.date.seconds) ? (
+                        {dayjs() > dayjs(game.date) ? (
                            <Stack direction="column">
                               <Stack direction="row" justifyContent="space-between">
                                  <Typography variant="caption">
-                                    {dayjs.unix(game.date.seconds).format("dddd MMM D")}
+                                    {dayjs(game.date).format("dddd MMM D")}
                                  </Typography>
                                  <Typography sx={{ fontWeight: 500 }} variant="caption">
                                     FINAL
@@ -119,7 +112,7 @@ const GameTicker = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     color:
-                                       getIcePakGoals(game) > getOpponentGoals(game)
+                                       icePakGoals(game) > opponentGoals(game)
                                           ? "black"
                                           : "grey.dark",
                                  }}
@@ -135,7 +128,7 @@ const GameTicker = () => {
                                     sx={{
                                        marginLeft: "5px",
                                        fontWeight:
-                                          getIcePakGoals(game) > getOpponentGoals(game) ? 700 : 400,
+                                          icePakGoals(game) > opponentGoals(game) ? 700 : 400,
                                     }}
                                     variant="subtitle1"
                                  >
@@ -146,12 +139,12 @@ const GameTicker = () => {
                                     sx={{
                                        flexGrow: 2,
                                        fontWeight:
-                                          getIcePakGoals(game) > getOpponentGoals(game) ? 700 : 400,
+                                          icePakGoals(game) > opponentGoals(game) ? 700 : 400,
                                        textAlign: "end",
                                        marginRight: "12px",
                                     }}
                                  >
-                                    {getIcePakGoals(game)}
+                                    {icePakGoals(game)}
                                  </Typography>
                               </Stack>
                               <Stack
@@ -159,15 +152,15 @@ const GameTicker = () => {
                                  sx={{
                                     display: "flex",
                                     color:
-                                       getIcePakGoals(game) > getOpponentGoals(game)
+                                       icePakGoals(game) > opponentGoals(game)
                                           ? "grey.dark"
                                           : "black",
                                  }}
                               >
-                                 {game?.opponentLogo ? (
+                                 {game?.teams?.logo ? (
                                     <Image
-                                       alt={game?.opponentName}
-                                       src={game?.opponentLogo}
+                                       alt={game?.teams?.teamName}
+                                       src={game?.teams?.logo}
                                        height={25}
                                        width={25}
                                        layout="fixed"
@@ -178,22 +171,22 @@ const GameTicker = () => {
                                     sx={{
                                        marginLeft: "5px",
                                        fontWeight:
-                                          getIcePakGoals(game) > getOpponentGoals(game) ? 400 : 700,
+                                          icePakGoals(game) > opponentGoals(game) ? 400 : 700,
                                     }}
                                  >
-                                    {game?.opponentName}
+                                    {game?.teams?.teamName}
                                  </Typography>
                                  <Typography
                                     variant="subtitle1"
                                     sx={{
                                        fontWeight:
-                                          getIcePakGoals(game) > getOpponentGoals(game) ? 400 : 700,
+                                          icePakGoals(game) > opponentGoals(game) ? 400 : 700,
                                        flexGrow: 2,
                                        textAlign: "end",
                                        marginRight: "12px",
                                     }}
                                  >
-                                    {getOpponentGoals(game)}
+                                    {opponentGoals(game)}
                                  </Typography>
                               </Stack>
                            </Stack>
@@ -201,10 +194,10 @@ const GameTicker = () => {
                            <>
                               <Stack direction="row" justifyContent="space-between">
                                  <Typography variant="caption">
-                                    {dayjs.unix(game.date.seconds).format("dddd MMM D")}
+                                    {dayjs(game.date).format("dddd MMM D")}
                                  </Typography>
                                  <Typography variant="caption">
-                                    {dayjs.unix(game.date.seconds).format("h:mm A")}
+                                    {dayjs(game.date).format("h:mm A")}
                                  </Typography>
                               </Stack>
                               <Stack direction="row" sx={{ display: "flex", alignItems: "center" }}>
@@ -220,17 +213,17 @@ const GameTicker = () => {
                                  </Typography>
                               </Stack>
                               <Stack direction="row">
-                                 {game?.opponentLogo ? (
+                                 {game?.teams?.logo ? (
                                     <Image
-                                       alt={game?.opponentName}
-                                       src={game?.opponentLogo}
+                                       alt={game?.teams?.teamName}
+                                       src={game?.teams?.logo}
                                        height={25}
                                        width={25}
                                        layout="fixed"
                                     />
                                  ) : null}
                                  <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>
-                                    {game?.opponentName}
+                                    {game?.teams?.teamName}
                                  </Typography>
                               </Stack>
                            </>
@@ -240,12 +233,14 @@ const GameTicker = () => {
                </Link>
             );
          })}
-         {gamesLoading ? null : (
+         {allGamesLoading ? null : (
             <IconButton
                ria-label="Previous game"
                sx={{ height: "40px" }}
                disabled={
-                  desktop ? desktopSlice[0] >= games.length - 5 : mobileSlice[0] >= games.length - 1
+                  desktop
+                     ? desktopSlice[0] >= allGames?.games?.length - 5
+                     : mobileSlice[0] >= allGames?.games?.length - 1
                }
                onClick={handleGameForward}
             >

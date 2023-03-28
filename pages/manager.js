@@ -121,8 +121,6 @@ const Manager = () => {
       { label: "Playoffs", value: "Playoffs" },
    ];
    const updateValues = (id) => {
-      // console.log("updateValues", currentSeason(id));
-
       setValue(
          "startDate",
          dayjs.unix(currentSeason(id)?.startDate.seconds).format("MMM DD, YYYY")
@@ -146,8 +144,6 @@ const Manager = () => {
    };
 
    const onSubmit = (data) => {
-      // console.log("data", data);
-
       // TODO: Figure out correct league ID and update value
 
       try {
@@ -174,14 +170,6 @@ const Manager = () => {
    // //    setValue("leagueId", leagues?.filter(league => league.name === watchLeagueName)[0]?.id)
    // // }
    // const leagueNameState = getFieldState("leagueName");
-
-   // console.log("curSeason", currentSeason(seasonId));
-   // console.log("leagues", leagues);
-   // console.log("getValues", getValues());
-   // console.log("leagueNameInfo", { watchLeagueName });
-   // console.log("form values", getValues())
-   // console.log("seasonOptions", seasonOptions);
-   // console.log("players", players);
 
    return (
       <PageContainer small pageTitle="Manager">

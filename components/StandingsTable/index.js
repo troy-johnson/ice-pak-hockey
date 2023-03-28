@@ -23,7 +23,7 @@ import {
 } from "@mui/material";
 // import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading } from "..";
-import { useGetSeasons, useGetOpponents } from "../../utils";
+import { useGetSeasons, useGetTeams } from "../../utils";
 
 const TableComponent = ({ children }) => <Paper variant="outlined">{children}</Paper>;
 
@@ -72,7 +72,7 @@ const PlayerTableBody = styled(TableBody)`
 
 const StandingsTable = ({ currentStandings, seasonType }) => {
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
-   const { opponents, opponentsLoading, opponentsError } = useGetOpponents();
+   const { teams, teamsLoading, teamsError } = useGetTeams();
    const [seasonId, setSeasonId] = useState(
       !seasonsLoading && !seasonsError
          ? seasons.sort(
@@ -85,14 +85,10 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
 
    const standings = currentStandings;
 
-   // console.log("season type", seasonType);
-
    const cells =
       seasonType === "Playoffs"
          ? ["Team", "Result", "W", "L", "GF", "GA"]
          : ["Team", "GP", "W", "L", "OTL", "P", "GF", "GA", "PIM"];
-
-   // console.log('teams', {currentStandings, opponents })
 
    return (
       <>
@@ -139,7 +135,7 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                              <TeamRow
                                 key={team.teamId}
                                 logo={
-                                   opponents?.filter((opponent) => opponent.id === team.teamId)?.[0]
+                                   teams?.filter((opponent) => opponent.id === team.id)?.[0]
                                       ?.logo
                                 }
                              >
@@ -163,7 +159,7 @@ const StandingsTable = ({ currentStandings, seasonType }) => {
                              <TeamRow
                                 key={team.teamId}
                                 logo={
-                                   opponents?.filter((opponent) => opponent.firebaseId === team.teamId)?.[0]
+                                   teams?.filter((opponent) => opponent.id === team.teamId)?.[0]
                                       ?.logo
                                 }
                              >

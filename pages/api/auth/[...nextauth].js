@@ -1,12 +1,6 @@
 import NextAuth from "next-auth";
 import Auth0Provider from "next-auth/providers/auth0";
 
-// console.log("envs", {
-//    clientId: process.env.AUTH0_CLIENT_ID,
-//    clientSecret: process.env.AUTH0_CLIENT_SECRET,
-//    issuer: process.env.AUTH0_DOMAIN,
-// });
-
 export default NextAuth({
    debug: true,
    session: {
@@ -14,7 +8,6 @@ export default NextAuth({
    },
    callbacks: {
       async session({ session, token, user }) {
-         // console.log("session", { session, token, user });
          session.user.metadata = {};
 
          if (token?.firstName) {
@@ -44,7 +37,6 @@ export default NextAuth({
          return session;
       },
       async jwt({ token, user, account, profile, isNewUser }) {
-         // console.log("jwt", { token, user, account, profile, isNewUser });
          if (user?.firstName) {
             token.firstName = user.firstName;
          }
@@ -77,7 +69,6 @@ export default NextAuth({
          clientSecret: process.env.AUTH0_CLIENT_SECRET,
          issuer: process.env.AUTH0_DOMAIN,
          profile(profile, tokens) {
-            // console.log("profile", { profile, tokens });
             return {
                id: profile.sub,
                name: profile.nickname,

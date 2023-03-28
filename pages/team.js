@@ -115,7 +115,6 @@ const Team = () => {
    ];
 
    const onSubmit = (data) => {
-      // console.log(data);
 
       try {
          if (isValid) {
@@ -125,9 +124,7 @@ const Team = () => {
          } else {
             setFormErrors(true);
          }
-      } catch (error) {
-         // console.log("error", error);
-      }
+      } catch (error) {}
    };
 
    const handleClickOpen = () => {
@@ -149,8 +146,6 @@ const Team = () => {
       });
       setOpen(false);
    };
-
-   console.log("players", players);
 
    if (playersLoading) {
       return <Loading />;
@@ -189,8 +184,8 @@ const Team = () => {
                      ?.filter((player) => !player?.doNotDisplay)
                      ?.map((player) => (
                         <Link
-                           href={`/player/${player.firebaseId}`}
-                           key={player?.firebaseId || `${player?.firstName}${player?.lastName}`}
+                           href={`/player/${player.id}`}
+                           key={player?.id || `${player?.firstName}${player?.lastName}`}
                            passHref
                         >
                            <TableRow>

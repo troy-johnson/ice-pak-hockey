@@ -1,197 +1,143 @@
 import { collection, doc, documentId, getDoc, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../config";
+import { db, prisma } from "../../../config";
 import dayjs from "dayjs";
 
 const seasonStatsHandler = async (req, res) => {
    const { id } = req.query;
 
-   // console.log("id", id);
-
    switch (req.method) {
       case "GET":
          try {
             let stats = [];
-            let goals = [];
-            let games = [];
-            let penalties = [];
-            let players = [];
-            let seasons = [];
+            let allAssists = [];
+            let seasonRoster = new Set();
+            let seasonGames = new Set();
 
-            const playerResult = await getDocs(collection(db, "players"));
-            const seasonsResult = await getDocs(collection(db, "seasons"));
+            const season = await prisma.games.findMany({
+               where: { seasonId: id },
+               select: {
+                  id: true,
+                  date: true,
+                  roster: true,
+                  goals: true,
+               },
+            });
 
-            seasonsResult.forEach((doc) => seasons.push({ ...doc.data(), firebaseId: doc.id }));
+            season.forEach((game) => {
+               seasonGames.add(game.id);
+               game.roster.forEach((playerId) => seasonRoster.add(playerId));
+               game.goals.forEach((goal) =>
+                  goal.assists.forEach((playerId) => allAssists.push(playerId))
+               );
+            });
 
-            const seasonData = seasons.filter((season) => season.id == id)[0];
+            const allPlayers = await prisma.players.findMany({
+               where: {
+                  NOT: {
+                     id: "6aca0d5e-2896-4ea7-b42c-9d683ff8adce",
+                  },
+                  AND: {
+                     id: { in: Array.from(seasonRoster) },
+                  },
+               },
+               select: {
+                  id: true,
+                  email: true,
+                  firstName: true,
+                  lastName: true,
+                  nickname: true,
+                  number: true,
+                  image: true,
+                  goals: {
+                     where: {
+                        gameId: { in: Array.from(seasonGames) },
+                     },
+                     select: {
+                        period: true,
+                        time: true,
+                        ytLink: true,
+                        assists: true,
+                        id: true,
+                        playerId: true,
+                        gameId: true,
+                     },
+                  },
+                  penalties: {
+                     where: {
+                        gameId: { in: Array.from(seasonGames) },
+                     },
+                     select: {
+                        minutes: true,
+                        id: true,
+                        penaltyType: true,
+                        period: true,
+                        time: true,
+                        ytLink: true,
+                        playerId: true,
+                        gameId: true,
+                     },
+                  },
+               },
+            });
 
-            if (!seasonData.games && seasonData.statBypass) {
-               console.log("seasonData");
-               seasonData.statBypass.forEach((player) => stats.push(player));
+            console.log("season", { allAssists });
+
+            if (!season?.games && season?.statBypass) {
+               season.statBypass.forEach((player) => stats.push(player));
                return res.status(200).json({
-                  ...seasonData,
-                  seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
+                  ...season,
+                  seasonName: `${season.leagueName} ${season.name} ${season.type}`,
                   stats,
                });
             }
 
-            // console.log("seasonData", seasonData)
-
-            let gameBatches = [
-               seasonData?.games.slice(0, 10),
-               seasonData?.games.slice(10, 20),
-               seasonData?.games.slice(20, 30),
-            ];
-
-            const goalBatchOne = await getDocs(
-               query(collection(db, "goals"), where("gameId", "in", gameBatches[0]))
-            );
-
-            const gameBatchOne = await getDocs(
-               query(collection(db, "games"), where(documentId(), "in", gameBatches[0]))
-            );
-
-            const penaltyBatchOne = await getDocs(
-               query(collection(db, "penalties"), where("gameId", "in", gameBatches[0]))
-            );
-
-            let goalBatchTwo;
-            let gameBatchTwo;
-            let penaltyBatchTwo;
-
-            // console.log("gameBatches", gameBatches);
-
-            if (gameBatches[1].length >= 1) {
-               goalBatchTwo = await getDocs(
-                  query(collection(db, "goals"), where("gameId", "in", gameBatches[1]))
-               );
-            }
-
-            if (gameBatches[1].length >= 1) {
-               gameBatchTwo = await getDocs(
-                  query(collection(db, "games"), where(documentId(), "in", gameBatches[1]))
-               );
-            }
-
-            if (gameBatches[1].length >= 1) {
-               penaltyBatchTwo = await getDocs(
-                  query(collection(db, "penalties"), where("gameId", "in", gameBatches[1]))
-               );
-            }
-
-            let goalBatchThree;
-            let gameBatchThree;
-            let penaltyBatchThree;
-
-            if (gameBatches[2].length >= 1) {
-               goalBatchThree = await getDocs(
-                  query(collection(db, "goals"), where("gameId", "in", gameBatches[2]))
-               );
-            }
-
-            if (gameBatches[2].length >= 1) {
-               gameBatchThree = await getDocs(
-                  query(collection(db, "games"), where(documentId(), "in", gameBatches[2]))
-               );
-            }
-
-            if (gameBatches[2].length >= 1) {
-               penaltyBatchThree = await getDocs(
-                  query(collection(db, "penalties"), where("gameId", "in", gameBatches[2]))
-               );
-            }
-
-            playerResult?.forEach((player) =>
-               players.push({ ...player.data(), firebaseId: player.id })
-            );
-
-            goalBatchOne?.forEach((goal) => {
-               goals.push({ ...goal.data(), firebaseId: goal.id });
+            allPlayers.forEach((player) => {
+               stats.push({
+                  id: player.id,
+                  firstName: player.firstName,
+                  lastName: player.lastName,
+                  fullName: `${player.firstName} ${player.lastName}`,
+                  image: player.image,
+                  authProviderImage: player.authProviderImage,
+                  jerseyNumber: player.jerseyNumber ?? player.number,
+                  goals: player?.goals?.length,
+                  assists: allAssists.filter((playerId) => playerId === player.id).length,
+                  points:
+                     player?.goals?.length +
+                     allAssists.filter((playerId) => playerId === player.id).length,
+                  gamesPlayed: season.filter(
+                     (game) =>
+                        game?.roster?.includes(player.id) && dayjs().isAfter(dayjs(game.date))
+                  ).length,
+                  penaltyMinutes: player?.penalties?.reduce((sum, currentValue) => {
+                     if (currentValue?.playerId === player.id) {
+                        return sum + parseFloat(currentValue?.minutes);
+                     }
+                     return sum;
+                  }, 0),
+               });
             });
 
-            goalBatchTwo?.forEach((goal) => {
-               goals.push({ ...goal.data(), firebaseId: goal.id });
-            });
-
-            goalBatchThree?.forEach((goal) => {
-               goals.push({ ...goal.data(), firebaseId: goal.id });
-            });
-
-            gameBatchOne?.forEach((game) => {
-               games.push({ ...game.data(), firebaseId: game.id });
-            });
-
-            gameBatchTwo?.forEach((game) => {
-               games.push({ ...game.data(), firebaseId: game.id });
-            });
-
-            gameBatchThree?.forEach((game) => {
-               games.push({ ...game.data(), firebaseId: game.id });
-            });
-
-            penaltyBatchOne?.forEach((penalty) => {
-               penalties.push({ ...penalty.data(), firebaseId: penalty.id });
-            });
-
-            penaltyBatchTwo?.forEach((penalty) => {
-               penalties.push({ ...penalty.data(), firebaseId: penalty.id });
-            });
-
-            penaltyBatchThree?.forEach((penalty) => {
-               penalties.push({ ...penalty.data(), firebaseId: penalty.id });
-            });
-
-            let seasonRoster = players?.filter((player) => {
-               if (games.find((game) => game?.roster?.includes(player.firebaseId))) {
-                  return player;
-               }
-            });
-
-            seasonRoster
-               ?.filter((player) => player.id !== 12)
-               .forEach((player) =>
-                  stats.push({
-                     pgPlayerId: player.id,
-                     playerId: player.playerId,
-                     firstName: player.firstName,
-                     lastName: player.lastName,
-                     nickname: player.nickname,
-                     position: player.position,
-                     shoots: player.shoots,
-                     fullName: `${player.firstName} ${player.lastName}`,
-                     image: player.image,
-                     authProviderImage: player.authProviderImage,
-                     jerseyNumber: player.jerseyNumber ?? player.number,
-                     goals: goals.filter((goal) => goal.pgPlayerId === player.id).length,
-                     assists: goals.filter((goal) => goal?.pgAssists?.includes(player.id)).length,
-                     points:
-                        goals.filter((goal) => goal.pgPlayerId === player.id).length +
-                        goals.filter((goal) => goal?.pgAssists?.includes(player.id)).length,
-                     gamesPlayed: games.filter(
-                        (game) =>
-                           game?.pgRoster?.includes(player.id) &&
-                           dayjs().isAfter(dayjs.unix(game.date.seconds))
-                     ).length,
-                     penaltyMinutes: penalties?.reduce((sum, currentValue) => {
-                        if (currentValue?.pgPlayerId === player.id) {
-                           return sum + parseFloat(currentValue?.minutes);
-                        }
-                        return sum;
-                     }, 0),
-                  })
-               );
-
-            const seasonStats = {
-               ...seasonData,
-               seasonName: `${seasonData.leagueName} ${seasonData.name} ${seasonData.type}`,
-               stats,
+            const leaderStats = (stat) => {
+               return stats?.sort((a, b) => {
+                  if (b[stat] === a[stat]) {
+                     return b.points - a.points;
+                  }
+                  return b[stat] - a[stat];
+               })[0];
             };
+         
+            const leaders = {
+               gamesPlayed: leaderStats("gamesPlayed"),
+               goals: leaderStats("goals"),
+               assists: leaderStats("assists"),
+               points: leaderStats("points"),
+               penaltyMinutes: leaderStats("penaltyMinutes"),
+            }; 
 
-            if (seasonStats) {
-               return res.status(200).json(seasonStats);
-            }
-
-            return res.status(200).send("Game not found!");
+            return res.status(200).send({ leaders, stats });
          } catch (error) {
+            console.log("error", error);
             return res.status(400).send(error);
          }
       default:

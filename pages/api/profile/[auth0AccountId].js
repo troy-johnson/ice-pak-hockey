@@ -1,23 +1,18 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../../config";
+import { prisma } from "../../../config";
 
 const profileHandler = async (req, res) => {
    const { auth0AccountId } = req.query;
 
-   const result = await getDocs(
-      query(collection(db, "players"), where("auth0AccountId", "==", auth0AccountId))
-   );
+   console.log("auth0", auth0AccountId);
 
-   let profile = [];
-   
-   result.forEach(el => {
-      profile.push({
-         id: el.data,
-         ...el.data()
-      })     
-   })
+   try {
+      const profile = await prisma.players.findFirst({ where: { auth0AccountId } });
 
-   return res.status(200).json(profile[0]);
+      return res.status(200).json(profile);
+   } catch (error) {
+      console.log("error", error);
+      return res.status(400).json(error);
+   }
 };
 
 export default profileHandler;
