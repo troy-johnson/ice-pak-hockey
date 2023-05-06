@@ -24,4 +24,5 @@ export { default as SortTable } from "./SortTable";
 export { default as StandingsTable } from "./StandingsTable";
 export { default as UpsertGame } from "./UpsertGame";
 export { default as UpsertGoal } from "./UpsertGoal";
+export { default as UpsertSeason } from "./UpsertSeason";
 export { default as UpsertPenalty } from "./UpsertPenalty";

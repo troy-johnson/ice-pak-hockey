@@ -4,7 +4,9 @@ import styled from "@emotion/styled";
 import { useSession } from "next-auth/react";
 import dayjs from "dayjs";
 import { useForm } from "react-hook-form";
+import { mutate } from "swr";
 import {
+   Alert,
    Box,
    Button,
    FormControl,
@@ -13,14 +15,22 @@ import {
    NativeSelect,
    MenuItem,
    Paper,
+   Snackbar,
    Stack,
    Tab,
    Tabs,
    Typography,
    useMediaQuery,
 } from "@mui/material";
-import { Loading, ControlledInput, ControlledSelect, PageContainer } from "../components";
-import { roleCheck, useGetLeagues, useGetPlayers, useGetSeasons } from "../utils";
+import { FaCalendarDay, FaTrash } from "react-icons/fa";
+import {
+   Loading,
+   ControlledInput,
+   ControlledSelect,
+   PageContainer,
+   UpsertSeason,
+} from "../components";
+import { roleCheck, deleteSeason, useGetLeagues, useGetPlayers, useGetSeasons } from "../utils";
 
 const StyledTabPanel = (props) => {
    const { children, className, desktop, value, index, ...other } = props;
@@ -71,6 +81,11 @@ const TabBox = styled(Box)`
 `;
 
 const Manager = () => {
+   const [upsertSeasonDialog, setUpsertSeasonDialog] = useState(false);
+   const [seasonAction, setSeasonAction] = useState("add");
+   const [season, setSeason] = useState(null);
+   const [snackbar, setSnackbar] = useState({ open: false, type: "success", message: "" });
+
    const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
    const { leagues, leaguesLoading, leaguesError } = useGetLeagues();
    const { players, playersLoading, playersError } = useGetPlayers();
@@ -81,14 +96,12 @@ const Manager = () => {
          ? seasons.sort(
               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
            )?.[0].id
-         : "6venNqR7kd9VB0qFf9UM"
+         : ""
    );
-   const [leagueId, setLeagueId] = useState(
-      !leaguesLoading && !leaguesError ? leagues[0].id : "VgasoqbCwK96Q4eQeOMi"
-   );
+   const [leagueId, setLeagueId] = useState(!leaguesLoading && !leaguesError ? leagues[0].id : "");
    const [tabValue, setTabValue] = useState(0);
-   const { data: session, status } = useSession()
-   const loading = status === "loading"
+   const { data: session, status } = useSession();
+   const loading = status === "loading";
 
    const currentSeason = (id) => seasons?.filter((season) => season.id === id)?.[0];
 
@@ -134,6 +147,7 @@ const Manager = () => {
       setValue("standings", currentSeason(id)?.standings);
       setValue("standingsLink", currentSeason(id)?.standingsLink ?? "");
       setValue("type", currentSeason(id)?.type ?? "");
+      setSeasonId(id);
    };
 
    const handleSeasonChange = (e) => {
@@ -160,9 +174,31 @@ const Manager = () => {
       }
    }, [seasons]);
 
-   useEffect(() => {
-      updateValues(seasonId);
-   }, [seasonId]);
+   const openUpsertSeason = (action, season) => {
+      setSeasonAction(action);
+      setSeason(season);
+      setUpsertSeasonDialog(true);
+   };
+
+   const handleDelete = () => {
+      try {
+         const deletedSeason = seasonId;
+         deleteSeason(seasonId);
+         mutate(`/api/seasons`);
+         setSnackbar({
+            open: true,
+            type: "success",
+            message: "Season successfully deleted!",
+         });
+         setSeasonId(seasons?.filter((season) => season.id !== deletedSeason)?.[0]?.id);
+      } catch (error) {
+         setSnackbar({
+            open: true,
+            type: "error",
+            message: "There was an error deleting the season.",
+         });
+      }
+   };
 
    // const watchLeagueName = watch("leagueName");
 
@@ -182,6 +218,24 @@ const Manager = () => {
             </TabBox>
             <TabPanel value={tabValue} index={0}>
                <Stack display="flex" alignItems="center" justifyContent="center" spacing={2}>
+                  <Stack direction="row" spacing={2}>
+                     <Button
+                        variant="outlined"
+                        onClick={() => openUpsertSeason("add")}
+                        endIcon={<FaCalendarDay />}
+                        sx={{ marginRight: "5px" }}
+                     >
+                        Add
+                     </Button>
+                     <Button
+                        variant="outlined"
+                        onClick={handleDelete}
+                        endIcon={<FaTrash />}
+                        sx={{ marginRight: "5px" }}
+                     >
+                        Delete
+                     </Button>
+                  </Stack>
                   <FormControl>
                      <InputLabel id="season-label">Season</InputLabel>
                      <Select
@@ -205,6 +259,7 @@ const Manager = () => {
                      size="small"
                      name="startDate"
                      label="Start Date"
+                     type="text"
                   />
                   <ControlledInput control={control} size="small" name="endDate" label="End Date" />
                   <ControlledSelect
@@ -220,7 +275,6 @@ const Manager = () => {
                      name="type"
                      options={typeOptions}
                   />
-                  <ControlledInput control={control} size="small" name="result" label="Result" />
                   <ControlledInput
                      control={control}
                      size="small"
@@ -236,11 +290,37 @@ const Manager = () => {
                      Save
                   </Button>
                </Stack>
+               {upsertSeasonDialog ? (
+                  <UpsertSeason
+                     seasonAction={seasonAction}
+                     close={() => {
+                        setSeason(null);
+                        setUpsertSeasonDialog(false);
+                     }}
+                     open={upsertSeasonDialog}
+                     season={season}
+                     setSnackbar={setSnackbar}
+                  />
+               ) : null}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
                Tab 2
             </TabPanel>
          </TabContainer>
+         <Snackbar
+            open={snackbar.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+         >
+            <Alert
+               onClose={() => setSnackbar({ open: false, type: "success", message: "" })}
+               variant="filled"
+               severity={snackbar.type}
+               sx={{ width: "100%" }}
+            >
+               {snackbar.message}
+            </Alert>
+         </Snackbar>
       </PageContainer>
    );
 };
