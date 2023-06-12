@@ -134,11 +134,8 @@ const Manager = () => {
       { label: "Playoffs", value: "Playoffs" },
    ];
    const updateValues = (id) => {
-      setValue(
-         "startDate",
-         dayjs.unix(currentSeason(id)?.startDate.seconds).format("MMM DD, YYYY")
-      );
-      setValue("endDate", dayjs.unix(currentSeason(id)?.endDate.seconds).format("MMM DD, YYYY"));
+      setValue("startDate", dayjs(currentSeason(id)?.startDate).format("YYYY-MM-DDTHH:mm"));
+      setValue("endDate", dayjs(currentSeason(id)?.endDate).format("YYYY-MM-DDTHH:mm"));
       setValue("games", currentSeason(id)?.games);
       setValue("leagueId", currentSeason(id)?.leagueId);
       setValue("leagueName", currentSeason(id)?.leagueName ?? "");
@@ -160,17 +157,15 @@ const Manager = () => {
    const onSubmit = (data) => {
       // TODO: Figure out correct league ID and update value
 
+      console.log("data", data);
+
       try {
       } catch (error) {}
    };
 
    useEffect(() => {
       if (seasons) {
-         updateValues(
-            seasons?.sort(
-               (a, b) => dayjs.unix(b.startDate.seconds) - dayjs.unix(a.startDate.seconds)
-            )[0].id
-         );
+         updateValues(seasons?.sort((a, b) => dayjs(b.startDate) - dayjs(a.startDate))[0].id);
       }
    }, [seasons]);
 
@@ -206,6 +201,8 @@ const Manager = () => {
    // //    setValue("leagueId", leagues?.filter(league => league.name === watchLeagueName)[0]?.id)
    // // }
    // const leagueNameState = getFieldState("leagueName");
+
+   console.log("seasons", seasons);
 
    return (
       <PageContainer small pageTitle="Manager">
@@ -259,27 +256,44 @@ const Manager = () => {
                      size="small"
                      name="startDate"
                      label="Start Date"
-                     type="text"
+                     type="datetime-local"
                   />
-                  <ControlledInput control={control} size="small" name="endDate" label="End Date" />
+                  <ControlledInput
+                     control={control}
+                     size="small"
+                     name="endDate"
+                     type="datetime-local"
+                     label="End Date"
+                     rules={{ required: true }}
+                  />
                   <ControlledSelect
                      control={control}
                      label="League Name"
                      name="leagueName"
                      options={leagueOptions}
+                     rules={{ minLength: 3, required: true }}
+                     sx={{ maxWidth: "350px" }}
                   />
-                  <ControlledInput control={control} size="small" name="name" label="Name" />
+                  <ControlledInput
+                     control={control}
+                     size="small"
+                     name="name"
+                     label="Name"
+                     rules={{ required: true }}
+                  />
                   <ControlledSelect
                      control={control}
                      label="Type"
                      name="type"
                      options={typeOptions}
+                     rules={{ minLength: 3, required: true }}
                   />
                   <ControlledInput
                      control={control}
                      size="small"
                      name="standingsLink"
                      label="Standings Link"
+                     rules={{ minLength: 3, required: true }}
                   />
                   <Button
                      type="submit"

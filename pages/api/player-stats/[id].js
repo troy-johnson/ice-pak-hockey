@@ -1,12 +1,16 @@
 import dayjs from "dayjs";
 import { prisma } from "../../../config";
 
+// export const config = {
+//    runtime: "edge",
+// };
+
 const playerStatsHandler = async (req, res) => {
    switch (req.method) {
       case "GET":
          const { id } = req.query;
 
-         console.log("id", id);
+         // console.log("id", id);
 
          try {
             const playerData = await prisma.players.findUnique({
@@ -105,7 +109,7 @@ const playerStatsHandler = async (req, res) => {
                },
             });
 
-            console.log("player stats", { playerData, goalsData, gamesData });
+            // console.log("player stats", { playerData, goalsData, gamesData });
 
             const seasonYear = (season) => season?.name.split(" ")[1];
 
@@ -119,7 +123,7 @@ const playerStatsHandler = async (req, res) => {
                      )?.length,
                      gamesPlayed: gamesData.filter(
                         (game) =>
-                           game.roster.includes(id) &&
+                           game.roster?.includes(id) &&
                            game.seasonId === season.id &&
                            dayjs().isAfter(dayjs(game.date))
                      )?.length,
@@ -133,7 +137,7 @@ const playerStatsHandler = async (req, res) => {
                         ?.filter((penalty) => penalty?.games?.seasonId === season.id)
                         ?.reduce((sum, currentValue) => sum + parseFloat(currentValue.minutes), 0),
                      shortYear: `${season?.name.split(" ")[0]} ${
-                        seasonYear(season).includes("-")
+                        seasonYear(season)?.includes("-")
                            ? seasonYear(season).slice(2, 4) + "-" + seasonYear(season).slice(6 - 8)
                            : seasonYear(season)
                      }`,
@@ -175,6 +179,8 @@ const playerStatsHandler = async (req, res) => {
                seasonStats,
                gameLog,
             };
+
+            console.log("finalResult", finalResult);
 
             return res.status(200).json(finalResult);
          } catch (error) {
