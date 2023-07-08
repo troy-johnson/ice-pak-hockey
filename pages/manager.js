@@ -272,7 +272,7 @@ const Manager = () => {
                      name="leagueName"
                      options={leagueOptions}
                      rules={{ minLength: 3, required: true }}
-                     sx={{ maxWidth: "350px" }}
+                     sx={{ minWidth: "250px", maxWidth: "300px" }}
                   />
                   <ControlledInput
                      control={control}
@@ -287,6 +287,7 @@ const Manager = () => {
                      name="type"
                      options={typeOptions}
                      rules={{ minLength: 3, required: true }}
+                     sx={{ minWidth: "250px", maxWidth: "300px" }}
                   />
                   <ControlledInput
                      control={control}

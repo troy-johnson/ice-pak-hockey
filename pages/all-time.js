@@ -1,17 +1,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styled from "@emotion/styled";
-import dayjs from "dayjs";
 import {
    Avatar,
    Container,
    Divider,
-   FormControl,
-   Select,
-   NativeSelect,
-   MenuItem,
    Paper,
-   InputLabel,
    Stack,
    Table,
    TableBody,
@@ -21,11 +15,23 @@ import {
    TableRow,
    Typography,
    useMediaQuery,
-   useTheme,
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading, PageContainer } from "../components";
 import { useGetAllTimeStats } from "../utils";
+
+// export async function getStaticProps() {
+//    const allTimeData = await fetch("localhost:3000/api/all-time-stats").then((res) =>
+//       res.json()
+//    );
+
+//    return {
+//       props: {
+//          allTimeData,
+//       },
+//       revalidate: 60,
+//    };
+// }
 
 const SortArrow = styled(ArrowDropUpIcon)`
    transform: ${(props) => (props.order === "asc" ? "rotate(0deg)" : "rotate(180deg)")};
@@ -109,13 +115,10 @@ const LeaderStatStack = styled(Stack)`
    min-width: 60px;
 `;
 
-const Stats = () => {
+const AllTimeStats = () => {
    const { stats, statsLoading, statsError } = useGetAllTimeStats();
-   const [seasonId, setSeasonId] = useState(null);
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
-
-   const theme = useTheme();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
    const selectSize = useMediaQuery((theme) => theme.breakpoints.up("sm"));
 
@@ -134,38 +137,6 @@ const Stats = () => {
 
    return (
       <PageContainer pageTitle="All-Time Stats" small>
-         {/* <FormControl sx={{ marginLeft: "15px", marginBottom: "15px", maxWidth: "350px" }}>
-            <InputLabel id="demo-simple-select-label">Season</InputLabel>
-            {selectSize ? (
-               <Select
-                  labelId="season-select-label"
-                  id="season-select"
-                  value={seasonId}
-                  label="Season"
-                  variant="outlined"
-                  onChange={handleSeasonChange}
-               >
-                  {seasonOptions?.map((option) => (
-                     <MenuItem key={option.value} value={option.value}>
-                        {option.label}
-                     </MenuItem>
-                  ))}
-               </Select>
-            ) : (
-               <NativeSelect
-                  id="season-select"
-                  value={seasonId}
-                  label="Season"
-                  onChange={handleSeasonChange}
-               >
-                  {seasonOptions?.map((option) => (
-                     <option key={option.value} value={option.value}>
-                        {option.label}
-                     </option>
-                  ))}
-               </NativeSelect>
-            )}
-         </FormControl> */}
          {!stats?.stats ? (
             <Container>No stats recorded for this season. Please select another season.</Container>
          ) : (
@@ -569,4 +540,4 @@ const Stats = () => {
    );
 };
 
-export default Stats;
+export default AllTimeStats;

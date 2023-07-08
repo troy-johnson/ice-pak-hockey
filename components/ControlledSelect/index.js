@@ -16,6 +16,7 @@ const ControlledSelect = ({
    options,
    required,
    rules,
+   sx,
    variant
 }) => {
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
@@ -35,6 +36,7 @@ const ControlledSelect = ({
                size="small"
                fullWidth
                variant={variant}
+               sx={sx}
             >
                <InputLabel id={`${name}-label`}>{label}</InputLabel>
                {desktop ? (
