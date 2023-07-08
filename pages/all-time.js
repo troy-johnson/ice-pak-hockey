@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import { Loading, PageContainer } from "../components";
-import { useGetSeasons, useGetSeasonStats } from "../utils";
+import { useGetAllTimeStats } from "../utils";
 
 const SortArrow = styled(ArrowDropUpIcon)`
    transform: ${(props) => (props.order === "asc" ? "rotate(0deg)" : "rotate(180deg)")};
@@ -110,57 +110,31 @@ const LeaderStatStack = styled(Stack)`
 `;
 
 const Stats = () => {
-   const { seasons, seasonsLoading, seasonsError } = useGetSeasons();
-   // const [seasonId, setSeasonId] = useState(
-   //    !seasonsLoading && !seasonsError
-   //       ? seasons?.length - 1 : "9"
-   // );
+   const { stats, statsLoading, statsError } = useGetAllTimeStats();
    const [seasonId, setSeasonId] = useState(null);
    const [order, setOrder] = useState("desc");
    const [orderBy, setOrderBy] = useState("points");
-   const { seasonStats, seasonStatsLoading, seasonStatsError } = useGetSeasonStats(
-      seasonId ?? seasons?.[0]?.id
-   );
+
    const theme = useTheme();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("lg"));
    const selectSize = useMediaQuery((theme) => theme.breakpoints.up("sm"));
-
-   const seasonOptions = seasons
-      ?.sort((a, b) => dayjs(b.startDate) - dayjs(a.startDate))
-      .map((season) => {
-         return { label: `${season.leagueName} ${season.name} ${season.type}`, value: season.id };
-      });
-
-   const handleSeasonChange = (e) => {
-      setSeasonId(e.target.value);
-   };
 
    const handleClick = (type) => {
       setOrderBy(type);
       setOrder(order === "asc" ? "desc" : "asc");
    };
 
-   useEffect(() => {
-      if (seasons) {
-         setSeasonId(
-            seasons?.sort(
-               (a, b) => dayjs(b.startDate) - dayjs(a.startDate)
-            )?.[0].id
-         );
-      }
-   }, [seasons]);
-
-   if (seasonStatsLoading) {
+   if (statsLoading) {
       return <Loading />;
-   } else if (seasonStatsError) {
+   } else if (statsError) {
       return <div>An error occurred. Please try again.</div>;
    }
 
-   console.log("seasonStats", seasonStats);
+   console.log("stats", stats);
 
    return (
-      <PageContainer pageTitle="Season Stats" small>
-         <FormControl sx={{ marginLeft: "15px", marginBottom: "15px", maxWidth: "350px" }}>
+      <PageContainer pageTitle="All-Time Stats" small>
+         {/* <FormControl sx={{ marginLeft: "15px", marginBottom: "15px", maxWidth: "350px" }}>
             <InputLabel id="demo-simple-select-label">Season</InputLabel>
             {selectSize ? (
                <Select
@@ -191,8 +165,8 @@ const Stats = () => {
                   ))}
                </NativeSelect>
             )}
-         </FormControl>
-         {!seasonStats?.stats ? (
+         </FormControl> */}
+         {!stats?.stats ? (
             <Container>No stats recorded for this season. Please select another season.</Container>
          ) : (
             <>
@@ -212,29 +186,29 @@ const Stats = () => {
                         <Typography variant="overline">
                            {desktop ? "Games Played" : "GP"}
                         </Typography>
-                        {seasonStats?.leaders?.gamesPlayed ? (
+                        {stats?.leaders?.gamesPlayed ? (
                            <>
                               <Avatar
                                  sx={{ mb: 1 }}
                                  src={
-                                    seasonStats?.leaders?.gamesPlayed?.image ||
-                                    seasonStats?.leaders?.gamesPlayed?.authProviderImage
+                                    stats?.leaders?.gamesPlayed?.image ||
+                                    stats?.leaders?.gamesPlayed?.authProviderImage
                                  }
                               />
                               {desktop ? (
-                                 <Typography>{seasonStats?.leaders?.gamesPlayed?.fullName}</Typography>
+                                 <Typography>{stats?.leaders?.gamesPlayed?.fullName}</Typography>
                               ) : (
                                  <>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.gamesPlayed?.firstName}
+                                       {stats?.leaders?.gamesPlayed?.firstName}
                                     </Typography>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.gamesPlayed?.lastName}
+                                       {stats?.leaders?.gamesPlayed?.lastName}
                                     </Typography>
                                  </>
                               )}
                               <Typography variant="h6">
-                                 {seasonStats?.leaders?.gamesPlayed?.gamesPlayed}
+                                 {stats?.leaders?.gamesPlayed?.gamesPlayed}
                               </Typography>
                            </>
                         ) : (
@@ -243,28 +217,28 @@ const Stats = () => {
                      </LeaderStatStack>
                      <LeaderStatStack>
                         <Typography variant="overline">Goals</Typography>
-                        {seasonStats?.leaders?.goals ? (
+                        {stats?.leaders?.goals ? (
                            <>
                               <Avatar
                                  sx={{ mb: 1 }}
                                  src={
-                                    seasonStats?.leaders?.goals?.image ||
-                                    seasonStats?.leaders?.goals?.authProviderImage
+                                    stats?.leaders?.goals?.image ||
+                                    stats?.leaders?.goals?.authProviderImage
                                  }
                               />
                               {desktop ? (
-                                 <Typography>{seasonStats?.leaders?.goals?.fullName}</Typography>
+                                 <Typography>{stats?.leaders?.goals?.fullName}</Typography>
                               ) : (
                                  <>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.goals?.firstName}
+                                       {stats?.leaders?.goals?.firstName}
                                     </Typography>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.goals?.lastName}
+                                       {stats?.leaders?.goals?.lastName}
                                     </Typography>
                                  </>
                               )}
-                              <Typography variant="h6">{seasonStats?.leaders?.goals?.goals}</Typography>
+                              <Typography variant="h6">{stats?.leaders?.goals?.goals}</Typography>
                            </>
                         ) : (
                            "No stats"
@@ -272,29 +246,29 @@ const Stats = () => {
                      </LeaderStatStack>
                      <LeaderStatStack>
                         <Typography variant="overline">Assists</Typography>
-                        {seasonStats?.leaders?.assists ? (
+                        {stats?.leaders?.assists ? (
                            <>
                               <Avatar
                                  sx={{ mb: 1 }}
                                  src={
-                                    seasonStats?.leaders?.assists?.image ||
-                                    seasonStats?.leaders?.assists?.authProviderImage
+                                    stats?.leaders?.assists?.image ||
+                                    stats?.leaders?.assists?.authProviderImage
                                  }
                               />
                               {desktop ? (
-                                 <Typography>{seasonStats?.leaders?.assists?.fullName}</Typography>
+                                 <Typography>{stats?.leaders?.assists?.fullName}</Typography>
                               ) : (
                                  <>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.assists?.firstName}
+                                       {stats?.leaders?.assists?.firstName}
                                     </Typography>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.assists?.lastName}
+                                       {stats?.leaders?.assists?.lastName}
                                     </Typography>
                                  </>
                               )}
                               <Typography variant="h6">
-                                 {seasonStats?.leaders?.assists?.assists}
+                                 {stats?.leaders?.assists?.assists}
                               </Typography>
                            </>
                         ) : (
@@ -303,29 +277,29 @@ const Stats = () => {
                      </LeaderStatStack>
                      <LeaderStatStack>
                         <Typography variant="overline">{desktop ? "Points" : "Pts"}</Typography>
-                        {seasonStats?.leaders?.points ? (
+                        {stats?.leaders?.points ? (
                            <>
                               <Avatar
                                  sx={{ mb: 1 }}
                                  src={
-                                    seasonStats?.leaders?.points?.image ||
-                                    seasonStats?.leaders?.points?.authProviderImage
+                                    stats?.leaders?.points?.image ||
+                                    stats?.leaders?.points?.authProviderImage
                                  }
                               />
                               {desktop ? (
-                                 <Typography>{seasonStats?.leaders?.points?.fullName}</Typography>
+                                 <Typography>{stats?.leaders?.points?.fullName}</Typography>
                               ) : (
                                  <>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.points?.firstName}
+                                       {stats?.leaders?.points?.firstName}
                                     </Typography>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.points?.lastName}
+                                       {stats?.leaders?.points?.lastName}
                                     </Typography>
                                  </>
                               )}
                               <Typography variant="h6">
-                                 {seasonStats?.leaders?.points?.goals + seasonStats?.leaders?.points?.assists}
+                                 {stats?.leaders?.points?.goals + stats?.leaders?.points?.assists}
                               </Typography>
                            </>
                         ) : (
@@ -336,29 +310,29 @@ const Stats = () => {
                         <Typography variant="overline">
                            {desktop ? "Penalty Minutes" : "PIM"}
                         </Typography>
-                        {seasonStats?.leaders?.penaltyMinutes ? (
+                        {stats?.leaders?.penaltyMinutes ? (
                            <>
                               <Avatar
                                  sx={{ mb: 1 }}
                                  src={
-                                    seasonStats?.leaders?.penaltyMinutes?.image ||
-                                    seasonStats?.leaders?.penaltyMinutes?.authProviderImage
+                                    stats?.leaders?.penaltyMinutes?.image ||
+                                    stats?.leaders?.penaltyMinutes?.authProviderImage
                                  }
                               />
                               {desktop ? (
-                                 <Typography>{seasonStats?.leaders?.penaltyMinutes?.fullName}</Typography>
+                                 <Typography>{stats?.leaders?.penaltyMinutes?.fullName}</Typography>
                               ) : (
                                  <>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.penaltyMinutes?.firstName}
+                                       {stats?.leaders?.penaltyMinutes?.firstName}
                                     </Typography>
                                     <Typography variant="body2">
-                                       {seasonStats?.leaders?.penaltyMinutes?.lastName}
+                                       {stats?.leaders?.penaltyMinutes?.lastName}
                                     </Typography>
                                  </>
                               )}
                               <Typography variant="h6">
-                                 {seasonStats?.leaders?.penaltyMinutes?.penaltyMinutes}
+                                 {stats?.leaders?.penaltyMinutes?.penaltyMinutes}
                               </Typography>
                            </>
                         ) : (
@@ -378,19 +352,19 @@ const Stats = () => {
                                  <Avatar
                                     sx={{ mb: 1 }}
                                     src={
-                                       seasonStats?.leaders?.gamesPlayed?.image ||
-                                       seasonStats?.leaders?.gamesPlayed?.authProviderImage
+                                       stats?.leaders?.gamesPlayed?.image ||
+                                       stats?.leaders?.gamesPlayed?.authProviderImage
                                     }
                                  />
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="body2">
-                                    {seasonStats?.leaders?.gamesPlayed?.fullName}
+                                    {stats?.leaders?.gamesPlayed?.fullName}
                                  </Typography>
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="h6">
-                                    {seasonStats?.leaders?.gamesPlayed?.gamesPlayed}
+                                    {stats?.leaders?.gamesPlayed?.gamesPlayed}
                                  </Typography>
                               </TableCell>
                            </TableRow>
@@ -402,18 +376,18 @@ const Stats = () => {
                                  <Avatar
                                     sx={{ mb: 1 }}
                                     src={
-                                       seasonStats?.leaders?.goals?.image ||
-                                       seasonStats?.leaders?.goals?.authProviderImage
+                                       stats?.leaders?.goals?.image ||
+                                       stats?.leaders?.goals?.authProviderImage
                                     }
                                  />
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="body2">
-                                    {seasonStats?.leaders?.goals?.fullName}
+                                    {stats?.leaders?.goals?.fullName}
                                  </Typography>
                               </TableCell>
                               <TableCell align="left">
-                                 <Typography variant="h6">{seasonStats?.leaders?.goals?.goals}</Typography>
+                                 <Typography variant="h6">{stats?.leaders?.goals?.goals}</Typography>
                               </TableCell>
                            </TableRow>
                            <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
@@ -424,19 +398,19 @@ const Stats = () => {
                                  <Avatar
                                     sx={{ mb: 1 }}
                                     src={
-                                       seasonStats?.leaders?.assists?.image ||
-                                       seasonStats?.leaders?.assists?.authProviderImage
+                                       stats?.leaders?.assists?.image ||
+                                       stats?.leaders?.assists?.authProviderImage
                                     }
                                  />
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="body2">
-                                    {seasonStats?.leaders?.assists?.fullName}
+                                    {stats?.leaders?.assists?.fullName}
                                  </Typography>
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="h6">
-                                    {seasonStats?.leaders?.assists?.assists}
+                                    {stats?.leaders?.assists?.assists}
                                  </Typography>
                               </TableCell>
                            </TableRow>
@@ -448,19 +422,19 @@ const Stats = () => {
                                  <Avatar
                                     sx={{ mb: 1 }}
                                     src={
-                                       seasonStats?.leaders?.points?.image ||
-                                       seasonStats?.leaders?.points?.authProviderImage
+                                       stats?.leaders?.points?.image ||
+                                       stats?.leaders?.points?.authProviderImage
                                     }
                                  />
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="body2">
-                                    {seasonStats?.leaders?.points?.fullName}
+                                    {stats?.leaders?.points?.fullName}
                                  </Typography>
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="h6">
-                                    {seasonStats?.leaders?.points?.points}
+                                    {stats?.leaders?.points?.points}
                                  </Typography>
                               </TableCell>
                            </TableRow>
@@ -472,19 +446,19 @@ const Stats = () => {
                                  <Avatar
                                     sx={{ mb: 1 }}
                                     src={
-                                       seasonStats?.leaders?.penaltyMinutes?.image ||
-                                       seasonStats?.leaders?.penaltyMinutes?.authProviderImage
+                                       stats?.leaders?.penaltyMinutes?.image ||
+                                       stats?.leaders?.penaltyMinutes?.authProviderImage
                                     }
                                  />
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="body2">
-                                    {seasonStats?.leaders?.penaltyMinutes?.fullName}
+                                    {stats?.leaders?.penaltyMinutes?.fullName}
                                  </Typography>
                               </TableCell>
                               <TableCell align="left">
                                  <Typography variant="h6">
-                                    {seasonStats?.leaders?.penaltyMinutes?.penaltyMinutes}
+                                    {stats?.leaders?.penaltyMinutes?.penaltyMinutes}
                                  </Typography>
                               </TableCell>
                            </TableRow>
@@ -542,7 +516,7 @@ const Stats = () => {
                         </PlayerTableHeader>
                      </TableHead>
                      <PlayerTableBody>
-                        {seasonStats?.stats
+                        {stats?.stats
                            ?.sort((a, b) =>
                               order === "asc"
                                  ? a?.[orderBy] - b?.[orderBy]

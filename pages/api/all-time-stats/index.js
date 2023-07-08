@@ -23,6 +23,14 @@ const allTimeStatsHandler = async (req, res) => {
 
             // console.log('seasons', seasons)
 
+            const allGoals = await prisma.goals.findMany({
+               select: {
+                  id: true,
+                  playerId: true,
+                  assists: true,
+               },
+            });
+
             const allPlayers = await prisma.players.findMany({
                where: {
                   NOT: {
@@ -61,18 +69,10 @@ const allTimeStatsHandler = async (req, res) => {
                   roster: true
             }});
 
-            console.log("season",  allGames);
-
-            // if (!season?.games && season?.statBypass) {
-            //    season.statBypass.forEach((player) => stats.push(player));
-            //    return res.status(200).json({
-            //       ...season,
-            //       seasonName: `${season.leagueName} ${season.name} ${season.type}`,
-            //       stats,
-            //    });
-            // }
-
             allPlayers.forEach((player) => {
+               const goals = allGoals.filter((goal) => goal.playerId === player.id).length;
+               const assists = allGoals.filter((goal) => goal.assists.includes(player.id)).length;
+
                stats.push({
                   id: player.id,
                   firstName: player.firstName,
@@ -81,11 +81,10 @@ const allTimeStatsHandler = async (req, res) => {
                   image: player.image,
                   authProviderImage: player.authProviderImage,
                   jerseyNumber: player.jerseyNumber ?? player.number,
-                  goals: player?.goals?.length,
-                  assists: allAssists.filter((playerId) => playerId === player.id).length,
-                  points:
-                     player?.goals?.length +
-                     allAssists.filter((playerId) => playerId === player.id).length,
+                  goals,
+                  assists,
+                  points: goals + assists,
+                  pointsPerGame: Number(((goals + assists) / allGames.filter((game) => game.roster.includes(player.id)).length).toFixed(2)),
                   gamesPlayed: allGames.filter((game) => game.roster.includes(player.id)).length,
                   penaltyMinutes: player?.penalties?.reduce((sum, currentValue) => {
                      if (currentValue?.playerId === player.id) {
@@ -111,6 +110,7 @@ const allTimeStatsHandler = async (req, res) => {
                assists: leaderStats("assists"),
                points: leaderStats("points"),
                penaltyMinutes: leaderStats("penaltyMinutes"),
+               pointsPerGame: leaderStats("pointsPerGame"),
             };
 
             return res.status(200).send({ leaders, stats });

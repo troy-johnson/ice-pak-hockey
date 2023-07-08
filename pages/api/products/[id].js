@@ -1,10 +1,7 @@
 const productsHandler = async (req, res) => {
    try {
       const headers = new Headers();
-      headers.append(
-         "Authorization",
-         `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
-      );
+      headers.append("Authorization", `Bearer ${process.env.PRINTFUL_API_KEY}`);
 
       const { id } = req.query;
 
@@ -15,8 +12,6 @@ const productsHandler = async (req, res) => {
       });
 
       const data = await result.json();
-
-      // console.log('productData', data)
 
       return res.status(200).send(data.result);
    } catch (error) {
