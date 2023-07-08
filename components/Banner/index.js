@@ -94,6 +94,7 @@ const MenuItem = styled(ListItemText)`
       transition: color 0.2s ease-in-out;
 
       :hover {
+         text-decoration: underline;
          color: ${(props) => props.theme.palette.tertiary.main};
       }
    }
@@ -211,7 +212,7 @@ const Banner = () => {
                   role="presentation"
                   onClick={() => setOpen(false)}
                   onKeyDown={() => setOpen(false)}
-                  desktop={desktop}
+                  desktop={desktop.toString()}
                >
                   {/* <CloseNav onClick={() => setOpen(false)} /> */}
                   <List>
@@ -233,6 +234,11 @@ const Banner = () => {
                      <ListItem button>
                         <Link href="/schedule" passHref>
                            <MenuItem primary="Schedule" />
+                        </Link>
+                     </ListItem>
+                     <ListItem button>
+                        <Link href="/all-time" passHref>
+                           <MenuItem primary="All-Time" />
                         </Link>
                      </ListItem>
                      <ListItem button>

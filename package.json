@@ -21,6 +21,7 @@
       "@sanity/block-content-to-react": "^3.0.0",
       "@stripe/react-stripe-js": "^1.6.0",
       "@stripe/stripe-js": "^1.21.1",
+      "@vercel/edge": "^0.3.4",
       "dayjs": "^1.10.7",
       "firebase": "9.0.0",
       "firebase-admin": "^10.0.0",

@@ -3,7 +3,7 @@ const productsHandler = async (req, res) => {
       const headers = new Headers();
       headers.append(
          "Authorization",
-         `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
+         `Bearer ${process.env.PRINTFUL_API_KEY}`
       );
    
       const result = await fetch("https://api.printful.com/store/products", {
@@ -12,27 +12,6 @@ const productsHandler = async (req, res) => {
          redirect: "follow",
       });
    
-   
-      // let finalProductsList = [];
-   
-      // for await (const product of data.result) {
-      //    const headers = new Headers();
-      //    headers.append(
-      //       "Authorization",
-      //       `Basic ${Buffer.from(process.env.PRINTFUL_API_KEY).toString("base64")}`
-      //    );
-   
-      //    const result = await fetch(`https://api.printful.com/store/products/${product.id}`, {
-      //       method: "GET",
-      //       headers: headers,
-      //       redirect: "follow",
-      //    });
-   
-      //    const productData = await result.json();
-   
-      //    finalProductsList.push(productData.result);
-      // }
-
       const data = await result.json();
    
       return res.status(200).send(data.result);      

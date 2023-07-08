@@ -10,7 +10,7 @@ const GameTicker = () => {
    const [desktopSlice, setDesktopSlice] = useState([0, 4]);
    const [mobileSlice, setMobileSlice] = useState([0, 1]);
    const { allGames, allGamesLoading, allGamesError } = useGetAllGames();
-   const desktop = useMediaQuery((theme) => theme.breakpoints.up("sm"));
+   const desktop = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
    useEffect(() => {
       if (!allGamesLoading && !allGamesError) {
@@ -19,7 +19,7 @@ const GameTicker = () => {
          );
 
          if (nextGame !== -1) {
-            setDesktopSlice([nextGame - 2, nextGame + 3]);
+            setDesktopSlice([nextGame - 1, nextGame + 2]);
             setMobileSlice([nextGame, nextGame + 1]);
          } else {
             setDesktopSlice([allGames?.gamesData?.length - 4, allGames?.gamesData?.length]);

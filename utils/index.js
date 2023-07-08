@@ -10,12 +10,14 @@ export { default as addGame } from "./addGame";
 export { default as addGoal } from "./addGoal";
 export { default as addPenalty } from "./addPenalty";
 export { default as addPlayer } from "./addPlayer";
+export { default as addSeason } from "./addSeason";
 
 export { default as createCheckoutSession } from "./createCheckoutSession"
 export { default as createComment } from "./createComment";
 
 export { default as deleteGoal } from "./deleteGoal";
 export { default as deletePenalty } from "./deletePenalty";
+export { default as deleteSeason } from "./deleteSeason";
 
 export { default as editGame } from "./editGame";
 export { default as editGameRoster } from "./editGameRoster";

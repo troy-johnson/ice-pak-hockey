@@ -2,8 +2,12 @@ import dayjs from "dayjs";
 import twilio from "twilio";
 import { prisma } from "../../../config";
 
-const gameDayNotificationHandler = async (req, res) => {
-   switch (req.method) {
+// export const config = {
+//    runtime: "edge",
+// };
+
+const gameDayNotificationHandler = async (request, context) => {
+   switch (request.method) {
       case "POST":
          try {
             const gameDays = await prisma.games.findMany({
@@ -73,18 +77,21 @@ const gameDayNotificationHandler = async (req, res) => {
 
                const sendTexts = async () => {
                   for (const game of listToNotify) {
-                     console.log("game", game)
+                     console.log("game", game);
                      for (const player of game.phoneNumbers) {
                         try {
-                           console.log("phoneNumbers", player)
+                           console.log("phoneNumbers", player);
                            await textClient.messages.create({
                               from: "(714) 519-2916",
-                              to: player?.preferredPhone !== '' ? player?.preferredPhone : player?.phoneNumber,
+                              to:
+                                 player?.preferredPhone !== ""
+                                    ? player?.preferredPhone
+                                    : player?.phoneNumber,
                               body: `Ice Pak Hockey \n\nIt's game day! \n\nOpponent: ${
                                  game.teams.teamName
-                              } \nTime: ${dayjs(game.date)
-                                 .local()
-                                 .format("h:mm a")} \nLocation: ${game.locations.name} (${
+                              } \nTime: ${dayjs(game.date).local().format("h:mm a")} \nLocation: ${
+                                 game.locations.name
+                              } (${
                                  game.locations.googleMapsLink
                               }) \n \nView game at www.icepakhockey.com/games/${game.id}`,
                            });
@@ -92,25 +99,39 @@ const gameDayNotificationHandler = async (req, res) => {
                            console.log(
                               `Successfully sent sms notification to ${player.firstName} ${
                                  player.lastName
-                              } @ ${player?.preferredPhone !== '' ? player?.preferredPhone : player?.phoneNumber}`
+                              } @ ${
+                                 player?.preferredPhone !== ""
+                                    ? player?.preferredPhone
+                                    : player?.phoneNumber
+                              }`
                            );
 
                            result.push({
                               name: `${player.firstName} ${player.lastName}`,
-                              phoneNumber: player?.preferredPhone !== '' ? player?.preferredPhone : player?.phoneNumber,
+                              phoneNumber:
+                                 player?.preferredPhone !== ""
+                                    ? player?.preferredPhone
+                                    : player?.phoneNumber,
                               status: "success",
                            });
                         } catch (error) {
                            console.log(
                               `Error sending sms notification to ${player.firstName} ${
                                  player.lastName
-                              } @ ${player?.preferredPhone !== '' ? player?.preferredPhone : player?.phoneNumber}: `,
+                              } @ ${
+                                 player?.preferredPhone !== ""
+                                    ? player?.preferredPhone
+                                    : player?.phoneNumber
+                              }: `,
                               error
                            );
 
                            result.push({
                               name: `${player.firstName} ${player.lastName}`,
-                              phoneNumber: player?.preferredPhone !== '' ? player?.preferredPhone : player?.phoneNumber,
+                              phoneNumber:
+                                 player?.preferredPhone !== ""
+                                    ? player?.preferredPhone
+                                    : player?.phoneNumber,
                               status: "error",
                            });
                         }

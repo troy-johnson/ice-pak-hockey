@@ -1,60 +1,41 @@
-import { deleteDoc, doc, setDoc } from "firebase/firestore";
-import { db, prisma } from "../../../config";
+import { prisma } from "../../../config";
 
 const seasonsHandler = async (req, res) => {
-   // console.log("req", { method: req.method, body: req.body });
+   const { id } = req.query;
+
+   console.log("id", id)
+
    switch (req.method) {
       case "GET":
-         const { id } = req.query;
-
          try {
-            const season = await prisma.seasons.findUnique({
-               where: {
-                  id,
-               },
-            });
+            const season = await prisma.seasons.findUnique({ where: { id } });
 
             return res.status(200).send(season);
          } catch (error) {
             return res.status(400).send(error);
          }
-      case "POST":
-         try {
-            await setDoc(doc(db, "seasons", req.body.id), {
-               endDate: req.body.endDate,
-               games: req.body.games,
-               leagueId: req.body.leagueId,
-               leagueName: req.body.leagueName,
-               name: req.body.name,
-               roster: req.body.roster,
-               roles: req.body.roles,
-               standings: req.body.standings,
-               standingsLink: req.body.standingsLink,
-               startDate: req.body.startDate,
-               type: req.body.type,
-            });
-
-            return res.status(200).json({ ...req.body });
-         } catch (error) {
-            return res.status(400).send(error);
-         }
       case "PUT":
          try {
-            // console.log("req.body", req.body);
-            await setDoc(doc(db, "seasons", req.body.id), {
-               ...req.body,
+            await prisma.seasons.update({
+               where: { id },
+               data: {
+                  ...req.body,
+               },
             });
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
-            console.log("error", error);
             return res.status(400).send(error);
          }
       case "DELETE":
          try {
-            await deleteDoc(doc(db, "seasons", req.body.id));
+            await prisma.seasons.delete({
+               where: {
+                  id,
+               },
+            });
 
-            return res.status(200).json();
+            return res.status(200).json({ message: `Season ${id} deleted`});
          } catch (error) {
             return res.status(400).send(error);
          }
