@@ -212,15 +212,6 @@ const Manager = () => {
       }
    };
 
-   // const watchLeagueName = watch("leagueName");
-
-   // // if (watchLeagueName !== currentSeason(seasonId)?.leagueName) {
-   // //    setValue("leagueId", leagues?.filter(league => league.name === watchLeagueName)[0]?.id)
-   // // }
-   // const leagueNameState = getFieldState("leagueName");
-
-   console.log("seasons", seasons);
-
    return (
       <PageContainer small pageTitle="Manager">
          <TabContainer>
