@@ -3,18 +3,18 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconButton, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import dayjs from "dayjs";
-import { useGetAllGames, useGetGoals } from "../../utils";
+import { useGetRecentGames } from "../../utils";
 import { IoArrowBackSharp, IoArrowForwardSharp } from "react-icons/io5";
 
 const GameTicker = () => {
    const [desktopSlice, setDesktopSlice] = useState([0, 4]);
    const [mobileSlice, setMobileSlice] = useState([0, 1]);
-   const { allGames, allGamesLoading, allGamesError } = useGetAllGames();
+   const { games, gamesLoading, gamesError } = useGetRecentGames();
    const desktop = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
    useEffect(() => {
-      if (!allGamesLoading && !allGamesError) {
-         const nextGame = allGames?.gamesData?.findIndex((game) =>
+      if (!gamesLoading && !gamesError) {
+         const nextGame = games?.findIndex((game) =>
             dayjs(game.date).isAfter(dayjs())
          );
 
@@ -22,11 +22,11 @@ const GameTicker = () => {
             setDesktopSlice([nextGame - 1, nextGame + 2]);
             setMobileSlice([nextGame, nextGame + 1]);
          } else {
-            setDesktopSlice([allGames?.gamesData?.length - 4, allGames?.gamesData?.length]);
-            setMobileSlice([allGames?.gamesData?.length - 1, allGames?.gamesData?.length]);
+            setDesktopSlice([games?.length - 4, games?.length]);
+            setMobileSlice([games?.length - 1, games?.length]);
          }
       }
-   }, [allGamesLoading, allGamesError]);
+   }, [gamesLoading, gamesError]);
 
    const handleGameBack = () => {
       setDesktopSlice([desktopSlice[0] - 1, desktopSlice[1] - 1]);
@@ -38,16 +38,7 @@ const GameTicker = () => {
       setMobileSlice([mobileSlice[0] + 1, mobileSlice[1] + 1]);
    };
 
-   const gamesToShow = allGames?.gamesData
-      ?.sort((a, b) => dayjs(a.date) - dayjs(b.date))
-      ?.slice(
-         desktop ? desktopSlice[0] : mobileSlice[0],
-         desktop ? desktopSlice[1] : mobileSlice[1]
-      )
-      .map((game) => {
-         const logo = allGames?.teamsData?.filter((team) => team.id === game?.teams?.id)[0]?.logo;
-         return { ...game, teams: { ...game.teams, logo } };
-      });
+   const gamesToShow = desktop ? games?.slice(desktopSlice[0], desktopSlice[1]) : games?.slice(mobileSlice[0], mobileSlice[1]);
 
    const Skeletons = () => (
       <Stack spacing={1} direction="row">
@@ -56,9 +47,6 @@ const GameTicker = () => {
          {desktop ? <Skeleton variant="rectangular" width={210} height={85} /> : null}
       </Stack>
    );
-
-   const icePakGoals = (game) => game.goals.filter((goal) => goal.team === "Ice Pak").length;
-   const opponentGoals = (game) => game.goals.filter((goal) => goal.team !== "Ice Pak").length;
 
    return (
       <Stack
@@ -72,7 +60,7 @@ const GameTicker = () => {
             alignItems: "center",
          }}
       >
-         {allGamesLoading ? null : (
+         {gamesLoading ? null : (
             <IconButton
                aria-label="Previous game"
                sx={{ height: "40px" }}
@@ -82,7 +70,7 @@ const GameTicker = () => {
                <IoArrowBackSharp fontSize="inherit" />
             </IconButton>
          )}
-         {allGamesLoading ? <Skeletons /> : null}
+         {gamesLoading ? <Skeletons /> : null}
          {gamesToShow?.map((game) => {
             return (
                <Link key={game.id} href={`/games/${game.id}`} passHref>
@@ -112,7 +100,7 @@ const GameTicker = () => {
                                     display: "flex",
                                     alignItems: "center",
                                     color:
-                                       icePakGoals(game) > opponentGoals(game)
+                                       game.icePakGoals > game.opponentGoals
                                           ? "black"
                                           : "grey.dark",
                                  }}
@@ -128,7 +116,7 @@ const GameTicker = () => {
                                     sx={{
                                        marginLeft: "5px",
                                        fontWeight:
-                                          icePakGoals(game) > opponentGoals(game) ? 700 : 400,
+                                          game.icePakGoals > game.opponentGoals ? 700 : 400,
                                     }}
                                     variant="subtitle1"
                                  >
@@ -139,12 +127,12 @@ const GameTicker = () => {
                                     sx={{
                                        flexGrow: 2,
                                        fontWeight:
-                                          icePakGoals(game) > opponentGoals(game) ? 700 : 400,
+                                          game.icePakGoals > game.opponentGoals ? 700 : 400,
                                        textAlign: "end",
                                        marginRight: "12px",
                                     }}
                                  >
-                                    {icePakGoals(game)}
+                                    {game.icePakGoals}
                                  </Typography>
                               </Stack>
                               <Stack
@@ -152,15 +140,15 @@ const GameTicker = () => {
                                  sx={{
                                     display: "flex",
                                     color:
-                                       icePakGoals(game) > opponentGoals(game)
+                                       game.icePakGoals > game.opponentGoals
                                           ? "grey.dark"
                                           : "black",
                                  }}
                               >
-                                 {game?.teams?.logo ? (
+                                 {game?.opponent?.logo ? (
                                     <Image
-                                       alt={game?.teams?.teamName}
-                                       src={game?.teams?.logo}
+                                       alt={game?.opponent?.teamName}
+                                       src={game?.opponent?.logo}
                                        height={25}
                                        width={25}
                                        layout="fixed"
@@ -171,22 +159,22 @@ const GameTicker = () => {
                                     sx={{
                                        marginLeft: "5px",
                                        fontWeight:
-                                          icePakGoals(game) > opponentGoals(game) ? 400 : 700,
+                                          game.icePakGoals > game.opponentGoals ? 400 : 700,
                                     }}
                                  >
-                                    {game?.teams?.teamName}
+                                    {game?.opponent?.teamName}
                                  </Typography>
                                  <Typography
                                     variant="subtitle1"
                                     sx={{
                                        fontWeight:
-                                          icePakGoals(game) > opponentGoals(game) ? 400 : 700,
+                                          game.icePakGoals > game.opponentGoals ? 400 : 700,
                                        flexGrow: 2,
                                        textAlign: "end",
                                        marginRight: "12px",
                                     }}
                                  >
-                                    {opponentGoals(game)}
+                                    {game.opponentGoals}
                                  </Typography>
                               </Stack>
                            </Stack>
@@ -215,15 +203,15 @@ const GameTicker = () => {
                               <Stack direction="row">
                                  {game?.teams?.logo ? (
                                     <Image
-                                       alt={game?.teams?.teamName}
-                                       src={game?.teams?.logo}
+                                       alt={game?.opponent?.teamName}
+                                       src={game?.opponent?.logo}
                                        height={25}
                                        width={25}
                                        layout="fixed"
                                     />
                                  ) : null}
                                  <Typography variant="subtitle1" sx={{ marginLeft: "5px" }}>
-                                    {game?.teams?.teamName}
+                                    {game?.opponent?.teamName}
                                  </Typography>
                               </Stack>
                            </>
@@ -233,14 +221,14 @@ const GameTicker = () => {
                </Link>
             );
          })}
-         {allGamesLoading ? null : (
+         {gamesLoading ? null : (
             <IconButton
                ria-label="Previous game"
                sx={{ height: "40px" }}
                disabled={
                   desktop
-                     ? desktopSlice[0] >= allGames?.games?.length - 5
-                     : mobileSlice[0] >= allGames?.games?.length - 1
+                     ? desktopSlice[0] >= games?.length - 4
+                     : mobileSlice[0] >= games?.length - 1
                }
                onClick={handleGameForward}
             >

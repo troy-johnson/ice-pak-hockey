@@ -3,7 +3,6 @@ import { HeroPost } from "../components";
 import { getAllPostsForHome } from "../utils/sanityApi";
 
 const Home = ({ allPosts, preview }) => {
-
    return (
       <>
          <Head>
@@ -13,7 +12,7 @@ const Home = ({ allPosts, preview }) => {
          </Head>
 
          <>
-            {allPosts.slice(0,2).map((post) => (
+            {allPosts.slice(0, 1).map((post) => (
                <HeroPost
                   key={post._id}
                   categories={post.categories}
