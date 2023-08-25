@@ -30,7 +30,14 @@ import {
    PageContainer,
    UpsertSeason,
 } from "../components";
-import { roleCheck, deleteSeason, useGetLeagues, useGetPlayers, useGetSeasons } from "../utils";
+import {
+   roleCheck,
+   deleteSeason,
+   editSeason,
+   useGetLeagues,
+   useGetPlayers,
+   useGetSeasons,
+} from "../utils";
 
 const StyledTabPanel = (props) => {
    const { children, className, desktop, value, index, ...other } = props;
@@ -154,10 +161,20 @@ const Manager = () => {
       // setValue("type", currentSeason(e.target.value)?.type)
    };
 
-   const onSubmit = (data) => {
-      // TODO: Figure out correct league ID and update value
-
-      console.log("data", data);
+   const onSubmit = async (data) => {
+      await editSeason({
+         id: seasonId,
+         startDate: dayjs(data.startDate),
+         endDate: dayjs(data.endDate),
+         games: data.games,
+         leagueId: data.leagueId,
+         leagueName: data.leagueName,
+         name: data.name,
+         result: data.result,
+         standings: data.standings,
+         standingsLink: data.standingsLink,
+         type: data.type,
+      });
 
       try {
       } catch (error) {}
