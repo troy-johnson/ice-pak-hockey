@@ -25,6 +25,7 @@ const seasonsHandler = async (req, res) => {
 
             return res.status(200).json({ ...req.body });
          } catch (error) {
+            console.log(error);
             return res.status(400).send(error);
          }
       case "DELETE":

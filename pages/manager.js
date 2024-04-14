@@ -30,7 +30,14 @@ import {
    PageContainer,
    UpsertSeason,
 } from "../components";
-import { roleCheck, deleteSeason, useGetLeagues, useGetPlayers, useGetSeasons } from "../utils";
+import {
+   roleCheck,
+   deleteSeason,
+   editSeason,
+   useGetLeagues,
+   useGetPlayers,
+   useGetSeasons,
+} from "../utils";
 
 const StyledTabPanel = (props) => {
    const { children, className, desktop, value, index, ...other } = props;
@@ -154,10 +161,20 @@ const Manager = () => {
       // setValue("type", currentSeason(e.target.value)?.type)
    };
 
-   const onSubmit = (data) => {
-      // TODO: Figure out correct league ID and update value
-
-      console.log("data", data);
+   const onSubmit = async (data) => {
+      await editSeason({
+         id: seasonId,
+         startDate: dayjs(data.startDate),
+         endDate: dayjs(data.endDate),
+         games: data.games,
+         leagueId: data.leagueId,
+         leagueName: data.leagueName,
+         name: data.name,
+         result: data.result,
+         standings: data.standings,
+         standingsLink: data.standingsLink,
+         type: data.type,
+      });
 
       try {
       } catch (error) {}
@@ -195,22 +212,13 @@ const Manager = () => {
       }
    };
 
-   // const watchLeagueName = watch("leagueName");
-
-   // // if (watchLeagueName !== currentSeason(seasonId)?.leagueName) {
-   // //    setValue("leagueId", leagues?.filter(league => league.name === watchLeagueName)[0]?.id)
-   // // }
-   // const leagueNameState = getFieldState("leagueName");
-
-   console.log("seasons", seasons);
-
    return (
       <PageContainer small pageTitle="Manager">
          <TabContainer>
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                <Tabs value={tabValue} onChange={handleChange} aria-label="manager-tabs">
                   <Tab label="Seasons" />
-                  <Tab label="Tab 2" />
+                  <Tab label="Locations" />
                </Tabs>
             </TabBox>
             <TabPanel value={tabValue} index={0}>
@@ -319,7 +327,7 @@ const Manager = () => {
                ) : null}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-               Tab 2
+               Locations
             </TabPanel>
          </TabContainer>
          <Snackbar
