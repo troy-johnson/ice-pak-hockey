@@ -60,7 +60,7 @@ const GameTicker = () => {
             alignItems: "center",
          }}
       >
-         {gamesLoading ? null : (
+         {/* {gamesLoading ? null : (
             <IconButton
                aria-label="Previous game"
                sx={{ height: "40px" }}
@@ -69,7 +69,7 @@ const GameTicker = () => {
             >
                <IoArrowBackSharp fontSize="inherit" />
             </IconButton>
-         )}
+         )} */}
          {gamesLoading ? <Skeletons /> : null}
          {gamesToShow?.map((game) => {
             return (
@@ -221,7 +221,7 @@ const GameTicker = () => {
                </Link>
             );
          })}
-         {gamesLoading ? null : (
+         {/* {gamesLoading ? null : (
             <IconButton
                ria-label="Previous game"
                sx={{ height: "40px" }}
@@ -234,7 +234,7 @@ const GameTicker = () => {
             >
                <IoArrowForwardSharp />
             </IconButton>
-         )}
+         )} */}
       </Stack>
    );
 };

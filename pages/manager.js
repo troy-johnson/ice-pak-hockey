@@ -218,7 +218,7 @@ const Manager = () => {
             <TabBox sx={{ borderBottom: 1, borderColor: "divider" }}>
                <Tabs value={tabValue} onChange={handleChange} aria-label="manager-tabs">
                   <Tab label="Seasons" />
-                  <Tab label="Tab 2" />
+                  <Tab label="Locations" />
                </Tabs>
             </TabBox>
             <TabPanel value={tabValue} index={0}>
@@ -327,7 +327,7 @@ const Manager = () => {
                ) : null}
             </TabPanel>
             <TabPanel value={tabValue} index={1}>
-               Tab 2
+               Locations
             </TabPanel>
          </TabContainer>
          <Snackbar
