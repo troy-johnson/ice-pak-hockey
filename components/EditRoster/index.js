@@ -70,6 +70,17 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar, seasonId }) 
       }
    };
 
+   const rosterOptions = season?.roster
+      ?.map((player) => {
+         return {
+            id: player,
+            firstName: `${players?.filter((el) => el.id === player)[0].firstName}`,
+            lastName: `${players?.filter((el) => el.id === player)[0].lastName}`,
+            number: players?.filter((el) => el.id === player)[0].number,
+         };
+      })
+      .sort((a, b) => (a.number < b.number ? -1 : 1));
+
    return (
       <Dialog onClose={handleClose} fullWidth={true} maxWidth="lg" open={open}>
          <DialogTitle>Edit Roster</DialogTitle>
@@ -87,16 +98,14 @@ const EditRoster = ({ close, gameId, gameRoster, open, setSnackbar, seasonId }) 
                   {playersLoading ? (
                      <Skeleton height={325} />
                   ) : (
-                     season?.roster?.map((player, index) => {
+                     rosterOptions?.map((player, index) => {
                         return (
                            <ControlledSwitch
-                              checked={roster[player] === true}
+                              checked={roster[player.id] === true}
                               onChange={handleChange}
-                              name={`roster.${player}`}
-                              key={player}
-                              label={`#${players?.filter((el) => el.id === player)[0].number} ${
-                                 players?.filter((el) => el.id === player)[0].firstName
-                              } ${players?.filter((el) => el.id === player)[0].lastName}`}
+                              name={`roster.${player.id}`}
+                              key={player.id}
+                              label={`#${player.number} ${player.firstName} ${player.lastName}`}
                               {...{ control, index, player }}
                            />
                         );
