@@ -1,5 +1,5 @@
 ---
-import "../styles/site.css";
+import Base from "./Base.astro";
 
 interface Props {
   title: string;
@@ -13,55 +13,15 @@ const links = [
 ];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="robots" content="noindex" />
-    <title>{title} · Ice Pak</title>
-    <script is:inline>
-      const theme = localStorage.getItem("theme");
-      if (theme) document.documentElement.dataset.theme = theme;
-    </script>
-  </head>
-  <body>
-    <header class="site-head">
-      <strong>Ice Pak</strong>
-      <nav aria-label="Manager">
-        {
-          links.map((link) => (
-            <a href={link.href} aria-current={path.startsWith(link.href) ? "page" : undefined}>
-              {link.label}
-            </a>
-          ))
-        }
-      </nav>
-      <div class="switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="home">Home</button>
-        <button type="button" data-theme-choice="away">Away</button>
-        <button type="button" data-theme-choice="third">Third</button>
-      </div>
-    </header>
-    <main>
-      <slot />
-    </main>
-    <script is:inline>
-      const buttons = document.querySelectorAll("[data-theme-choice]");
-      const show = () =>
-        buttons.forEach((button) =>
-          button.setAttribute(
-            "aria-pressed",
-            String(button.dataset.themeChoice === document.documentElement.dataset.theme),
-          ),
-        );
-      buttons.forEach((button) =>
-        button.addEventListener("click", () => {
-          document.documentElement.dataset.theme = button.dataset.themeChoice;
-          localStorage.setItem("theme", button.dataset.themeChoice);
-          show();
-        }),
-      );
-      show();
-    </script>
-  </body>
-</html>
+<Base title={`${title} · Ice Pak`} noindex>
+  <nav slot="nav" aria-label="Manager">
+    {
+      links.map((link) => (
+        <a href={link.href} aria-current={path.startsWith(link.href) ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))
+    }
+  </nav>
+  <slot />
+</Base>

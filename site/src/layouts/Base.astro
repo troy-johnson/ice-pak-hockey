@@ -1,0 +1,57 @@
+---
+import "../styles/site.css";
+
+interface Props {
+  title: string;
+  /** Keeps a page out of search engines. */
+  noindex?: boolean;
+}
+
+const { title, noindex = false } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <title>{title}</title>
+    <script is:inline>
+      const theme = localStorage.getItem("theme");
+      if (theme) document.documentElement.dataset.theme = theme;
+    </script>
+  </head>
+  <body>
+    <header class="site-head">
+      <a class="brand" href="/">Ice Pak</a>
+      <slot name="nav" />
+      <div class="switch" role="group" aria-label="Theme">
+        <button type="button" data-theme-choice="home">Home</button>
+        <button type="button" data-theme-choice="away">Away</button>
+        <button type="button" data-theme-choice="third">Third</button>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <script is:inline>
+      const buttons = document.querySelectorAll("[data-theme-choice]");
+      const show = () =>
+        buttons.forEach((button) =>
+          button.setAttribute(
+            "aria-pressed",
+            String(button.dataset.themeChoice === document.documentElement.dataset.theme),
+          ),
+        );
+      buttons.forEach((button) =>
+        button.addEventListener("click", () => {
+          document.documentElement.dataset.theme = button.dataset.themeChoice;
+          localStorage.setItem("theme", button.dataset.themeChoice);
+          show();
+        }),
+      );
+      show();
+    </script>
+  </body>
+</html>
