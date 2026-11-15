@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import { prisma } from "../../../config";
 
 const goalsHandler = async (req, res) => {
@@ -51,4 +52,4 @@ const goalsHandler = async (req, res) => {
    }
 };
 
-export default goalsHandler;
+export default requireStaff(goalsHandler);

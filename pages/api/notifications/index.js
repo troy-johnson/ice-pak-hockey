@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import twilio from "twilio";
 
 const notificationHandler = async (req, res) => {
@@ -51,4 +52,4 @@ const notificationHandler = async (req, res) => {
    }
 };
 
-export default notificationHandler;
+export default requireStaff(notificationHandler, { methods: null });

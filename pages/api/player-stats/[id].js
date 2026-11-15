@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { prisma } from "../../../config";
+import { getApiUser, playerForUser } from "../../../utils/apiAuth";
 
 // export const config = {
 //    runtime: "edge",
@@ -174,7 +175,7 @@ const playerStatsHandler = async (req, res) => {
             };
 
             const finalResult = {
-               player: playerData,
+               player: playerForUser(await getApiUser(req), playerData),
                careerStats,
                seasonStats,
                gameLog,

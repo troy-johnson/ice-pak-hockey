@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import { prisma } from "../../../config";
 
 const penaltiesHandler = async (req, res) => {
@@ -55,4 +56,4 @@ const penaltiesHandler = async (req, res) => {
    }
 };
 
-export default penaltiesHandler;
+export default requireStaff(penaltiesHandler);

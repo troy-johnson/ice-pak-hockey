@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, prisma } from "../../../config";
 
@@ -232,4 +233,4 @@ const ordersHandler = async (req, res) => {
    }
 };
 
-export default ordersHandler;
+export default requireStaff(ordersHandler);

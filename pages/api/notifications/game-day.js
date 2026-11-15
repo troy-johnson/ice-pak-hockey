@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import dayjs from "dayjs";
 import twilio from "twilio";
 import { prisma } from "../../../config";
@@ -152,4 +153,4 @@ const gameDayNotificationHandler = async (request, context) => {
    }
 };
 
-export default gameDayNotificationHandler;
+export default requireStaff(gameDayNotificationHandler, { methods: null });

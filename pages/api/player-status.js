@@ -1,3 +1,4 @@
+import { requireSignIn } from "../../utils/apiAuth";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
 import { db } from "../../config";
 
@@ -67,4 +68,4 @@ const playerStatusHandler = async (req, res) => {
    }
 };
 
-export default playerStatusHandler;
+export default requireSignIn(playerStatusHandler, { methods: null });

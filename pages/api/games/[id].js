@@ -1,9 +1,7 @@
-import { getSession } from "next-auth/react";
+import { requireStaff } from "../../../utils/apiAuth";
 import { prisma } from "../../../config";
 
 const gameHandler = async (req, res) => {
-   const session = await getSession({ req });
-
    const { id } = req.query;
 
    switch (req.method) {
@@ -237,4 +235,4 @@ const gameHandler = async (req, res) => {
    }
 };
 
-export default gameHandler;
+export default requireStaff(gameHandler);

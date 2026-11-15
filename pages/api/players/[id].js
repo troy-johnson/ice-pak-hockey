@@ -1,8 +1,29 @@
 import { deleteDoc, doc, getDoc, setDoc } from "firebase/firestore";
 import { db, prisma } from "../../../config";
+import { getApiUser, isOwnPlayer, isStaff } from "../../../utils/apiAuth";
 
 const playerHandler = async (req, res) => {
    // console.log("req", { method: req.method, body: req.body });
+   if (req.method !== "GET") {
+      const user = await getApiUser(req);
+
+      if (!user) return res.status(401).json({ message: "Sign in required." });
+
+      // Players can edit their own row. All other writes are for staff.
+      const ownEdit =
+         req.method === "PUT" &&
+         !!req.body?.id &&
+         isOwnPlayer(
+            user,
+            await prisma.players.findUnique({
+               where: { id: req.body.id },
+               select: { email: true, auth0AccountId: true },
+            })
+         );
+
+      if (!isStaff(user) && !ownEdit) return res.status(403).json({ message: "Not allowed." });
+   }
+
    switch (req.method) {
       case "GET":
          const { id } = req.query;

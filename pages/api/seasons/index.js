@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import { prisma } from "../../../config";
 
 const seasonHandler = async (req, res) => {
@@ -27,4 +28,4 @@ const seasonHandler = async (req, res) => {
    }
 };
 
-export default seasonHandler;
+export default requireStaff(seasonHandler);

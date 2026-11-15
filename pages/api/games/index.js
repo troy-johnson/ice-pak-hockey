@@ -1,3 +1,4 @@
+import { requireStaff } from "../../../utils/apiAuth";
 import { prisma } from "../../../config";
 
 const gamesHandler = async (req, res) => {
@@ -91,4 +92,4 @@ const gamesHandler = async (req, res) => {
    }
 };
 
-export default gamesHandler;
+export default requireStaff(gamesHandler);

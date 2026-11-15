@@ -1,3 +1,4 @@
+import { requireStaff } from "../../utils/apiAuth";
 import { collection, doc, addDoc, setDoc } from "firebase/firestore";
 import { db } from "../../config";
 
@@ -58,4 +59,4 @@ const upsertPlayerHandler = async (req, res) => {
    }
 };
 
-export default upsertPlayerHandler;
+export default requireStaff(upsertPlayerHandler, { methods: null });
