@@ -2,7 +2,7 @@
 
 This repo holds two codebases while the site is rebuilt.
 
-- **Old Site:** the Next.js app at the repo root, live at icepakhockey.com from the `main` branch. Change it only for a security fix.
+- **Old Site:** the Next.js app at the repo root, live at icepakhockey.com from the `main` branch. Change it only for a security fix. The first deploy of the new site replaces it, and its code is deleted then.
 - **New site:** the Astro app in `site/`, on the `rebuild` branch. All new work goes here. `site/AGENTS.md` has the Astro guidance.
 
 ## Read first
@@ -17,7 +17,7 @@ This repo holds two codebases while the site is rebuilt.
 
 ## Boundaries
 
-- **Public repo:** keep secrets, emails, phone numbers, and Balances out of git. The Fee Sheet copy is in `.orca/drops/`, which git ignores.
+- **Public repo:** keep secrets, emails, phone numbers, and Balances out of git. The Fee Sheet copy is in `.orca/drops/` and the Old Site database dump is in `backups/`; git ignores both.
 - **HHG is read-only:** read `~/hockey/hockey.db`, the HHG repo, and the game folders on the NAS. Write to none of them.
 - **Contact data:** the new site stores names and public profile fields only. BenchApp has the emails and phone numbers.
 

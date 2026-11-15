@@ -19,7 +19,10 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 
 ## Technology
 
-- **Code:** a rebuild in this repo, on the `rebuild` branch. The Old Site code is deleted when the new site goes live.
+- **Code:** a rebuild in this repo, on the `rebuild` branch.
+- **Switch:** the new site replaces the Old Site at icepakhockey.com with its first deploy. There is no separate address. Troy accepts a half-built site in the meantime. The Old Site code is deleted at that deploy.
+- **Domain:** Cloudflare has the DNS of icepakhockey.com. The apex and `www` point to Vercel now, and the switch points them to the Worker.
+- **Old data:** `backups/` has a dump of the Old Site database from 2026-11-15. Git ignores it, because it has contact data.
 - **Stack:** Astro on Cloudflare Workers, a D1 database (SQLite), and R2 file storage for Scoresheets. The cost is $0 on the free plans.
 - **Why not Vercel:** Vercel has no disk for a SQLite file, and its free plan is for non-commercial use only.
 - **Why not Supabase:** a free project pauses after 7 days of low activity.
@@ -85,7 +88,7 @@ This part is last. It starts after the team agrees.
 
 ## Order of work
 
-1. **First part, before early January 2027:** the new app on a separate address, the Manager login, the Player Bank, the Roster Builder, and the fee formula. The next Mammoth League Season starts in early January.
+1. **First part, before early January 2027:** the Manager login, the Player Bank, the Roster Builder, and the fee formula. The next Mammoth League Season starts in early January. The first deploy of this part replaces the Old Site.
 2. **Public site:** Themes, the old games, stats, the HHG Import, the shop link, and the next games.
 3. **Game entry:** the Game form, Scoresheet upload, and the GameSheet PDF reader.
 4. **The rest of the Fee Sheet:** Balances, the Team Page, Payment lines, and the Team Fund.
