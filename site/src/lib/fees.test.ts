@@ -11,7 +11,7 @@ describe("proposePlayerFees", () => {
     expect(fees).toEqual({ fullTime: 20000, partTime: 10000 });
   });
 
-  it("rounds up to a cent, so the Players cover the League Fee (MIC Summer '26)", () => {
+  it("makes the Players cover the League Fee (MIC Summer '26)", () => {
     const players = roster({ "full-time": 12, "part-time": 5, goalie: 2 });
     const fees = proposePlayerFees(370000, players);
 
@@ -21,6 +21,20 @@ describe("proposePlayerFees", () => {
     const collected = players.reduce((total, status) => total + playerFee(status, fees), 0);
     expect(collected).toBeGreaterThanOrEqual(370000);
     expect(collected - 370000).toBeLessThan(players.length * 2);
+  });
+
+  it("rounds each fee up to the nearest cent", () => {
+    // $1,200.01 for 12 full-time Players is $100.000833 for each, and $50.000417 for a part-time Player.
+    const fees = proposePlayerFees(120001, roster({ "full-time": 12 }));
+
+    expect(fees).toEqual({ fullTime: 10001, partTime: 5001 });
+  });
+
+  it("matches the Fee Sheet for County Summer '26, before the manual amount of the sheet", () => {
+    const fees = proposePlayerFees(275000, roster({ "full-time": 12, "part-time": 6 }));
+
+    // The Fee Sheet shows $183.3333.
+    expect(fees).toEqual({ fullTime: 18334, partTime: 9167 });
   });
 
   it("counts at least 12 full-time players", () => {

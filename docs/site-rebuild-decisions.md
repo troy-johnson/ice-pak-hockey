@@ -67,6 +67,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 ## Fees
 
 - **Formula, from the Fee Sheet:** the Full-Time Fee is the League Fee divided by (full-time count + half of the part-time count). The full-time count has a minimum of 12. The Part-Time Fee is half of the Full-Time Fee. A Goalie pays $0.
+- **Rounding:** each fee rounds up to the nearest cent.
 - **Fee Lock:** the site proposes the fee, and a Manager locks it at the start of the League Season. A later surplus goes to the Team Fund.
 - **Balance:** each player has one Balance across all Leagues. A credit in one League reduces a debt in another.
 - **Charges:** a Manager adds a Charge to a player's Balance with an amount and a note, for example a Sub fee or a jersey. The form has a default Sub amount. The site does not calculate fees from games played.

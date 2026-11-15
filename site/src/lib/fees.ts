@@ -12,8 +12,7 @@ export const MIN_FULL_TIME_COUNT = 12;
 
 /**
  * Proposes the Player Fees of a League Season from the League Fee and the Roster.
- * The Part-Time Fee is rounded up to a cent, and the Full-Time Fee is two times that amount,
- * so the Players never pay less than the League Fee.
+ * Each fee is rounded up to the nearest cent, so the Players never pay less than the League Fee.
  */
 export function proposePlayerFees(leagueFee: number, roster: RosterStatus[]): PlayerFees {
   const fullTimeCount = Math.max(
@@ -22,9 +21,13 @@ export function proposePlayerFees(leagueFee: number, roster: RosterStatus[]): Pl
   );
   const partTimeCount = roster.filter((status) => status === "part-time").length;
 
-  const partTime = Math.ceil(leagueFee / (2 * fullTimeCount + partTimeCount));
+  // One share is half of a Full-Time Fee: a full-time Player pays two shares, a part-time Player one.
+  const shares = 2 * fullTimeCount + partTimeCount;
 
-  return { fullTime: 2 * partTime, partTime };
+  return {
+    fullTime: Math.ceil((2 * leagueFee) / shares),
+    partTime: Math.ceil(leagueFee / shares),
+  };
 }
 
 export function playerFee(status: RosterStatus, fees: PlayerFees): number {
