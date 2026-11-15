@@ -1,0 +1,56 @@
+---
+import type { League, LeagueSeason } from "../lib/db";
+
+interface Props {
+  leagues: League[];
+  leagueSeason?: LeagueSeason;
+}
+
+const { leagues, leagueSeason } = Astro.props;
+---
+
+<form method="POST" class="fields">
+  <input type="hidden" name="intent" value="league-season" />
+  <label>
+    League
+    <select name="leagueId" required>
+      {
+        leagues.map((league) => (
+          <option value={league.id} selected={league.id === leagueSeason?.leagueId}>
+            {league.shortName}
+          </option>
+        ))
+      }
+    </select>
+  </label>
+  <label>
+    Name
+    <input name="name" required placeholder="MIC Winter '27" value={leagueSeason?.name} />
+  </label>
+  <label>
+    Start date
+    <input type="date" name="startsOn" value={leagueSeason?.startsOn} />
+  </label>
+  <label>
+    League Fee ($)
+    <input
+      name="leagueFee"
+      inputmode="decimal"
+      size="8"
+      value={leagueSeason ? (leagueSeason.leagueFee / 100).toFixed(2) : ""}
+    />
+  </label>
+  <label>
+    Target forwards
+    <input type="number" name="targetForwards" min="0" value={leagueSeason?.targetForwards ?? 0} />
+  </label>
+  <label>
+    Target defense
+    <input type="number" name="targetDefense" min="0" value={leagueSeason?.targetDefense ?? 0} />
+  </label>
+  <label>
+    Target goalies
+    <input type="number" name="targetGoalies" min="0" value={leagueSeason?.targetGoalies ?? 0} />
+  </label>
+  <button class="primary">{leagueSeason ? "Save" : "Add League Season"}</button>
+</form>

@@ -1,0 +1,74 @@
+---
+import LeagueSeasonForm from "../../../components/LeagueSeasonForm.astro";
+import Manager from "../../../layouts/Manager.astro";
+import { createLeagueSeason, listLeagues, listLeagueSeasons } from "../../../lib/db";
+import { leagueSeasonFields } from "../../../lib/form-fields";
+import { dollars } from "../../../lib/forms";
+
+export const prerender = false;
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const fields = leagueSeasonFields(await Astro.request.formData());
+
+  if (!fields.name || !fields.leagueId) {
+    error = "Select a League and enter a name.";
+  } else {
+    try {
+      await createLeagueSeason(fields);
+      return Astro.redirect("/manager/seasons");
+    } catch {
+      error = `A League Season with the name "${fields.name}" already exists.`;
+    }
+  }
+}
+
+const [leagues, leagueSeasons] = await Promise.all([listLeagues(), listLeagueSeasons()]);
+---
+
+<Manager title="League Seasons">
+  <h1>League Seasons</h1>
+  {error && <p class="error" role="alert">{error}</p>}
+
+  <section class="panel">
+    <h2>Add a League Season</h2>
+    <LeagueSeasonForm leagues={leagues} />
+  </section>
+
+  {
+    leagueSeasons.length === 0 ? (
+      <p class="muted">No League Seasons yet.</p>
+    ) : (
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>League Season</th>
+              <th>League</th>
+              <th>Start</th>
+              <th>League Fee</th>
+              <th>Target (F / D / G)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {leagueSeasons.map((leagueSeason) => (
+              <tr>
+                <td>
+                  <a href={`/manager/seasons/${leagueSeason.id}`}>{leagueSeason.name}</a>
+                </td>
+                <td>{leagueSeason.leagueShortName}</td>
+                <td>{leagueSeason.startsOn ?? "—"}</td>
+                <td>{dollars(leagueSeason.leagueFee)}</td>
+                <td>
+                  {leagueSeason.targetForwards} / {leagueSeason.targetDefense} /{" "}
+                  {leagueSeason.targetGoalies}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+</Manager>

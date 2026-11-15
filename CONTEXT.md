@@ -30,7 +30,7 @@ _Avoid_: Year, Season (alone)
 **Roster**: The Players of one League Season, each with a Roster Status.
 _Avoid_: Team list, Lineup
 
-**Roster Status**: A Player's place on one Roster: Full-Time, Part-Time, Goalie, or Sub.
+**Roster Status**: A Player's standing in one League Season: Full-Time, Part-Time, Goalie, or Sub. A Manager sets Goalie for each League Season, because a Player can be a goalie in one League and a skater in another. A Sub has a status and is not on the Roster.
 _Avoid_: Player type, Half (for Part-Time)
 
 **Sub**: A Player who is not on the Roster and fills in for single games. A Sub pays a Charge for each game, not a Player Fee. HHG uses "Sub" for a rostered part-time player; on the site that is Part-Time.

@@ -1,0 +1,125 @@
+---
+import Manager from "../../layouts/Manager.astro";
+import { createPlayer, listPlayers, updatePlayer } from "../../lib/db";
+import { playerFields } from "../../lib/form-fields";
+import { count } from "../../lib/forms";
+import { byPriority, LABELS, POSITIONS, PRIORITY_TIERS } from "../../lib/roster";
+
+export const prerender = false;
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+  const id = count(data, "id");
+  const fields = playerFields(data);
+
+  if (!fields.firstName || !fields.lastName) {
+    error = "Enter a first name and a last name.";
+  } else {
+    try {
+      await (id ? updatePlayer(id, fields) : createPlayer(fields));
+      return Astro.redirect("/manager/players");
+    } catch {
+      error = `The Player Bank already has ${fields.firstName} ${fields.lastName}.`;
+    }
+  }
+}
+
+const players = (await listPlayers()).sort(byPriority);
+const editing = players.find((player) => player.id === Number(Astro.url.searchParams.get("edit")));
+---
+
+<Manager title="Player Bank">
+  <h1>Player Bank</h1>
+  <p class="muted">
+    {players.length} Players. Only Managers see the Priority Tier, the order, and the note.
+  </p>
+  {error && <p class="error" role="alert">{error}</p>}
+
+  <section class="panel">
+    <h2>{editing ? `Edit ${editing.firstName} ${editing.lastName}` : "Add a Player"}</h2>
+    <form method="POST" class="fields">
+      {editing && <input type="hidden" name="id" value={editing.id} />}
+      <label>
+        First name
+        <input name="firstName" required value={editing?.firstName} />
+      </label>
+      <label>
+        Last name
+        <input name="lastName" required value={editing?.lastName} />
+      </label>
+      <label>
+        Position
+        <select name="position">
+          <option value="">Not set</option>
+          {
+            POSITIONS.map((position) => (
+              <option value={position} selected={position === editing?.position}>
+                {LABELS[position]}
+              </option>
+            ))
+          }
+        </select>
+      </label>
+      <label>
+        Priority Tier
+        <select name="priorityTier">
+          <option value="">Not set</option>
+          {
+            PRIORITY_TIERS.map((tier) => (
+              <option value={tier} selected={tier === editing?.priorityTier}>
+                {LABELS[tier]}
+              </option>
+            ))
+          }
+        </select>
+      </label>
+      <label>
+        Order in tier
+        <input type="number" name="priorityOrder" min="0" value={editing?.priorityOrder ?? 0} />
+      </label>
+      <label>
+        Note
+        <input name="note" size="30" value={editing?.note} />
+      </label>
+      <button class="primary">{editing ? "Save" : "Add Player"}</button>
+      {editing && <a href="/manager/players">Cancel</a>}
+    </form>
+  </section>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th>Position</th>
+          <th>Priority Tier</th>
+          <th>Order</th>
+          <th>Last League Season</th>
+          <th>Note</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          players.map((player) => (
+            <tr>
+              <td>
+                {player.firstName} {player.lastName}
+              </td>
+              <td>{player.position ? LABELS[player.position] : "—"}</td>
+              <td>{player.priorityTier ? LABELS[player.priorityTier] : "—"}</td>
+              <td>{player.priorityOrder || "—"}</td>
+              <td>{player.lastLeagueSeason ?? "—"}</td>
+              <td>{player.note}</td>
+              <td>
+                <a href={`/manager/players?edit=${player.id}`}>Edit</a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</Manager>

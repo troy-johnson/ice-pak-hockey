@@ -10,5 +10,17 @@
 	},
 	"observability": {
 		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "ice-pak",
+			"migrations_dir": "migrations"
+		}
+	],
+	// Cloudflare Access values for the manager pages. With empty values, the deployed site refuses each manager request.
+	"vars": {
+		"TEAM_DOMAIN": "",
+		"POLICY_AUD": ""
 	}
 }

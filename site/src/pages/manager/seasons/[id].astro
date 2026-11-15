@@ -1,0 +1,213 @@
+---
+import LeagueSeasonForm from "../../../components/LeagueSeasonForm.astro";
+import Manager from "../../../layouts/Manager.astro";
+import {
+  getLeagueSeason,
+  listBoardPlayers,
+  listLeagues,
+  setRosterAnswer,
+  setRosterGoalie,
+  updateLeagueSeason,
+} from "../../../lib/db";
+import { proposePlayerFees } from "../../../lib/fees";
+import { leagueSeasonFields } from "../../../lib/form-fields";
+import { count, dollars, text } from "../../../lib/forms";
+import {
+  byPriority,
+  chaseMessage,
+  LABELS,
+  oneOf,
+  positionCounts,
+  ROSTER_ANSWERS,
+  rosterStatuses,
+  type RosterAnswer,
+} from "../../../lib/roster";
+
+export const prerender = false;
+
+const id = Number(Astro.params.id);
+const leagueSeason = await getLeagueSeason(id);
+if (!leagueSeason) return new Response("League Season not found", { status: 404 });
+
+let error = "";
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+
+  if (text(data, "intent") === "league-season") {
+    const fields = leagueSeasonFields(data);
+
+    if (!fields.name || !fields.leagueId) {
+      error = "Select a League and enter a name.";
+    } else {
+      try {
+        await updateLeagueSeason(id, fields);
+        return Astro.redirect(Astro.url.pathname);
+      } catch {
+        error = `A League Season with the name "${fields.name}" already exists.`;
+      }
+    }
+  } else {
+    const playerId = count(data, "playerId");
+
+    if (data.has("goalie")) {
+      await setRosterGoalie(id, playerId, text(data, "goalie") === "yes");
+    } else {
+      await setRosterAnswer(id, playerId, oneOf(text(data, "answer"), ROSTER_ANSWERS));
+    }
+    return Astro.redirect(Astro.url.pathname);
+  }
+}
+
+const [leagues, players] = await Promise.all([listLeagues(), listBoardPlayers(id)]);
+players.sort(byPriority);
+
+const columns: { answer: RosterAnswer | null; label: string }[] = [
+  { answer: null, label: "No answer" },
+  ...ROSTER_ANSWERS.map((answer) => ({ answer, label: LABELS[answer] })),
+];
+
+const statuses = rosterStatuses(players);
+const fullTimeCount = statuses.filter((status) => status === "full-time").length;
+const partTimeCount = statuses.filter((status) => status === "part-time").length;
+const fees = proposePlayerFees(leagueSeason.leagueFee, statuses);
+
+const counts = positionCounts(players);
+const targets = [
+  { label: "Forwards", have: counts.forward, target: leagueSeason.targetForwards },
+  { label: "Defense", have: counts.defense, target: leagueSeason.targetDefense },
+  { label: "Goalies", have: counts.goalie, target: leagueSeason.targetGoalies },
+];
+
+const message = chaseMessage(leagueSeason.name, players);
+const abbreviation = { forward: "F", defense: "D", goalie: "G" };
+---
+
+<Manager title={leagueSeason.name}>
+  <div>
+    <h3>Roster Builder · {leagueSeason.leagueShortName}</h3>
+    <h1>{leagueSeason.name}</h1>
+  </div>
+  {error && <p class="error" role="alert">{error}</p>}
+
+  <section class="stats" aria-label="Roster counts">
+    {
+      targets.map(({ label, have, target }) => (
+        <div class:list={["stat", { short: have < target }]}>
+          {label}
+          <b>
+            {have} / {target}
+          </b>
+        </div>
+      ))
+    }
+    {
+      counts.unknown > 0 && (
+        <div class="stat short">
+          No position set
+          <b>{counts.unknown}</b>
+        </div>
+      )
+    }
+    <div class="stat">
+      Full-time · Part-time
+      <b>
+        {fullTimeCount} · {partTimeCount}
+      </b>
+    </div>
+    <div class="stat">
+      Full-Time Fee at this count
+      <b>{leagueSeason.leagueFee ? dollars(fees.fullTime) : "—"}</b>
+    </div>
+    <div class="stat">
+      Part-Time Fee at this count
+      <b>{leagueSeason.leagueFee ? dollars(fees.partTime) : "—"}</b>
+    </div>
+  </section>
+  {
+    leagueSeason.leagueFee > 0 && fullTimeCount < 12 && (
+      <p class="muted">The fee formula counts 12 full-time Players as a minimum.</p>
+    )
+  }
+
+  <section class="board" aria-label="Roster Answers">
+    {
+      columns.map((column) => {
+        const inColumn = players.filter((player) => player.answer === column.answer);
+        return (
+          <div class="column">
+            <header>
+              <h2>{column.label}</h2>
+              <span class="muted">{inColumn.length}</span>
+            </header>
+            {inColumn.map((player) => (
+              <form method="POST" class="card">
+                <input type="hidden" name="playerId" value={player.id} />
+                <div class="who">
+                  <b>
+                    {player.firstName} {player.lastName}
+                  </b>
+                  <span>
+                    {player.isGoalie ? "Goalie" : player.position ? abbreviation[player.position] : "?"}
+                    {player.priorityTier && ` · ${LABELS[player.priorityTier]}`}
+                  </span>
+                </div>
+                <div class="answers">
+                  {columns
+                    .filter((other) => other.answer !== column.answer)
+                    .map((other) => (
+                      <button name="answer" value={other.answer ?? "none"}>
+                        {other.label}
+                      </button>
+                    ))}
+                  {(player.answer === "full-time" || player.answer === "part-time") && (
+                    <button name="goalie" value={player.isGoalie ? "no" : "yes"}>
+                      {player.isGoalie ? "Not goalie" : "Goalie"}
+                    </button>
+                  )}
+                </div>
+              </form>
+            ))}
+          </div>
+        );
+      })
+    }
+  </section>
+
+  <section class="panel">
+    <h2>Chase message</h2>
+    {
+      message ? (
+        <>
+          <p class="muted">
+            The core Players with no answer. Paste this message into the BenchApp chat.
+          </p>
+          <textarea id="chase" rows="4" readonly set:text={message} />
+          <div>
+            <button type="button" id="copy-chase">
+              Copy
+            </button>
+          </div>
+        </>
+      ) : (
+        <p class="muted">Each core Player has answered.</p>
+      )
+    }
+  </section>
+
+  <details class="panel">
+    <summary>League Season settings</summary>
+    <LeagueSeasonForm leagues={leagues} leagueSeason={leagueSeason} />
+  </details>
+</Manager>
+
+<script>
+  const button = document.getElementById("copy-chase");
+  const chase = document.getElementById("chase") as HTMLTextAreaElement | null;
+
+  button?.addEventListener("click", async () => {
+    if (!chase) return;
+    await navigator.clipboard.writeText(chase.value);
+    button.textContent = "Copied";
+  });
+</script>

@@ -25,3 +25,6 @@ This repo holds two codebases while the site is rebuilt.
 
 - **Money:** whole cents, as integers.
 - **Domain rules:** pure functions in `site/src/lib/`, with the tests in a `*.test.ts` file beside them. Take each expected value from the Fee Sheet or from a confirmed decision.
+- **Manager pages:** each page in `site/src/pages/manager/` sets `prerender = false`. The middleware lets only a signed-in Manager through, and a page with a prerender would skip that check.
+- **Database:** each schema change is a new numbered file in `site/migrations/`. Leave an applied migration as it is.
+- **Player data:** a script that reads the Fee Sheet or a database dump writes its output to `backups/`.
