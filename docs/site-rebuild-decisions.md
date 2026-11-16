@@ -13,7 +13,10 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 ## Purpose and look
 
 - **Purpose:** the site is the home of the videos, with game history, stats, and a shop link.
-- **Themes:** Home (dark blue), Away (white and dark blue), and Third (red on black). A new visitor gets Home or Away from the device setting. A switch changes the Theme, and the browser keeps the choice.
+- **Themes:** Home (dark blue), Away (white and dark blue), and Third. A new visitor gets Home or Away from the device setting. A switch changes the Theme, and the browser keeps the choice.
+- **Third Theme:** the header and the top of each page are the red of the third jersey, and the content below is black. Troy selected this on 2026-11-16.
+- **Third crest:** the real logo of the third jersey is a black crest with white letters, and it has no red or white fill. It needs red behind it. `site/public/crest-third.svg` comes from the art file `IcePak_RedBlk.ai`. The red crest of the videos is not the real logo.
+- **Jersey red:** `#c0211c`, taken from a photo of the jersey. Nobody checked it against the fabric.
 - **Next games:** a short list with the date, opponent, rink, and League, from the Calendar Feed. The site has no full schedule page and no attendance, because BenchApp has those.
 - **Dropped:** news posts, comments, text alerts, player logins, contact data, and the custom shop checkout.
 

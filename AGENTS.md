@@ -28,4 +28,6 @@
 - **Domain rules:** pure functions in `site/src/lib/`, with the tests in a `*.test.ts` file beside them. Take each expected value from the Fee Sheet or from a confirmed decision.
 - **Manager pages:** each page in `site/src/pages/manager/` sets `prerender = false`. The middleware lets only a signed-in Manager through, and a page with a prerender would skip that check.
 - **Database:** each schema change is a new numbered file in `site/migrations/`. Leave an applied migration as it is.
+- **Local database:** an empty local database gives "no such table". Run `pnpm run migrate:local` in `site/`, then load `backups/seed-player-bank.sql` with `wrangler d1 execute ice-pak --local --file`.
+- **Local manager pages:** the dev server lets each manager request through, because it has no Cloudflare Access in front of it.
 - **Player data:** a script that reads the Fee Sheet or a database dump writes its output to `backups/`.

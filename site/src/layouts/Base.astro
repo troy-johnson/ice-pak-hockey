@@ -32,6 +32,7 @@ const { title, noindex = false } = Astro.props;
         <button type="button" data-theme-choice="third">Third</button>
       </div>
     </header>
+    <slot name="hero" />
     <main>
       <slot />
     </main>

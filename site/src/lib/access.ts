@@ -8,10 +8,11 @@ export interface AccessConfig {
 
 /**
  * Returns the email of the Manager that Cloudflare Access signed in, or null.
- * With no Access values, only the local dev server lets a request through.
+ * The local dev server has no Cloudflare Access in front of it, so it lets each request through.
  */
 export async function managerEmail(request: Request, config: AccessConfig): Promise<string | null> {
-  if (!config.teamDomain || !config.policyAud) return config.dev ? "dev@localhost" : null;
+  if (config.dev) return "dev@localhost";
+  if (!config.teamDomain || !config.policyAud) return null;
 
   const token = request.headers.get("cf-access-jwt-assertion");
   if (!token) return null;

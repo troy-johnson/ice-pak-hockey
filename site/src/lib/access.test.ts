@@ -9,13 +9,14 @@ describe("managerEmail", () => {
     expect(await managerEmail(request(), { teamDomain: "", policyAud: "", dev: false })).toBeNull();
   });
 
-  it("lets the local dev server through when there are no Access values", async () => {
+  const config = { teamDomain: "https://icepak.cloudflareaccess.com", policyAud: "aud", dev: false };
+
+  it("lets the local dev server through, with or without Access values", async () => {
     expect(await managerEmail(request(), { teamDomain: "", policyAud: "", dev: true })).toBe(
       "dev@localhost",
     );
+    expect(await managerEmail(request(), { ...config, dev: true })).toBe("dev@localhost");
   });
-
-  const config = { teamDomain: "https://icepak.cloudflareaccess.com", policyAud: "aud", dev: true };
 
   it("refuses a request with no Access token", async () => {
     expect(await managerEmail(request(), config)).toBeNull();
