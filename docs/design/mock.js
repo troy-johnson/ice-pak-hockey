@@ -45,6 +45,27 @@
       if (view.dataset.view === wanted) view.click();
     });
 
+    // Stats: the season list opens the season panel.
+    var pick = document.querySelector("[data-view-select]");
+    if (pick) {
+      var all = document.querySelector("[data-view='all']");
+      pick.addEventListener("change", function () {
+        all.setAttribute("aria-pressed", "false");
+        pick.classList.add("on");
+        panels.forEach(function (panel) {
+          panel.hidden = panel.dataset.panel !== "ls";
+        });
+      });
+      all.addEventListener("click", function () {
+        pick.classList.remove("on");
+        pick.selectedIndex = 0;
+      });
+      if (wanted === "ls") {
+        pick.selectedIndex = 1;
+        pick.dispatchEvent(new Event("change"));
+      }
+    }
+
     // Schedule calendar: one panel for each month.
     var months = Array.prototype.slice.call(document.querySelectorAll("[data-month]"));
     var prev = document.querySelector("[data-step='-1']");

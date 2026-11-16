@@ -44,7 +44,7 @@ Troy asked for these changes:
 - Open a file in a browser. The Theme switch in the header works.
 - Add `?theme=home`, `?theme=away`, or `?theme=third` to the address to set the Theme.
 - On the Schedule page, add `?view=list` to open the list view.
-- On the Stats page, add `?view=hs` or `?view=ls` to open the HHG Season view or the League Season view.
+- On the Stats page, add `?view=ls` to open the season view.
 - `mock.css` has all styles. Part 1 of that file has the tokens.
 - A box with a dashed border and the words "Mockup note" is not part of the design. It tells you what is not real.
 
@@ -225,8 +225,9 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 - **Tag:** an 11 px uppercase label with a 1 px border. Sheet Only has a dashed border. A Recap tag in the list view is a link.
 - **Video link:** a 16:9 image with a "Watch the Recap" label. A Short is a 9:16 image with a "Short" label. The label is black with a red arrow in each Theme, because it is on a photo.
 - **Tabs:** Calendar and List on the Schedule page.
-- **Segmented control:** the three views of the Stats page.
-- **Event list:** the goals and penalties of a Game on a card, with one head row for each period.
+- **Stats control:** an "All time" button and one list of the League Seasons. Troy removed the HHG Season view on 2026-11-16.
+- **Event list:** the goals and penalties of a Game on a card, with one head row for each period. Each row has the logo of the team.
+- **Player highlights:** the Player page lists only the goals with a video that the Player scored or assisted.
 
 ## 4. The pages against the NHL reference
 
