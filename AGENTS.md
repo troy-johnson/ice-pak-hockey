@@ -1,9 +1,8 @@
 # Ice Pak Site — Agent Instructions
 
-This repo holds two codebases while the site is rebuilt.
-
-- **New site:** the Astro app in `site/`, on the `rebuild` branch. It is live at icepakhockey.com on Cloudflare since 2026-11-15. All work goes here. `site/AGENTS.md` has the Astro guidance.
-- **Old Site:** the Next.js app at the repo root. It is offline. Leave its code as it is until Troy confirms the deletion; it is the reference for the old stats rules.
+- **The site:** the Astro app in `site/`, on the `rebuild` branch. It is live at icepakhockey.com on Cloudflare. `site/AGENTS.md` has the Astro guidance.
+- **Old Site:** its code is gone from the branch. The git tag `old-site` has it, as the reference for the old stats rules: `git show old-site:pages/api/season-stats/[id].js`.
+- **`main`:** it still has the Old Site code, and Vercel builds each push to it. Keep the work on `rebuild` until Troy says to replace `main`.
 
 ## Read first
 
@@ -21,9 +20,9 @@ This repo holds two codebases while the site is rebuilt.
 
 - **Public repo:** keep secrets, emails, phone numbers, and Balances out of git. The Fee Sheet copy is in `.orca/drops/` and the Old Site database dump is in `backups/`; git ignores both.
 - **HHG is read-only:** read `~/hockey/hockey.db`, the HHG repo, and the game folders on the NAS. Write to none of them.
-- **Contact data:** the new site stores names and public profile fields only. BenchApp has the emails and phone numbers.
+- **Contact data:** the site stores names and public profile fields only. BenchApp has the emails and phone numbers.
 
-## New site conventions
+## Site conventions
 
 - **Money:** whole cents, as integers.
 - **Domain rules:** pure functions in `site/src/lib/`, with the tests in a `*.test.ts` file beside them. Take each expected value from the Fee Sheet or from a confirmed decision.

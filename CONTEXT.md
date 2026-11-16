@@ -132,5 +132,5 @@ _Avoid_: Player portal, Dashboard
 **Team Passcode**: The one shared code that opens the Team Page. Players have no accounts.
 _Avoid_: Password, Login
 
-**Old Site**: The Next.js site at the root of this repo, live at icepakhockey.com until the rebuild replaces it.
+**Old Site**: The Next.js site that ran at icepakhockey.com until the rebuild replaced it on 2026-11-15.
 _Avoid_: Legacy app, Current site
