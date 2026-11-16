@@ -11,16 +11,24 @@
 	"observability": {
 		"enabled": true
 	},
+	"workers_dev": false,
+	"preview_urls": false,
+	"routes": [
+		{ "pattern": "icepakhockey.com", "custom_domain": true },
+		{ "pattern": "www.icepakhockey.com", "custom_domain": true }
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "ice-pak",
+			"database_id": "a8867fd3-3a00-4ab6-9d00-8b9ad60af35f",
 			"migrations_dir": "migrations"
 		}
 	],
-	// Cloudflare Access values for the manager pages. With empty values, the deployed site refuses each manager request.
+	// Cloudflare Access values for the manager pages: the team domain, and the audience tag of the
+	// "Ice Pak Managers" application. With empty values, the deployed site refuses each manager request.
 	"vars": {
-		"TEAM_DOMAIN": "",
-		"POLICY_AUD": ""
+		"TEAM_DOMAIN": "https://troyjohnson.cloudflareaccess.com",
+		"POLICY_AUD": "76623feb14354982c061ce39cda64d9144028bd53086a30487ac1a874287e851"
 	}
 }

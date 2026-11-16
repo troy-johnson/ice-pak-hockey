@@ -12,6 +12,8 @@
     "astro": "astro",
     "test": "vitest run",
     "migrate:local": "wrangler d1 migrations apply ice-pak --local",
+    "migrate:remote": "wrangler d1 migrations apply ice-pak --remote",
+    "deploy": "pnpm run build && wrangler deploy",
     "generate-types": "wrangler types"
   },
   "dependencies": {

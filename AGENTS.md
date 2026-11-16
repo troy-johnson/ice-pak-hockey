@@ -2,8 +2,8 @@
 
 This repo holds two codebases while the site is rebuilt.
 
-- **Old Site:** the Next.js app at the repo root, live at icepakhockey.com from the `main` branch. Change it only for a security fix. The first deploy of the new site replaces it, and its code is deleted then.
-- **New site:** the Astro app in `site/`, on the `rebuild` branch. All new work goes here. `site/AGENTS.md` has the Astro guidance.
+- **New site:** the Astro app in `site/`, on the `rebuild` branch. It is live at icepakhockey.com on Cloudflare since 2026-11-15. All work goes here. `site/AGENTS.md` has the Astro guidance.
+- **Old Site:** the Next.js app at the repo root. It is offline. Leave its code as it is until Troy confirms the deletion; it is the reference for the old stats rules.
 
 ## Read first
 
@@ -12,8 +12,10 @@ This repo holds two codebases while the site is rebuilt.
 
 ## Live data and deploys
 
-- **Production database:** `.env` and `.env.local` point to the live database of the Old Site. A local run of the Old Site reads and writes live data, so send read requests only.
-- **Production deploy:** a push to `main` deploys the Old Site on Vercel. Test an Old Site change first: push it to another branch and check the preview deployment.
+- **Production deploy:** `pnpm run deploy` in `site/` puts the working tree on icepakhockey.com immediately. There is no staging site. Run the tests and check the change on the local dev server first.
+- **Production database:** a `wrangler d1` command with `--remote` reads and writes the live database. The local dev server uses a local database in `site/.wrangler/`.
+- **Schema change:** run `pnpm run migrate:remote` before the deploy that needs the new schema.
+- **Old Site database:** `.env` and `.env.local` point to the Supabase database of the Old Site. It is the source for the move of the old games. Send read requests only.
 
 ## Boundaries
 

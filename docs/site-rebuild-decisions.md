@@ -20,8 +20,9 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 ## Technology
 
 - **Code:** a rebuild in this repo, on the `rebuild` branch.
-- **Switch:** the new site replaces the Old Site at icepakhockey.com with its first deploy. There is no separate address. Troy accepts a half-built site in the meantime. The Old Site code is deleted at that deploy.
-- **Domain:** Cloudflare has the DNS of icepakhockey.com. The apex and `www` point to Vercel now, and the switch points them to the Worker.
+- **Switch:** the new site replaced the Old Site at icepakhockey.com on 2026-11-15. There is no separate address. Troy accepts a half-built site in the meantime. The Old Site code is deleted when Troy confirms it.
+- **Domain:** Cloudflare has the DNS of icepakhockey.com. The apex and `www` are custom domains of the Worker `ice-pak-site`. `backups/` has the DNS records from before the switch.
+- **Manager login:** the Cloudflare Access application "Ice Pak Managers" protects `/manager` on both hostnames. Its policy lists the Managers' email addresses, which stay out of git.
 - **Old data:** `backups/` has a dump of the Old Site database from 2026-11-15. Git ignores it, because it has contact data.
 - **Stack:** Astro on Cloudflare Workers, a D1 database (SQLite), and R2 file storage for Scoresheets. The cost is $0 on the free plans.
 - **Why not Vercel:** Vercel has no disk for a SQLite file, and its free plan is for non-commercial use only.
