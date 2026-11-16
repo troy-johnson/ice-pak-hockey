@@ -4,6 +4,9 @@
 UPDATE leagues SET name = 'Salt Lake County' WHERE short_name = 'County';
 INSERT INTO leagues (name, short_name) VALUES ('Utah Hockey League', 'UHL');
 
+-- The jersey number that the Roster page shows.
+ALTER TABLE players ADD COLUMN number INTEGER;
+
 CREATE TABLE rinks (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
@@ -109,8 +112,8 @@ CREATE INDEX game_players_by_player ON game_players (player_id);
 
 -- A Player Match links a person in another source to one Player. Troy reviews each one.
 CREATE TABLE player_matches (
-  source TEXT NOT NULL CHECK (source IN ('old-site', 'hhg')),
-  -- The id of the person in the source: a UUID of the Old Site, or an HHG person id.
+  source TEXT NOT NULL CHECK (source IN ('old-site', 'hhg', 'benchapp')),
+  -- The id of the person in the source: a UUID of the Old Site, an HHG person id, or a BenchApp player id.
   source_id TEXT NOT NULL,
   -- The name in the source, so that a review can compare it with the Player.
   source_name TEXT NOT NULL,

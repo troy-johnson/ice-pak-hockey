@@ -61,7 +61,13 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **Goalies:** some Players play goalie in one Game and skate in another. Each Game Player has a goalie mark. The stats show the position from the Player Bank, and a Manager corrects it there.
 - **No Box Score:** a Game with no Scoresheet and no Box Score shows the tag "No Box Score". The site gets this state from the data.
 - **Game Players from HHG:** the Import adds the Players that HHG lists. A Manager adds the other Players.
-- **League Seasons of the HHG Games:** BenchApp has the seasons, the rosters, and the players of the past seasons. A review of BenchApp with a browser gives the League Season of each HHG Game.
+- **BenchApp as a source:** BenchApp has each Game from Winter 2021-22, with the date, opponent, rink, side, type, and score. Troy confirmed on 2026-11-16:
+  - The side of Ice Pak comes from BenchApp. Only the Games before Winter 2021-22 have no side.
+  - The Games after March 2025 come from BenchApp, with the final score. A BenchApp score of 0–0 means no score, and the Game has No Box Score.
+  - The "Tournament" Games of MIC Summer '26 are playoff Games.
+  - When a Game has no Game Players from the Old Site or HHG, the Players with "In" in BenchApp are the Game Players.
+- **League Seasons from BenchApp:** "2026 Summer (MIC)" is MIC Winter '26. "2026 Summer (Mammoth)" from 2026-07-28 is MIC Summer '26; its earlier events are copies. "2026 Summer (County)" is County Summer '26. "26-27 County (Winter)" is County Winter '26-27.
+- **HHG dates:** the HHG game `bluedevils_01252025` is the Game of 2026-01-25. On 2026-11-08 the team played two Games, and only the Night Owls Game has a video.
 - **Same game from two sources:** an HHG Import replaces the goals and penalties of that Game. It matches the Game by date and opponent.
 - **Grouping:** each Game belongs to one League Season. Stats show all time, each HHG Season, and each League Season.
 
