@@ -157,7 +157,7 @@ On a phone, the switch stays in the first row of the header, and the navigation 
 - **Header:** the crest is 44 px high, with "Ice Pak" in Barlow Condensed beside it. The wordmark inside the crest is too small to read at that size.
 - **Score bug:** the large size shows the crest at 28 px in the Ice Pak row. The small size shows no crest.
 - **Home Theme:** the dark blue outline of the lower half of the crest is close to the dark blue ground. The white part keeps the shape readable. A crest with a light blue outline for the lower half would be better on this ground.
-- **Third Theme:** the black outline of the red crest is close to the black ground. The red and white parts keep the shape readable.
+- **Third Theme:** commit `d2f883d` (from the other session) removed the white fill from the red crest. The mockups use that file. At 44 px on the black ground, the black lower half of the crest is not visible and the crest is hard to read. The crest with the white fill was clear at this size.
 - **File type:** both files are PNG, 399 px by 420 px, about 80 kB each. The NAS has the vector files `IcePak_RedBlk.ai` and `Logo_IcePak.ai`. An SVG export would be smaller and sharp at each size. I did not make one.
 
 ## 5. Open questions for Troy
@@ -180,15 +180,17 @@ On a phone, the switch stays in the first row of the header, and the navigation 
 11. **Opponent colours.** HHG has colours for 5 opponents. All other opponents get a grey chip. Who adds colours for the old opponents, and where?
 12. **Home page content.** The brief asked for the Recap, the score, the next games, and the Shorts. I added a "Latest games" row with four game cards. Keep it or remove it?
 
+13. **Red crest.** The red crest has no white fill now, and it is weak in the Third Theme header. Do you want the white fill back for small sizes, or a red crest with a light outline?
+
 ### Privacy
 
-13. **Scoresheet photo.** Is the full photo public on a Sheet Only page? A Scoresheet has the names of the opponent players.
-14. **Roster Status.** The Roster mockup shows a "Part-Time" tag. Is Roster Status public, or only for Managers?
+14. **Scoresheet photo.** Is the full photo public on a Sheet Only page? A Scoresheet has the names of the opponent players.
+15. **Roster Status.** The Roster mockup shows a "Part-Time" tag. Is Roster Status public, or only for Managers?
 
 ### Shop
 
-15. **Store address.** The Printful Quick Store does not exist yet, so the button has no address.
-16. **Product photos.** I found two tee photos on the NAS. Do you want photos of the hoodie, the hats, and the stickers on the Shop page?
+16. **Store address.** The Printful Quick Store does not exist yet, so the button has no address.
+17. **Product photos.** I found two tee photos on the NAS. Do you want photos of the hoodie, the hats, and the stickers on the Shop page?
 
 ## 6. What the mockups do not show
 
