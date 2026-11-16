@@ -81,10 +81,11 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 | `--rule` | `#2b4175` | `#cbd5e6` | `#24303c` | Keep | Lines only. Its contrast on the ground is 1.5 to 1.8, so do not use it alone to show a state. |
 | `--ink` | `#f2f6fb` | `#1d315f` | `#eef3f6` | Keep | Main text. |
 | `--frost` | `#a9beda` | `#52658c` | `#9fb2c1` | Keep | Second text. Its lowest contrast is 4.9, in Away on `--panel-2`. |
-| `--kit-fill` | `#27478a` | `#1d315f` | `#a60735` | Keep | The Ice Pak row, buttons, and the Win tag. White text on it has a contrast of 7.8 or more. |
-| `--kit-line` | `#5ba5d1` | `#5ba5d1` | `#e8354f` | Keep the value. Stop its use for the focus ring. | In Away its contrast on white is 2.7. It is good as a kit colour under a filled row. It is too weak as the only sign of focus. |
-| `--accent` | `#6db6e0` | `#1f6fa5` | `#e8354f` | Change Third to `#f0566c` | Link text in Third has a contrast of 4.3 on `--panel` and 3.9 on `--panel-2`. `#f0566c` gives 5.3 and 4.8. `--kit-line` keeps the red of the videos. |
+| `--kit-fill` | `#27478a` | `#1d315f` | `#c0211c` | Keep | The Ice Pak row, buttons, and the Win tag. White text on it has a contrast of 6.0 or more. Third has the jersey red since 2026-11-16. |
+| `--kit-line` | `#5ba5d1` | `#5ba5d1` | `#e5483f` | Keep the value. Stop its use for the focus ring. | In Away its contrast on white is 2.7. It is good as a kit colour under a filled row. It is too weak as the only sign of focus. |
+| `--accent` | `#6db6e0` | `#1f6fa5` | `#f0554c` | Keep | The site changed Third to `#f0554c` on 2026-11-16. Its contrast is 5.7 on the ground, 5.2 on `--panel`, and 4.7 on `--panel-2`. My earlier proposal of `#f0566c` is not necessary now. |
 | `--on-fill` | `#ffffff` | (inherits) | (inherits) | Keep | Text on `--kit-fill`. One value is correct for all three Themes. |
+| `--band`, `--on-band`, `--on-band-muted`, `--band-rule`, `--band-button` | transparent | transparent | `#c0211c`, white text, black button | Keep. Add one rule: inside the band, the parts use white and black. | The site added the band on 2026-11-16. In Third, the header and the top of a page are jersey red. A link or a control in the band cannot use the red tokens, so `mock.css` sets `--accent`, `--kit-fill`, and `--rule` again inside the band. |
 | `--display` | new | new | new | Add: `"Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif` | One place for the display font. |
 | `--body` | new | new | new | Add: `Inter, system-ui, -apple-system, "Segoe UI", sans-serif` | One place for the text font. `site.css` has this list inside the `body` rule now. |
 | `--opp`, `--opp-2` | new | new | new | Add. Default `var(--frost)` and `var(--rule)`. One score bug row sets them inline. | The two colours of an opponent. A team with no colours gets a grey chip. |
@@ -151,14 +152,15 @@ On a phone, the switch stays in the first row of the header, and the navigation 
 |---|---|---|---|
 | Home | Navy and light blue | `img/crest-navy.png` | `Ext. Images/Ice Pak/Logos/icepak_logo2.png` |
 | Away | Navy and light blue | `img/crest-navy.png` | Same |
-| Third | Red and black | `img/crest-red.png` | `Ext. Projects/Ice Pak/Black Ice Graphics/crest/icepak_crest_red_2400.png` |
+| Third | Black with white letters | `img/crest-third.svg` | `IcePak_RedBlk.ai`, the art file of the third jersey. The other session made the SVG. |
 
-- This agrees with the rule in `site.css`: the red crest shows only in the Third Theme.
+- This agrees with the rule in `site.css`: the black crest shows only in the Third Theme. The red crest of the videos is not the real logo, and the mockups do not use it.
 - **Header:** the crest is 44 px high, with "Ice Pak" in Barlow Condensed beside it. The wordmark inside the crest is too small to read at that size.
 - **Score bug:** the large size shows the crest at 28 px in the Ice Pak row. The small size shows no crest.
 - **Home Theme:** the dark blue outline of the lower half of the crest is close to the dark blue ground. The white part keeps the shape readable. A crest with a light blue outline for the lower half would be better on this ground.
-- **Third Theme:** commit `d2f883d` (from the other session) removed the white fill from the red crest. The mockups use that file. At 44 px on the black ground, the black lower half of the crest is not visible and the crest is hard to read. The crest with the white fill was clear at this size.
-- **File type:** both files are PNG, 399 px by 420 px, about 80 kB each. The NAS has the vector files `IcePak_RedBlk.ai` and `Logo_IcePak.ai`. An SVG export would be smaller and sharp at each size. I did not make one.
+- **Third Theme:** the black crest needs red behind it. It is in two places, and each one has red: the header band and the Ice Pak row of the score bug. At 44 px on the band the shape is clear. Do not put this crest on the black ground.
+- **Band in the mockups:** the page title block is on the band on six pages. The Home page and the Shop page have no title block, so only their header is red.
+- **File type:** the navy crest is a PNG, 399 px by 420 px, 84 kB. The Third crest is an SVG of 10 kB. The NAS has the vector file `Logo_IcePak.ai` for an SVG of the navy crest. I did not make one.
 
 ## 5. Open questions for Troy
 
@@ -174,13 +176,13 @@ On a phone, the switch stays in the first row of the header, and the navigation 
 ### Design
 
 7. **Fonts.** Do you accept Inter and Barlow Condensed, hosted on the site?
-8. **Third Theme links.** Do you accept `#f0566c` for link text in Third?
+8. **Band on Home and Shop.** In the Third Theme, the Home page and the Shop page have a red header and no red page top. Do you want a red block at the top of these two pages?
 9. **Ice Pak first.** The score bug always shows Ice Pak in the first row. The page title says "at" or "vs". The HHG graphics show the home team first in some places. Is "Ice Pak first" correct for the site?
 10. **Recap images.** A Recap thumbnail has the red kit graphics of HHG. It looks the same in the Home and Away Themes. Is that acceptable?
 11. **Opponent colours.** HHG has colours for 5 opponents. All other opponents get a grey chip. Who adds colours for the old opponents, and where?
 12. **Home page content.** The brief asked for the Recap, the score, the next games, and the Shorts. I added a "Latest games" row with four game cards. Keep it or remove it?
 
-13. **Red crest.** The red crest has no white fill now, and it is weak in the Third Theme header. Do you want the white fill back for small sizes, or a red crest with a light outline?
+13. **Band controls.** Inside the red band, a link is white and a pressed button is black. Is that acceptable?
 
 ### Privacy
 
