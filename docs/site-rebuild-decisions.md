@@ -77,6 +77,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **Photo:** the site stores the photo, and a Manager types the Box Score. A vision model is not used in version 1.
 - **No scraper:** GameSheet's box score data needs a login, and its terms forbid scripts.
 - **Backlog:** about 200 Scoresheet images are on Imgur, with the links in the BenchApp chat. Troy puts the links in one text file. A command on his Mac downloads each image and attaches it to its Game by date.
+- **Chat review, 2026-11-16:** the 13 Ice Pak chat rooms from Winter 2021-22 have 149 images: 143 attachments and 6 Imgur links. 51 of them are Scoresheets or box score images for 48 Games. `backups/benchapp/scoresheets-from-chat.csv` lists them with the matched Game. BenchApp refused access to 3 older rooms, from before Winter 2021-22. The other Imgur links are not in these rooms.
 - **Sheet Only:** a Game with a Scoresheet and no Box Score shows this state until a Manager types the Box Score.
 - **Storage:** 200 files at 6.4 MB each use 1.3 GB of the free 10 GB.
 
