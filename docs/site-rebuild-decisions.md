@@ -121,3 +121,6 @@ This part is last. It starts after the team agrees.
 - Add the HHG Game File output to HHG, from the field list.
 - Put the Imgur links in one text file.
 - Check the Utah rules before the EIN application.
+- Test the Manager login at `https://icepakhockey.com/manager`, and ask Christiaan to test it. Nobody did a real login after the switch.
+- Enable R2 in the Cloudflare dashboard. Scoresheet upload needs it.
+- Disconnect or delete the Vercel project. It still builds each push to `main`.
