@@ -448,6 +448,8 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
+  /* A long rink name uses two lines. The cards align at the bottom, so the score bugs of a row stay level. */
+  align-items: end;
 }
 
 .game-card {
