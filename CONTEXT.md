@@ -24,11 +24,8 @@ _Avoid_: Priority list, Depth chart
 **League**: A competition the team plays in: MIC (Mammoth Ice Center), County (Salt Lake County), or UHL (Utah Hockey League).
 _Avoid_: Division, Rink
 
-**League Season**: One run of one League, such as MIC Winter '26. It is the unit for Rosters, fees, and Games.
+**League Season**: One run of one League, such as MIC Winter '26. It is the unit for Rosters, fees, Games, and stats. A League Season is current while it has a coming Game, or for 60 days after its last Game.
 _Avoid_: Season (alone), Session
-
-**HHG Season**: The August-to-July year that HHG uses, written 2026-2027. The site uses it only to group stats by year.
-_Avoid_: Year, Season (alone)
 
 **Roster**: The Players of one League Season, each with a Roster Status.
 _Avoid_: Team list, Lineup

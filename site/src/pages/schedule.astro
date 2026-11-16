@@ -4,7 +4,7 @@ import GameTags from "../components/site/GameTags.astro";
 import OppMark from "../components/site/OppMark.astro";
 import { clockTime, monthName, opponentName, resultLabel, shortDate, utahTime, versus, type GameSummary } from "../lib/game-format";
 import { gamesOf } from "../lib/site-data";
-import { formatRecord, hhgSeason, result, teamRecord } from "../lib/stats";
+import { currentLeagueSeasons, formatRecord, result, teamRecord } from "../lib/stats";
 
 export const prerender = false;
 
@@ -21,12 +21,10 @@ const record = teamRecord(past);
 const withScore = record.wins + record.losses + record.ties;
 const firstYear = games[0]?.startsAt.slice(0, 4);
 
-// The calendar has the months of this HHG Season and the one before, up to the last Game or today.
-const season = hhgSeason(now);
-const startYear = Number(season.slice(0, 4)) - 1;
+// The calendar has the 12 months before this month, this month, and the months up to the last Game.
 const lastDay = [today, ...games.map((game) => game.startsAt.slice(0, 10))].sort().at(-1)!;
 const months: { year: number; month: number }[] = [];
-for (let year = startYear, month = 8; `${year}-${String(month).padStart(2, "0")}` <= lastDay.slice(0, 7); ) {
+for (let year = Number(today.slice(0, 4)) - 1, month = Number(today.slice(5, 7)); `${year}-${String(month).padStart(2, "0")}` <= lastDay.slice(0, 7); ) {
   months.push({ year, month });
   month = month === 12 ? 1 : month + 1;
   if (month === 1) year += 1;
@@ -48,7 +46,8 @@ const cells = (year: number, month: number) => {
 };
 const thisMonth = today.slice(0, 7);
 
-// The list: one table for each League Season, newest first. The League Seasons of this HHG Season are open.
+// The list: one table for each League Season, newest first. The current League Seasons are open.
+const current = new Set(currentLeagueSeasons(allGames, now));
 const seasons: { id: number; name: string; games: GameSummary[] }[] = [];
 for (const game of [...past].reverse()) {
   let entry = seasons.find((each) => each.id === game.leagueSeasonId);
@@ -208,7 +207,7 @@ const summary = (list: GameSummary[]) => {
     {
       seasons.map((entry) => {
         const { record: seasonRecord, text } = summary(entry.games);
-        const open = hhgSeason(entry.games[0].startsAt) === season;
+        const open = current.has(entry.id);
         const head = (
           <div class="season-head">
             <h2>{entry.name}</h2>

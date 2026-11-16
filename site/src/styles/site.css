@@ -2172,3 +2172,8 @@ th a {
   color: inherit;
   text-decoration: none;
 }
+
+/* The header record has one part for each current League Season. */
+.site-head .rec > span + span {
+  margin-left: 14px;
+}

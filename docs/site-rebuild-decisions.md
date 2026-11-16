@@ -78,7 +78,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **League Seasons from BenchApp:** "2026 Summer (MIC)", from March to July 2026, is MIC Spring '26. MIC Winter '26 is the coming League Season, from January 2027. "2026 Summer (Mammoth)" from 2026-07-28 to 2026-11-15 is MIC Summer '26; its earlier events are copies of MIC Spring '26. "2026 Summer (County)" is County Summer '26. "26-27 County (Winter)" is County Winter '26-27.
 - **HHG dates:** the HHG game `bluedevils_01252025` is the Game of 2026-01-25. On 2026-11-08 the team played two Games, and only the Night Owls Game has a video.
 - **Same game from two sources:** an HHG Import replaces the goals and penalties of that Game. It matches the Game by date and opponent.
-- **Grouping:** each Game belongs to one League Season. Stats show all time, each HHG Season, and each League Season.
+- **Grouping:** each Game belongs to one League Season. Stats show all time and each League Season. The header shows the record of each current League Season. Troy confirmed on 2026-11-16 that the site has no year grouping: HHG is only the app that makes the videos and reads the stats.
 
 ## Scoresheets
 

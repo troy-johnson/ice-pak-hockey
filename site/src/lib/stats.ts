@@ -61,11 +61,31 @@ export interface TeamRecord {
   goalsAgainst: number;
 }
 
-/** The HHG Season of a date: August to July, written '2026-2027'. */
-export function hhgSeason(startsAt: string): string {
-  const year = Number(startsAt.slice(0, 4));
-  const first = Number(startsAt.slice(5, 7)) >= 8 ? year : year - 1;
-  return `${first}-${first + 1}`;
+/** A League Season stays current for this many days after its last Game. */
+export const CURRENT_DAYS = 60;
+
+/**
+ * The current League Seasons, one at most for each League: the League Season of the newest Game
+ * that has started. It is current while it has a coming Game, or for CURRENT_DAYS after its last Game.
+ */
+export function currentLeagueSeasons(
+  games: { leagueSeasonId: number; league: string; startsAt: string }[],
+  now: string,
+): number[] {
+  const days = (from: string, to: string) => (Date.parse(`${to.replace(" ", "T")}Z`) - Date.parse(`${from.replace(" ", "T")}Z`)) / 86_400_000;
+  const newest = new Map<string, { leagueSeasonId: number; startsAt: string }>();
+  for (const game of games) {
+    if (game.startsAt >= now) continue;
+    const known = newest.get(game.league);
+    if (!known || game.startsAt > known.startsAt) newest.set(game.league, game);
+  }
+  return [...newest.values()]
+    .filter(
+      (last) =>
+        days(last.startsAt, now) <= CURRENT_DAYS ||
+        games.some((game) => game.leagueSeasonId === last.leagueSeasonId && game.startsAt >= now),
+    )
+    .map((last) => last.leagueSeasonId);
 }
 
 /** The result for Ice Pak, or null for a Game with no final score. */

@@ -3,7 +3,7 @@ import {
   byStat,
   formatPointsPerGame,
   formatRecord,
-  hhgSeason,
+  currentLeagueSeasons,
   leaders,
   only,
   played,
@@ -51,11 +51,23 @@ const data: StatData = {
 const lineOf = (lines: ReturnType<typeof skaterLines>, playerId: number) =>
   lines.find((line) => line.playerId === playerId);
 
-describe("hhgSeason", () => {
-  it("starts in August", () => {
-    expect(hhgSeason("2026-07-31 20:00")).toBe("2025-2026");
-    expect(hhgSeason("2026-08-01 20:00")).toBe("2026-2027");
-    expect(hhgSeason("2027-01-10 18:00")).toBe("2026-2027");
+describe("currentLeagueSeasons", () => {
+  const at = (leagueSeasonId: number, league: string, startsAt: string) => ({ leagueSeasonId, league, startsAt });
+  const games = [
+    at(1, "UHL", "2021-09-14 17:00"),
+    at(2, "MIC", "2026-07-02 20:00"),
+    at(3, "MIC", "2026-11-15 18:45"),
+    at(4, "County", "2026-11-08 18:30"),
+    at(4, "County", "2026-11-22 15:30"),
+  ];
+
+  it("gives the newest League Season of each League that played lately", () => {
+    expect(currentLeagueSeasons(games, "2026-11-16 12:00").sort()).toEqual([3, 4]);
+  });
+
+  it("drops a League Season 60 days after its last Game, unless it has a coming Game", () => {
+    expect(currentLeagueSeasons(games, "2027-02-01 12:00")).toEqual([]);
+    expect(currentLeagueSeasons([...games, at(4, "County", "2027-02-07 21:00")], "2027-02-01 12:00")).toEqual([4]);
   });
 });
 
@@ -114,7 +126,7 @@ describe("skaterLines", () => {
 
 describe("only", () => {
   it("keeps the Box Scores of the Games in the scope", () => {
-    const august = only(data, (each) => hhgSeason(each.startsAt) === "2026-2027");
+    const august = only(data, (each) => each.startsAt >= "2026-08-01");
 
     expect(august.games.map((each) => each.id)).toEqual([2, 3]);
     expect(august.goals).toHaveLength(2);

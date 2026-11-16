@@ -5,7 +5,7 @@ import "@fontsource/inter/700.css";
 import "@fontsource/barlow-condensed/700.css";
 import "@fontsource/barlow-condensed/800-italic.css";
 import "../styles/site.css";
-import { formatRecord, hhgSeason, teamRecord } from "../lib/stats";
+import { currentLeagueSeasons, formatRecord, teamRecord } from "../lib/stats";
 import { utahTime } from "../lib/game-format";
 import { gamesOf } from "../lib/site-data";
 
@@ -27,13 +27,13 @@ const links = [
   { name: "roster", label: "Roster", href: "/roster" },
 ] as const;
 
-// The header shows the record of the current HHG Season. The manager pages have no record.
-const showRecord = !Astro.url.pathname.startsWith("/manager");
+// The header shows the record of each current League Season. The manager pages have no record.
 const now = utahTime(new Date());
-const season = hhgSeason(now);
-const record = showRecord
-  ? teamRecord((await gamesOf(Astro.locals)).filter((game) => game.startsAt < now && hhgSeason(game.startsAt) === season))
-  : null;
+const allGames = Astro.url.pathname.startsWith("/manager") ? [] : await gamesOf(Astro.locals);
+const records = currentLeagueSeasons(allGames, now).map((leagueSeasonId) => {
+  const games = allGames.filter((game) => game.leagueSeasonId === leagueSeasonId && game.startsAt < now);
+  return { league: games[0].league, name: games[0].leagueSeason, record: formatRecord(teamRecord(games)) };
+});
 const themes = [
   { name: "home", label: "Home" },
   { name: "away", label: "Away" },
@@ -82,10 +82,14 @@ const themes = [
           </nav>
         </slot>
         {
-          record && record.gamesPlayed > 0 && (
+          records.length > 0 && (
             <span class="rec">
-              {season.slice(0, 5) + season.slice(7)}
-              <b>{formatRecord(record)}</b>
+              {records.map((each) => (
+                <span title={each.name}>
+                  {each.league}
+                  <b>{each.record}</b>
+                </span>
+              ))}
             </span>
           )
         }

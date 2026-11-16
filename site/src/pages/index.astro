@@ -5,7 +5,7 @@ import PlayerCell from "../components/site/PlayerCell.astro";
 import ScoreBug from "../components/site/ScoreBug.astro";
 import { headline, periodName, plainDate, utahTime, videoImage } from "../lib/game-format";
 import { boxScore, gamesOf, playersById, statData } from "../lib/site-data";
-import { byStat, hhgSeason, only, played, skaterLines } from "../lib/stats";
+import { byStat, currentLeagueSeasons, only, played, skaterLines } from "../lib/stats";
 
 export const prerender = false;
 
@@ -14,17 +14,17 @@ const games = await gamesOf(Astro.locals);
 const past = games.filter((game) => game.startsAt < now);
 // The hero is the newest Game with a final score, or else the newest Game.
 const latest = past.findLast((game) => game.icePakScore !== null) ?? past.at(-1);
-const season = hhgSeason(now);
+const current = new Set(currentLeagueSeasons(games, now));
 const [data, players, box] = await Promise.all([
   statData(games),
   playersById(),
   latest ? boxScore(latest.id) : Promise.resolve(null),
 ]);
 
-// The Games of this HHG Season, newest first. With none yet, the newest three Games.
-const seasonGames = past.filter((game) => hhgSeason(game.startsAt) === season).reverse();
+// The Games of the current League Seasons, newest first. With none, the newest three Games.
+const seasonGames = past.filter((game) => current.has(game.leagueSeasonId)).reverse();
 const cards = (seasonGames.length ? seasonGames : [...past].reverse()).slice(0, 3);
-const leaders = skaterLines(only(played(data, now), (game) => hhgSeason(game.startsAt) === season))
+const leaders = skaterLines(only(played(data, now), (game) => current.has(game.leagueSeasonId)))
   .filter((line) => line.points > 0)
   .sort(byStat("points"))
   .slice(0, 6);
@@ -126,7 +126,7 @@ const nameOf = (playerId: number | null) => {
         </div>
         {
           leaders.length === 0 ? (
-            <p class="muted">No Player has a point in this HHG Season yet.</p>
+            <p class="muted">No Player has a point in the current League Seasons yet.</p>
           ) : (
             <div class="card table-wrap">
               <table>

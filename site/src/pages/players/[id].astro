@@ -4,7 +4,7 @@ import { opponentName, plainDate, resultLabel, utahTime, versus } from "../../li
 import { LABELS } from "../../lib/roster";
 import GoalRows from "../../components/site/GoalRows.astro";
 import { gamesOf, leagueSeasons, playerGoals, playersById, statData } from "../../lib/site-data";
-import { formatPointsPerGame, hhgSeason, only, played, skaterLines, type SkaterLine } from "../../lib/stats";
+import { formatPointsPerGame, only, played, skaterLines, type SkaterLine } from "../../lib/stats";
 
 export const prerender = false;
 
@@ -36,9 +36,9 @@ const mine = new Set([
 ]);
 const myGames = games.filter((game) => mine.has(game.id)).reverse();
 const latest = myGames[0];
-const season = hhgSeason(now);
 const career = lineOf(past);
-const thisSeason = lineOf(only(past, (game) => hhgSeason(game.startsAt) === season));
+// The first strip is the newest League Season of the Player.
+const thisSeason = latest ? lineOf(only(past, (game) => game.leagueSeasonId === latest.leagueSeasonId)) : null;
 const last5 = myGames.slice(0, 5).map((game) => ({ game, line: lineOf(only(past, (each) => each.id === game.id)) }));
 const sum = (key: "goals" | "assists" | "points" | "penaltyMinutes") =>
   last5.reduce((total, row) => total + row.line[key], 0);
@@ -83,7 +83,7 @@ const strip = (label: string, line: SkaterLine) => ({ label, line });
 
   <div class="strips">
     {
-      [strip(`${season.slice(0, 5)}${season.slice(7)} Season`, thisSeason), strip("Career", career)].map(({ label, line }) => (
+      [...(latest && thisSeason ? [strip(latest.leagueSeason, thisSeason)] : []), strip("Career", career)].map(({ label, line }) => (
         <div class="card strip" style="--n:6">
           <span class="title">{label}</span>
           <div><span class="label">GP</span><b>{line.gamesPlayed}</b></div>
