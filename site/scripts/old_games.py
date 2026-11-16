@@ -31,6 +31,8 @@ ROOT = Path(__file__).resolve().parents[2]
 DUMP = ROOT / "backups/old-site-2026-11-15.sql"
 BENCHAPP = ROOT / "backups/benchapp/benchapp-2026-11-16.json"
 BENCHAPP_EVENTS = ROOT / "backups/benchapp/benchapp-events-2026-11-16.json"
+BENCHAPP_SHOTS = ROOT / "backups/benchapp/benchapp-shots-2026-11-16.json"
+SCORESHEET_SHOTS = ROOT / "backups/scoresheet-shots.csv"
 PLAYER_BANK = ROOT / "backups/seed-player-bank.sql"
 MATCHES = ROOT / "backups/player-matches.csv"
 HHG_DB = Path.home() / "hockey/hockey.db"
@@ -537,7 +539,8 @@ def write_sql():
             "starts_at = excluded.starts_at, opponent_id = excluded.opponent_id, rink_id = excluded.rink_id, "
             "ice_pak_side = excluded.ice_pak_side, ice_pak_score = excluded.ice_pak_score, "
             "opponent_score = excluded.opponent_score, shootout = excluded.shootout, "
-            "recap_url = excluded.recap_url, benchapp_event_id = excluded.benchapp_event_id "
+            "recap_url = excluded.recap_url, benchapp_event_id = excluded.benchapp_event_id, "
+            "ice_pak_shots = NULL, opponent_shots = NULL "
             "WHERE games.hhg_game_id IS NULL;"
         )
         for goal in goals:
@@ -577,6 +580,28 @@ def write_sql():
             )
         if names:
             out.append(f"UPDATE games SET players_complete = 1 WHERE {key};")
+
+    # Shots on goal: BenchApp has them for the Games that a scorekeeper entered from the Scoresheet.
+    for event in json.loads(BENCHAPP_SHOTS.read_text()).values():
+        stats = event["stats"]
+        # BenchApp copies the goals into the shots when nobody entered the shots. A team has more shots than goals.
+        if stats["homeTeamShots"] <= stats["homeTeamScore"] or stats["awayTeamShots"] <= stats["awayTeamScore"]:
+            continue
+        home = event["homeOrAway"] == "Home"
+        ice_pak, opponent = (stats["homeTeamShots"], stats["awayTeamShots"])[:: 1 if home else -1]
+        out.append(f"UPDATE games SET ice_pak_shots = {ice_pak}, opponent_shots = {opponent} "
+                   f"WHERE benchapp_event_id = {event['id']};")
+    # The Scoresheet photos of the BenchApp chats, read by hand. The Scoresheet is the official record,
+    # so its side, final score, and shots replace the values from BenchApp.
+    for row in csv.DictReader(SCORESHEET_SHOTS.open()):
+        out.append(
+            f"UPDATE games SET ice_pak_side = {quote(row['ice_pak_side'])}, "
+            f"ice_pak_score = {int(row['ice_pak_score'])}, opponent_score = {int(row['opponent_score'])}, "
+            f"ice_pak_shots = {int(row['ice_pak_shots'])}, opponent_shots = {int(row['opponent_shots'])} "
+            f"WHERE starts_at = {quote(row['starts_at'])} "
+            f"AND opponent_id = (SELECT id FROM opponents WHERE name = {quote(row['opponent'])}) "
+            "AND hhg_game_id IS NULL;"
+        )
 
     # The Rosters of the past League Seasons, from BenchApp. An existing Roster Answer stays.
     # The Fee Sheet League Seasons and the current one get their Rosters from the Managers.

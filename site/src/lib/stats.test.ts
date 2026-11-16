@@ -3,6 +3,8 @@ import {
   byStat,
   formatPointsPerGame,
   formatRecord,
+  formatSavePercentage,
+  goalieLines,
   currentLeagueSeasons,
   leaders,
   only,
@@ -141,5 +143,59 @@ describe("leaders", () => {
     // Players 2 and 3 have 2 assists each. Player 2 has more points.
     expect(leaders(lines, "assists", 2).map((line) => line.playerId)).toEqual([2, 3]);
     expect([...lines].sort(byStat("points"))[0].playerId).toBe(2);
+  });
+});
+
+describe("goalieLines", () => {
+  const goalieGame = (id: number, icePakScore: number | null, opponentScore: number | null, opponentShots: number | null, shootout = false) => ({
+    ...game(id, `2026-0${id}-01 20:00`, icePakScore, opponentScore),
+    opponentShots,
+    shootout,
+  });
+  const goalieData: StatData = {
+    games: [
+      goalieGame(1, 5, 2, 30),
+      goalieGame(2, 3, 0, null),
+      goalieGame(3, 4, 5, 20, true),
+      goalieGame(4, 6, 1, 25),
+      goalieGame(5, null, null, null),
+    ],
+    goals: [],
+    penalties: [],
+    gamePlayers: [
+      { gameId: 1, playerId: 9, isGoalie: true },
+      { gameId: 2, playerId: 9, isGoalie: true },
+      { gameId: 3, playerId: 9, isGoalie: true },
+      // Two goalies split Game 4.
+      { gameId: 4, playerId: 9, isGoalie: true },
+      { gameId: 4, playerId: 8, isGoalie: true },
+      { gameId: 5, playerId: 9, isGoalie: true },
+      { gameId: 1, playerId: 7 },
+    ],
+  };
+  const [line] = goalieLines(goalieData).filter((each) => each.playerId === 9);
+
+  it("counts the Games in goal and the record", () => {
+    expect(line).toMatchObject({ gamesPlayed: 5, wins: 3, losses: 1, ties: 0 });
+  });
+
+  it("counts goals against without the shootout goal, and no goals in a split Game", () => {
+    // Game 1: 2. Game 2: 0. Game 3: 5 less the shootout goal.
+    expect(line.goalsAgainst).toBe(6);
+    expect(line.goalsAgainstAverage).toBe(2);
+    expect(line.shutouts).toBe(1);
+  });
+
+  it("counts shots and saves only in the Games with shots", () => {
+    expect(line).toMatchObject({ gamesWithShots: 2, shotsAgainst: 50, saves: 44 });
+    expect(formatSavePercentage(line.savePercentage)).toBe(".880");
+    expect(formatSavePercentage(null)).toBe("–");
+  });
+
+  it("keeps a Game in goal out of the skater Games played", () => {
+    const skaters = skaterLines(goalieData);
+    // Player 9 has only Games in goal and no points, so the skater lines do not have Player 9.
+    expect(skaters.find((each) => each.playerId === 9)).toBeUndefined();
+    expect(skaters.find((each) => each.playerId === 7)?.gamesPlayed).toBe(1);
   });
 });

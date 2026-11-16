@@ -7,6 +7,8 @@ import {
   byStat,
   formatPointsPerGame,
   formatRecord,
+  formatSavePercentage,
+  goalieLines,
   leaders,
   only,
   played,
@@ -34,6 +36,8 @@ const title = view === "ls" ? (ls?.name ?? "") : "All time";
 const record = teamRecord(scoped.games);
 const diff = record.goalsFor - record.goalsAgainst;
 const lines = skaterLines(scoped);
+const goalies = goalieLines(scoped).sort((a, b) => b.gamesPlayed - a.gamesPlayed || (b.savePercentage ?? 0) - (a.savePercentage ?? 0));
+const shotGames = scoped.games.filter((game) => game.opponentShots != null && game.icePakScore !== null).length;
 
 const SORTS: { key: StatKey; label: string; wide?: boolean }[] = [
   { key: "gamesPlayed", label: "GP" },
@@ -196,5 +200,57 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
         {rows.length} Players. Select a column title to sort the table. The record counts only the Games with a final score.
       </p>
     </section>
+
+    {
+      goalies.length > 0 && (
+        <section>
+          <div class="sec-head">
+            <h2>Goalies</h2>
+            <span class="muted">{shotGames === 1 ? "1 Game" : `${shotGames} Games`} with shots on the Scoresheet</span>
+          </div>
+          <div class="card table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th class="n sorted">GP</th>
+                  <th class="n wide-only">W-L-T</th>
+                  <th class="n">GA</th>
+                  <th class="n wide-only">GAA</th>
+                  <th class="n wide-only">SA</th>
+                  <th class="n">SV</th>
+                  <th class="n">SV%</th>
+                  <th class="n wide-only">SO</th>
+                </tr>
+              </thead>
+              <tbody>
+                {goalies.map((line) => (
+                  <tr>
+                    <td class="name">
+                      <PlayerCell player={players.get(line.playerId)} />
+                    </td>
+                    <td class="n sorted">{line.gamesPlayed}</td>
+                    <td class="n wide-only">
+                      {line.wins}-{line.losses}-{line.ties}
+                    </td>
+                    <td class="n">{line.goalsAgainst}</td>
+                    <td class="n wide-only">{line.goalsAgainstAverage.toFixed(2)}</td>
+                    <td class="n wide-only">{line.gamesWithShots ? line.shotsAgainst : "–"}</td>
+                    <td class="n">{line.gamesWithShots ? line.saves : "–"}</td>
+                    <td class="n">{formatSavePercentage(line.savePercentage)}</td>
+                    <td class="n wide-only">{line.shutouts}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="muted">
+            A Game in goal is a Game where BenchApp lists the Player as the goalie. GA and GAA count the Games with a
+            final score. SA, SV, and SV% count only the Games with shots on the Scoresheet. A Game with two goalies counts
+            in GP and the record only.
+          </p>
+        </section>
+      )
+    }
   </div>
 </Base>

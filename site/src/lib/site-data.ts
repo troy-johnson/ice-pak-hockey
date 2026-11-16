@@ -27,6 +27,8 @@ interface GameRow {
   side: Side | null;
   icePakScore: number | null;
   opponentScore: number | null;
+  icePakShots: number | null;
+  opponentShots: number | null;
   shootout: number;
   headline: string;
   recapUrl: string;
@@ -52,6 +54,8 @@ function toSummary(row: GameRow): GameSummary {
     side: row.side,
     icePakScore: row.icePakScore,
     opponentScore: row.opponentScore,
+    icePakShots: row.icePakShots,
+    opponentShots: row.opponentShots,
     shootout: row.shootout === 1,
     headline: row.headline,
     recapUrl: row.recapUrl,
@@ -69,7 +73,8 @@ export async function listGames(): Promise<GameSummary[]> {
             league_seasons.name AS leagueSeason, leagues.short_name AS league, game_type AS gameType,
             opponents.name AS opponentName, opponents.logo, opponents.color, opponents.color_2 AS color2,
             rinks.name AS rink, ice_pak_side AS side, ice_pak_score AS icePakScore,
-            opponent_score AS opponentScore, shootout, headline, recap_url AS recapUrl,
+            opponent_score AS opponentScore, ice_pak_shots AS icePakShots,
+            opponent_shots AS opponentShots, shootout, headline, recap_url AS recapUrl,
             recap_image AS recapImage,
             (SELECT COUNT(*) FROM goals WHERE game_id = games.id AND video_url <> '') AS videoCount,
             (SELECT COUNT(*) FROM goals WHERE game_id = games.id AND video_is_short = 1) AS shortCount,
@@ -100,9 +105,16 @@ export async function statData(games: GameSummary[]): Promise<StatData> {
     all<StatData["penalties"][number]>(
       "SELECT game_id AS gameId, team, player_id AS playerId, minutes FROM penalties",
     ),
-    all<StatData["gamePlayers"][number]>("SELECT game_id AS gameId, player_id AS playerId FROM game_players"),
+    all<{ gameId: number; playerId: number; isGoalie: number }>(
+      "SELECT game_id AS gameId, player_id AS playerId, is_goalie AS isGoalie FROM game_players",
+    ),
   ]);
-  return { games, goals, penalties, gamePlayers };
+  return {
+    games,
+    goals,
+    penalties,
+    gamePlayers: gamePlayers.map((row) => ({ ...row, isGoalie: row.isGoalie === 1 })),
+  };
 }
 
 export interface PublicPlayer {

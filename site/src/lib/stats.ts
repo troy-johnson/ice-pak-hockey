@@ -11,6 +11,10 @@ export interface StatGame {
   startsAt: string;
   icePakScore: number | null;
   opponentScore: number | null;
+  /** The shots on goal of the opponent, or null when the Scoresheet has no shots. */
+  opponentShots?: number | null;
+  /** A shootout gives the winner one goal in the final score. */
+  shootout?: boolean;
 }
 
 export interface StatGoal {
@@ -31,6 +35,8 @@ export interface StatPenalty {
 export interface StatGamePlayer {
   gameId: number;
   playerId: number;
+  /** The Player played goalie in this Game. */
+  isGoalie?: boolean;
 }
 
 export interface StatData {
@@ -147,7 +153,10 @@ export function skaterLines(data: StatData): SkaterLine[] {
     return found;
   };
 
-  for (const gamePlayer of data.gamePlayers) line(gamePlayer.playerId).gamesPlayed += 1;
+  // A Game in goal counts in the goalie lines, not here.
+  for (const gamePlayer of data.gamePlayers) {
+    if (!gamePlayer.isGoalie) line(gamePlayer.playerId).gamesPlayed += 1;
+  }
   for (const goal of data.goals) {
     if (goal.team !== "ice-pak") continue;
     if (goal.scorerId !== null) line(goal.scorerId).goals += 1;
@@ -166,6 +175,77 @@ export function skaterLines(data: StatData): SkaterLine[] {
     found.pointsPerGame = found.gamesPlayed ? found.points / found.gamesPlayed : 0;
   }
   return [...lines.values()];
+}
+
+export interface GoalieLine {
+  playerId: number;
+  /** The Games in goal. */
+  gamesPlayed: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  goalsAgainst: number;
+  /** Goals against for each Game in goal with a final score. */
+  goalsAgainstAverage: number;
+  shotsAgainst: number;
+  saves: number;
+  /** Saves for each shot, or null with no Game that has shots. */
+  savePercentage: number | null;
+  shutouts: number;
+  /** The Games in goal that have shots on the Scoresheet. */
+  gamesWithShots: number;
+}
+
+/**
+ * One line for each Player with a Game in goal.
+ * - A Game with two goalies counts in the Games and the record of both, and in no goals or shots.
+ * - Goals against: the opponent's final score, less the shootout goal of a shootout loss.
+ * - Shots against, saves, and the save percentage use only the Games with shots on the Scoresheet.
+ */
+export function goalieLines(data: StatData): GoalieLine[] {
+  const games = new Map(data.games.map((game) => [game.id, game]));
+  const goaliesOf = new Map<number, number>();
+  for (const row of data.gamePlayers) {
+    if (row.isGoalie) goaliesOf.set(row.gameId, (goaliesOf.get(row.gameId) ?? 0) + 1);
+  }
+  const lines = new Map<number, GoalieLine & { scoredGames: number }>();
+  for (const row of data.gamePlayers) {
+    const game = games.get(row.gameId);
+    if (!row.isGoalie || !game) continue;
+    let found = lines.get(row.playerId);
+    if (!found) {
+      found = {
+        playerId: row.playerId, gamesPlayed: 0, wins: 0, losses: 0, ties: 0, goalsAgainst: 0,
+        goalsAgainstAverage: 0, shotsAgainst: 0, saves: 0, savePercentage: null, shutouts: 0,
+        gamesWithShots: 0, scoredGames: 0,
+      };
+      lines.set(row.playerId, found);
+    }
+    found.gamesPlayed += 1;
+    const outcome = result(game);
+    if (outcome) found[outcome === "win" ? "wins" : outcome === "loss" ? "losses" : "ties"] += 1;
+    if (!outcome || goaliesOf.get(row.gameId) !== 1) continue;
+
+    const against = game.opponentScore! - (game.shootout && outcome === "loss" ? 1 : 0);
+    found.scoredGames += 1;
+    found.goalsAgainst += against;
+    if (against === 0) found.shutouts += 1;
+    if (game.opponentShots != null) {
+      found.gamesWithShots += 1;
+      found.shotsAgainst += game.opponentShots;
+      found.saves += game.opponentShots - against;
+    }
+  }
+  return [...lines.values()].map(({ scoredGames, ...line }) => ({
+    ...line,
+    goalsAgainstAverage: scoredGames ? line.goalsAgainst / scoredGames : 0,
+    savePercentage: line.shotsAgainst ? line.saves / line.shotsAgainst : null,
+  }));
+}
+
+/** ".912", as the NHL writes it. */
+export function formatSavePercentage(value: number | null): string {
+  return value === null ? "–" : value.toFixed(3).replace(/^0/, "");
 }
 
 export type StatKey = "gamesPlayed" | "goals" | "assists" | "points" | "penaltyMinutes" | "pointsPerGame";

@@ -24,6 +24,8 @@ export interface GameSummary {
   side: Side | null;
   icePakScore: number | null;
   opponentScore: number | null;
+  icePakShots: number | null;
+  opponentShots: number | null;
   shootout: boolean;
   headline: string;
   recapUrl: string;

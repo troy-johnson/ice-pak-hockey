@@ -117,6 +117,13 @@ const neighbour = (other: (typeof games)[number]) =>
         )
       }
       {
+        game.icePakShots !== null && game.opponentShots !== null && (
+          <p class="muted">
+            Shots on goal: Ice Pak {game.icePakShots}, {opponentName(game.opponent)} {game.opponentShots}.
+          </p>
+        )
+      }
+      {
         !hasScore && !upcoming && (
           <p class="muted">This Game has no Scoresheet and no Box Score on the site.</p>
         )
