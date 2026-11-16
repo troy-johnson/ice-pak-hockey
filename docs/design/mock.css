@@ -43,7 +43,7 @@
   --accent: #2a4a8f;
   --head: #ffffff;
   --band: linear-gradient(180deg, rgb(29 49 95 / 0.66), rgb(23 40 79 / 0.92));
-  --veil: linear-gradient(180deg, rgb(255 255 255 / 0.38), rgb(255 255 255 / 0.84) 75%);
+  --veil: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.5) 75%);
   --shade: rgb(29 49 95 / 0.12);
 }
 
@@ -88,6 +88,35 @@
   --panel-2: rgb(0 0 0 / 0.3);
   --kit-fill: #000000;
   --kit-line: #ffffff;
+}
+
+/* Away: the page ground is the ice of the rink image. Text on the ice is navy. A card is pure white and has the usual text colours. */
+:root[data-theme="away"] main {
+  --frost: #1d315f;
+  --accent: #1d315f;
+  --rule: #7f93b3;
+}
+
+:root[data-theme="away"] main .card,
+:root[data-theme="away"] main .cal .day,
+:root[data-theme="away"] main .state {
+  --frost: #52658c;
+  --accent: #2a4a8f;
+  --rule: #cbd5e6;
+}
+
+:root[data-theme="away"] main .card {
+  background: #ffffff;
+  border-color: #b9c6dc;
+  box-shadow: 0 12px 28px -16px rgb(13 25 48 / 0.45);
+}
+
+:root[data-theme="away"] main .cal .day:not(.game) {
+  background: rgb(255 255 255 / 0.55);
+}
+
+:root[data-theme="away"] main .mock-note {
+  background: rgb(255 255 255 / 0.7);
 }
 
 /* ---------- 2. Base and page frame ---------- */

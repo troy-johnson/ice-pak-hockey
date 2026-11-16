@@ -149,6 +149,7 @@ Rules that go with the tokens:
 - **Third:** black ice and a red centre circle with the real black crest on it. The real crest needs red behind it.
 - **Each image:** skate marks and the reflections of the arena lights.
 - **Veil:** a gradient of the ground colour is over the image: 50% to 58% at the top of the window and 88% to 90% at the bottom.
+- **Away:** the veil is only 30% to 50%, so the page ground is the blue-grey ice of the image. A card is pure white. Text on the ice is navy, and it has no grey text.
 - **Text:** most text is on a card with a solid fill. The section titles and a few lines of small text are on the veil.
 
 ### Page frame
