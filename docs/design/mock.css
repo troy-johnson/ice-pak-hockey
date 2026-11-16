@@ -950,8 +950,29 @@ details.season > .cards {
 }
 
 .goals td:first-child {
+  width: 1%;
   white-space: nowrap;
+  padding-right: 24px;
   color: var(--frost);
+}
+
+.goals small {
+  display: block;
+  font-size: 14px;
+  color: var(--frost);
+  font-variant-numeric: tabular-nums;
+}
+
+.goals td:last-child,
+.goals th:last-child {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 0;
+}
+
+details .text-link {
+  color: var(--accent);
+  text-decoration: underline;
 }
 
 .goals .thumb {
@@ -1105,6 +1126,15 @@ details.season > .cards {
 }
 
 @media (max-width: 420px) {
+  .stats-table th.n,
+  .stats-table td.n {
+    padding-inline: 6px;
+  }
+
+  .stats-table td.name {
+    min-width: 0;
+  }
+
   .site-head .brand span {
     display: none;
   }
