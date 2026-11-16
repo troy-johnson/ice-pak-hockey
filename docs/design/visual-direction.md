@@ -55,7 +55,7 @@ Troy asked for these changes:
 - **Video links and images:** the `nightowls_11082026` and `bluedevils_10252026` game folders on the NAS.
 - **Roster:** `backups/seed-player-bank.sql`, which comes from the Fee Sheet.
 - **Shop products:** the product names in the orders of the Old Site, and two product photos from the NAS.
-- **Rink images:** `rink-background.py` in this folder makes them with Blender 5.2. The crest in the Home and Away images is `icepak_logo2.png` from the NAS. The crest in the Third image is `img/crest-third.svg` in white. The script needs these two crest files beside it.
+- **Rink images:** `rink-background.py` in this folder makes them with Blender 5.2. The crest in the Home and Away images is `icepak_logo2.png` from the NAS. The crest in the Third image is `img/crest-third.svg`. The script needs these two crest files beside it.
 - **Opponent logos:** `Ext. Images/Ice Pak/Logos/` on the NAS, at 112 px. Buzz Light Beer, Dragon Juice, and the 20 Games with an unknown opponent have no logo.
 - **Home and away:** `game_teams` in the HHG database has the side of Ice Pak for 6 Games. The Old Site has no home or away data.
 - The mockups have no emails, no phone numbers, and no Balances.
@@ -122,7 +122,7 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 |---|---|---|---|---|
 | `--band` | navy gradient, 46% to 84% | navy gradient, 66% to 92% | red gradient, 72% to 93% | **Change.** `site.css` has a transparent band in Home and Away. A band in each Theme gives each page a clear top. In Away, the band is the navy of the jersey trim, with white text. |
 | `--head` | `#0a1427` | `#ffffff` | `#c0211c` | **Add.** The header background. In Third the header and the band are one red block, as in `site.css` now. |
-| `--veil` | navy, 34% to 80% | white, 30% to 80% | black, 42% to 86% | **Add.** The gradient over the rink photo. |
+| `--veil` | navy, 55% to 88% | white, 50% to 88% | black, 58% to 90% | **Add.** The gradient over the rink photo. |
 | `--shade` | black 35% | navy 12% | black 50% | **Add.** The shadow colour of a card. |
 | `--display`, `--body` | | | | **Add.** The two font lists. |
 | `--opp`, `--opp-2` | | | | **Add.** The two colours of an opponent. Default `var(--frost)` and `var(--rule)`. |
@@ -141,12 +141,14 @@ Rules that go with the tokens:
 
 ### Rink background
 
-- `body::before` shows one rink image, fixed behind the page: `img/bg-home.jpg` (178 kB), `img/bg-away.jpg` (97 kB), and `img/bg-third.jpg` (196 kB). Each one is 1800 px wide.
-- **Home:** dark blue ice, the navy crest, and a low camera at an angle.
-- **Away:** light ice, the navy crest, and a camera on the red line.
-- **Third:** black ice, a white crest, white lines in place of blue lines, and a red centre line.
-- **Each image:** skate marks, the centre circle, the lines, the boards, and the reflections of the arena lights.
-- **Veil:** a gradient of the ground colour is over the image. It is light at the top of the window and heavy at the bottom. The band has a kit-colour gradient that lets the image show.
+- `body::before` shows one rink image, fixed behind the page: `img/bg-home.jpg` (110 kB), `img/bg-away.jpg` (82 kB), and `img/bg-third.jpg` (121 kB). Each one is 1800 px wide.
+- **Camera:** 30 cm above the ice, on the centre line. The images show no boards and no arena.
+- **Centre line:** the red line is wide, and it has the peaks of the crest as cutouts in the ice colour.
+- **Home:** dark blue ice and the navy crest.
+- **Away:** light ice and the navy crest.
+- **Third:** black ice and a red centre circle with the real black crest on it. The real crest needs red behind it.
+- **Each image:** skate marks and the reflections of the arena lights.
+- **Veil:** a gradient of the ground colour is over the image: 50% to 58% at the top of the window and 88% to 90% at the bottom.
 - **Text:** most text is on a card with a solid fill. The section titles and a few lines of small text are on the veil.
 
 ### Page frame
@@ -297,7 +299,7 @@ I did this review myself, as a UX designer would. The first four items are in th
 14. **Recap images.** A Recap thumbnail has the red kit graphics of HHG. It looks the same in the Home and Away Themes. Is that acceptable?
 15. **Opponents with no logo.** Buzz Light Beer and Dragon Juice have no logo file. Do you have these logos?
 16. **Photos.** A Player has initials in place of a photo. Do you want Player photos later?
-17b. **Rink images.** The renders have no arena seats, no glass, and no snow on the ice. Do you want more detail, a different camera angle, or more than one image for each Theme?
+17b. **Rink images.** At 30 cm above the ice, the crest at centre ice is a thin shape and is not readable. Is that acceptable, or do you want the camera higher or the crest nearer?
 17a. **Jersey design.** I did not find the jersey mockups on the NAS. Which file or folder has them? The drawing needs the real stripes and the real number colours of each Kit.
 
 ### Privacy

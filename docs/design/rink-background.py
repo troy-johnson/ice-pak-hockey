@@ -7,12 +7,12 @@ variant, out = sys.argv[sys.argv.index("--") + 1], sys.argv[sys.argv.index("--")
 samples = int(sys.argv[sys.argv.index("--") + 3]) if len(sys.argv) > sys.argv.index("--") + 3 else 160
 HERE = os.path.dirname(os.path.abspath(__file__))
 V = {
-  "home":  dict(ice=(0.035, 0.055, 0.10), blue=(0.02, 0.10, 0.50), red=(0.55, 0.02, 0.03), scratch=(0.78, 0.87, 1.0), light=75, tint=(0.72, 0.85, 1.0), world=(0.002, 0.004, 0.010),
-                cam=(-6.2, -7.6, 1.45), aim=(0.9, 0.3, 0.0), lens=27, fstop=2.4, crest="crest-navy.png", white=False, rot=-0.69, kw=0.62),
-  "away":  dict(ice=(0.30, 0.36, 0.45), blue=(0.02, 0.12, 0.60), red=(0.70, 0.03, 0.04), scratch=(1.0, 1.0, 1.0), light=150, tint=(1.0, 1.0, 1.0), world=(0.03, 0.035, 0.05),
-                cam=(0.0, -8.6, 0.95), aim=(0.0, 4.0, 0.1), lens=21, fstop=4.0, crest="crest-navy.png", white=False, rot=0.0, kw=0.62),
-  "third": dict(ice=(0.006, 0.006, 0.007), blue=(0.45, 0.45, 0.45), red=(0.60, 0.015, 0.015), scratch=(0.9, 0.9, 0.9), light=80, tint=(1.0, 0.96, 0.93), world=(0.001, 0.001, 0.001),
-                cam=(6.4, -7.4, 1.45), aim=(-0.9, 0.3, 0.0), lens=27, fstop=2.4, crest="crest-third.png", white=True, rot=0.71, kw=0.62),
+  "home":  dict(ice=(0.035, 0.055, 0.10), blue=(0.02, 0.10, 0.50), red=(0.55, 0.02, 0.03), scratch=(0.78, 0.87, 1.0), light=260, tint=(0.72, 0.85, 1.0), world=(0.002, 0.004, 0.010),
+                cam=(-0.75, -7.3, 0.30), aim=(0.9, 3.0, 0.30), lens=24, fstop=4.0, crest="crest-navy.png", rot=-0.12, kw=0.62, disc=None),
+  "away":  dict(ice=(0.30, 0.36, 0.45), blue=(0.02, 0.12, 0.60), red=(0.70, 0.03, 0.04), scratch=(1.0, 1.0, 1.0), light=420, tint=(1.0, 1.0, 1.0), world=(0.55, 0.6, 0.68),
+                cam=(0.0, -7.4, 0.30), aim=(0.0, 3.0, 0.30), lens=22, fstop=4.0, crest="crest-navy.png", rot=0.0, kw=0.62, disc=None),
+  "third": dict(ice=(0.006, 0.006, 0.007), blue=(0.55, 0.55, 0.55), red=(0.50, 0.012, 0.010), scratch=(0.9, 0.9, 0.9), light=280, tint=(1.0, 0.96, 0.93), world=(0.001, 0.001, 0.001),
+                cam=(0.75, -7.3, 0.30), aim=(-0.9, 3.0, 0.30), lens=24, fstop=4.0, crest="crest-third.png", rot=0.12, kw=0.62, disc=(0.50, 0.012, 0.010)),
 }[variant]
 bpy.ops.wm.read_factory_settings(use_empty=True)
 sc = bpy.context.scene
@@ -53,7 +53,7 @@ def material(name, color=None, image=None, white=False, rough=0.05, kw=0.5):
         tx = nd.new("ShaderNodeTexImage"); tx.image = SCR; lk.new(geo.outputs["Position"], mp.inputs["Vector"]); lk.new(mp.outputs["Vector"], tx.inputs["Vector"])
         return tx.outputs["Color"]
     add = nd.new("ShaderNodeMath"); add.operation = "ADD"; add.use_clamp = True
-    lk.new(layer(1 / 4.2, 0.0), add.inputs[0]); lk.new(layer(1 / 1.9, 1.1), add.inputs[1])
+    lk.new(layer(1 / 2.4, 0.0), add.inputs[0]); lk.new(layer(1 / 0.95, 1.1), add.inputs[1])
     noise = nd.new("ShaderNodeTexNoise"); noise.inputs["Scale"].default_value = 0.35; noise.inputs["Detail"].default_value = 3
     lk.new(geo.outputs["Position"], noise.inputs["Vector"])
     mix = nd.new("ShaderNodeMix"); mix.data_type = "RGBA"; mix.inputs[7].default_value = (*V["scratch"], 1)
@@ -98,51 +98,46 @@ def box(name, x0, y0, z0, x1, y1, z1, mat):
     vs = [(x, y, z) for x in (x0, x1) for y in (y0, y1) for z in (z0, z1)]
     return mesh(name, vs, [(0, 1, 3, 2), (4, 6, 7, 5), (0, 4, 5, 1), (2, 3, 7, 6), (0, 2, 6, 4), (1, 5, 7, 3)], mat)
 
-ICE = material("ice", V["ice"], rough=0.04, kw=V["kw"])
+ICE = material("ice", V["ice"], rough=0.07, kw=V["kw"])
 BLUE = material("blue", V["blue"], rough=0.06, kw=0.55); RED = material("red", V["red"], rough=0.06, kw=0.55)
-rect("ice", -L / 2, -W / 2, L / 2, W / 2, 0, ICE)
-rect("centre", -0.15, -W / 2, 0.15, W / 2, 0.001, RED)
-for x in (-7.62, 7.62): rect("blueline", x - 0.15, -W / 2, x + 0.15, W / 2, 0.001, BLUE)
-for x in (-27.1, 27.1): rect("goal", x - 0.03, -W / 2, x + 0.03, W / 2, 0.001, RED)
+F = 220.0  # the ice has no edge in the frame
+rect("ice", -F, -F, F, F, 0, ICE)
+CL = 0.24  # half of the width of the centre line
+rect("centre", -CL, -F, CL, F, 0.001, RED)
+for x in (-7.62, 7.62): rect("blueline", x - 0.15, -F, x + 0.15, F, 0.001, BLUE)
 ring("circle", 0, 0, 4.57, 0.11, 0.0015, BLUE)
-for x in (-21.0, 21.0):
-    for y in (-6.7, 6.7): ring("fo", x, y, 4.57, 0.05, 0.001, RED); disc("fod", x, y, 0.3, 0.0012, RED)
+if V["disc"]: disc("field", 0, 0, 4.52, 0.0012, material("field", V["disc"], rough=0.06, kw=0.5), n=128)
 for x in (-6.1, 6.1):
     for y in (-6.7, 6.7): disc("nd", x, y, 0.3, 0.0012, RED)
+# mountain cutouts: the peaks of the crest as negative space on the centre line, in the ice colour
+PEAK = [(-0.5, 0.0), (-0.36, 0.34), (-0.29, 0.24), (-0.15, 0.70), (-0.07, 0.52), (0.03, 1.0), (0.14, 0.58), (0.20, 0.68), (0.33, 0.30), (0.39, 0.37), (0.5, 0.0),
+        (0.30, 0.10), (0.22, 0.0), (0.10, 0.14), (0.0, 0.02), (-0.12, 0.14), (-0.22, 0.0), (-0.32, 0.10)]
+pw, ph, step = CL * 2 * 0.84, 0.34, 0.86
+y = -F / 4
+while y < F / 4:
+    if abs(y + ph / 2) > 4.7:  # not inside the centre circle
+        sgn = 1 if y < 0 else -1  # each peak points to centre ice
+        mesh("peak", [(px * pw, y + (py if sgn > 0 else 1 - py) * ph, 0.0016) for px, py in PEAK], [tuple(range(len(PEAK)))[::sgn]], ICE)
+    y += step
 # crest at centre ice, 7.4 m wide, turned to the camera side
-cw = 7.4; ch = cw * (5256 / 5000 if not V["white"] else 1.0)
-CR = material("crest", image=V["crest"], white=V["white"], rough=0.06, kw=0.5)
+cw = 7.4; ch = cw * (5256 / 5000 if variant != "third" else 2524 / 2400)
+CR = material("crest", image=V["crest"], rough=0.06, kw=0.5)
 c = mesh("crest", [(-cw / 2, -ch / 2, 0.002), (cw / 2, -ch / 2, 0.002), (cw / 2, ch / 2, 0.002), (-cw / 2, ch / 2, 0.002)], [(0, 1, 2, 3)], CR, uvs=[(0, 0), (1, 0), (1, 1), (0, 1)])
 c.rotation_euler[2] = V["rot"]
-
-# boards, kick plate, and glass posts
-def plain(name, col, rough=0.5, emit=0.0):
-    m = bpy.data.materials.new(name); m.use_nodes = True; b = m.node_tree.nodes["Principled BSDF"]
-    b.inputs["Base Color"].default_value = (*col, 1); b.inputs["Roughness"].default_value = rough; return m
-BW = plain("boards", (0.75, 0.77, 0.8) if variant != "third" else (0.05, 0.05, 0.05), 0.35); KP = plain("kick", (0.8, 0.55, 0.05) if variant != "third" else (0.5, 0.02, 0.02), 0.4)
-PO = plain("post", (0.5, 0.52, 0.55), 0.3); DK = plain("dark", (0.01, 0.012, 0.02), 0.9)
-for (x0, y0, x1, y1) in [(-L / 2, W / 2, L / 2, W / 2 + 0.12), (-L / 2, -W / 2 - 0.12, L / 2, -W / 2), (-L / 2 - 0.12, -W / 2, -L / 2, W / 2), (L / 2, -W / 2, L / 2 + 0.12, W / 2)]:
-    box("board", x0, y0, 0, x1, y1, 1.07, BW)
-box("kick", -L / 2, W / 2 - 0.01, 0, L / 2, W / 2, 0.2, KP); box("kick", -L / 2, -W / 2, 0, L / 2, -W / 2 + 0.01, 0.2, KP)
-for i in range(int(L / 2.4) + 1):
-    x = -L / 2 + i * 2.4; box("post", x - 0.03, W / 2 + 0.03, 1.07, x + 0.03, W / 2 + 0.09, 2.9, PO)
-box("redmark", -0.15, W / 2 - 0.012, 0.2, 0.15, W / 2, 1.07, plain("rm", V["red"], 0.4))
-for x in (-7.62, 7.62): box("bluemark", x - 0.15, W / 2 - 0.012, 0.2, x + 0.15, W / 2, 1.07, plain("bm", V["blue"], 0.4))
-box("stands", -L, W / 2 + 3, 0, L, W / 2 + 3.2, 14, DK); box("stands2", -L, -W / 2 - 3.2, 0, L, -W / 2 - 3, 14, DK)
 
 # lights: rows of bright panels over the ice
 em = bpy.data.materials.new("lamp"); em.use_nodes = True; nt = em.node_tree; nt.nodes.clear()
 e = nt.nodes.new("ShaderNodeEmission"); e.inputs["Color"].default_value = (*V["tint"], 1); e.inputs["Strength"].default_value = V["light"]
 o = nt.nodes.new("ShaderNodeOutputMaterial"); nt.links.new(e.outputs[0], o.inputs[0])
-for ix in range(-4, 5):
-    for iy in (-1.5, -0.5, 0.5, 1.5):
-        x, y = ix * 7.0, iy * 7.2
+for ix in range(-2, 3):
+    for iy in (0.4, 2.2, 4.0):
+        x, y = ix * 15.0, iy * 9.0
         mesh("lamp", [(x - 0.9, y - 0.25, 11), (x + 0.9, y - 0.25, 11), (x + 0.9, y + 0.25, 11), (x - 0.9, y + 0.25, 11)], [(3, 2, 1, 0)], em)
 w = bpy.data.worlds.new("w"); w.use_nodes = True; w.node_tree.nodes["Background"].inputs[0].default_value = (*V["world"], 1); sc.world = w
 
 cam = bpy.data.cameras.new("cam"); co = bpy.data.objects.new("cam", cam); sc.collection.objects.link(co); sc.camera = co
 co.location = V["cam"]; d = Vector(V["aim"]) - Vector(V["cam"]); co.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
-cam.lens = V["lens"]; cam.dof.use_dof = True; cam.dof.focus_distance = (Vector((0, 0, 0)) - Vector(V["cam"])).length * 0.8; cam.dof.aperture_fstop = V["fstop"]; cam.clip_end = 300
+cam.lens = V["lens"]; cam.dof.use_dof = True; cam.dof.focus_distance = (Vector((0, 0, 0)) - Vector(V["cam"])).length * 0.9; cam.dof.aperture_fstop = V["fstop"]; cam.clip_end = 400; cam.shift_y = -0.16
 
 sc.render.engine = "CYCLES"; sc.cycles.samples = samples; sc.cycles.use_denoising = True
 try:
