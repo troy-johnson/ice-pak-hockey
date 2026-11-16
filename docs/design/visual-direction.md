@@ -176,12 +176,12 @@ The HHG graphics fill the opponent row with the opponent colour. The site does n
 
 ### Game card
 
-One link for one Game, on a card. It has the date and the League Season, the small score bug, and the tags. The Home page has three cards for the games of this season.
+One link for one Game, on a card. It has the date and the status (Final, Live, or the start time), the small score bug, and the tags. Each score bug row has the same height. The Home page has three cards for the games of this season.
 
 ### Table
 
 - **Head:** a `--panel-2` fill with 12 px uppercase text.
-- **Player cell:** an avatar and the name. The avatar has the initials of the Player, because the site has no photos.
+- **Player cell:** an avatar and the name. The avatar is the photo of the Player. With no photo, it is the jersey number. The site has no photos now, so each avatar shows a number.
 - **Sorted column:** an `--accent` tint down the full column and a small arrow in the head.
 - **Totals row:** a `--panel-2` fill and a 2 px line of `--kit-line` above it.
 - **Phone:** the columns with the class `wide-only` are hidden at 760 px and less. No table needs a sideways scroll at 390 px.
@@ -200,7 +200,14 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 - **Phone:** each day shows the logo and the result or the time only.
 - **Subscribe:** a button beside the page title adds the Calendar Feed to the calendar app of the visitor.
 
-### Opponent logo
+### Button
+
+A button has a forward lean: the left and right edges are cut at an angle, and the text is Barlow Condensed italic 800. It follows the lean of the crest wordmark. Troy asked for a shape that is less rigid than a square box. The "Watch the Recap" label has the same shape.
+
+### League names
+
+A visitor sees "SLC County" and "Mammoth". The data keeps the short names County and MIC.
+
 
 The real logo, with no disc and no border. Troy asked for this on 2026-11-16. A dark logo is less clear on a dark ground. An opponent with no logo gets a disc with its two colours and its initials.
 
