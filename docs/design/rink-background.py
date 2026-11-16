@@ -9,7 +9,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 V = {
   "home":  dict(ice=(0.035, 0.055, 0.10), blue=(0.02, 0.10, 0.50), red=(0.55, 0.02, 0.03), scratch=(0.78, 0.87, 1.0), light=260, tint=(0.72, 0.85, 1.0), world=(0.002, 0.004, 0.010),
                 cam=(-0.75, -7.3, 0.30), aim=(0.9, 3.0, 0.30), lens=24, fstop=4.0, crest="crest-navy.png", rot=-0.12, kw=0.62, disc=None),
-  "away":  dict(ice=(0.30, 0.36, 0.45), blue=(0.02, 0.12, 0.60), red=(0.70, 0.03, 0.04), scratch=(1.0, 1.0, 1.0), light=420, tint=(1.0, 1.0, 1.0), world=(0.55, 0.6, 0.68),
+  "away":  dict(ice=(0.13, 0.18, 0.27), blue=(0.01, 0.07, 0.45), red=(0.62, 0.02, 0.03), scratch=(1.0, 1.0, 1.0), light=420, tint=(0.9, 0.95, 1.0), world=(0.10, 0.13, 0.19),
                 cam=(0.0, -7.4, 0.30), aim=(0.0, 3.0, 0.30), lens=22, fstop=4.0, crest="crest-navy.png", rot=0.0, kw=0.62, disc=None),
   "third": dict(ice=(0.006, 0.006, 0.007), blue=(0.55, 0.55, 0.55), red=(0.50, 0.012, 0.010), scratch=(0.9, 0.9, 0.9), light=280, tint=(1.0, 0.96, 0.93), world=(0.001, 0.001, 0.001),
                 cam=(0.75, -7.3, 0.30), aim=(-0.9, 3.0, 0.30), lens=24, fstop=4.0, crest="crest-third.png", rot=0.12, kw=0.62, disc=(0.50, 0.012, 0.010)),
