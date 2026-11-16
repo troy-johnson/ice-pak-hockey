@@ -2190,11 +2190,11 @@ details.more > summary::-webkit-details-marker {
   }
 
   .sched th:nth-child(1) {
-    width: 92px;
+    width: 88px;
   }
 
   .sched th:nth-child(3) {
-    width: 80px;
+    width: 92px;
   }
 
   .sched th:nth-child(5) {
