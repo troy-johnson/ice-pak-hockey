@@ -51,7 +51,17 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **People:** a table on the site matches each old player to an HHG person. Troy reviews it. The site does not modify HHG data.
 - **HHG:** HHG gets no Ice Pak step. HHG writes one HHG Game File for each game, and the Import command in this repo reads it.
 - **Games with no video:** HHG does not handle them. The Calendar Feed creates the Game, and a Manager enters the Box Score.
-- **League of a Game:** the rink sets it, and a Manager can change it. Mammoth Ice Center gives MIC. County Ice Center and Salt Lake City Sports Complex give County.
+- **Leagues:** the team played in three Leagues. Troy confirmed them on 2026-11-16:
+  - **MIC:** the adult league of Mammoth Ice Center, https://mammothicecenter.com/adult-league.
+  - **County:** the adult ice programs of Salt Lake County Parks and Recreation, https://www.saltlakecounty.gov/parks-recreation/activities/ice-programs/#adult.
+  - **UHL:** the Utah Hockey League, the adult hockey league of Cottonwood Heights Parks and Recreation, https://www.chparksandrecut.gov/adult-hockey-league. The 20 UHL Games of summer 2021 move with the old data.
+- **League of a Game:** the rink sets it, and a Manager can change it. Mammoth Ice Center gives MIC. County Ice Center, Salt Lake City Sports Complex, and West Valley Acord Ice Center give County. Cottonwood Heights Recreation Center and Maverik Center give UHL, from the old data.
+- **Playoffs:** a playoff run is part of its League Season. Each Game has a type: regular, playoff, or preseason. The Old Site kept the playoffs as a separate season.
+- **Home and away:** the old Games have no home or away data. A Game with no such data shows Ice Pak as the home team. The database keeps no value for it, so a Manager can set the real side later.
+- **Goalies:** some Players play goalie in one Game and skate in another. Each Game Player has a goalie mark. The stats show the position from the Player Bank, and a Manager corrects it there.
+- **No Box Score:** a Game with no Scoresheet and no Box Score shows the tag "No Box Score". The site gets this state from the data.
+- **Game Players from HHG:** the Import adds the Players that HHG lists. A Manager adds the other Players.
+- **League Seasons of the HHG Games:** BenchApp has the seasons, the rosters, and the players of the past seasons. A review of BenchApp with a browser gives the League Season of each HHG Game.
 - **Same game from two sources:** an HHG Import replaces the goals and penalties of that Game. It matches the Game by date and opponent.
 - **Grouping:** each Game belongs to one League Season. Stats show all time, each HHG Season, and each League Season.
 
@@ -121,6 +131,6 @@ This part is last. It starts after the team agrees.
 - Add the HHG Game File output to HHG, from the field list.
 - Put the Imgur links in one text file.
 - Check the Utah rules before the EIN application.
-- Test the Manager login at `https://icepakhockey.com/manager`, and ask Christiaan to test it. Nobody did a real login after the switch.
+- Ask Christiaan to test the Manager login at `https://icepakhockey.com/manager`. Troy's login worked on 2026-11-16.
 - Enable R2 in the Cloudflare dashboard. Scoresheet upload needs it.
 - Disconnect or delete the Vercel project. It still builds each push to `main`.

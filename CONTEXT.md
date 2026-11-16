@@ -13,12 +13,15 @@ _Avoid_: Admin, Staff, Assistant Manager
 **Player Bank**: All Players the team can draw on: current players, past players, and Subs.
 _Avoid_: Player pool, Player list, Bench
 
+**Player Match**: A link from a person in another source, an Old Site player or an HHG person, to one Player. Troy reviews each Player Match.
+_Avoid_: Alias, Mapping, People table
+
 **Priority Tier**: A Manager-only rank of a Player for open roster spots: core, regular sub, or occasional sub. A Manager orders the Players inside a tier.
 _Avoid_: Priority list, Depth chart
 
 ## Leagues and rosters
 
-**League**: A competition the team plays in, such as MIC (Mammoth Ice Center) or County.
+**League**: A competition the team plays in: MIC (Mammoth Ice Center), County (Salt Lake County), or UHL (Utah Hockey League).
 _Avoid_: Division, Rink
 
 **League Season**: One run of one League, such as MIC Winter '26. It is the unit for Rosters, fees, and Games.
@@ -99,6 +102,12 @@ _Avoid_: Game sheet, Digital sheet
 
 **Sheet Only**: The state of a Game that has a Scoresheet and no Box Score.
 _Avoid_: Pending, Draft
+
+**No Box Score**: The state of a Game that has no Scoresheet and no Box Score.
+_Avoid_: Missing, Unknown score
+
+**Game Type**: The kind of a Game in its League Season: regular, playoff, or preseason.
+_Avoid_: Season type, Playoff season
 
 **Calendar Feed**: The BenchApp calendar of the team's games. It gives the date, opponent, and rink of each Game.
 _Avoid_: Schedule, ICS
