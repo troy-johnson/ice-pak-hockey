@@ -23,6 +23,8 @@
   /* The skated-ice marks: the strength on the ground and on the band. Invert makes the white marks dark. */
   --ice: 0.13;
   --ice-invert: 0;
+  /* The strength of the rink lines. */
+  --rink: 0.24;
   --band-ice: 0.17;
   --band-ice-invert: 0;
   --glow: rgb(39 71 138 / 0.5);
@@ -43,12 +45,13 @@
   --ink: #1d315f;
   --frost: #52658c;
   --kit-fill: #1d315f;
-  --kit-line: #5ba5d1;
-  --accent: #1f6fa5;
+  --kit-line: #1d315f;
+  --accent: #2a4a8f;
   --head: #ffffff;
   --band: linear-gradient(180deg, #213869, #17284f);
   --ice: 0.12;
   --ice-invert: 1;
+  --rink: 0.3;
   --band-ice: 0.15;
   --glow: rgb(91 165 209 / 0.2);
   --shade: rgb(29 49 95 / 0.12);
@@ -63,11 +66,12 @@
   --ink: #eef3f6;
   --frost: #9fb2c1;
   --kit-fill: #c0211c;
-  --kit-line: #e5483f;
-  --accent: #f0554c;
+  --kit-line: #ffffff;
+  --accent: #ffffff;
   --head: #c0211c;
   --band: linear-gradient(180deg, #c0211c, #a51a16);
   --ice: 0.1;
+  --rink: 0.22;
   --band-ice: 0.3;
   --band-ice-invert: 1;
   --glow: rgb(192 33 28 / 0.22);
@@ -78,7 +82,8 @@
 :root[data-theme="away"] .band {
   --ink: #ffffff;
   --frost: rgb(255 255 255 / 0.8);
-  --accent: #a6d5f3;
+  --accent: #ffffff;
+  --kit-line: #ffffff;
   --rule: rgb(255 255 255 / 0.24);
   --panel: rgb(255 255 255 / 0.08);
   --panel-2: rgb(255 255 255 / 0.14);
@@ -113,7 +118,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* The skated-ice texture. The SVG has white marks. Each Theme sets the strength, and inverts the marks on a light ground. */
+/* The rink: one full rink with its red and blue lines, end to end. It repeats down the page. */
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url(img/rink.svg) center top / max(100%, 1000px) auto repeat-y;
+  opacity: var(--rink);
+}
+
+/* The skate marks. The SVG has white marks. Each Theme sets the strength, and inverts the marks on a light ground. */
 body::before,
 .band::before {
   content: "";
@@ -581,7 +597,7 @@ a.tag.vid:hover {
   font-size: 46px;
 }
 
-.bug .team img {
+.bug .ipk .team img {
   height: 30px;
   width: auto;
 }
@@ -592,8 +608,18 @@ a.tag.vid:hover {
 }
 
 /* On the band of the Third Theme the Ice Pak row is black, so the black crest is hidden there. */
-:root[data-theme="third"] .band .bug .team img {
+:root[data-theme="third"] .band .bug .ipk .team img {
   display: none;
+}
+
+/* Home or Away: a small label at the right of the team name. The home team is the first row. */
+.bug .side {
+  margin-left: auto;
+  padding-left: 8px;
+  font: 600 10px/1 var(--body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
 }
 
 /* The line score: a score bug with one cell for each period. */
@@ -691,6 +717,29 @@ a.tag.vid:hover {
   letter-spacing: 0.04em;
   text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
   box-shadow: 0 0 0 1px var(--rule);
+}
+
+/* Opponent logo: the real logo on a white disc, so each logo is clear in each Theme */
+.opp-logo {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  object-fit: contain;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.bug .opp .team .opp-logo {
+  width: 26px;
+  height: 26px;
+  padding: 2px;
+}
+
+.bug.lg .opp .team .opp-logo {
+  width: 36px;
+  height: 36px;
 }
 
 /* Tables */
@@ -1103,6 +1152,161 @@ select,
   font-weight: 600;
 }
 
+/* Next game bar: below the header of the Home page */
+.nextbar {
+  position: relative;
+  z-index: 1;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+}
+
+.nextbar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding-block: 8px;
+}
+
+.nextbar .opp-logo,
+.nextbar .opp-chip {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  font-size: 11px;
+}
+
+.nextbar b {
+  font-weight: 600;
+}
+
+.nextbar a {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* Stats: leader cards */
+.leaders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.leader {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 3px solid var(--kit-line);
+}
+
+.leader .top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leader .top .av {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.leader .top a {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.leader .top b {
+  margin-left: auto;
+  font: 700 46px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+.leader ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.leader li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+  color: var(--frost);
+  font-variant-numeric: tabular-nums;
+}
+
+.leader li a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* Roster: one card for each Player */
+.people {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.person {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 132px;
+  padding: 14px 16px 16px;
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.person:hover {
+  transform: translateY(-2px);
+  border-color: var(--kit-line);
+}
+
+.person .no {
+  font: italic 800 64px/0.9 var(--display);
+  color: var(--kit-fill);
+  -webkit-text-stroke: 1px var(--kit-line);
+  font-variant-numeric: tabular-nums;
+}
+
+:root[data-theme="home"] .person .no {
+  color: var(--kit-line);
+  -webkit-text-stroke: 0;
+}
+
+.person .nm {
+  margin-top: auto;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.2;
+}
+
+.person .ln {
+  font-size: 13px;
+  color: var(--frost);
+}
+
+/* Game page: the links to the Game before and the Game after */
+.game-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
 /* Schedule: calendar view */
 .cal-bar {
   display: flex;
@@ -1191,8 +1395,8 @@ select,
 
 .cal .day {
   position: relative;
-  min-height: 132px;
-  padding: 8px 10px 10px;
+  min-height: 62px;
+  padding: 8px 10px 12px;
   background: color-mix(in srgb, var(--panel) 45%, transparent);
   border: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
   display: flex;
@@ -1246,6 +1450,12 @@ select,
 .cal .day.today .d {
   color: var(--accent);
   font-weight: 700;
+}
+
+.cal .opp-logo,
+.cal .opp-chip {
+  width: 46px;
+  height: 46px;
 }
 
 .cal .res {
@@ -1370,9 +1580,10 @@ details.season[open] > summary {
   font-weight: 400;
 }
 
-.sched .opp-chip {
-  width: 30px;
-  height: 30px;
+.sched .opp-chip,
+.sched .opp-logo {
+  width: 32px;
+  height: 32px;
   font-size: 12px;
 }
 
@@ -1644,7 +1855,39 @@ details.more > summary::-webkit-details-marker {
 
   /* The switch shows the Kit chips only. Each button keeps its name for a screen reader. */
   .switch button {
-    padding: 9px;
+    padding: 13px;
+  }
+
+  /* The line score has no room for the Home and Away labels. The page title says "at" or "vs". */
+  .bug.line .side {
+    display: none;
+  }
+
+  .bug.lg.line .team {
+    padding: 12px 10px;
+    font-size: 17px;
+  }
+
+  .bug.lg.line .opp .team::before {
+    margin: -12px 0 -12px -10px;
+  }
+
+  .people {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .person {
+    min-height: 112px;
+    padding: 12px;
+  }
+
+  .person .no {
+    font-size: 52px;
+  }
+
+  .nextbar a {
+    margin-left: 0;
   }
 
   .switch button span {
@@ -1745,7 +1988,7 @@ details.more > summary::-webkit-details-marker {
   }
 
   .cal .day {
-    min-height: 78px;
+    min-height: 40px;
     padding: 4px 2px 6px;
     gap: 3px;
   }
@@ -1755,9 +1998,11 @@ details.more > summary::-webkit-details-marker {
     padding-left: 2px;
   }
 
-  .cal .opp-chip {
-    width: 24px;
-    height: 24px;
+  .cal .opp-chip,
+  .cal .opp-logo {
+    width: 26px;
+    height: 26px;
+    padding: 2px;
     font-size: 10px;
   }
 
@@ -1793,6 +2038,7 @@ details.more > summary::-webkit-details-marker {
   }
 
   .sched .opp-chip,
+  .sched .opp-logo,
   .sched td.match span {
     display: none;
   }

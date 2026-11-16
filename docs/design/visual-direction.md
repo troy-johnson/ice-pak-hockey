@@ -2,7 +2,7 @@
 
 This document goes with the mockups in this folder. It covers part 2 of the order of work in `docs/site-rebuild-decisions.md`. `CONTEXT.md` defines the terms.
 
-Second pass, written on 2026-11-16 after Troy's review of the first pass. Nothing in `site/` changed. Each change below is a proposal.
+Third pass, written on 2026-11-16 after two reviews by Troy. Nothing in `site/` changed. Each change below is a proposal.
 
 ## What changed in the second pass
 
@@ -15,6 +15,16 @@ Troy asked for these changes:
 - **Polish:** cards with a border and a soft shadow, table heads with a fill, a band at the top of each page, and a footer.
 
 **This conflicts with one confirmed decision.** `docs/site-rebuild-decisions.md` says "The site has no full schedule page". The Schedule mockup shows past Games and the next games from the Calendar Feed. It has no attendance. Update the decision if you accept the mockup.
+
+## What changed in the third pass
+
+- **Rink:** the background is a skated rink. It has the skate marks and the red and blue lines of a full rink.
+- **Accent colour:** each Theme has its own accent. Home has light blue, Away has dark blue, and Third has white.
+- **Opponent logos:** 17 opponents have their real logo, from the logo folder on the NAS.
+- **Home and away:** the home team is the first row of the score bug, and each row has a "Home" or "Away" label.
+- **Roster:** the page is now a set of Player cards with no stats and no Roster Status. Roster Status is for Managers only.
+- **Stats:** the page has four leader cards above the table.
+- **From the design review:** a next-game bar on the Home page, a short calendar row for a week with no Game, the record against the opponent on the Game page, and links to the Game before and the Game after.
 
 ## The mockups
 
@@ -44,6 +54,9 @@ Troy asked for these changes:
 - **Roster:** `backups/seed-player-bank.sql`, which comes from the Fee Sheet.
 - **Shop products:** the product names in the orders of the Old Site, and two product photos from the NAS.
 - **Ice texture:** `img/ice.svg`. A script made it from the rules of the HHG shader `v3/graphics/src/FrostPane.jsx`: long blade arcs, some in pairs, and short scuffs.
+- **Rink lines:** `img/rink.svg`. A script drew one rink of 200 ft by 85 ft with the standard lines, circles, and creases.
+- **Opponent logos:** `Ext. Images/Ice Pak/Logos/` on the NAS, at 112 px. Buzz Light Beer, Dragon Juice, and the 20 Games with an unknown opponent have no logo.
+- **Home and away:** `game_teams` in the HHG database has the side of Ice Pak for 6 Games. The Old Site has no home or away data.
 - The mockups have no emails, no phone numbers, and no Balances.
 
 ## 1. Fonts and type scale
@@ -98,8 +111,8 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 | `--ink` | `#f2f6fb` | `#1d315f` | `#eef3f6` | Keep | Main text. |
 | `--frost` | `#a9beda` | `#52658c` | `#9fb2c1` | Keep | Second text. Its lowest contrast is 4.9, in Away on `--panel-2`. |
 | `--kit-fill` | `#27478a` | `#1d315f` | `#c0211c` | Keep | The Ice Pak row, buttons, the Win tag, and a win in the calendar. White text on it has a contrast of 6.0 or more. |
-| `--kit-line` | `#5ba5d1` | `#5ba5d1` | `#e5483f` | Keep the value. Stop its use for the focus ring. | In Away its contrast on white is 2.7. It is too weak as the only sign of focus. |
-| `--accent` | `#6db6e0` | `#1f6fa5` | `#f0554c` | Keep | Links, the sorted column, and the record. In Third its contrast is 4.7 or more. |
+| `--kit-line` | `#5ba5d1` | `#1d315f` | `#ffffff` | **Change Away and Third.** | Troy asked for a different accent in each Theme: light blue, dark blue, and white. This token is the mark before a section title, the line below the current link, and the top line of a card. |
+| `--accent` | `#6db6e0` | `#2a4a8f` | `#ffffff` | **Change Away and Third.** | Links, the sorted column, the record, and the focus ring. In Away and Third the link colour is near the text colour, so each link keeps its underline. |
 | `--on-fill` | `#ffffff` | (inherits) | (inherits) | Keep | Text on `--kit-fill`. |
 
 ### Tokens to change or add
@@ -110,6 +123,7 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 | `--head` | `#0a1427` | `#ffffff` | `#c0211c` | **Add.** The header background. In Third the header and the band are one red block, as in `site.css` now. |
 | `--ice`, `--ice-invert` | 0.13, 0 | 0.12, 1 | 0.1, 0 | **Add.** The strength of the ice marks on the ground. Invert makes the white marks dark for the white ground. |
 | `--band-ice`, `--band-ice-invert` | 0.17, 0 | 0.15, 0 | 0.3, 1 | **Add.** The same for the band. The marks are dark on the red band. |
+| `--rink` | 0.24 | 0.3 | 0.22 | **Add.** The strength of the rink lines. |
 | `--glow` | navy | light blue | red | **Add.** A soft kit-colour light at the top right of the page, as in the first draft. |
 | `--shade` | black 35% | navy 12% | black 50% | **Add.** The shadow colour of a card. |
 | `--display`, `--body` | | | | **Add.** The two font lists. |
@@ -125,7 +139,13 @@ Rules that go with the tokens:
 
 ## 3. Shared parts
 
-### Ice texture
+### Rink background
+
+- `body::after` shows `img/rink.svg` (2 kB). The rink is as wide as the page, with a minimum of 1000 px, and it repeats down the page.
+- The lines keep their real colours, red and blue, in each Theme. In the Away Theme the page looks like white ice.
+- `body::before` puts the skate marks on top of the lines.
+
+### Skate marks
 
 - One SVG file of 20 kB with white marks. `body::before` and `.band::before` show it as a background image.
 - Each Theme sets the strength. The Away ground and the Third band invert the marks to dark.
@@ -145,7 +165,8 @@ Two rows, one for each team. Each row has a team cell and a score cell.
 - **Opponent row:** filled with `--panel-2`, with a chip at the left. The chip shows the primary colour over the secondary colour.
 - **Score cell:** digits in Barlow Condensed. The score of the team that lost is `--frost`.
 - **No score:** a Game with no Box Score shows a dash in each score cell.
-- **Order:** Ice Pak is always the first row.
+- **Order:** the home team is the first row. Each row has a "Home" or "Away" label. A Game with no home data has Ice Pak in the first row and no labels.
+- **Opponent logo:** the opponent row has the logo on a white disc.
 - **Sizes:** small for a game card, large (`.bug.lg`) for the Home page and the Game page. The line score (`.bug.line`) adds one cell for each period.
 
 The HHG graphics fill the opponent row with the opponent colour. The site does not, because a purple or light blue fill cannot hold readable text in all three Themes.
@@ -173,11 +194,20 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 - **Win:** the day is filled with `--kit-fill`. A loss, a tie, and a next game have the card fill.
 - **Today:** an `--accent` outline.
 - **Phone:** each day shows the chip and the result or the time only.
-- An NHL calendar fills the home games. Ice Pak plays each game at a shared rink, and HHG has the home team of only one Game. For this reason the fill shows a win.
+- An NHL calendar fills the home games. The Old Site has no home data, so the fill shows a win. The text says "at" for an away Game.
+- A week with no Game has a short row.
 
-### Opponent chip
+### Opponent logo
 
-A disc with the two colours of the opponent and its initials. An opponent with no colours gets a grey disc.
+The real logo on a white disc. The white disc keeps a dark logo clear on a dark ground. An opponent with no logo gets a disc with its two colours and its initials.
+
+### Leader card
+
+The Stats page has four cards: points, goals, assists, and penalty minutes. Each card has the leader with a large number, and the next three Players.
+
+### Player card
+
+The Roster page has one card for each Player: the jersey number, the name, the position, and the first year with Ice Pak.
 
 ### Theme switch
 
@@ -198,11 +228,39 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 | Page | From the NHL page | Left out or changed |
 |---|---|---|
 | Schedule | Month control, Calendar and List tabs, a legend, a day cell with the opponent and the result. | No Full Season view, no tickets, no TV links. The fill shows a win, not a home game. The list has one table for each League Season. |
-| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. No goalie table, because the data has no saves. A team strip is above the table. |
-| Roster | One table for each position, and a "Season Stats" button. | No Sh, Ht, Wt, Born, or Birthplace. The columns are #, Pos, Since, GP, G, A, and Pts. |
+| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. No goalie table, because the data has no saves. A team strip and four leader cards are above the table. |
+| Roster | One group for each position, and a link to the stats. | Player cards in place of a table. The Roster answers "who is on the team", and the Stats page has all numbers. |
 | Player | A band with the name and the number, a season strip and a career strip, "Last 5 Games", and "Career Stats". | No photo, no Bio tab. A "Goals" table with the links to the Shorts is added. |
 
-## 5. The crest for each Theme
+## 5. Stats and Roster
+
+The second pass had the same Players and the same numbers on both pages. Recommendation: keep both pages, and give each one job.
+
+- **Roster:** who is on the team in one League Season. Player cards, no numbers.
+- **Stats:** how the Players and the team did. Leaders, the table, and the three views.
+
+The other option is one "Team" page with a Roster view and a Stats view. It removes one header link. I did not select it, because a visitor looks for "Roster" and "Stats" by those names on a team site.
+
+## 6. Design review: what is missing
+
+I did this review myself, as a UX designer would. The first four items are in the mockups now.
+
+1. **Next game above the fold.** The first question of a Player is "when and where is the next game". The Home page now has a next-game bar below the header.
+2. **Home and away.** Done, as Troy asked.
+3. **Context on a Game page.** The page now has the record against the opponent, and links to the Game before and the Game after.
+4. **Empty calendar.** The team has about one Game for each week. A week with no Game now has a short row.
+5. **A Videos page.** The site is the home of the videos, and no page lists all Recaps and Shorts. A visitor finds a Short only through a Game or a Player.
+6. **Link preview.** A link in the BenchApp chat needs a title and an image. Each Game page needs the Recap thumbnail and the score as its preview.
+7. **Opponent page.** Each opponent name can open a page with all Games against that team and the record.
+8. **Milestones.** Ned White has 100 career points. The site can show a milestone on the Player page and the Home page.
+9. **Search.** The team has 59 Players in the data. A Player search in the header finds a Player faster than the Roster of an old League Season.
+10. **Table sort and filter.** The column titles look like controls and do nothing in the mockup. The site needs the sort, and a League filter on the Stats page.
+11. **Empty and error states.** No mockup shows a League Season with no Games, a Player with no goals, or a page that is not found.
+12. **Phone header.** The switch buttons are 38 px high on a phone. The usual minimum for a touch target is 44 px.
+13. **Motion.** The header of an NHL site stays at the top during a scroll. The mockup header does not.
+14. **Recap thumbnail order.** The thumbnail from HHG shows Ice Pak in the first row. The score bug of the site shows the home team first. The two can disagree on one screen.
+
+## 7. The crest for each Theme
 
 | Theme | Crest | File in the mockups | Source |
 |---|---|---|---|
@@ -216,13 +274,13 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 - **Player page:** a large crest at 10% strength is at the right of the band.
 - **File type:** the navy crest is a PNG, 399 px by 420 px, 84 kB. The NAS has the vector file `Logo_IcePak.ai`. I did not make an SVG of the navy crest.
 
-## 6. Open questions for Troy
+## 8. Open questions for Troy
 
 ### Data and terms
 
 1. **Schedule page.** The decisions document says that the site has no full schedule page. Do you want to change that decision?
 2. **League Season of the newest games.** I put the Night Owls game (2026-11-08) in "MIC Summer '26". I put the two October 2026 games in "County Winter '26-27". That name is not in the site database. Which League Season is correct for each game?
-3. **Home and away.** HHG has the home team of one Game. All other Games show "vs". Does the site need home and away for each Game?
+3. **Home and away.** HHG has the side of Ice Pak for 6 Games. The 141 old Games have no home data. Does a Manager enter it, or do the old Games stay without it?
 4. **A Game with no Scoresheet and no Box Score.** 15 UHL games and 1 County game of 2021 are in this state. The mockup shows the tag "No Box Score". `CONTEXT.md` has no term for it. Which word do you want?
 5. **UHL.** The Old Site has a third League, UHL, with 20 games in summer 2021. Does it become a League on the new site?
 6. **Names that differ.** The Fee Sheet has Rob Kramer and Jonny Holmes. HHG has Robert Kramer and Johnny Holmes. The Old Site has Henry Levy and HHG has Hank Levy. The mockups join players by name, so check the totals after the people table exists.
@@ -235,22 +293,22 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 10. **Fonts.** Do you accept Inter and Barlow Condensed, hosted on the site?
 11. **Band in Home and Away.** `site.css` has a band only in the Third Theme. The mockups have a band in each Theme. Do you accept it?
 12. **Headline.** The Home page has the headline "Ice Pak edge the Night Owls", from the first draft. Who writes the headline of a Game? HHG can write it to the HHG Game File, or the site can use "Ice Pak at Night Owls".
-13. **Ice Pak first.** The score bug always shows Ice Pak in the first row. Is that correct for the site?
+13. **Opponent logos.** Some logos are the logos of NHL teams (Wild, Flyers). This repo is public. Do you accept these files in the repo and on the site?
 14. **Recap images.** A Recap thumbnail has the red kit graphics of HHG. It looks the same in the Home and Away Themes. Is that acceptable?
-15. **Opponent colours.** HHG has colours for 5 opponents. All other opponents get a grey chip. Who adds colours for the old opponents, and where?
+15. **Opponents with no logo.** Buzz Light Beer and Dragon Juice have no logo file. Do you have these logos?
 16. **Photos.** A Player has initials in place of a photo. Do you want Player photos later?
 
 ### Privacy
 
 17. **Scoresheet photo.** Is the full photo public on a Sheet Only page? A Scoresheet has the names of the opponent players.
-18. **Roster Status.** The Roster mockup shows a "Part-Time" tag. Is Roster Status public, or only for Managers?
+18. **Roster Status.** Answered: it is for Managers only. The mockups do not show it.
 
 ### Shop
 
 19. **Store address.** The Printful Quick Store does not exist yet, so the button has no address.
 20. **Product photos.** I found two tee photos on the NAS. Do you want photos of the hoodie, the hats, and the stickers on the Shop page?
 
-## 7. What the mockups do not show
+## 9. What the mockups do not show
 
 - **Next games:** the four next games are examples. The Calendar Feed is not connected. The opponents and rinks are real names, and the dates and times are not real.
 - **Calendar months:** the calendar has October, November, and December 2026 only.
