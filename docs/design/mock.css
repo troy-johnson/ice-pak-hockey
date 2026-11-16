@@ -59,12 +59,13 @@
 
 :root[data-theme="third"] {
   color-scheme: dark;
-  --ground: #080c11;
-  --panel: #111820;
-  --panel-2: #18212b;
-  --rule: #24303c;
-  --ink: #eef3f6;
-  --frost: #9fb2c1;
+  /* Black, red, and white only. The dark tones have no blue. */
+  --ground: #0a0a0a;
+  --panel: #151515;
+  --panel-2: #212121;
+  --rule: #343434;
+  --ink: #f5f5f5;
+  --frost: #b4b4b4;
   --kit-fill: #c0211c;
   --kit-line: #ffffff;
   --accent: #ffffff;
@@ -127,6 +128,11 @@ body::after {
   pointer-events: none;
   background: url(img/rink.svg) center top / max(100%, 1000px) auto repeat-y;
   opacity: var(--rink);
+}
+
+/* In the Third Theme the blue lines of the rink are white. */
+:root[data-theme="third"] body::after {
+  background-image: url(img/rink-third.svg);
 }
 
 /* The skate marks. The SVG has white marks. Each Theme sets the strength, and inverts the marks on a light ground. */
@@ -1248,53 +1254,113 @@ select,
   text-decoration: none;
 }
 
-/* Roster: one card for each Player */
-.people {
+/* Roster: one jersey for each Player, in rows as on a line chart */
+.lines {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  padding: 8px 12px;
 }
 
-.person {
-  position: relative;
+.skater {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-height: 132px;
-  padding: 14px 16px 16px;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 8px 20px;
   color: var(--ink);
   text-decoration: none;
-  overflow: hidden;
-  transition: transform 0.15s, border-color 0.15s;
+  text-align: center;
+  border-top: 1px solid var(--rule);
 }
 
-.person:hover {
-  transform: translateY(-2px);
-  border-color: var(--kit-line);
+.lines .skater:nth-child(-n + 3) {
+  border-top: 0;
 }
 
-.person .no {
-  font: italic 800 64px/0.9 var(--display);
-  color: var(--kit-fill);
-  -webkit-text-stroke: 1px var(--kit-line);
-  font-variant-numeric: tabular-nums;
+.lines[style*="2"] .skater:nth-child(3) {
+  border-top: 1px solid var(--rule);
 }
 
-:root[data-theme="home"] .person .no {
-  color: var(--kit-line);
-  -webkit-text-stroke: 0;
+.skater .nm {
+  font: 700 20px/1.1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.person .nm {
-  margin-top: auto;
-  font-weight: 700;
-  font-size: 17px;
-  line-height: 1.2;
-}
-
-.person .ln {
+.skater .ln {
   font-size: 13px;
   color: var(--frost);
+}
+
+.skater:hover .nm {
+  text-decoration: underline;
+}
+
+/* Jersey: the back of the jersey of the Theme, with the number and no nameplate */
+.jersey {
+  width: min(168px, 100%);
+  height: auto;
+  filter: drop-shadow(0 10px 12px var(--shade));
+  transition: transform 0.15s;
+  --j-body: #1d315f;
+  --j-trim: #5ba5d1;
+  --j-trim-2: #ffffff;
+  --j-num: #ffffff;
+  --j-num-line: #5ba5d1;
+  --j-edge: #5ba5d1;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-trim: #1d315f;
+  --j-trim-2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #9fb1cf;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #c0211c;
+  --j-trim: #000000;
+  --j-trim-2: #ffffff;
+  --j-num: #000000;
+  --j-num-line: #ffffff;
+  --j-edge: #000000;
+}
+
+.skater:hover .jersey {
+  transform: translateY(-3px);
+}
+
+.jersey .body {
+  fill: var(--j-body);
+  stroke: var(--j-edge);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.jersey .trim {
+  fill: var(--j-trim);
+}
+
+.jersey .trim-2 {
+  fill: var(--j-trim-2);
+}
+
+.jersey .collar {
+  fill: none;
+  stroke: var(--j-trim);
+  stroke-width: 7;
+}
+
+.jersey text {
+  font: 700 84px/1 var(--display);
+  fill: var(--j-num);
+  stroke: var(--j-num-line);
+  stroke-width: 5;
+  paint-order: stroke;
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Game page: the links to the Game before and the Game after */
@@ -1872,18 +1938,25 @@ details.more > summary::-webkit-details-marker {
     margin: -12px 0 -12px -10px;
   }
 
-  .people {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+  .lines {
+    padding: 4px;
   }
 
-  .person {
-    min-height: 112px;
-    padding: 12px;
+  .skater {
+    padding: 14px 2px;
+    gap: 6px;
   }
 
-  .person .no {
-    font-size: 52px;
+  .skater .nm {
+    font-size: 16px;
+  }
+
+  .skater .ln {
+    font-size: 11px;
+  }
+
+  .jersey {
+    width: min(112px, 100%);
   }
 
   .nextbar a {

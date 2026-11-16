@@ -24,6 +24,8 @@ Troy asked for these changes:
 - **Home and away:** the home team is the first row of the score bug, and each row has a "Home" or "Away" label.
 - **Roster:** the page is now a set of Player cards with no stats and no Roster Status. Roster Status is for Managers only.
 - **Stats:** the page has four leader cards above the table.
+- **Roster jerseys:** each Player is a jersey with the number, in rows of three forwards and two defense, as on a line chart. The reference is the line combinations page of Daily Faceoff.
+- **Third Theme:** the Theme has black, red, and white only. The dark tones had a blue tint before.
 - **From the design review:** a next-game bar on the Home page, a short calendar row for a week with no Game, the record against the opponent on the Game page, and links to the Game before and the Game after.
 
 ## The mockups
@@ -131,6 +133,8 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 
 `site.css` has `--on-band`, `--on-band-muted`, `--band-rule`, and `--band-button`. The mockups do not use them. Inside the band, `mock.css` sets the usual tokens again (`--ink`, `--frost`, `--accent`, `--rule`, `--panel`, `--panel-2`, `--kit-fill`). Each shared part then works in the band with no special rule. Example: in the Away band, the Ice Pak row of the score bug is white with navy text, as the away jersey.
 
+**Third Theme, dark tones.** `site.css` has blue-grey values for the Third Theme. The mockups change them to neutral values, so the Theme has black, red, and white only: `--ground: #0a0a0a`, `--panel: #151515`, `--panel-2: #212121`, `--rule: #343434`, `--ink: #f5f5f5`, `--frost: #b4b4b4`. The rink in this Theme has white lines in place of blue lines.
+
 Rules that go with the tokens:
 
 - **Focus ring:** `:focus-visible` uses `--accent`, not `--kit-line`.
@@ -205,9 +209,11 @@ The real logo on a white disc. The white disc keeps a dark logo clear on a dark 
 
 The Stats page has four cards: points, goals, assists, and penalty minutes. Each card has the leader with a large number, and the next three Players.
 
-### Player card
+### Jersey
 
-The Roster page has one card for each Player: the jersey number, the name, the position, and the first year with Ice Pak.
+The Roster page shows each Player as the back of a jersey with the number, and the name below it. The jersey has no nameplate. It is an SVG drawing, and CSS gives it the Kit colours of the Theme: navy for Home, white for Away, and red with black for Third. The number style follows the number art on the NAS (`athletic_shirt_*.png`): a solid number with an outline.
+
+I did not find a jersey mockup of Ice Pak on the NAS. The stripes of the drawing are my assumption. The rows are in order of the number, and they are not line combinations.
 
 ### Theme switch
 
@@ -229,14 +235,14 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 |---|---|---|
 | Schedule | Month control, Calendar and List tabs, a legend, a day cell with the opponent and the result. | No Full Season view, no tickets, no TV links. The fill shows a win, not a home game. The list has one table for each League Season. |
 | Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. No goalie table, because the data has no saves. A team strip and four leader cards are above the table. |
-| Roster | One group for each position, and a link to the stats. | Player cards in place of a table. The Roster answers "who is on the team", and the Stats page has all numbers. |
+| Roster | One group for each position, and a link to the stats. | Jerseys in rows, as on the Daily Faceoff line chart, in place of a table. The Roster answers "who is on the team", and the Stats page has all numbers. |
 | Player | A band with the name and the number, a season strip and a career strip, "Last 5 Games", and "Career Stats". | No photo, no Bio tab. A "Goals" table with the links to the Shorts is added. |
 
 ## 5. Stats and Roster
 
 The second pass had the same Players and the same numbers on both pages. Recommendation: keep both pages, and give each one job.
 
-- **Roster:** who is on the team in one League Season. Player cards, no numbers.
+- **Roster:** who is on the team in one League Season. Jerseys with the number and the name, and no stats.
 - **Stats:** how the Players and the team did. Leaders, the table, and the three views.
 
 The other option is one "Team" page with a Roster view and a Stats view. It removes one header link. I did not select it, because a visitor looks for "Roster" and "Stats" by those names on a team site.
@@ -297,6 +303,7 @@ I did this review myself, as a UX designer would. The first four items are in th
 14. **Recap images.** A Recap thumbnail has the red kit graphics of HHG. It looks the same in the Home and Away Themes. Is that acceptable?
 15. **Opponents with no logo.** Buzz Light Beer and Dragon Juice have no logo file. Do you have these logos?
 16. **Photos.** A Player has initials in place of a photo. Do you want Player photos later?
+17a. **Jersey design.** I did not find the jersey mockups on the NAS. Which file or folder has them? The drawing needs the real stripes and the real number colours of each Kit.
 
 ### Privacy
 
