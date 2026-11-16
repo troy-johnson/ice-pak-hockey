@@ -204,6 +204,11 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 
 A button has a forward lean: the left and right edges are cut at an angle, and the text is Barlow Condensed italic 800. It follows the lean of the crest wordmark. Troy asked for a shape that is less rigid than a square box. The "Watch the Recap" label has the same shape.
 
+### Link and mark colours
+
+- `--link`: the colour of a link. It is white in the Home Theme. In Away and Third it is `--accent`.
+- `--second`: the second Kit colour for a small mark, for example the arrow of "Watch the Recap". It is light blue in Home and Away, and white in Third.
+
 ### League names
 
 A visitor sees "SLC County" and "Mammoth". The data keeps the short names County and MIC.

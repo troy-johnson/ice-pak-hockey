@@ -19,6 +19,10 @@
   --on-fill: #ffffff;
   /* The band is the header and the top of each page. */
   --head: #0a1427;
+  /* Links are white in the Home Theme. */
+  --link: #ffffff;
+  /* The second Kit colour, for small marks. */
+  --second: #5ba5d1;
   /* Calendar: the primary and secondary Kit colours. */
   --cal-home: #27478a;
   --cal-home-line: #5ba5d1;
@@ -49,6 +53,8 @@
   --kit-line: #1d315f;
   --accent: #2a4a8f;
   --head: #ffffff;
+  --link: var(--accent);
+  --second: #5ba5d1;
   --cal-home: #1d315f;
   --cal-home-line: #1d315f;
   --cal-home-ink: #ffffff;
@@ -73,11 +79,13 @@
   --kit-line: #ffffff;
   --accent: #ffffff;
   --head: #c0211c;
+  --link: var(--accent);
+  --second: #ffffff;
   --cal-home: #c0211c;
   --cal-home-line: #e5483f;
   --cal-home-ink: #ffffff;
   --cal-away: #000000;
-  --cal-away-line: #ffffff;
+  --cal-away-line: #c0211c;
   --cal-away-ink: #ffffff;
   --band: linear-gradient(180deg, rgb(192 33 28 / 0.72), rgb(150 22 18 / 0.93));
   --veil: linear-gradient(180deg, rgb(10 10 10 / 0.58), rgb(10 10 10 / 0.9) 75%);
@@ -89,6 +97,7 @@
   --ink: #ffffff;
   --frost: rgb(255 255 255 / 0.8);
   --accent: #ffffff;
+  --link: #ffffff;
   --kit-line: #ffffff;
   --rule: rgb(255 255 255 / 0.24);
   --panel: rgb(255 255 255 / 0.08);
@@ -113,6 +122,7 @@
 :root[data-theme="away"] main {
   --frost: #1d315f;
   --accent: #1d315f;
+  --link: #1d315f;
   --rule: #7f93b3;
 }
 
@@ -121,6 +131,7 @@
 :root[data-theme="away"] main .state {
   --frost: #52658c;
   --accent: #2a4a8f;
+  --link: #2a4a8f;
   --rule: #cbd5e6;
 }
 
@@ -186,7 +197,7 @@ main,
 }
 
 a {
-  color: var(--accent);
+  color: var(--link);
   text-underline-offset: 3px;
 }
 
@@ -581,8 +592,8 @@ a.tag.vid:hover {
   align-items: center;
   gap: 10px;
   min-width: 0;
-  min-height: 44px;
-  padding: 6px 12px;
+  height: 44px;
+  padding: 0 12px;
   font: 600 16px/1.15 var(--body);
   background: var(--panel-2);
   color: var(--ink);
@@ -612,8 +623,8 @@ a.tag.vid:hover {
 }
 
 .bug.lg .team {
-  min-height: 64px;
-  padding: 10px 16px;
+  height: 64px;
+  padding: 0 16px;
   font-size: 22px;
   font-weight: 700;
 }
@@ -636,9 +647,10 @@ a.tag.vid:hover {
   background: var(--kit-fill);
 }
 
-/* On the band of the Third Theme the Ice Pak row is black, so the black crest is hidden there. */
-:root[data-theme="third"] .band .bug .ipk .team img {
-  display: none;
+/* On the band of the Third Theme the Ice Pak row is black. The black crest gets a red square behind it. */
+:root[data-theme="third"] .band .bug .ipk .team img.crest-third {
+  background: #c0211c;
+  padding: 3px;
 }
 
 /* Home or Away: a small label at the right of the team name. The home team is the first row. */
@@ -970,7 +982,8 @@ tfoot td {
 .seg select {
   border: 0;
   border-left: 1px solid var(--rule);
-  background: transparent;
+  background: var(--panel-2);
+  color: var(--ink);
 }
 
 .seg select.on {
@@ -987,6 +1000,11 @@ tfoot td {
 
 .controls .push {
   margin-left: auto;
+}
+
+select option {
+  color: #10182b;
+  background: #ffffff;
 }
 
 select {
@@ -1075,7 +1093,7 @@ select {
 
 .play::before {
   content: "";
-  border-left: 10px solid #e5483f;
+  border-left: 10px solid var(--second);
   border-block: 6px solid transparent;
 }
 
@@ -1239,6 +1257,7 @@ select {
   text-align: center;
   gap: 4px 14px;
   padding-block: 8px;
+  line-height: 28px;
 }
 
 .nextbar .opp-logo,
@@ -1250,6 +1269,10 @@ select {
 
 .nextbar b {
   font-weight: 600;
+}
+
+.nextbar .label {
+  line-height: 28px;
 }
 
 .nextbar a {
@@ -1748,7 +1771,7 @@ details.season[open] > summary {
 .sched td.watch {
   width: 1%;
   white-space: nowrap;
-  text-align: right;
+  text-align: left;
 }
 
 .sched td.watch .tag + .tag {
