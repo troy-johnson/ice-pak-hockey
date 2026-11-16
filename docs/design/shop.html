@@ -10,16 +10,17 @@
 <script src="mock.js"></script>
 </head>
 <body>
-<header class="site-head">
+<header class="site-head"><div class="wrap">
   <a class="brand" href="home.html"><img class="crest-navy" src="img/crest-navy.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span></a>
-  <nav aria-label="Main"><a href="games.html">Games</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html" aria-current="page">Shop</a></nav>
+  <nav aria-label="Main"><a href="schedule.html">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html" aria-current="page">Shop</a></nav>
+  <span class="rec">2026-27<b>3-0-0</b></span>
   <div class="switch" role="group" aria-label="Theme">
-    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i>Home</button>
-    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i>Away</button>
-    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i>Third</button>
+    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
+    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
+    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Third</span></button>
   </div>
-</header>
-<main>
+</div></header>
+<div class="band"><div class="wrap">
 <div class="shop-top">
   <div class="copy">
     <h1>Shop</h1>
@@ -32,22 +33,25 @@
     <figure><img src="img/shop-tee-heather.jpg" alt="Athletic heather tee with the Ice Pak crest"><figcaption>Ice Pak Hockey Tee <span class="muted">· Athletic Heather</span></figcaption></figure>
   </div>
 </div>
-
+</div></div>
+<main class="wrap">
 <section>
   <div class="sec-head"><h2>Before you order</h2></div>
   <ul class="facts">
-    <li><b>Also in the store</b><span class="muted">Hoodies, snapback hats, trucker hats, dad hats, and stickers.</span></li>
-    <li><b>Shipping</b><span class="muted">The store ships to US addresses only.</span></li>
-    <li><b>Payment and returns</b><span class="muted">Printful takes the payment and handles each return. The team does not see your card.</span></li>
-    <li><b>Team jerseys</b><span class="muted">The store does not sell game jerseys. Ask a Manager.</span></li>
+    <li class="card"><b>Also in the store</b><span class="muted">Hoodies, snapback hats, trucker hats, dad hats, and stickers.</span></li>
+    <li class="card"><b>Shipping</b><span class="muted">The store ships to US addresses only.</span></li>
+    <li class="card"><b>Payment and returns</b><span class="muted">Printful takes the payment and handles each return. The team does not see your card.</span></li>
+    <li class="card"><b>Team jerseys</b><span class="muted">The store does not sell game jerseys. Ask a Manager.</span></li>
   </ul>
 </section>
 <p class="mock-note">Mockup note: the button has no address yet, because the Printful Quick Store does not exist. The products are from the orders of the Old Site.</p>
 </main>
-<footer class="site-foot">
+<footer class="site-foot"><div class="wrap">
+  <img class="crest-navy" src="img/crest-navy.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">
   <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
-  <a href="#">Team Page</a>
-  <a href="#">Managers</a>
-</footer>
+  <a href="schedule.html">Schedule</a>
+  <a href="shop.html">Shop</a>
+  <span class="right"><a href="#">Team Page</a> · <a href="#">Managers</a></span>
+</div></footer>
 </body>
 </html>
