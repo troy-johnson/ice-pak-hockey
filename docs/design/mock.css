@@ -1020,6 +1020,11 @@ details .text-link {
   border-top: 1px solid var(--rule);
 }
 
+.roster li:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
 .roster .no {
   font: italic 800 34px/1 var(--display);
   text-align: right;
