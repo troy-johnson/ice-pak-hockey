@@ -1,4 +1,9 @@
-/* The three Themes. With no stored choice, the device setting selects Home or Away. */
+/* The styles of the public site. They come from the mockups in docs/design/ (mock.css).
+   Part 1 has the Theme tokens. Part 2 has the base and the page frame. Part 3 has the shared parts.
+   Part 4 has the page layouts. docs/design/visual-direction.md gives the reason for each choice.
+   The script in Base.astro always sets data-theme, so this file has no block for the device setting. */
+
+/* ---------- 1. Theme tokens ---------- */
 :root,
 :root[data-theme="home"] {
   color-scheme: dark;
@@ -13,26 +18,22 @@
   --accent: #6db6e0;
   --on-fill: #ffffff;
   /* The band is the header and the top of each page. */
-  --band: transparent;
-  --on-band: var(--ink);
-  --on-band-muted: var(--frost);
-  --band-rule: var(--rule);
-  --band-button: var(--kit-fill);
-}
-
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    color-scheme: light;
-    --ground: #ffffff;
-    --panel: #f3f6fb;
-    --panel-2: #e6ecf6;
-    --rule: #cbd5e6;
-    --ink: #1d315f;
-    --frost: #52658c;
-    --kit-fill: #1d315f;
-    --kit-line: #5ba5d1;
-    --accent: #1f6fa5;
-  }
+  --head: #0a1427;
+  --band: linear-gradient(180deg, #17295a, #101f42);
+  /* The skated-ice marks: the strength on the ground and on the band. Invert makes the white marks dark. */
+  --ice: 0.13;
+  --ice-invert: 0;
+  /* The strength of the rink lines. */
+  --rink: 0.24;
+  --band-ice: 0.17;
+  --band-ice-invert: 0;
+  --glow: rgb(39 71 138 / 0.5);
+  --shade: rgb(0 0 0 / 0.35);
+  --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  /* The two colours of an opponent. A row sets them inline. */
+  --opp: var(--frost);
+  --opp-2: var(--rule);
 }
 
 :root[data-theme="away"] {
@@ -44,42 +45,134 @@
   --ink: #1d315f;
   --frost: #52658c;
   --kit-fill: #1d315f;
-  --kit-line: #5ba5d1;
-  --accent: #1f6fa5;
+  --kit-line: #1d315f;
+  --accent: #2a4a8f;
+  --head: #ffffff;
+  --band: linear-gradient(180deg, #213869, #17284f);
+  --ice: 0.12;
+  --ice-invert: 1;
+  --rink: 0.3;
+  --band-ice: 0.15;
+  --glow: rgb(91 165 209 / 0.2);
+  --shade: rgb(29 49 95 / 0.12);
 }
 
-/* Third: the band is the red of the third jersey, because the real crest is black and needs red behind it. */
 :root[data-theme="third"] {
   color-scheme: dark;
-  --ground: #080c11;
-  --panel: #111820;
-  --panel-2: #18212b;
-  --rule: #24303c;
-  --ink: #eef3f6;
-  --frost: #9fb2c1;
+  /* Black, red, and white only. The dark tones have no blue. */
+  --ground: #0a0a0a;
+  --panel: #151515;
+  --panel-2: #212121;
+  --rule: #343434;
+  --ink: #f5f5f5;
+  --frost: #b4b4b4;
   --kit-fill: #c0211c;
-  --kit-line: #e5483f;
-  --accent: #f0554c;
-  --band: #c0211c;
-  --on-band: #ffffff;
-  --on-band-muted: rgb(255 255 255 / 0.82);
-  --band-rule: rgb(255 255 255 / 0.4);
-  --band-button: #000000;
+  --kit-line: #ffffff;
+  --accent: #ffffff;
+  --head: #c0211c;
+  --band: linear-gradient(180deg, #c0211c, #a51a16);
+  --ice: 0.1;
+  --rink: 0.22;
+  --band-ice: 0.3;
+  --band-ice-invert: 1;
+  --glow: rgb(192 33 28 / 0.22);
+  --shade: rgb(0 0 0 / 0.5);
 }
 
+/* Inside the band, each part uses the colours that are readable on the band. */
+:root[data-theme="away"] .band {
+  --ink: #ffffff;
+  --frost: rgb(255 255 255 / 0.8);
+  --accent: #ffffff;
+  --kit-line: #ffffff;
+  --rule: rgb(255 255 255 / 0.24);
+  --panel: rgb(255 255 255 / 0.08);
+  --panel-2: rgb(255 255 255 / 0.14);
+  --kit-fill: #ffffff;
+  --on-fill: #1d315f;
+}
+
+:root[data-theme="third"] .band,
+:root[data-theme="third"] .site-head {
+  --ink: #ffffff;
+  --frost: rgb(255 255 255 / 0.86);
+  --accent: #ffffff;
+  --rule: rgb(255 255 255 / 0.36);
+  --panel: rgb(0 0 0 / 0.18);
+  --panel-2: rgb(0 0 0 / 0.3);
+  --kit-fill: #000000;
+  --kit-line: #ffffff;
+}
+
+/* ---------- 2. Base and page frame ---------- */
 * {
   box-sizing: border-box;
 }
 
 body {
+  position: relative;
   margin: 0;
-  background: var(--ground);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(1100px 620px at 88% -8%, var(--glow), transparent 62%) fixed, var(--ground);
   color: var(--ink);
-  font: 400 16px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font: 400 16px/1.5 var(--body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The rink: one full rink with its red and blue lines, end to end. It repeats down the page. */
+body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url(/img/rink.svg) center top / max(100%, 1000px) auto repeat-y;
+  opacity: var(--rink);
+}
+
+/* In the Third Theme the blue lines of the rink are white. */
+:root[data-theme="third"] body::after {
+  background-image: url(/img/rink-third.svg);
+}
+
+/* The skate marks. The SVG has white marks. Each Theme sets the strength, and inverts the marks on a light ground. */
+body::before,
+.band::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: url(/img/ice.svg) center top / 1600px auto;
+  opacity: var(--ice);
+  filter: invert(var(--ice-invert));
+}
+
+.band::before {
+  background-position: 30% 20%;
+  opacity: var(--band-ice);
+  filter: invert(var(--band-ice-invert));
+}
+
+.site-head,
+.band,
+main,
+.site-foot {
+  position: relative;
+  z-index: 1;
+}
+
+.wrap {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-inline: 20px;
 }
 
 a {
   color: var(--accent);
+  text-underline-offset: 3px;
 }
 
 h1,
@@ -91,15 +184,20 @@ h3 {
 }
 
 h1 {
-  font-size: 28px;
+  font: italic 800 clamp(40px, 6vw, 64px) / 0.92 var(--display);
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 h2 {
-  font-size: 20px;
+  font: 700 26px/1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-h3 {
-  font-size: 13px;
+h3,
+.label {
+  font: 600 12px/1.2 var(--body);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--frost);
@@ -110,58 +208,126 @@ p {
 }
 
 :focus-visible {
-  outline: 2px solid var(--kit-line);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
+.muted {
+  color: var(--frost);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Header */
 .site-head {
+  background: var(--head);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+
+.site-head .wrap {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 8px 24px;
-  padding: 12px 20px;
-  border-bottom: 1px solid var(--band-rule);
-  background: var(--band);
-  color: var(--on-band);
+  gap: 6px 28px;
+  padding-block: 10px;
 }
 
-.site-head .brand {
-  color: var(--on-band);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  font: italic 800 28px/1 var(--display);
+  letter-spacing: 0.03em;
   text-decoration: none;
   text-transform: uppercase;
+}
+
+.brand img {
+  height: 52px;
+  width: auto;
+}
+
+/* The black crest of the third jersey goes with the Third Theme. */
+.crest-third,
+:root[data-theme="third"] .crest-navy {
+  display: none;
+}
+
+:root[data-theme="third"] .crest-third {
+  display: block;
 }
 
 .site-head nav {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 18px;
+  gap: 4px 26px;
+  font: 700 20px/1 var(--display);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
 }
 
 .site-head nav a {
-  color: var(--on-band-muted);
+  color: var(--frost);
   text-decoration: none;
+  padding: 10px 0;
+  box-shadow: inset 0 -3px 0 transparent;
+  transition: color 0.15s, box-shadow 0.15s;
+}
+
+.site-head nav a:hover,
+.site-head nav a[aria-current="page"] {
+  color: var(--ink);
 }
 
 .site-head nav a[aria-current="page"] {
-  color: var(--on-band);
-  box-shadow: 0 5px 0 -3px currentColor;
+  box-shadow: inset 0 -3px 0 var(--kit-line);
 }
 
-.switch {
+.site-head .rec {
   margin-left: auto;
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--frost);
+  white-space: nowrap;
+}
+
+.site-head .rec b {
+  margin-left: 6px;
+  font: 700 22px/1 var(--display);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  vertical-align: -2px;
+}
+
+/* Theme switch: one button for each Kit. */
+.switch {
   display: inline-flex;
-  border: 1px solid var(--band-rule);
+  border: 1px solid var(--rule);
+}
+
+/* The header has no record yet, so the switch goes to the right by itself. */
+.site-head .wrap > .switch {
+  margin-left: auto;
 }
 
 .switch button {
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border: 0;
-  border-left: 1px solid var(--band-rule);
+  border-left: 1px solid var(--rule);
   background: transparent;
-  color: var(--on-band-muted);
-  padding: 6px 10px;
+  color: var(--frost);
+  padding: 8px 10px;
 }
 
 .switch button:first-child {
@@ -169,91 +335,419 @@ p {
 }
 
 .switch button[aria-pressed="true"] {
-  background: rgb(0 0 0 / 0.2);
-  color: var(--on-band);
-  box-shadow: inset 0 -2px 0 currentColor;
+  background: var(--panel-2);
+  color: var(--ink);
+  box-shadow: inset 0 -2px 0 var(--kit-line);
+}
+
+/* A Kit chip shows the jersey colours. These colours are the same in each Theme. */
+.kit-chip {
+  width: 12px;
+  height: 12px;
+  border: 2px solid;
+}
+
+.kit-chip.home {
+  background: #1d315f;
+  border-color: #5ba5d1;
+}
+
+.kit-chip.away {
+  background: #ffffff;
+  border-color: #1d315f;
+}
+
+.kit-chip.third {
+  background: #c0211c;
+  border-color: #0d0d0d;
+}
+
+/* Band: the top of a page */
+.band {
+  background: var(--band);
+  color: var(--ink);
+  border-bottom: 1px solid var(--rule);
+  overflow: hidden;
+}
+
+.band .wrap {
+  position: relative;
+  padding-block: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.band .watermark {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  height: 150%;
+  width: auto;
+  transform: translateY(-50%);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+:root[data-theme="third"] .band .watermark {
+  opacity: 0.16;
+}
+
+.crumbs {
+  font-size: 14px;
+  color: var(--frost);
+}
+
+.crumbs a {
+  color: var(--frost);
 }
 
 main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px 20px 64px;
+  padding-block: 32px 72px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 44px;
+  /* On a short page, the footer stays at the bottom of the window. */
+  flex: 1;
 }
 
-.muted {
-  color: var(--frost);
-}
-
-.error {
-  border: 1px solid var(--kit-line);
-  background: var(--panel);
-  padding: 10px 14px;
-}
-
-.panel {
-  border: 1px solid var(--rule);
-  background: var(--panel);
-  padding: 16px;
+section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-/* Forms */
-.fields {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px;
-}
-
-label {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 13px;
-  color: var(--frost);
-}
-
-input,
-select,
-textarea,
-button {
-  font: inherit;
-  color: var(--ink);
-}
-
-input,
-select,
-textarea {
-  background: var(--ground);
-  border: 1px solid var(--rule);
-  padding: 7px 9px;
+  gap: 16px;
   min-width: 0;
 }
 
-input[type="number"] {
-  width: 7ch;
+.sec-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
 }
 
-textarea {
-  width: 100%;
+/* A short kit-colour mark before each section title. */
+.sec-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-button {
-  cursor: pointer;
-  background: var(--panel-2);
+.sec-head h2::before {
+  content: "";
+  width: 5px;
+  height: 20px;
+  background: var(--kit-line);
+  transform: skewX(-12deg);
+}
+
+.sec-head a,
+.text-link {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.site-foot {
+  border-top: 1px solid var(--rule);
+  background: var(--head);
+  color: var(--ink);
+}
+
+.site-foot .wrap {
+  padding-block: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 28px;
+  font-size: 14px;
+}
+
+.site-foot img {
+  height: 36px;
+  width: auto;
+}
+
+.site-foot a {
+  color: var(--frost);
+}
+
+.site-foot .right {
+  margin-left: auto;
+  color: var(--frost);
+}
+
+:root[data-theme="third"] .site-foot {
+  background: var(--panel);
+}
+
+:root[data-theme="third"] .site-foot .crest-third {
+  display: none;
+}
+
+/* ---------- 3. Shared parts ---------- */
+
+/* Card: a surface that stands on the ice */
+.card {
+  background: color-mix(in srgb, var(--panel) 92%, transparent);
   border: 1px solid var(--rule);
-  padding: 7px 12px;
+  box-shadow: 0 10px 28px -18px var(--shade);
 }
 
-button.primary {
+/* Tags */
+.tag {
+  display: inline-block;
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border: 1px solid var(--rule);
+  color: var(--frost);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.tag.win {
   background: var(--kit-fill);
-  border-color: var(--kit-line);
+  border-color: var(--kit-fill);
   color: var(--on-fill);
+}
+
+.tag.loss,
+.tag.tie {
+  color: var(--ink);
+}
+
+.tag.sheet {
+  border-style: dashed;
+  border-color: var(--frost);
+  color: var(--ink);
+}
+
+.tag.vid {
+  color: var(--accent);
+  border-color: currentColor;
+}
+
+a.tag.vid:hover {
+  background: var(--accent);
+  color: var(--ground);
+}
+
+/* Score bug */
+.bug {
+  display: grid;
+  gap: 2px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bug .row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 52px;
+  gap: 2px;
+}
+
+.bug .team {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 9px 12px;
+  font: 600 16px/1.15 var(--body);
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+.bug .ipk .team {
+  background: linear-gradient(90deg, var(--kit-fill), color-mix(in srgb, var(--kit-fill) 82%, #000));
+  color: var(--on-fill);
+  box-shadow: inset 0 -2px 0 var(--kit-line);
+}
+
+/* The opponent chip: primary colour over secondary colour. */
+.bug .opp .team::before {
+  content: "";
+  flex: none;
+  width: 10px;
+  align-self: stretch;
+  margin: -9px 0 -9px -12px;
+  background: linear-gradient(var(--opp) 0 60%, var(--opp-2) 60% 100%);
+}
+
+.bug .pts {
+  display: grid;
+  place-items: center;
+  background: var(--panel-2);
+  color: var(--ink);
+  font: 700 26px/1 var(--display);
+}
+
+.bug .lost .pts,
+.bug .none .pts {
+  color: var(--frost);
+}
+
+.bug.lg .row {
+  grid-template-columns: minmax(0, 1fr) 80px;
+}
+
+.bug.lg .team {
+  padding: 15px 16px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.bug.lg .opp .team::before {
+  width: 14px;
+  margin: -15px 0 -15px -16px;
+}
+
+.bug.lg .pts {
+  font-size: 46px;
+}
+
+.bug .ipk .team img {
+  height: 30px;
+  width: auto;
+}
+
+/* On the band of the Away Theme the Ice Pak row is white, as the away jersey. */
+:root[data-theme="away"] .band .bug .ipk .team {
+  background: var(--kit-fill);
+}
+
+/* On the band of the Third Theme the Ice Pak row is black, so the black crest is hidden there. */
+:root[data-theme="third"] .band .bug .ipk .team img {
+  display: none;
+}
+
+/* Home or Away: a small label at the right of the team name. The home team is the first row. */
+.bug .side {
+  margin-left: auto;
+  padding-left: 8px;
+  font: 600 10px/1 var(--body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+/* The line score: a score bug with one cell for each period. */
+.bug.line .row {
+  grid-template-columns: minmax(0, 1fr) repeat(var(--periods, 3), 40px) 80px;
+}
+
+.bug.line .per,
+.bug.line .head > * {
+  display: grid;
+  place-items: center;
+  background: var(--panel);
+  color: var(--frost);
+  font: 600 16px/1 var(--body);
+}
+
+.bug.line .head > * {
+  background: transparent;
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 0;
+}
+
+/* Game card */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.cards.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.game-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--kit-line);
+}
+
+.game-card .meta,
+.game-card .foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.game-card .foot {
+  justify-content: flex-start;
+}
+
+/* Avatar: the initials of a Player, in place of a photo */
+.av {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: inset 0 0 0 2px var(--kit-line);
+  font: 700 15px/1 var(--display);
+  letter-spacing: 0.04em;
+}
+
+/* Opponent chip: a disc with the two colours of the opponent */
+.opp-chip {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--opp) 0 62%, var(--opp-2) 62% 100%);
+  color: #ffffff;
+  font: 700 14px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+/* Opponent logo: the real logo on a white disc, so each logo is clear in each Theme */
+.opp-logo {
+  flex: none;
+  width: 38px;
+  height: 38px;
+  padding: 3px;
+  border-radius: 50%;
+  background: #ffffff;
+  object-fit: contain;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+
+.bug .opp .team .opp-logo {
+  width: 26px;
+  height: 26px;
+  padding: 2px;
+}
+
+.bug.lg .opp .team .opp-logo {
+  width: 36px;
+  height: 36px;
 }
 
 /* Tables */
@@ -269,137 +763,207 @@ table {
 
 th {
   text-align: left;
-  font-size: 12px;
+  font: 600 12px/1 var(--body);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--frost);
-  padding: 0 10px 8px 0;
+  color: var(--ink);
+  background: var(--panel-2);
+  padding: 13px 14px;
+  white-space: nowrap;
 }
 
 td {
   border-top: 1px solid var(--rule);
-  padding: 8px 10px 8px 0;
-  vertical-align: top;
+  padding: 9px 14px;
+  vertical-align: middle;
 }
 
-/* Roster Builder */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 10px;
+tbody tr:first-child td {
+  border-top: 0;
 }
 
-.stat {
-  border: 1px solid var(--rule);
-  background: var(--panel);
-  padding: 10px 12px;
+tbody tr:hover td {
+  background: color-mix(in srgb, var(--panel-2) 55%, transparent);
 }
 
-.stat b {
-  display: block;
-  font-size: 24px;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
-}
-
-.stat.short b {
-  color: var(--accent);
-}
-
-.board {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 12px;
-  align-items: start;
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-}
-
-.column > header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 2px solid var(--kit-line);
-  padding-bottom: 6px;
-}
-
-.card {
-  border: 1px solid var(--rule);
-  background: var(--panel);
-  padding: 8px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.card .who {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.card .who span {
-  color: var(--frost);
-  font-size: 12px;
+th.n,
+td.n {
+  text-align: center;
+  width: 1%;
   white-space: nowrap;
 }
 
-.card .answers {
+td.rank {
+  width: 1%;
+  color: var(--frost);
+  text-align: right;
+  padding-right: 4px;
+}
+
+td.name {
+  min-width: 190px;
+  font-weight: 600;
+}
+
+td.name .who {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-}
-
-.card button {
-  font-size: 12px;
-  padding: 3px 7px;
-}
-
-@media (max-width: 900px) {
-  .board {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-/* The top of a page, on the band. */
-.hero {
-  background: var(--band);
-  color: var(--on-band);
-  display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 16px;
-  padding: 48px 20px;
+  gap: 12px;
+}
+
+td.name a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+td.name a:hover {
+  text-decoration: underline;
+}
+
+td.date {
+  width: 1%;
+  white-space: nowrap;
+}
+
+td small {
+  display: block;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--frost);
+}
+
+/* The sorted column has a tint, as on a league stats page. */
+.sorted {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+th.sorted {
+  background: color-mix(in srgb, var(--accent) 26%, var(--panel-2));
+}
+
+th.sorted::after {
+  content: " ▾";
+  color: var(--accent);
+}
+
+td.sorted {
+  font-weight: 700;
+}
+
+tfoot td {
+  border-top: 2px solid var(--kit-line);
+  font-weight: 700;
+  background: var(--panel-2);
+}
+
+/* Stat strip: one label and a row of large numbers */
+.strip {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.2fr) repeat(var(--n, 6), minmax(0, 1fr));
+  align-items: center;
+  padding: 16px 22px;
+}
+
+.strip .title {
+  font: 700 22px/1.1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.strip div {
   text-align: center;
 }
 
-.hero .muted {
-  color: var(--on-band-muted);
-}
-
-.hero .button {
-  background: var(--band-button);
-  border-color: var(--band-button);
-}
-
-.crest {
-  width: min(240px, 60vw);
-  height: auto;
-}
-
-/* The black crest of the third jersey goes with the Third Theme. */
-.crest-third,
-:root[data-theme="third"] .crest-navy {
-  display: none;
-}
-
-:root[data-theme="third"] .crest-third {
+.strip b {
   display: block;
+  margin-top: 4px;
+  font: 700 clamp(26px, 4vw, 38px) / 1 var(--display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.strip .key b {
+  color: var(--accent);
+}
+
+.strips {
+  display: grid;
+  gap: 10px;
+}
+
+/* Controls */
+.seg {
+  display: inline-flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--rule);
+}
+
+.seg button,
+.seg a {
+  font: 600 14px/1 var(--body);
+  cursor: pointer;
+  border: 0;
+  border-left: 1px solid var(--rule);
+  background: transparent;
+  color: var(--frost);
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
+.seg > :first-child {
+  border-left: 0;
+}
+
+.seg [aria-pressed="true"] {
+  background: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+/* Tabs: the views of a page */
+.tabs {
+  display: flex;
+  gap: 28px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.tabs button {
+  font: 700 20px/1 var(--display);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  color: var(--frost);
+  padding: 10px 2px 12px;
+  margin-bottom: -1px;
+}
+
+.tabs button[aria-pressed="true"] {
+  color: var(--ink);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.controls .push {
+  margin-left: auto;
+}
+
+select,
+.ghost {
+  font: 600 14px/1.2 var(--body);
+  color: var(--ink);
+  background: var(--panel-2);
+  border: 1px solid var(--rule);
+  padding: 10px 12px;
+  max-width: 100%;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .button {
@@ -407,6 +971,1219 @@ td {
   background: var(--kit-fill);
   border: 1px solid var(--kit-line);
   color: var(--on-fill);
-  padding: 10px 16px;
+  padding: 13px 20px;
+  font: 700 20px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
   text-decoration: none;
+}
+
+/* Video */
+.video {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  max-width: 100%;
+  background: var(--panel);
+  overflow: hidden;
+  box-shadow: 0 18px 40px -22px var(--shade);
+}
+
+.video img,
+.short img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+
+.video:hover img,
+.short:hover img {
+  transform: scale(1.03);
+}
+
+/* The label is on a photo, so its colours do not change with the Theme. */
+.play {
+  position: absolute;
+  left: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #080c11;
+  color: #ffffff;
+  padding: 10px 14px;
+  font: 700 17px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.play::before {
+  content: "";
+  border-left: 10px solid #e5483f;
+  border-block: 6px solid transparent;
+}
+
+.shorts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.shorts.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.short {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  color: var(--ink);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.3;
+}
+
+.short .frame {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  background: var(--panel);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+}
+
+.short .play {
+  left: 8px;
+  bottom: 8px;
+  padding: 7px 9px;
+  font-size: 14px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.two-col.even,
+.game-top.even {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  min-width: 0;
+}
+
+/* ---------- 4. Page layouts ---------- */
+
+/* Home */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+}
+
+.hero .side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.hero h1 {
+  font-size: clamp(36px, 4.6vw, 56px);
+}
+
+.next {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.next li {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.next li:first-child {
+  border-top: 0;
+}
+
+/* The next games in one row, below the Shorts and the leaders. */
+.next.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.next.row li {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 8px 16px;
+  padding: 14px 16px;
+  border-top: 3px solid var(--kit-line);
+}
+
+.next.row .tag {
+  grid-column: 2;
+  justify-self: start;
+}
+
+.next .day {
+  font: 700 22px/1 var(--display);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.next .day small,
+.next .rink {
+  display: block;
+  font: 400 13px/1.3 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--frost);
+}
+
+.next .opp-name {
+  font-weight: 600;
+}
+
+/* Next game bar: below the header of the Home page */
+.nextbar {
+  position: relative;
+  z-index: 1;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+}
+
+.nextbar .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  padding-block: 8px;
+}
+
+.nextbar .opp-logo,
+.nextbar .opp-chip {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  font-size: 11px;
+}
+
+.nextbar b {
+  font-weight: 600;
+}
+
+.nextbar a {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+/* Stats: leader cards */
+.leaders {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.leader {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 3px solid var(--kit-line);
+}
+
+.leader .top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.leader .top .av {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.leader .top a {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: none;
+  line-height: 1.2;
+}
+
+.leader .top b {
+  margin-left: auto;
+  font: 700 46px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+.leader ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+}
+
+.leader li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
+  border-top: 1px solid var(--rule);
+  color: var(--frost);
+  font-variant-numeric: tabular-nums;
+}
+
+.leader li a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* Roster: one jersey for each Player, in rows as on a line chart */
+.lines {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  padding: 8px 12px;
+}
+
+.skater {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 8px 20px;
+  color: var(--ink);
+  text-decoration: none;
+  text-align: center;
+  border-top: 1px solid var(--rule);
+}
+
+.lines .skater:nth-child(-n + 3) {
+  border-top: 0;
+}
+
+.lines[style*="2"] .skater:nth-child(3) {
+  border-top: 1px solid var(--rule);
+}
+
+.skater .nm {
+  font: 700 20px/1.1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.skater .ln {
+  font-size: 13px;
+  color: var(--frost);
+}
+
+.skater:hover .nm {
+  text-decoration: underline;
+}
+
+/* Jersey: the back of the jersey of the Theme, with the number and no nameplate */
+.jersey {
+  width: min(168px, 100%);
+  height: auto;
+  filter: drop-shadow(0 10px 12px var(--shade));
+  transition: transform 0.15s;
+  --j-body: #1d315f;
+  --j-trim: #5ba5d1;
+  --j-trim-2: #ffffff;
+  --j-num: #ffffff;
+  --j-num-line: #5ba5d1;
+  --j-edge: #5ba5d1;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-trim: #1d315f;
+  --j-trim-2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #9fb1cf;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #c0211c;
+  --j-trim: #000000;
+  --j-trim-2: #ffffff;
+  --j-num: #000000;
+  --j-num-line: #ffffff;
+  --j-edge: #000000;
+}
+
+.skater:hover .jersey {
+  transform: translateY(-3px);
+}
+
+.jersey .body {
+  fill: var(--j-body);
+  stroke: var(--j-edge);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.jersey .trim {
+  fill: var(--j-trim);
+}
+
+.jersey .trim-2 {
+  fill: var(--j-trim-2);
+}
+
+.jersey .collar {
+  fill: none;
+  stroke: var(--j-trim);
+  stroke-width: 7;
+}
+
+.jersey text {
+  font: 700 84px/1 var(--display);
+  fill: var(--j-num);
+  stroke: var(--j-num-line);
+  stroke-width: 5;
+  paint-order: stroke;
+  text-anchor: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Game page: the links to the Game before and the Game after */
+.game-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 20px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Schedule: calendar view */
+.cal-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+}
+
+.month-nav {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--rule);
+  background: var(--panel-2);
+}
+
+.month-nav b {
+  min-width: 150px;
+  text-align: center;
+  font: 600 14px/1 var(--body);
+}
+
+.month-nav button {
+  font: 700 18px/1 var(--body);
+  cursor: pointer;
+  border: 0;
+  background: var(--panel-2);
+  color: var(--ink);
+  padding: 9px 14px;
+}
+
+.month-nav button + button {
+  border-left: 1px solid var(--rule);
+}
+
+.month-nav button:disabled {
+  color: var(--frost);
+  opacity: 0.5;
+  cursor: default;
+}
+
+.legend {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: 13px;
+  color: var(--frost);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend i {
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--rule);
+  background: var(--panel);
+}
+
+.legend i.w {
+  background: var(--kit-fill);
+  border-color: var(--kit-line);
+}
+
+.legend i.t {
+  border: 2px solid var(--accent);
+}
+
+.cal {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cal .dow {
+  font: 700 16px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--frost);
+  padding-bottom: 4px;
+}
+
+.cal .day {
+  position: relative;
+  min-height: 62px;
+  padding: 8px 10px 12px;
+  background: color-mix(in srgb, var(--panel) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.cal .day.out {
+  visibility: hidden;
+}
+
+.cal .d {
+  align-self: flex-start;
+  font: 600 14px/1 var(--body);
+  color: var(--frost);
+}
+
+.cal .day.game {
+  background: var(--panel);
+  border-color: var(--rule);
+  box-shadow: 0 10px 24px -18px var(--shade);
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.cal a.day.game:hover {
+  transform: translateY(-2px);
+  border-color: var(--kit-line);
+}
+
+.cal .day.win {
+  background: linear-gradient(160deg, var(--kit-fill), color-mix(in srgb, var(--kit-fill) 78%, #000));
+  border-color: var(--kit-line);
+  color: var(--on-fill);
+}
+
+.cal .day.win .d,
+.cal .day.win .who {
+  color: color-mix(in srgb, var(--on-fill) 82%, transparent);
+}
+
+.cal .day.today {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.cal .day.today .d {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.cal .opp-logo,
+.cal .opp-chip {
+  width: 46px;
+  height: 46px;
+}
+
+.cal .res {
+  font: 700 24px/1 var(--display);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.cal .res.time {
+  font-size: 19px;
+}
+
+.cal .who {
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--frost);
+  overflow-wrap: anywhere;
+}
+
+.cal .marks {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.cal .marks .tag {
+  font-size: 10px;
+  padding: 3px 5px;
+}
+
+.cal .win .tag {
+  color: var(--on-fill);
+  border-color: color-mix(in srgb, var(--on-fill) 55%, transparent);
+}
+
+/* Schedule: list view */
+.season-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 18px;
+}
+
+.season-head .rec {
+  font: 700 26px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.season-head .muted {
+  font-size: 14px;
+}
+
+details.season > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 18px;
+}
+
+details.season > summary::-webkit-details-marker {
+  display: none;
+}
+
+details.season > summary h2::before {
+  content: "+";
+  display: inline-block;
+  width: 22px;
+  color: var(--accent);
+}
+
+details.season[open] > summary h2::before {
+  content: "–";
+}
+
+details.season[open] > summary {
+  border-bottom: 1px solid var(--rule);
+}
+
+.sched {
+  table-layout: fixed;
+}
+
+.sched th:nth-child(1) {
+  width: 116px;
+}
+
+.sched th:nth-child(3) {
+  width: 124px;
+}
+
+.sched th:nth-child(4) {
+  width: 250px;
+}
+
+.sched th:nth-child(5) {
+  width: 196px;
+}
+
+.sched td.date {
+  width: 1%;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.sched td.match a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sched td.match a:hover b {
+  text-decoration: underline;
+}
+
+.sched td.match span {
+  color: var(--frost);
+  font-weight: 400;
+}
+
+.sched .opp-chip,
+.sched .opp-logo {
+  width: 32px;
+  height: 32px;
+  font-size: 12px;
+}
+
+.sched td.score {
+  width: 1%;
+  white-space: nowrap;
+  font: 700 22px/1 var(--display);
+}
+
+.sched td.score .tag {
+  vertical-align: 3px;
+  margin-right: 8px;
+}
+
+.sched td.watch {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.sched td.watch .tag + .tag {
+  margin-left: 4px;
+}
+
+/* Game page */
+.game-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.events {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.events .period {
+  padding: 10px 16px;
+  background: var(--panel-2);
+}
+
+.events .period h3 {
+  color: var(--ink);
+}
+
+.events .ev {
+  display: grid;
+  grid-template-columns: 52px 12px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.events .clock {
+  color: var(--frost);
+  font-variant-numeric: tabular-nums;
+}
+
+.events .chip {
+  width: 10px;
+  height: 16px;
+  align-self: center;
+  background: linear-gradient(var(--opp) 0 60%, var(--opp-2) 60% 100%);
+}
+
+.events .ipk .chip {
+  background: var(--kit-fill);
+  box-shadow: inset 0 -2px 0 var(--kit-line);
+}
+
+.events .what b {
+  font-weight: 600;
+}
+
+.events .what b a {
+  color: var(--ink);
+}
+
+.events .what span {
+  color: var(--frost);
+}
+
+.state {
+  border: 1px dashed var(--frost);
+  background: var(--panel);
+  padding: 14px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+}
+
+.sheet-photo {
+  display: block;
+  max-width: 520px;
+  width: 100%;
+  border: 1px solid var(--rule);
+}
+
+/* Player page */
+.player-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 28px;
+}
+
+.jersey-no {
+  display: grid;
+  place-items: center;
+  min-width: 132px;
+  padding: 8px 18px 14px;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: inset 0 -5px 0 var(--kit-line), 0 16px 30px -18px var(--shade);
+  font: italic 800 112px/0.86 var(--display);
+}
+
+.player-head .first {
+  font: 600 24px/1.1 var(--body);
+}
+
+.player-head h1 {
+  font-size: clamp(48px, 8vw, 84px);
+}
+
+.player-head .bio {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  color: var(--frost);
+}
+
+.player-head .bio span + span::before {
+  content: "•";
+  margin-right: 10px;
+  opacity: 0.6;
+}
+
+.goals td.when {
+  width: 1%;
+  white-space: nowrap;
+  color: var(--frost);
+}
+
+.goals td.vid {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.goals .thumb {
+  width: 30px;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 8px;
+  border: 1px solid var(--rule);
+}
+
+details.more > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 16px;
+  border-top: 1px solid var(--rule);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+details.more > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Shop page */
+.shop-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 36px;
+  align-items: center;
+}
+
+.shop-top .copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.shop-top .copy p {
+  max-width: 46ch;
+}
+
+.products {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.products figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.products img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  background: #ffffff;
+  box-shadow: 0 18px 40px -22px var(--shade);
+}
+
+.products figcaption {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.facts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.facts li {
+  padding: 16px;
+  border-top: 3px solid var(--kit-line);
+}
+
+.facts b {
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* ---------- Narrow screens ---------- */
+@media (max-width: 900px) {
+  .cards.three {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .wrap {
+    padding-inline: 16px;
+  }
+
+  .site-head .wrap {
+    gap: 2px 16px;
+  }
+
+  .brand img {
+    height: 44px;
+  }
+
+  .site-head nav {
+    order: 3;
+    flex-basis: 100%;
+    gap: 4px 20px;
+  }
+
+  /* The switch shows the Kit chips only. Each button keeps its name for a screen reader. */
+  .switch button {
+    padding: 13px;
+  }
+
+  /* The line score has no room for the Home and Away labels. The page title says "at" or "vs". */
+  .bug.line .side {
+    display: none;
+  }
+
+  .bug.lg.line .team {
+    padding: 12px 10px;
+    font-size: 17px;
+  }
+
+  .bug.lg.line .opp .team::before {
+    margin: -12px 0 -12px -10px;
+  }
+
+  .lines {
+    padding: 4px;
+  }
+
+  .skater {
+    padding: 14px 2px;
+    gap: 6px;
+  }
+
+  .skater .nm {
+    font-size: 16px;
+  }
+
+  .skater .ln {
+    font-size: 11px;
+  }
+
+  .jersey {
+    width: min(112px, 100%);
+  }
+
+  .nextbar a {
+    margin-left: 0;
+  }
+
+  .switch button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .band .wrap {
+    padding-block: 20px 22px;
+  }
+
+  .band .watermark {
+    display: none;
+  }
+
+  main {
+    padding-block: 24px 56px;
+    gap: 36px;
+  }
+
+  .hero,
+  .two-col,
+  .two-col.even,
+  .game-top,
+  .game-top.even,
+  .shop-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero {
+    gap: 20px;
+  }
+
+  .shorts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wide-only {
+    display: none;
+  }
+
+  th,
+  td {
+    padding-inline: 7px;
+  }
+
+  td.name {
+    min-width: 0;
+  }
+
+  .strip {
+    grid-template-columns: repeat(var(--n, 6), minmax(0, 1fr));
+    gap: 10px 0;
+    padding: 14px 8px;
+  }
+
+  .strip .title {
+    grid-column: 1 / -1;
+    padding-left: 8px;
+    font-size: 18px;
+  }
+
+  .strip .label {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  /* The team strip: the record uses the full first row. */
+  .strip.team {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .strip.team .key {
+    grid-column: 1 / -1;
+    text-align: left;
+    padding-left: 8px;
+  }
+
+  .strip.team .title {
+    display: none;
+  }
+
+  .jersey-no {
+    min-width: 92px;
+    font-size: 76px;
+  }
+
+  /* Calendar: a compact cell with the day, the chip, and the result. */
+  .cal {
+    gap: 3px;
+  }
+
+  .cal .dow {
+    font-size: 12px;
+  }
+
+  .cal .day {
+    min-height: 40px;
+    padding: 4px 2px 6px;
+    gap: 3px;
+  }
+
+  .cal .d {
+    font-size: 11px;
+    padding-left: 2px;
+  }
+
+  .cal .opp-chip,
+  .cal .opp-logo {
+    width: 26px;
+    height: 26px;
+    padding: 2px;
+    font-size: 10px;
+  }
+
+  .cal .res,
+  .cal .res.time {
+    font-size: 14px;
+    letter-spacing: 0;
+  }
+
+  .cal .who,
+  .cal .marks {
+    display: none;
+  }
+
+  .legend {
+    margin-left: 0;
+  }
+
+  .sched th:nth-child(1) {
+    width: 92px;
+  }
+
+  .sched th:nth-child(3) {
+    width: 80px;
+  }
+
+  .sched th:nth-child(5) {
+    width: 106px;
+  }
+
+  .sched td.date {
+    font-size: 14px;
+  }
+
+  .sched .opp-chip,
+  .sched .opp-logo,
+  .sched td.match span {
+    display: none;
+  }
+
+  .sched td.watch .tag {
+    font-size: 10px;
+    padding: 3px 4px;
+  }
+
+  .sched td.watch {
+    white-space: normal;
+  }
+
+  .sched td.watch .tag {
+    margin: 2px 0 2px 0;
+  }
+
+  .sched td.match a {
+    gap: 8px;
+  }
+
+  .sched td.score {
+    font-size: 19px;
+  }
+
+  .sched td.score .tag {
+    margin-right: 5px;
+  }
+
+  .events .ev {
+    grid-template-columns: 44px 10px minmax(0, 1fr);
+    padding-inline: 12px;
+  }
+
+  .events .ev .tag {
+    grid-column: 3;
+    justify-self: start;
+  }
+
+  .site-foot .right {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand span {
+    display: none;
+  }
+
+  .site-head .rec {
+    font-size: 0;
+  }
+
+  .tabs {
+    gap: 20px;
+  }
+
+  .av {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  td.name .who {
+    gap: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
 }

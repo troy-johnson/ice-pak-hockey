@@ -1,4 +1,9 @@
 ---
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/inter/700.css";
+import "@fontsource/barlow-condensed/700.css";
+import "@fontsource/barlow-condensed/800-italic.css";
 import "../styles/site.css";
 
 interface Props {
@@ -8,51 +13,80 @@ interface Props {
 }
 
 const { title, noindex = false } = Astro.props;
+const themes = [
+  { name: "home", label: "Home" },
+  { name: "away", label: "Away" },
+  { name: "third", label: "Third" },
+];
 ---
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/png" href="/favicon.png" />
     <title>{title}</title>
     <script is:inline>
-      const theme = localStorage.getItem("theme");
-      if (theme) document.documentElement.dataset.theme = theme;
+      // The visitor's choice selects the Theme. With no choice, the device setting selects Home or Away.
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const light = matchMedia("(prefers-color-scheme: light)").matches;
+        const theme = ["home", "away", "third"].includes(stored) ? stored : light ? "away" : "home";
+        document.documentElement.dataset.theme = theme;
+      })();
     </script>
   </head>
   <body>
     <header class="site-head">
-      <a class="brand" href="/">Ice Pak</a>
-      <slot name="nav" />
-      <div class="switch" role="group" aria-label="Theme">
-        <button type="button" data-theme-choice="home">Home</button>
-        <button type="button" data-theme-choice="away">Away</button>
-        <button type="button" data-theme-choice="third">Third</button>
+      <div class="wrap">
+        <a class="brand" href="/">
+          <img class="crest-navy" src="/crest-navy.png" alt="" width="399" height="420" />
+          <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
+          <span>Ice Pak</span>
+        </a>
+        <slot name="nav" />
+        <div class="switch" role="group" aria-label="Theme">
+          {
+            themes.map((theme) => (
+              <button type="button" data-theme-choice={theme.name} aria-label={theme.label}>
+                <i class:list={["kit-chip", theme.name]} />
+                <span>{theme.label}</span>
+              </button>
+            ))
+          }
+        </div>
       </div>
     </header>
-    <slot name="hero" />
-    <main>
+    <slot name="band" />
+    <main class="wrap">
       <slot />
     </main>
+    <footer class="site-foot">
+      <div class="wrap">
+        <img class="crest-navy" src="/crest-navy.png" alt="" width="399" height="420" />
+        <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
+        <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
+        <span class="right"><a href="/manager">Managers</a></span>
+      </div>
+    </footer>
     <script is:inline>
-      const buttons = document.querySelectorAll("[data-theme-choice]");
-      const show = () =>
+      (() => {
+        const root = document.documentElement;
+        const buttons = document.querySelectorAll("[data-theme-choice]");
+        const show = () =>
+          buttons.forEach((button) =>
+            button.setAttribute("aria-pressed", String(button.dataset.themeChoice === root.dataset.theme)),
+          );
         buttons.forEach((button) =>
-          button.setAttribute(
-            "aria-pressed",
-            String(button.dataset.themeChoice === document.documentElement.dataset.theme),
-          ),
+          button.addEventListener("click", () => {
+            root.dataset.theme = button.dataset.themeChoice;
+            localStorage.setItem("theme", button.dataset.themeChoice);
+            show();
+          }),
         );
-      buttons.forEach((button) =>
-        button.addEventListener("click", () => {
-          document.documentElement.dataset.theme = button.dataset.themeChoice;
-          localStorage.setItem("theme", button.dataset.themeChoice);
-          show();
-        }),
-      );
-      show();
+        show();
+      })();
     </script>
   </body>
 </html>

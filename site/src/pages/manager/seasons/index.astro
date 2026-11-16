@@ -28,10 +28,9 @@ const [leagues, leagueSeasons] = await Promise.all([listLeagues(), listLeagueSea
 ---
 
 <Manager title="League Seasons">
-  <h1>League Seasons</h1>
   {error && <p class="error" role="alert">{error}</p>}
 
-  <section class="panel">
+  <section class="card panel">
     <h2>Add a League Season</h2>
     <LeagueSeasonForm leagues={leagues} />
   </section>
@@ -40,7 +39,7 @@ const [leagues, leagueSeasons] = await Promise.all([listLeagues(), listLeagueSea
     leagueSeasons.length === 0 ? (
       <p class="muted">No League Seasons yet.</p>
     ) : (
-      <div class="table-wrap">
+      <div class="card table-wrap">
         <table>
           <thead>
             <tr>

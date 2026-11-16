@@ -11,6 +11,12 @@ importers:
       '@astrojs/cloudflare':
         specifier: ^14.4.8
         version: 14.4.8(astro@7.4.12(esbuild@0.28.2)(yaml@2.9.1))(esbuild@0.28.2)(workerd@1.20261113.1)(wrangler@4.162.0)(yaml@2.9.1)
+      '@fontsource/barlow-condensed':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/inter':
+        specifier: ^5.3.0
+        version: 5.3.0
       astro:
         specifier: ^7.4.12
         version: 7.4.12(esbuild@0.28.2)(yaml@2.9.1)
@@ -526,6 +532,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fontsource/barlow-condensed@5.3.0':
+    resolution: {integrity: sha512-RA7MmIx0v3eQ6Gcf74qLVLOwLB0GpPOzx+eU9iG/AmCnSJGcIWYeU8y6CEMGZ210MGwGg5CZhzLkkvyZdTTk1g==}
+
+  '@fontsource/inter@5.3.0':
+    resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -2483,6 +2495,10 @@ snapshots:
 
   '@esbuild/win32-x64@0.28.2':
     optional: true
+
+  '@fontsource/barlow-condensed@5.3.0': {}
+
+  '@fontsource/inter@5.3.0': {}
 
   '@img/colour@1.1.0': {}
 

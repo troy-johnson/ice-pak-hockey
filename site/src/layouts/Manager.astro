@@ -1,11 +1,14 @@
 ---
+import "../styles/manager.css";
 import Base from "./Base.astro";
 
 interface Props {
   title: string;
+  /** A short line above the title, such as "Roster Builder · MIC". */
+  label?: string;
 }
 
-const { title } = Astro.props;
+const { title, label = "Managers" } = Astro.props;
 const path = Astro.url.pathname;
 const links = [
   { href: "/manager/players", label: "Player Bank" },
@@ -23,5 +26,13 @@ const links = [
       ))
     }
   </nav>
-  <slot />
+  <div slot="band" class="band">
+    <div class="wrap">
+      <span class="label">{label}</span>
+      <h1>{title}</h1>
+    </div>
+  </div>
+  <div class="manager">
+    <slot />
+  </div>
 </Base>

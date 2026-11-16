@@ -31,13 +31,12 @@ const editing = players.find((player) => player.id === Number(Astro.url.searchPa
 ---
 
 <Manager title="Player Bank">
-  <h1>Player Bank</h1>
   <p class="muted">
     {players.length} Players. Only Managers see the Priority Tier, the order, and the note.
   </p>
   {error && <p class="error" role="alert">{error}</p>}
 
-  <section class="panel">
+  <section class="card panel">
     <h2>{editing ? `Edit ${editing.firstName} ${editing.lastName}` : "Add a Player"}</h2>
     <form method="POST" class="fields">
       {editing && <input type="hidden" name="id" value={editing.id} />}
@@ -88,7 +87,7 @@ const editing = players.find((player) => player.id === Number(Astro.url.searchPa
     </form>
   </section>
 
-  <div class="table-wrap">
+  <div class="card table-wrap">
     <table>
       <thead>
         <tr>

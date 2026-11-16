@@ -1,0 +1,166 @@
+/* The styles of the manager pages. They use the Theme tokens of site.css. */
+
+.manager {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.manager .panel {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.manager .error {
+  border: 1px solid var(--kit-line);
+  background: var(--panel);
+  padding: 10px 14px;
+}
+
+/* Forms */
+.manager .fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.manager label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--frost);
+}
+
+.manager input,
+.manager select,
+.manager textarea,
+.manager button {
+  font: inherit;
+  color: var(--ink);
+}
+
+.manager input,
+.manager select,
+.manager textarea {
+  background: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 7px 9px;
+  min-width: 0;
+}
+
+.manager input[type="number"] {
+  width: 7ch;
+}
+
+.manager textarea {
+  width: 100%;
+}
+
+.manager button {
+  cursor: pointer;
+  background: var(--panel-2);
+  border: 1px solid var(--rule);
+  padding: 7px 12px;
+}
+
+.manager button.primary {
+  background: var(--kit-fill);
+  border-color: var(--kit-line);
+  color: var(--on-fill);
+  font-weight: 600;
+}
+
+.manager td,
+.manager th {
+  padding-inline: 12px;
+}
+
+/* Roster Builder: the counts against the Target Count */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.tile {
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--frost);
+}
+
+.tile b {
+  display: block;
+  font: 700 30px/1.1 var(--display);
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A count below its target. Red and green have other meanings on the site, so the border shows it. */
+.tile.short {
+  border-style: dashed;
+  border-color: var(--frost);
+}
+
+/* Roster Builder: one column for each Roster Answer */
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.column > header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 2px solid var(--kit-line);
+  padding-bottom: 6px;
+}
+
+.roster-card {
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.roster-card .who {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.roster-card .who span {
+  color: var(--frost);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.roster-card .answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.manager .roster-card button {
+  font-size: 12px;
+  padding: 3px 7px;
+}
+
+@media (max-width: 900px) {
+  .board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

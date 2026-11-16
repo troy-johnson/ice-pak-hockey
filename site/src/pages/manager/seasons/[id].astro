@@ -83,17 +83,13 @@ const message = chaseMessage(leagueSeason.name, players);
 const abbreviation = { forward: "F", defense: "D", goalie: "G" };
 ---
 
-<Manager title={leagueSeason.name}>
-  <div>
-    <h3>Roster Builder · {leagueSeason.leagueShortName}</h3>
-    <h1>{leagueSeason.name}</h1>
-  </div>
+<Manager title={leagueSeason.name} label={`Roster Builder · ${leagueSeason.leagueShortName}`}>
   {error && <p class="error" role="alert">{error}</p>}
 
-  <section class="stats" aria-label="Roster counts">
+  <section class="tiles" aria-label="Roster counts">
     {
       targets.map(({ label, have, target }) => (
-        <div class:list={["stat", { short: have < target }]}>
+        <div class:list={["card", "tile", { short: have < target }]}>
           {label}
           <b>
             {have} / {target}
@@ -103,23 +99,23 @@ const abbreviation = { forward: "F", defense: "D", goalie: "G" };
     }
     {
       counts.unknown > 0 && (
-        <div class="stat short">
+        <div class="card tile short">
           No position set
           <b>{counts.unknown}</b>
         </div>
       )
     }
-    <div class="stat">
+    <div class="card tile">
       Full-time · Part-time
       <b>
         {fullTimeCount} · {partTimeCount}
       </b>
     </div>
-    <div class="stat">
+    <div class="card tile">
       Full-Time Fee at this count
       <b>{leagueSeason.leagueFee ? dollars(fees.fullTime) : "—"}</b>
     </div>
-    <div class="stat">
+    <div class="card tile">
       Part-Time Fee at this count
       <b>{leagueSeason.leagueFee ? dollars(fees.partTime) : "—"}</b>
     </div>
@@ -141,7 +137,7 @@ const abbreviation = { forward: "F", defense: "D", goalie: "G" };
               <span class="muted">{inColumn.length}</span>
             </header>
             {inColumn.map((player) => (
-              <form method="POST" class="card">
+              <form method="POST" class="card roster-card">
                 <input type="hidden" name="playerId" value={player.id} />
                 <div class="who">
                   <b>
@@ -174,7 +170,7 @@ const abbreviation = { forward: "F", defense: "D", goalie: "G" };
     }
   </section>
 
-  <section class="panel">
+  <section class="card panel">
     <h2>Chase message</h2>
     {
       message ? (
@@ -195,7 +191,7 @@ const abbreviation = { forward: "F", defense: "D", goalie: "G" };
     }
   </section>
 
-  <details class="panel">
+  <details class="card panel">
     <summary>League Season settings</summary>
     <LeagueSeasonForm leagues={leagues} leagueSeason={leagueSeason} />
   </details>

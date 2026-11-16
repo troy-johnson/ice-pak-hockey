@@ -26,6 +26,7 @@
 
 - **Money:** whole cents, as integers.
 - **Domain rules:** pure functions in `site/src/lib/`, with the tests in a `*.test.ts` file beside them. Take each expected value from the Fee Sheet or from a confirmed decision.
+- **Styles:** `site/src/styles/site.css` has the design of the public site, copied from `docs/design/mock.css`. Build a public page from its mockup in `docs/design/` and use the classes that exist. `manager.css` has the styles of the manager pages.
 - **Manager pages:** each page in `site/src/pages/manager/` sets `prerender = false`. The middleware lets only a signed-in Manager through, and a page with a prerender would skip that check.
 - **Database:** each schema change is a new numbered file in `site/migrations/`. Leave an applied migration as it is.
 - **Local database:** an empty local database gives "no such table". Run `pnpm run migrate:local` in `site/`, then load `backups/seed-player-bank.sql` with `wrangler d1 execute ice-pak --local --file`.
