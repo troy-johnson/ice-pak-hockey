@@ -19,15 +19,9 @@
   --on-fill: #ffffff;
   /* The band is the header and the top of each page. */
   --head: #0a1427;
-  --band: linear-gradient(180deg, #17295a, #101f42);
-  /* The skated-ice marks: the strength on the ground and on the band. Invert makes the white marks dark. */
-  --ice: 0.13;
-  --ice-invert: 0;
-  /* The strength of the rink lines. */
-  --rink: 0.24;
-  --band-ice: 0.17;
-  --band-ice-invert: 0;
-  --glow: rgb(39 71 138 / 0.5);
+  --band: linear-gradient(180deg, rgb(23 41 90 / 0.46), rgb(13 25 48 / 0.84));
+  /* The veil over the rink photo: light at the top of the window, heavy at the bottom. */
+  --veil: linear-gradient(180deg, rgb(13 25 48 / 0.34), rgb(13 25 48 / 0.8) 75%);
   --shade: rgb(0 0 0 / 0.35);
   --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -48,12 +42,8 @@
   --kit-line: #1d315f;
   --accent: #2a4a8f;
   --head: #ffffff;
-  --band: linear-gradient(180deg, #213869, #17284f);
-  --ice: 0.12;
-  --ice-invert: 1;
-  --rink: 0.3;
-  --band-ice: 0.15;
-  --glow: rgb(91 165 209 / 0.2);
+  --band: linear-gradient(180deg, rgb(29 49 95 / 0.66), rgb(23 40 79 / 0.92));
+  --veil: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.8) 75%);
   --shade: rgb(29 49 95 / 0.12);
 }
 
@@ -70,12 +60,8 @@
   --kit-line: #ffffff;
   --accent: #ffffff;
   --head: #c0211c;
-  --band: linear-gradient(180deg, #c0211c, #a51a16);
-  --ice: 0.1;
-  --rink: 0.22;
-  --band-ice: 0.3;
-  --band-ice-invert: 1;
-  --glow: rgb(192 33 28 / 0.22);
+  --band: linear-gradient(180deg, rgb(192 33 28 / 0.72), rgb(150 22 18 / 0.93));
+  --veil: linear-gradient(180deg, rgb(10 10 10 / 0.42), rgb(10 10 10 / 0.86) 75%);
   --shade: rgb(0 0 0 / 0.5);
 }
 
@@ -113,45 +99,28 @@ body {
   position: relative;
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(1100px 620px at 88% -8%, var(--glow), transparent 62%) fixed, var(--ground);
+  background: var(--ground);
   color: var(--ink);
   font: 400 16px/1.5 var(--body);
   -webkit-font-smoothing: antialiased;
 }
 
-/* The rink: one full rink with its red and blue lines, end to end. It repeats down the page. */
-body::after {
+/* The rink photo: one photo for each Theme, fixed behind the page. A veil of the ground colour keeps the text clear. */
+body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: url(img/rink.svg) center top / max(100%, 1000px) auto repeat-y;
-  opacity: var(--rink);
+  background: var(--veil), url(img/bg-home.jpg) center / cover no-repeat;
 }
 
-/* In the Third Theme the blue lines of the rink are white. */
-:root[data-theme="third"] body::after {
-  background-image: url(img/rink-third.svg);
+:root[data-theme="away"] body::before {
+  background-image: var(--veil), url(img/bg-away.jpg);
 }
 
-/* The skate marks. The SVG has white marks. Each Theme sets the strength, and inverts the marks on a light ground. */
-body::before,
-.band::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background: url(img/ice.svg) center top / 1600px auto;
-  opacity: var(--ice);
-  filter: invert(var(--ice-invert));
-}
-
-.band::before {
-  background-position: 30% 20%;
-  opacity: var(--band-ice);
-  filter: invert(var(--band-ice-invert));
+:root[data-theme="third"] body::before {
+  background-image: var(--veil), url(img/bg-third.jpg);
 }
 
 .site-head,
