@@ -105,14 +105,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* The rink photo: one photo for each Theme, fixed behind the page. A veil of the ground colour keeps the text clear. */
+/* The rink image: one render for each Theme, fixed behind the page. A veil of the ground colour keeps the text clear. */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: var(--veil), url(img/bg-home.jpg) center / cover no-repeat;
+  background: var(--veil), url(img/bg-home.jpg) center 78% / cover no-repeat;
 }
 
 :root[data-theme="away"] body::before {
