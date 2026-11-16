@@ -163,7 +163,7 @@ Rules that go with the tokens:
 Two rows, one for each team. Each row has a team cell and a score cell.
 
 - **Ice Pak row:** filled with `--kit-fill`, with a 2 px line of `--kit-line` at the bottom.
-- **Opponent row:** filled with `--panel-2`, with no colour block.
+- **Opponent row:** filled with the primary colour of the opponent. The text is white or dark, from the brightness of that colour. The mockups show two variants for a comparison: with a line in the secondary colour (Night Owls) and with no line (Blue Devils). An opponent with no colours has a `--panel-2` row.
 - **Score cell:** digits in Barlow Condensed. The score of the team that lost is `--frost`.
 - **No score:** a Game with no Box Score shows a dash in each score cell.
 - **Order:** the home team is the first row. Each row has a "Home" or "Away" label. A Game with no home data has Ice Pak in the first row and no labels.
@@ -202,7 +202,7 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 
 ### Button
 
-A button has a forward lean: the left and right edges are cut at an angle, and the text is Barlow Condensed italic 800. It follows the lean of the crest wordmark. Troy asked for a shape that is less rigid than a square box. The "Watch the Recap" label has the same shape.
+Each control has a forward lean: the left and right edges are cut at an angle, the text is Barlow Condensed italic 800, and a line of `--kit-line` is at the bottom. This applies to a button, a list, the Theme switch, the month control, and the Stats control. Troy asked for the look of a menu in a hockey video game.
 
 ### Link and mark colours
 
