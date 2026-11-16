@@ -154,7 +154,7 @@ Rules that go with the tokens:
 
 ### Page frame
 
-- **Header:** crest, "Ice Pak", four links, the record of the current HHG Season, and the Theme switch.
+- **Header:** crest, "Ice Pak", four links, and the Theme switch.
 - **Band:** the top of each page. It has the page title and the main controls. On the Home page it has the Recap, the headline, and the score. On a Player page it has the jersey number, the name, and a large faint crest.
 - **Footer:** crest, three links, and the links to the Team Page and the Manager pages.
 
@@ -167,7 +167,7 @@ Two rows, one for each team. Each row has a team cell and a score cell.
 - **Score cell:** digits in Barlow Condensed. The score of the team that lost is `--frost`.
 - **No score:** a Game with no Box Score shows a dash in each score cell.
 - **Order:** the home team is the first row. Each row has a "Home" or "Away" label. A Game with no home data has Ice Pak in the first row and no labels.
-- **Opponent logo:** the opponent row has the logo with no disc behind it. Outside the score bug, a logo is on a white disc.
+- **Opponent logo:** the opponent row has the logo with no disc behind it.
 - **Ice Pak crest:** each Ice Pak row has the crest, in the small size and the large size. One exception: in the band of the Third Theme the Ice Pak row is black, and the black crest is hidden there.
 - **Video tag:** a Game with a Recap or Shorts has one "Highlights" tag.
 - **Sizes:** small for a game card, large (`.bug.lg`) for the Home page and the Game page. The line score (`.bug.line`) adds one cell for each period.
@@ -192,17 +192,17 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 
 ### Calendar
 
-- Seven columns, Sunday first. The arrows change the month.
-- **A day with a Game:** the opponent chip, the result or the start time, the opponent, the League, and a Recap tag.
-- **Win:** the day is filled with `--kit-fill`. A loss, a tie, and a next game have the card fill.
+- Seven columns, Sunday first. The arrows change the month. Each day has the same size.
+- **A day with a Game:** the opponent logo, the result or the start time, and the opponent. The day is a link to the Game page. It has no tags.
+- **Home and away:** a home Game has the primary Kit colour, and an away Game has the secondary Kit colour. A Game with no home data has no colour.
+- **Result:** a green label for a win and a red label for a loss.
 - **Today:** an `--accent` outline.
-- **Phone:** each day shows the chip and the result or the time only.
-- An NHL calendar fills the home games. The Old Site has no home data, so the fill shows a win. The text says "at" for an away Game.
-- A week with no Game has a short row.
+- **Phone:** each day shows the logo and the result or the time only.
+- **Subscribe:** a button beside the page title adds the Calendar Feed to the calendar app of the visitor.
 
 ### Opponent logo
 
-The real logo on a white disc. The white disc keeps a dark logo clear on a dark ground. An opponent with no logo gets a disc with its two colours and its initials.
+The real logo, with no disc and no border. Troy asked for this on 2026-11-16. A dark logo is less clear on a dark ground. An opponent with no logo gets a disc with its two colours and its initials.
 
 ### Leader card
 
@@ -233,7 +233,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 | Page | From the NHL page | Left out or changed |
 |---|---|---|
 | Schedule | Month control, Calendar and List tabs, a legend, a day cell with the opponent and the result. | No Full Season view, no tickets, no TV links. The fill shows a win, not a home game. The list has one table for each League Season. |
-| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. No goalie table, because the data has no saves. A team strip and four leader cards are above the table. |
+| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. A team strip and four leader cards are above the table. A goalie table is below it, with GP, W, L, T, GA, GAA, and SO. It has no save percentage, because the data has no saves. |
 | Roster | One group for each position, and a link to the stats. | Jerseys in rows, as on the Daily Faceoff line chart, in place of a table. The Roster answers "who is on the team", and the Stats page has all numbers. |
 | Player | A band with the name and the number, a season strip and a career strip, "Last 5 Games", and "Career Stats". | No photo, no Bio tab. A "Goals" table with the links to the Shorts is added. |
 

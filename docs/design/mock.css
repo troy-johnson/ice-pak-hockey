@@ -19,6 +19,13 @@
   --on-fill: #ffffff;
   /* The band is the header and the top of each page. */
   --head: #0a1427;
+  /* Calendar: the primary and secondary Kit colours. */
+  --cal-home: #27478a;
+  --cal-home-line: #5ba5d1;
+  --cal-home-ink: #ffffff;
+  --cal-away: #5ba5d1;
+  --cal-away-line: #a9d3ee;
+  --cal-away-ink: #0d1930;
   --band: linear-gradient(180deg, rgb(23 41 90 / 0.46), rgb(13 25 48 / 0.84));
   /* The veil over the rink photo: light at the top of the window, heavy at the bottom. */
   --veil: linear-gradient(180deg, rgb(13 25 48 / 0.55), rgb(13 25 48 / 0.88) 75%);
@@ -42,6 +49,12 @@
   --kit-line: #1d315f;
   --accent: #2a4a8f;
   --head: #ffffff;
+  --cal-home: #1d315f;
+  --cal-home-line: #1d315f;
+  --cal-home-ink: #ffffff;
+  --cal-away: #5ba5d1;
+  --cal-away-line: #3d8fc2;
+  --cal-away-ink: #0d1930;
   --band: linear-gradient(180deg, rgb(29 49 95 / 0.66), rgb(23 40 79 / 0.92));
   --veil: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.5) 75%);
   --shade: rgb(29 49 95 / 0.12);
@@ -60,6 +73,12 @@
   --kit-line: #ffffff;
   --accent: #ffffff;
   --head: #c0211c;
+  --cal-home: #c0211c;
+  --cal-home-line: #e5483f;
+  --cal-home-ink: #ffffff;
+  --cal-away: #000000;
+  --cal-away-line: #ffffff;
+  --cal-away-ink: #ffffff;
   --band: linear-gradient(180deg, rgb(192 33 28 / 0.72), rgb(150 22 18 / 0.93));
   --veil: linear-gradient(180deg, rgb(10 10 10 / 0.58), rgb(10 10 10 / 0.9) 75%);
   --shade: rgb(0 0 0 / 0.5);
@@ -303,6 +322,7 @@ p {
 
 /* Theme switch: one button for each Kit. */
 .switch {
+  margin-left: auto;
   display: inline-flex;
   border: 1px solid var(--rule);
 }
@@ -382,6 +402,14 @@ p {
 
 :root[data-theme="third"] .band .watermark {
   opacity: 0.16;
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
 }
 
 .crumbs {
@@ -718,25 +746,17 @@ a.tag.vid:hover {
   box-shadow: 0 0 0 1px var(--rule);
 }
 
-/* Opponent logo: the real logo on a white disc, so each logo is clear in each Theme */
+/* Opponent logo: the logo only, with no disc and no border */
 .opp-logo {
   flex: none;
   width: 38px;
   height: 38px;
-  padding: 3px;
-  border-radius: 50%;
-  background: #ffffff;
   object-fit: contain;
-  box-shadow: 0 0 0 1px var(--rule);
 }
 
 .bug .opp .team .opp-logo {
   width: 26px;
   height: 26px;
-  padding: 0;
-  border-radius: 0;
-  background: none;
-  box-shadow: none;
 }
 
 .bug.lg .opp .team .opp-logo {
@@ -1175,7 +1195,6 @@ select,
 .nextbar .opp-chip {
   width: 28px;
   height: 28px;
-  padding: 2px;
   font-size: 11px;
 }
 
@@ -1431,9 +1450,14 @@ select,
   background: var(--panel);
 }
 
-.legend i.w {
-  background: var(--kit-fill);
-  border-color: var(--kit-line);
+.legend i.h {
+  background: var(--cal-home);
+  border-color: var(--cal-home-line);
+}
+
+.legend i.a {
+  background: var(--cal-away);
+  border-color: var(--cal-away-line);
 }
 
 .legend i.t {
@@ -1457,8 +1481,8 @@ select,
 
 .cal .day {
   position: relative;
-  min-height: 62px;
-  padding: 8px 10px 12px;
+  height: 136px;
+  padding: 8px 10px 10px;
   background: color-mix(in srgb, var(--panel) 45%, transparent);
   border: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
   display: flex;
@@ -1493,15 +1517,25 @@ select,
   border-color: var(--kit-line);
 }
 
-.cal .day.win {
-  background: linear-gradient(160deg, var(--kit-fill), color-mix(in srgb, var(--kit-fill) 78%, #000));
-  border-color: var(--kit-line);
-  color: var(--on-fill);
+/* A home Game has the primary Kit colour. An away Game has the secondary Kit colour. */
+.cal .day.home {
+  background: var(--cal-home);
+  border-color: var(--cal-home-line);
+  color: var(--cal-home-ink);
 }
 
-.cal .day.win .d,
-.cal .day.win .who {
-  color: color-mix(in srgb, var(--on-fill) 82%, transparent);
+.cal .day.away {
+  background: var(--cal-away);
+  border-color: var(--cal-away-line);
+  color: var(--cal-away-ink);
+}
+
+.cal .day.home .d,
+.cal .day.home .who,
+.cal .day.away .d,
+.cal .day.away .who {
+  color: inherit;
+  opacity: 0.85;
 }
 
 .cal .day.today {
@@ -1521,9 +1555,29 @@ select,
 }
 
 .cal .res {
-  font: 700 24px/1 var(--display);
+  font: 700 22px/1 var(--display);
   letter-spacing: 0.03em;
   white-space: nowrap;
+}
+
+/* The result: green for a win and red for a loss */
+.cal .res.w,
+.cal .res.l,
+.cal .res.t {
+  padding: 3px 8px 4px;
+  color: #ffffff;
+}
+
+.cal .res.w {
+  background: #1b7f46;
+}
+
+.cal .res.l {
+  background: #b3261e;
+}
+
+.cal .res.t {
+  background: #5b6470;
 }
 
 .cal .res.time {
@@ -1535,24 +1589,6 @@ select,
   line-height: 1.25;
   color: var(--frost);
   overflow-wrap: anywhere;
-}
-
-.cal .marks {
-  margin-top: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-}
-
-.cal .marks .tag {
-  font-size: 10px;
-  padding: 3px 5px;
-}
-
-.cal .win .tag {
-  color: var(--on-fill);
-  border-color: color-mix(in srgb, var(--on-fill) 55%, transparent);
 }
 
 /* Schedule: list view */
@@ -2053,7 +2089,7 @@ details.more > summary::-webkit-details-marker {
   }
 
   .cal .day {
-    min-height: 40px;
+    height: 74px;
     padding: 4px 2px 6px;
     gap: 3px;
   }
@@ -2067,7 +2103,6 @@ details.more > summary::-webkit-details-marker {
   .cal .opp-logo {
     width: 26px;
     height: 26px;
-    padding: 2px;
     font-size: 10px;
   }
 
@@ -2077,9 +2112,14 @@ details.more > summary::-webkit-details-marker {
     letter-spacing: 0;
   }
 
-  .cal .who,
-  .cal .marks {
+  .cal .who {
     display: none;
+  }
+
+  .cal .res.w,
+  .cal .res.l,
+  .cal .res.t {
+    padding: 2px 3px;
   }
 
   .legend {
