@@ -36,7 +36,10 @@
     // Stats page: one panel for each view.
     var views = document.querySelectorAll("[data-view]");
     var panels = document.querySelectorAll("[data-panel]");
+    // Add ?view=hs or ?view=ls to the address to open that view.
+    var wanted = new URLSearchParams(location.search).get("view");
     views.forEach(function (view) {
+      if (view.dataset.view === wanted) setTimeout(function () { view.click(); });
       view.addEventListener("click", function () {
         views.forEach(function (other) {
           other.setAttribute("aria-pressed", String(other === view));

@@ -564,6 +564,16 @@ td {
   font-weight: 700;
 }
 
+[hidden] {
+  display: none !important;
+}
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 /* ---------- Controls ---------- */
 .seg {
   display: inline-flex;
@@ -944,6 +954,10 @@ details.season > .cards {
   font-variant-numeric: tabular-nums;
 }
 
+.career b {
+  white-space: nowrap;
+}
+
 .career .pts {
   background: var(--panel-2);
   box-shadow: inset 0 -2px 0 var(--kit-line);
@@ -1126,6 +1140,24 @@ details .text-link {
 }
 
 @media (max-width: 420px) {
+  /* The team summary: the record uses the full first row. */
+  .career.team {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .career.team .pts {
+    grid-column: 1 / -1;
+  }
+
+  .career .label {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .wide-only {
+    display: none;
+  }
+
   .stats-table th.n,
   .stats-table td.n {
     padding-inline: 6px;
