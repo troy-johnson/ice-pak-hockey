@@ -1,8 +1,8 @@
 ---
 import Manager from "../../layouts/Manager.astro";
-import { createPlayer, listPlayers, updatePlayer } from "../../lib/db";
+import { createPlayer, deletePlayer, listPlayers, updatePlayer } from "../../lib/db";
 import { playerFields } from "../../lib/form-fields";
-import { count } from "../../lib/forms";
+import { count, text } from "../../lib/forms";
 import { byPriority, LABELS, POSITIONS, PRIORITY_TIERS } from "../../lib/roster";
 
 export const prerender = false;
@@ -14,7 +14,12 @@ if (Astro.request.method === "POST") {
   const id = count(data, "id");
   const fields = playerFields(data);
 
-  if (!fields.firstName || !fields.lastName) {
+  if (text(data, "action") === "delete") {
+    if (await deletePlayer(id)) {
+      return Astro.redirect("/manager/players");
+    }
+    error = `${fields.firstName} ${fields.lastName} has Games, goals, or penalties, so the stats need this Player. Edit the Player in place of a delete.`;
+  } else if (!fields.firstName || !fields.lastName) {
     error = "Enter a first name and a last name.";
   } else {
     try {
@@ -85,6 +90,21 @@ const editing = players.find((player) => player.id === Number(Astro.url.searchPa
       <button class="primary">{editing ? "Save" : "Add Player"}</button>
       {editing && <a href="/manager/players">Cancel</a>}
     </form>
+    {
+      editing && (
+        <form
+          method="POST"
+          class="fields"
+          onsubmit={`return confirm(${JSON.stringify(`Delete ${editing.firstName} ${editing.lastName} from the Player Bank?`)})`}
+        >
+          <input type="hidden" name="action" value="delete" />
+          <input type="hidden" name="id" value={editing.id} />
+          <input type="hidden" name="firstName" value={editing.firstName} />
+          <input type="hidden" name="lastName" value={editing.lastName} />
+          <button>Delete Player</button>
+        </form>
+      )
+    }
   </section>
 
   <div class="card table-wrap">

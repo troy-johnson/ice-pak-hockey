@@ -66,6 +66,12 @@ Each "not verified" item is a fact that nobody checked against a primary source.
   - The Games after March 2025 come from BenchApp, with the final score. A BenchApp score of 0–0 means no score, and the Game has No Box Score.
   - The "Tournament" Games of MIC Summer '26 are playoff Games.
   - When a Game has no Game Players from the Old Site or HHG, the Players with "In" in BenchApp are the Game Players.
+- **Old data rules, confirmed by Troy on 2026-11-16:**
+  - When the Old Site has no goals for a Game, the goals and penalties come from BenchApp.
+  - The final score comes from BenchApp when it has one, because some Box Scores miss goals.
+  - A shootout goal does not count in the stats. The Game gets a shootout mark.
+  - The past League Seasons get their Rosters from BenchApp: regular players as full-time, goalies as goalies, and spares as sub-only. The Fee Sheet League Seasons and County Winter '26-27 keep the Rosters of the Managers.
+- **Delete a Player:** a Manager can delete a Player from the Player Bank. A Player with a Game, a goal, an assist, or a penalty stays, because the stats need the Player.
 - **League Seasons from BenchApp:** "2026 Summer (MIC)" is MIC Winter '26. "2026 Summer (Mammoth)" from 2026-07-28 is MIC Summer '26; its earlier events are copies. "2026 Summer (County)" is County Summer '26. "26-27 County (Winter)" is County Winter '26-27.
 - **HHG dates:** the HHG game `bluedevils_01252025` is the Game of 2026-01-25. On 2026-11-08 the team played two Games, and only the Night Owls Game has a video.
 - **Same game from two sources:** an HHG Import replaces the goals and penalties of that Game. It matches the Game by date and opponent.

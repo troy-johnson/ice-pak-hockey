@@ -61,6 +61,7 @@ BENCHAPP_SEASONS = {
     520964: "MIC Summer '26",
     522761: "County Winter '26-27",
 }
+MANAGER_ROSTERS = {"MIC Winter '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27"}
 # The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Winter '26 Games.
 MIC_SUMMER_26_FIRST_DAY = "2026-07-28"
 
@@ -460,6 +461,10 @@ def write_sql():
         if old and old_goals[old["id"]]:
             report["goals from the Old Site"] += 1
             for row in old_goals[old["id"]]:
+                # Troy: a shootout goal does not count in the stats. The Old Site used period 5 for it.
+                if row["period"] == "5":
+                    shootout = 1
+                    continue
                 ice_pak = row["team"] == "Ice Pak"
                 assists = [matched("old-site", player_id) for player_id in json.loads(row["assists"] or "[]")]
                 goals.append({
@@ -574,7 +579,8 @@ def write_sql():
             out.append(f"UPDATE games SET players_complete = 1 WHERE {key};")
 
     # The Rosters of the past League Seasons, from BenchApp. An existing Roster Answer stays.
-    seen = set()
+    # The Fee Sheet League Seasons and the current one get their Rosters from the Managers.
+    seen = set(MANAGER_ROSTERS)
     for game in benchapp:
         if game["league_season"] in seen:
             continue

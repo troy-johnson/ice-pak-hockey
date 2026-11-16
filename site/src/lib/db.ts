@@ -151,6 +151,28 @@ export function updatePlayer(id: number, fields: PlayerFields): Promise<void> {
   );
 }
 
+/**
+ * Deletes a Player with the Roster Answers and the Player Matches.
+ * A Player with a Game, a goal, an assist, or a penalty stays, because the stats need the Player.
+ */
+export async function deletePlayer(id: number): Promise<boolean> {
+  const [{ games }] = await all<{ games: number }>(
+    `SELECT (SELECT COUNT(*) FROM game_players WHERE player_id = ?1)
+          + (SELECT COUNT(*) FROM goals WHERE ?1 IN (scorer_id, assist_1_id, assist_2_id))
+          + (SELECT COUNT(*) FROM penalties WHERE player_id = ?1) AS games`,
+    id,
+  );
+  if (games > 0) {
+    return false;
+  }
+  await env.DB.batch([
+    env.DB.prepare("DELETE FROM roster_answers WHERE player_id = ?").bind(id),
+    env.DB.prepare("DELETE FROM player_matches WHERE player_id = ?").bind(id),
+    env.DB.prepare("DELETE FROM players WHERE id = ?").bind(id),
+  ]);
+  return true;
+}
+
 /** Each Player in the Player Bank, with the Roster Answer for one League Season. */
 export async function listBoardPlayers(leagueSeasonId: number): Promise<BoardPlayer[]> {
   const players = await all<Omit<BoardPlayer, "isGoalie"> & { isGoalie: number }>(
