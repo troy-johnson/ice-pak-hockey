@@ -134,7 +134,7 @@ Contrast numbers are WCAG contrast ratios. Text needs 4.5. A mark that carries m
 Rules that go with the tokens:
 
 - **Focus ring:** `:focus-visible` uses `--accent`, not `--kit-line`.
-- **No green and no red for results.** A win uses `--kit-fill`. A loss uses an outline. In the Third Theme, red is the colour of Ice Pak, so red must not mean a loss.
+- **Results:** a Win tag is green (`#1b7f46`) and a Loss tag is red (`#b3261e`), the same in each Theme. Troy asked for this on 2026-11-16. Each tag also has the word or the letter, so the colour is not the only sign. In the calendar, a win still has the kit colour.
 - **Shadow and radius:** a card has a soft shadow below it. Only the avatar and the opponent chip are round. All other parts have square corners, as the HHG graphics.
 
 ## 3. Shared parts
@@ -163,11 +163,13 @@ Rules that go with the tokens:
 Two rows, one for each team. Each row has a team cell and a score cell.
 
 - **Ice Pak row:** filled with `--kit-fill`, with a 2 px line of `--kit-line` at the bottom.
-- **Opponent row:** filled with `--panel-2`, with a chip at the left. The chip shows the primary colour over the secondary colour.
+- **Opponent row:** filled with `--panel-2`, with no colour block.
 - **Score cell:** digits in Barlow Condensed. The score of the team that lost is `--frost`.
 - **No score:** a Game with no Box Score shows a dash in each score cell.
 - **Order:** the home team is the first row. Each row has a "Home" or "Away" label. A Game with no home data has Ice Pak in the first row and no labels.
-- **Opponent logo:** the opponent row has the logo on a white disc.
+- **Opponent logo:** the opponent row has the logo with no disc behind it. Outside the score bug, a logo is on a white disc.
+- **Ice Pak crest:** each Ice Pak row has the crest, in the small size and the large size. One exception: in the band of the Third Theme the Ice Pak row is black, and the black crest is hidden there.
+- **Video tag:** a Game with a Recap or Shorts has one "Highlights" tag.
 - **Sizes:** small for a game card, large (`.bug.lg`) for the Home page and the Game page. The line score (`.bug.line`) adds one cell for each period.
 
 The HHG graphics fill the opponent row with the opponent colour. The site does not, because a purple or light blue fill cannot hold readable text in all three Themes.

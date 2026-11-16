@@ -502,13 +502,19 @@ section {
   text-decoration: none;
 }
 
+/* Results: green for a win and red for a loss, the same in each Theme. */
 .tag.win {
-  background: var(--kit-fill);
-  border-color: var(--kit-fill);
-  color: var(--on-fill);
+  background: #1b7f46;
+  border-color: #1b7f46;
+  color: #ffffff;
 }
 
-.tag.loss,
+.tag.loss {
+  background: #b3261e;
+  border-color: #b3261e;
+  color: #ffffff;
+}
+
 .tag.tie {
   color: var(--ink);
 }
@@ -559,16 +565,6 @@ a.tag.vid:hover {
   box-shadow: inset 0 -2px 0 var(--kit-line);
 }
 
-/* The opponent chip: primary colour over secondary colour. */
-.bug .opp .team::before {
-  content: "";
-  flex: none;
-  width: 10px;
-  align-self: stretch;
-  margin: -9px 0 -9px -12px;
-  background: linear-gradient(var(--opp) 0 60%, var(--opp-2) 60% 100%);
-}
-
 .bug .pts {
   display: grid;
   place-items: center;
@@ -592,18 +588,17 @@ a.tag.vid:hover {
   font-weight: 700;
 }
 
-.bug.lg .opp .team::before {
-  width: 14px;
-  margin: -15px 0 -15px -16px;
-}
-
 .bug.lg .pts {
   font-size: 46px;
 }
 
 .bug .ipk .team img {
-  height: 30px;
+  height: 22px;
   width: auto;
+}
+
+.bug.lg .ipk .team img {
+  height: 30px;
 }
 
 /* On the band of the Away Theme the Ice Pak row is white, as the away jersey. */
@@ -738,7 +733,10 @@ a.tag.vid:hover {
 .bug .opp .team .opp-logo {
   width: 26px;
   height: 26px;
-  padding: 2px;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .bug.lg .opp .team .opp-logo {
@@ -1930,10 +1928,6 @@ details.more > summary::-webkit-details-marker {
   .bug.lg.line .team {
     padding: 12px 10px;
     font-size: 17px;
-  }
-
-  .bug.lg.line .opp .team::before {
-    margin: -12px 0 -12px -10px;
   }
 
   .lines {
