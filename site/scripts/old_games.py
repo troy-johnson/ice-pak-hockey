@@ -45,7 +45,7 @@ OLD_SITE_NO_PLAYER = "6aca0d5e-2896-4ea7-b42c-9d683ff8adce"
 # The Old Site gives jersey number 95 or 0 to a player with no number.
 NO_NUMBER = {"0", "95", "100"}
 
-# Troy confirmed the BenchApp seasons on 2026-11-16.
+# Troy confirmed the BenchApp seasons on 2026-11-16. MIC Winter '26 is the coming League Season, from January 2027.
 BENCHAPP_SEASONS = {
     376746: "County Winter '21-22",
     386384: "County Summer '22",
@@ -56,13 +56,13 @@ BENCHAPP_SEASONS = {
     452512: "County Winter '24-25",
     474913: "County Summer '25",
     492383: "County Winter '25-26",
-    502529: "MIC Winter '26",
+    502529: "MIC Spring '26",
     506222: "County Summer '26",
     520964: "MIC Summer '26",
     522761: "County Winter '26-27",
 }
 MANAGER_ROSTERS = {"MIC Winter '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27"}
-# The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Winter '26 Games.
+# The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Spring '26 Games.
 MIC_SUMMER_26_FIRST_DAY = "2026-07-28"
 
 GAME_TYPES = {

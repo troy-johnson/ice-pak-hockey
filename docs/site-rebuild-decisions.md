@@ -72,7 +72,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
   - A shootout goal does not count in the stats. The Game gets a shootout mark.
   - The past League Seasons get their Rosters from BenchApp: regular players as full-time, goalies as goalies, and spares as sub-only. The Fee Sheet League Seasons and County Winter '26-27 keep the Rosters of the Managers.
 - **Delete a Player:** a Manager can delete a Player from the Player Bank. A Player with a Game, a goal, an assist, or a penalty stays, because the stats need the Player.
-- **League Seasons from BenchApp:** "2026 Summer (MIC)" is MIC Winter '26. "2026 Summer (Mammoth)" from 2026-07-28 is MIC Summer '26; its earlier events are copies. "2026 Summer (County)" is County Summer '26. "26-27 County (Winter)" is County Winter '26-27.
+- **League Seasons from BenchApp:** "2026 Summer (MIC)", from March to July 2026, is MIC Spring '26. MIC Winter '26 is the coming League Season, from January 2027. "2026 Summer (Mammoth)" from 2026-07-28 to 2026-11-15 is MIC Summer '26; its earlier events are copies of MIC Spring '26. "2026 Summer (County)" is County Summer '26. "26-27 County (Winter)" is County Winter '26-27.
 - **HHG dates:** the HHG game `bluedevils_01252025` is the Game of 2026-01-25. On 2026-11-08 the team played two Games, and only the Night Owls Game has a video.
 - **Same game from two sources:** an HHG Import replaces the goals and penalties of that Game. It matches the Game by date and opponent.
 - **Grouping:** each Game belongs to one League Season. Stats show all time, each HHG Season, and each League Season.
