@@ -1,0 +1,109 @@
+---
+import Base from "../layouts/Base.astro";
+import { utahTime } from "../lib/game-format";
+import { gamesOf, leagueSeasons, playersById, rosters, statData, type PublicPlayer } from "../lib/site-data";
+import { formatRecord, played, teamRecord } from "../lib/stats";
+
+export const prerender = false;
+
+const now = utahTime(new Date());
+const today = now.slice(0, 10);
+const games = await gamesOf(Astro.locals);
+const [entries, players, allSeasons, data] = await Promise.all([rosters(), playersById(), leagueSeasons(), statData(games)]);
+
+// The League Seasons with a Roster. The first choice is the newest one that has started.
+const seasons = allSeasons.filter((season) => entries.some((entry) => entry.leagueSeasonId === season.id));
+const started = seasons.find((season) => season.startsOn !== null && season.startsOn <= today) ?? seasons[0];
+const chosen = seasons.find((season) => season.id === Number(Astro.url.searchParams.get("ls"))) ?? started;
+const roster = entries.filter((entry) => entry.leagueSeasonId === chosen?.id);
+
+// The first year of each Player with Ice Pak, from the Games played.
+const firstGame = new Map<number, string>();
+const startsAt = new Map(games.map((game) => [game.id, game.startsAt]));
+for (const row of played(data, now).gamePlayers) {
+  const when = startsAt.get(row.gameId)!;
+  const known = firstGame.get(row.playerId);
+  if (!known || when < known) firstGame.set(row.playerId, when);
+}
+const seasonGames = games.filter((game) => game.leagueSeasonId === chosen?.id && game.startsAt < now);
+const seasonStart = seasonGames[0]?.startsAt ?? chosen?.startsOn ?? today;
+const since = (player: PublicPlayer) => {
+  const first = firstGame.get(player.id);
+  return !first || first >= seasonStart ? "First League Season" : `Since ${first.slice(0, 4)}`;
+};
+
+const byNumber = (a: PublicPlayer, b: PublicPlayer) =>
+  (a.number ?? 1000) - (b.number ?? 1000) || a.lastName.localeCompare(b.lastName);
+const members = roster.map((entry) => ({ entry, player: players.get(entry.playerId)! })).filter(({ player }) => player);
+const groups = [
+  { title: "Forwards", cols: 3, list: members.filter(({ entry, player }) => !entry.isGoalie && player.position === "forward") },
+  { title: "Defense", cols: 2, list: members.filter(({ entry, player }) => !entry.isGoalie && player.position === "defense") },
+  { title: "Goalies", cols: 2, list: members.filter(({ entry, player }) => entry.isGoalie || player.position === "goalie") },
+  { title: "Skaters", cols: 3, list: members.filter(({ entry, player }) => !entry.isGoalie && !player.position) },
+]
+  .map((group) => ({ ...group, list: group.list.map(({ player }) => player).sort(byNumber) }))
+  .filter((group) => group.list.length > 0);
+const record = teamRecord(seasonGames);
+---
+
+<Base title="Roster · Ice Pak Hockey" current="roster">
+  <div slot="band" class="band">
+    <div class="wrap">
+      <h1>Roster</h1>
+      <div class="controls">
+        <form method="get">
+          <label class="muted">
+            League Season
+            <select name="ls" data-submit>
+              {
+                seasons.map((season) => (
+                  <option value={season.id} selected={season.id === chosen?.id}>
+                    {season.name}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+          <noscript><button>Show</button></noscript>
+        </form>
+        <span class="muted">
+          {members.length} Players{seasonGames.length > 0 && ` · Record ${formatRecord(record)}`}
+        </span>
+        {seasonGames.length > 0 && <a class="ghost push" href={`/stats?ls=${chosen?.id}`}>Stats of this League Season</a>}
+      </div>
+    </div>
+  </div>
+
+  {
+    groups.map((group) => (
+      <section>
+        <div class="sec-head">
+          <h2>{group.title}</h2>
+          <span class="muted">{group.list.length}</span>
+        </div>
+        <div class="lines card" style={`--cols:${group.cols}`}>
+          {group.list.map((player) => (
+            <a class="skater" href={`/players/${player.id}`}>
+              <svg class="jersey" viewBox="0 0 200 190" aria-hidden="true">
+                <path class="body" d="M72 10C86 22 114 22 128 10L158 22L192 62V142H154V92L150 96V180H50V96L46 92V142H8V62L42 22Z" />
+                <path class="trim" d="M8 110H46V123H8zM154 110H192V123H154zM50 154H150V166H50z" />
+                <path class="trim-2" d="M8 126H46V132H8zM154 126H192V132H154zM50 169H150V174H50z" />
+                <path class="collar" d="M72 10C86 22 114 22 128 10" />
+                {player.number !== null && (
+                  <text x="100" y="128">
+                    {player.number}
+                  </text>
+                )}
+              </svg>
+              <span class="nm">
+                {player.firstName} {player.lastName}
+              </span>
+              <span class="ln">{[player.number !== null ? `#${player.number}` : null, since(player)].filter(Boolean).join(" · ")}</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))
+  }
+  {groups.length === 0 && <p class="muted">This League Season has no Roster on the site yet.</p>}
+</Base>

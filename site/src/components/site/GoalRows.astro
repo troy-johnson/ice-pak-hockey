@@ -1,0 +1,44 @@
+---
+import { opponentName, periodShort, plainDate, versus, videoImage, type GameSummary } from "../../lib/game-format";
+import type { PlayerGoal } from "../../lib/site-data";
+
+interface Props {
+  goals: PlayerGoal[];
+  games: Map<number, GameSummary>;
+  nameOf: (playerId: number | null) => string | null;
+}
+
+const { goals, games, nameOf } = Astro.props;
+---
+
+<tbody>
+  {
+    goals.map((goal) => {
+      const game = games.get(goal.gameId)!;
+      const assists = goal.assistIds.map(nameOf).filter(Boolean);
+      const image = goal.videoIsShort ? videoImage(goal.videoUrl) : null;
+      return (
+        <tr>
+          <td class="when">{plainDate(game.startsAt)}</td>
+          <td class="name">
+            <a href={`/games/${game.id}`}>
+              {versus(game.side)} {opponentName(game.opponent)}
+            </a>
+            <small>
+              {periodShort(goal.period)} {goal.clock}
+              {assists.length ? ` · from ${assists.join(", ")}` : " · unassisted"}
+            </small>
+          </td>
+          <td class="vid">
+            {goal.videoUrl && (
+              <a href={goal.videoUrl}>
+                {image && <img class="thumb" src={image} alt="" />}
+                {goal.videoIsShort ? "Short" : "Video"}
+              </a>
+            )}
+          </td>
+        </tr>
+      );
+    })
+  }
+</tbody>

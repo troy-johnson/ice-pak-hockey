@@ -1,0 +1,222 @@
+---
+import Base from "../layouts/Base.astro";
+import PlayerCell from "../components/site/PlayerCell.astro";
+import { initials, utahTime } from "../lib/game-format";
+import { gamesOf, leagueSeasons, playersById, statData } from "../lib/site-data";
+import {
+  byStat,
+  formatPointsPerGame,
+  formatRecord,
+  hhgSeason,
+  leaders,
+  only,
+  played,
+  skaterLines,
+  teamRecord,
+  type StatKey,
+} from "../lib/stats";
+
+export const prerender = false;
+
+const params = Astro.url.searchParams;
+const now = utahTime(new Date());
+const games = await gamesOf(Astro.locals);
+const [data, players, allSeasons] = await Promise.all([statData(games), playersById(), leagueSeasons()]);
+const past = played(data, now);
+
+const hhgSeasons = [...new Set(past.games.map((game) => hhgSeason(game.startsAt)))].sort().reverse();
+const playedSeasons = allSeasons.filter((season) => past.games.some((game) => game.leagueSeasonId === season.id));
+
+// The view: all time, one HHG Season, or one League Season.
+const view = params.has("ls") ? "ls" : params.has("hs") ? "hs" : "all";
+const hs = hhgSeasons.includes(params.get("hs") ?? "") ? params.get("hs")! : hhgSeasons[0];
+const ls = playedSeasons.find((season) => season.id === Number(params.get("ls"))) ?? playedSeasons[0];
+const scoped =
+  view === "hs"
+    ? only(past, (game) => hhgSeason(game.startsAt) === hs)
+    : view === "ls"
+      ? only(past, (game) => game.leagueSeasonId === ls?.id)
+      : past;
+const title = view === "hs" ? hs : view === "ls" ? (ls?.name ?? "") : "All time";
+
+const record = teamRecord(scoped.games);
+const diff = record.goalsFor - record.goalsAgainst;
+const lines = skaterLines(scoped);
+
+const SORTS: { key: StatKey; label: string; wide?: boolean }[] = [
+  { key: "gamesPlayed", label: "GP" },
+  { key: "goals", label: "G" },
+  { key: "assists", label: "A" },
+  { key: "points", label: "P" },
+  { key: "penaltyMinutes", label: "PIM", wide: true },
+  { key: "pointsPerGame", label: "P/GP", wide: true },
+];
+const sort = SORTS.find((each) => each.key === params.get("sort"))?.key ?? "points";
+const rows = [...lines].sort(byStat(sort));
+const LEADERS: { key: StatKey; label: string }[] = [
+  { key: "points", label: "Points" },
+  { key: "goals", label: "Goals" },
+  { key: "assists", label: "Assists" },
+  { key: "penaltyMinutes", label: "Penalty minutes" },
+];
+const POSITION_LETTERS = { forward: "F", defense: "D", goalie: "G" };
+const name = (playerId: number) => {
+  const player = players.get(playerId);
+  return player ? `${player.firstName} ${player.lastName}` : "Unknown player";
+};
+const viewQuery = view === "hs" ? `hs=${hs}` : view === "ls" ? `ls=${ls?.id}` : "";
+const sortHref = (key: StatKey) => `/stats?${[viewQuery, key === "points" ? "" : `sort=${key}`].filter(Boolean).join("&")}`;
+const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.slice(0, 4)];
+---
+
+<Base title="Stats · Ice Pak Hockey" current="stats">
+  <div slot="band" class="band">
+    <div class="wrap">
+      <h1>Stats</h1>
+      <div class="controls">
+        <div class="seg" role="group" aria-label="Stats view">
+          <a href="/stats" aria-current={view === "all" ? "page" : undefined}>All time</a>
+          <a href={`/stats?hs=${hs}`} aria-current={view === "hs" ? "page" : undefined}>HHG Season</a>
+          <a href={`/stats?ls=${ls?.id}`} aria-current={view === "ls" ? "page" : undefined}>League Season</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stack">
+    <div class="card strip team" style="--n:5">
+      <span class="title">{title}</span>
+      <div class="key"><span class="label">Record</span><b>{formatRecord(record)}</b></div>
+      <div><span class="label">GP</span><b>{record.gamesPlayed}</b></div>
+      <div><span class="label">GF</span><b>{record.goalsFor}</b></div>
+      <div><span class="label">GA</span><b>{record.goalsAgainst}</b></div>
+      <div><span class="label">Diff</span><b>{diff > 0 ? `+${diff}` : diff}</b></div>
+    </div>
+
+    {
+      lines.length > 0 && (
+        <section>
+          <div class="sec-head">
+            <h2>Leaders</h2>
+          </div>
+          <div class="leaders">
+            {LEADERS.map(({ key, label }) => {
+              const [top, ...rest] = leaders(lines, key);
+              return (
+                <div class="leader card">
+                  <span class="label">{label}</span>
+                  <div class="top">
+                    <span class="av" aria-hidden="true">{initials(name(top.playerId), 2)}</span>
+                    <a href={`/players/${top.playerId}`}>{name(top.playerId)}</a>
+                    <b>{top[key]}</b>
+                  </div>
+                  <ol>
+                    {rest.map((line, index) => (
+                      <li>
+                        <span>
+                          {index + 2}. <a href={`/players/${line.playerId}`}>{name(line.playerId)}</a>
+                        </span>
+                        <span>{line[key]}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )
+    }
+
+    <section>
+      <div class="sec-head">
+        <h2>Skaters</h2>
+        {
+          view === "all" && (
+            <span class="muted">
+              {years[0]} to {years[1]}
+            </span>
+          )
+        }
+        {
+          view === "hs" && (
+            <form method="get">
+              <label class="muted">
+                HHG Season
+                <select name="hs" data-submit>
+                  {hhgSeasons.map((season) => <option selected={season === hs}>{season}</option>)}
+                </select>
+              </label>
+              <noscript><button>Show</button></noscript>
+            </form>
+          )
+        }
+        {
+          view === "ls" && (
+            <form method="get">
+              <label class="muted">
+                League Season
+                <select name="ls" data-submit>
+                  {playedSeasons.map((season) => (
+                    <option value={season.id} selected={season.id === ls?.id}>
+                      {season.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <noscript><button>Show</button></noscript>
+            </form>
+          )
+        }
+      </div>
+      {
+        rows.length === 0 ? (
+          <p class="muted">No Player has a Game or a goal in this view yet.</p>
+        ) : (
+          <div class="card table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="n" />
+                  <th>Player</th>
+                  <th class="n wide-only">Pos</th>
+                  {SORTS.map((each) => (
+                    <th class:list={["n", { "wide-only": each.wide, sorted: each.key === sort }]} aria-sort={each.key === sort ? "descending" : undefined}>
+                      <a href={sortHref(each.key)}>{each.label}</a>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((line, index) => {
+                  const player = players.get(line.playerId);
+                  const cell = (key: StatKey, value: string | number) => (
+                    <td class:list={["n", { "wide-only": SORTS.find((each) => each.key === key)?.wide, sorted: key === sort }]}>{value}</td>
+                  );
+                  return (
+                    <tr>
+                      <td class="rank">{index + 1}</td>
+                      <td class="name">
+                        <PlayerCell player={player} />
+                      </td>
+                      <td class="n muted wide-only">{player?.position ? POSITION_LETTERS[player.position] : ""}</td>
+                      {cell("gamesPlayed", line.gamesPlayed)}
+                      {cell("goals", line.goals)}
+                      {cell("assists", line.assists)}
+                      {cell("points", line.points)}
+                      {cell("penaltyMinutes", line.penaltyMinutes)}
+                      {cell("pointsPerGame", formatPointsPerGame(line.pointsPerGame))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )
+      }
+      <p class="muted">
+        {rows.length} Players. Select a column title to sort the table. The record counts only the Games with a final score.
+      </p>
+    </section>
+  </div>
+</Base>

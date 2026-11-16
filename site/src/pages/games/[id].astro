@@ -1,0 +1,297 @@
+---
+import Base from "../../layouts/Base.astro";
+import PlayerCell from "../../components/site/PlayerCell.astro";
+import ScoreBug from "../../components/site/ScoreBug.astro";
+import {
+  GAME_TYPE_LABELS,
+  gameTitle,
+  lineScore,
+  longDate,
+  opponentName,
+  periodName,
+  shortDate,
+  utahTime,
+  versus,
+  videoImage,
+} from "../../lib/game-format";
+import { boxScore, gamesOf, playersById } from "../../lib/site-data";
+import { byStat, formatRecord, skaterLines, teamRecord } from "../../lib/stats";
+
+export const prerender = false;
+
+const id = Number(Astro.params.id);
+const games = await gamesOf(Astro.locals);
+const index = games.findIndex((game) => game.id === id);
+if (index < 0) return new Response("Not found", { status: 404 });
+
+const game = games[index];
+const [box, players] = await Promise.all([boxScore(id), playersById()]);
+const now = utahTime(new Date());
+const upcoming = game.startsAt > now;
+const title = gameTitle(game);
+const line = lineScore(box.goals, game);
+const hasScore = game.icePakScore !== null && game.opponentScore !== null;
+
+const before = games[index - 1];
+const after = games[index + 1];
+const against = teamRecord(
+  games.filter((other) => other.startsAt < now && game.opponent && other.opponent?.name === game.opponent.name),
+);
+
+const nameOf = (playerId: number | null) => {
+  const player = playerId === null ? undefined : players.get(playerId);
+  return player ? `${player.firstName} ${player.lastName}` : null;
+};
+const periods = [...new Set([...box.goals, ...box.penalties].map((event) => event.period))].sort();
+// The Shorts of HHG. An old goal video is a link to a time in the Recap, so it shows only as a tag.
+const shorts = box.goals.filter((goal) => goal.team === "ice-pak" && goal.videoIsShort);
+const pim = (team: string) => box.penalties.filter((penalty) => penalty.team === team).reduce((sum, penalty) => sum + penalty.minutes, 0);
+
+const lines = skaterLines({
+  games: [{ ...game }],
+  goals: box.goals.map((goal) => ({
+    gameId: id,
+    team: goal.team,
+    scorerId: goal.scorerId,
+    assist1Id: goal.assistIds[0] ?? null,
+    assist2Id: goal.assistIds[1] ?? null,
+  })),
+  penalties: box.penalties.map((penalty) => ({ gameId: id, ...penalty })),
+  gamePlayers: box.players.map((playerId) => ({ gameId: id, playerId })),
+}).sort(byStat("points"));
+
+const colours = game.opponent?.color
+  ? `--opp:${game.opponent.color};--opp-2:${game.opponent.color2 || game.opponent.color}`
+  : undefined;
+const recapImage = game.recapUrl ? videoImage(game.recapUrl, game.recapImage) : null;
+const facts = [
+  longDate(game.startsAt),
+  game.rink,
+  game.leagueSeason,
+  game.gameType === "regular" ? null : GAME_TYPE_LABELS[game.gameType],
+  game.opponent && against.wins + against.losses + against.ties > 0
+    ? `All time against ${game.opponent.name}: ${formatRecord(against)}`
+    : null,
+].filter(Boolean);
+const neighbour = (other: (typeof games)[number]) =>
+  `${shortDate(other.startsAt)} · ${versus(other.side)} ${opponentName(other.opponent)}`;
+---
+
+<Base
+  title={`${title} · Ice Pak Hockey`}
+  current="schedule"
+  description={`${longDate(game.startsAt)} · ${game.leagueSeason}${hasScore ? ` · Ice Pak ${game.icePakScore}, ${opponentName(game.opponent)} ${game.opponentScore}` : ""}`}
+  image={recapImage ?? undefined}
+>
+  <div slot="band" class="band">
+    <div class="wrap">
+      <p class="crumbs">
+        <a href="/schedule?view=list">Schedule</a> / <a href={`/stats?ls=${game.leagueSeasonId}`}>{game.leagueSeason}</a>
+      </p>
+      <h1>{title}</h1>
+      <p class="muted">{facts.join(" · ")}</p>
+      <div class="game-nav">
+        {before ? <a href={`/games/${before.id}`}>‹ {neighbour(before)}</a> : <span />}
+        {after && <a href={`/games/${after.id}`}>Next: {neighbour(after)} ›</a>}
+      </div>
+    </div>
+  </div>
+
+  <div class:list={["game-top", { even: !recapImage }]}>
+    {
+      recapImage && (
+        <a class="video" href={game.recapUrl}>
+          <img src={recapImage} alt={`Recap of ${title}`} />
+          <span class="play">Watch the Recap</span>
+        </a>
+      )
+    }
+    <section>
+      <span class="label">{upcoming ? "Next game" : hasScore ? (game.shootout ? "Final · Shootout" : "Final") : "No Box Score"}</span>
+      <ScoreBug game={game} large line={line} />
+      {
+        box.penalties.length > 0 && (
+          <p class="muted">
+            Penalty minutes: Ice Pak {pim("ice-pak")}, {opponentName(game.opponent)} {pim("opponent")}.
+          </p>
+        )
+      }
+      {
+        !hasScore && !upcoming && (
+          <p class="muted">This Game has no Scoresheet and no Box Score on the site.</p>
+        )
+      }
+      {
+        hasScore && box.goals.length === 0 && (
+          <p class="muted">The site has the final score of this Game, and no goals or penalties.</p>
+        )
+      }
+    </section>
+  </div>
+
+  {
+    shorts.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>Shorts</h2>
+          <span class="muted">{shorts.length === 1 ? "1 goal" : `${shorts.length} goals`}</span>
+        </div>
+        <div class="shorts">
+          {shorts.map((goal) => {
+            const image = videoImage(goal.videoUrl);
+            return (
+              <a class="short" href={goal.videoUrl}>
+                <span class="frame">
+                  {image && <img src={image} alt="" />}
+                  <span class="play">Short</span>
+                </span>
+                <span>
+                  {nameOf(goal.scorerId) ?? "Ice Pak"} · {periodName(goal.period)} {goal.clock}
+                </span>
+              </a>
+            );
+          })}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    (box.goals.length > 0 || box.penalties.length > 0) && (
+      <div class="two-col even">
+        <section>
+          <div class="sec-head">
+            <h2>Scoring</h2>
+            <span class="muted">Box Score</span>
+          </div>
+          <ul class="events card">
+            {periods.map((period) => {
+              const goals = box.goals.filter((goal) => goal.period === period);
+              return (
+                <>
+                  <li class="period">
+                    <h3>{periodName(period)}</h3>
+                  </li>
+                  {goals.length === 0 && (
+                    <li class="ev">
+                      <span class="what muted">No goals</span>
+                    </li>
+                  )}
+                  {goals.map((goal) => {
+                    const assists = goal.assistIds.map(nameOf).filter(Boolean);
+                    const scorer = goal.team === "ice-pak" ? nameOf(goal.scorerId) : null;
+                    return (
+                      <li class:list={["ev", goal.team === "ice-pak" ? "ipk" : "opp"]} style={goal.team === "opponent" ? colours : undefined}>
+                        <span class="clock">{goal.clock}</span>
+                        <i class="chip" />
+                        <span class="what">
+                          <b>
+                            {goal.team === "ice-pak" ? (
+                              scorer ? <a href={`/players/${goal.scorerId}`}>{scorer}</a> : "Ice Pak"
+                            ) : (
+                              opponentName(game.opponent)
+                            )}
+                          </b>{" "}
+                          {goal.team === "ice-pak" && <span>{assists.length ? `from ${assists.join(", ")}` : scorer ? "unassisted" : ""}</span>}
+                        </span>
+                        {goal.videoUrl && (
+                          <a class="tag vid" href={goal.videoUrl}>
+                            {goal.videoIsShort ? "Short" : "Video"}
+                          </a>
+                        )}
+                      </li>
+                    );
+                  })}
+                </>
+              );
+            })}
+          </ul>
+        </section>
+        <section>
+          <div class="sec-head">
+            <h2>Penalties</h2>
+          </div>
+          <ul class="events card">
+            {periods.map((period) => {
+              const penalties = box.penalties.filter((penalty) => penalty.period === period);
+              return (
+                <>
+                  <li class="period">
+                    <h3>{periodName(period)}</h3>
+                  </li>
+                  {penalties.length === 0 && (
+                    <li class="ev">
+                      <span class="what muted">No penalties</span>
+                    </li>
+                  )}
+                  {penalties.map((penalty) => {
+                    const player = penalty.team === "ice-pak" ? nameOf(penalty.playerId) : null;
+                    return (
+                      <li class:list={["ev", penalty.team === "ice-pak" ? "ipk" : "opp"]} style={penalty.team === "opponent" ? colours : undefined}>
+                        <span class="clock">{penalty.clock}</span>
+                        <i class="chip" />
+                        <span class="what">
+                          <b>
+                            {penalty.team === "ice-pak" ? (
+                              player ? <a href={`/players/${penalty.playerId}`}>{player}</a> : "Ice Pak"
+                            ) : (
+                              opponentName(game.opponent)
+                            )}
+                          </b>{" "}
+                          <span>{penalty.infraction}</span>
+                        </span>
+                        <span class="tag">{penalty.minutes} min</span>
+                      </li>
+                    );
+                  })}
+                </>
+              );
+            })}
+          </ul>
+        </section>
+      </div>
+    )
+  }
+
+  {
+    lines.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>Game Players</h2>
+          <span class="muted">Ice Pak</span>
+        </div>
+        <div class="card table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th class="n">#</th>
+                <th class="n">G</th>
+                <th class="n">A</th>
+                <th class="n sorted">P</th>
+                <th class="n">PIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((line) => {
+                const player = players.get(line.playerId);
+                return (
+                  <tr>
+                    <td class="name">
+                      <PlayerCell player={player} />
+                    </td>
+                    <td class="n">{player?.number ?? "–"}</td>
+                    <td class="n">{line.goals}</td>
+                    <td class="n">{line.assists}</td>
+                    <td class="n sorted">{line.points}</td>
+                    <td class="n">{line.penaltyMinutes}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )
+  }
+</Base>

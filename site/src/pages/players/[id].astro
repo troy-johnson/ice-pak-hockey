@@ -1,0 +1,242 @@
+---
+import Base from "../../layouts/Base.astro";
+import { opponentName, plainDate, resultLabel, utahTime, versus } from "../../lib/game-format";
+import { LABELS } from "../../lib/roster";
+import GoalRows from "../../components/site/GoalRows.astro";
+import { gamesOf, leagueSeasons, playerGoals, playersById, statData } from "../../lib/site-data";
+import { formatPointsPerGame, hhgSeason, only, played, skaterLines, type SkaterLine } from "../../lib/stats";
+
+export const prerender = false;
+
+const id = Number(Astro.params.id);
+const games = await gamesOf(Astro.locals);
+const [data, players, seasons] = await Promise.all([statData(games), playersById(), leagueSeasons()]);
+const player = players.get(id);
+if (!player) return new Response("Not found", { status: 404 });
+
+const now = utahTime(new Date());
+const past = played(data, now);
+const gameById = new Map(games.map((game) => [game.id, game]));
+const lineOf = (scope: typeof past): SkaterLine =>
+  skaterLines(scope).find((line) => line.playerId === id) ?? {
+    playerId: id,
+    gamesPlayed: 0,
+    goals: 0,
+    assists: 0,
+    points: 0,
+    penaltyMinutes: 0,
+    pointsPerGame: 0,
+  };
+
+// The Games of the Player: the Game Players rows, and each Game with a goal, an assist, or a penalty.
+const mine = new Set([
+  ...past.gamePlayers.filter((row) => row.playerId === id).map((row) => row.gameId),
+  ...past.goals.filter((goal) => [goal.scorerId, goal.assist1Id, goal.assist2Id].includes(id)).map((goal) => goal.gameId),
+  ...past.penalties.filter((penalty) => penalty.playerId === id).map((penalty) => penalty.gameId),
+]);
+const myGames = games.filter((game) => mine.has(game.id)).reverse();
+const latest = myGames[0];
+const season = hhgSeason(now);
+const career = lineOf(past);
+const thisSeason = lineOf(only(past, (game) => hhgSeason(game.startsAt) === season));
+const last5 = myGames.slice(0, 5).map((game) => ({ game, line: lineOf(only(past, (each) => each.id === game.id)) }));
+const sum = (key: "goals" | "assists" | "points" | "penaltyMinutes") =>
+  last5.reduce((total, row) => total + row.line[key], 0);
+const bySeason = seasons
+  .map((leagueSeason) => ({ leagueSeason, line: lineOf(only(past, (game) => game.leagueSeasonId === leagueSeason.id)) }))
+  .filter(({ line }) => line.gamesPlayed || line.points || line.penaltyMinutes);
+
+const goals = (await playerGoals(id)).filter((goal) => gameById.get(goal.gameId)!.startsAt < now);
+const first = myGames.at(-1)?.startsAt.slice(0, 4);
+const name = `${player.firstName} ${player.lastName}`;
+const nameOf = (playerId: number | null) => {
+  const other = playerId === null ? undefined : players.get(playerId);
+  return other ? `${other.firstName} ${other.lastName}` : null;
+};
+const videos = goals.filter((goal) => goal.videoUrl).length;
+const recent = goals.slice(0, 10);
+const older = goals.slice(10);
+const strip = (label: string, line: SkaterLine) => ({ label, line });
+---
+
+<Base title={`${name} · Ice Pak Hockey`} current="roster">
+  <div slot="band" class="band">
+    <div class="wrap">
+      <img class="watermark crest-navy" src="/crest-navy.png" alt="" />
+      <img class="watermark crest-third" src="/crest-third.svg" alt="" />
+      <p class="crumbs"><a href="/roster">Roster</a>{latest && ` / ${latest.leagueSeason}`}</p>
+      <div class="player-head">
+        {player.number !== null && <span class="jersey-no">{player.number}</span>}
+        <div>
+          <div class="first">{player.firstName}</div>
+          <h1>{player.lastName}</h1>
+          <div class="bio">
+            {player.number !== null && <span>#{player.number}</span>}
+            {player.position && <span>{LABELS[player.position]}</span>}
+            {first && <span>With Ice Pak since {first}</span>}
+            {latest && <span>Latest game {plainDate(latest.startsAt)}</span>}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="strips">
+    {
+      [strip(`${season.slice(0, 5)}${season.slice(7)} Season`, thisSeason), strip("Career", career)].map(({ label, line }) => (
+        <div class="card strip" style="--n:6">
+          <span class="title">{label}</span>
+          <div><span class="label">GP</span><b>{line.gamesPlayed}</b></div>
+          <div><span class="label">G</span><b>{line.goals}</b></div>
+          <div><span class="label">A</span><b>{line.assists}</b></div>
+          <div class="key"><span class="label">P</span><b>{line.points}</b></div>
+          <div><span class="label">PIM</span><b>{line.penaltyMinutes}</b></div>
+          <div><span class="label">P/GP</span><b>{formatPointsPerGame(line.pointsPerGame)}</b></div>
+        </div>
+      ))
+    }
+  </div>
+
+  {
+    last5.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>Last 5 Games</h2>
+          {goals.length > 0 && <a href="#goals">All goals</a>}
+        </div>
+        <div class="card table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Game</th>
+                <th class="n">G</th>
+                <th class="n">A</th>
+                <th class="n sorted">P</th>
+                <th class="n">PIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {last5.map(({ game, line }) => (
+                <tr>
+                  <td class="date" style="white-space:nowrap">{plainDate(game.startsAt)}</td>
+                  <td class="name">
+                    <a href={`/games/${game.id}`}>
+                      {versus(game.side)} {opponentName(game.opponent)}
+                    </a>
+                    {resultLabel(game) && <small>{resultLabel(game)}</small>}
+                  </td>
+                  <td class="n">{line.goals}</td>
+                  <td class="n">{line.assists}</td>
+                  <td class="n sorted">{line.points}</td>
+                  <td class="n">{line.penaltyMinutes}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">Last {last5.length} totals</td>
+                <td class="n">{sum("goals")}</td>
+                <td class="n">{sum("assists")}</td>
+                <td class="n sorted">{sum("points")}</td>
+                <td class="n">{sum("penaltyMinutes")}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    bySeason.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>Career Stats</h2>
+          <a href="/stats">Team stats</a>
+        </div>
+        <div class="card table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>League Season</th>
+                <th class="n wide-only">League</th>
+                <th class="n">GP</th>
+                <th class="n">G</th>
+                <th class="n">A</th>
+                <th class="n sorted">P</th>
+                <th class="n">PIM</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bySeason.map(({ leagueSeason, line }) => (
+                <tr>
+                  <td class="name">
+                    <a href={`/roster?ls=${leagueSeason.id}`}>{leagueSeason.name}</a>
+                  </td>
+                  <td class="n muted wide-only">{leagueSeason.league}</td>
+                  <td class="n">{line.gamesPlayed}</td>
+                  <td class="n">{line.goals}</td>
+                  <td class="n">{line.assists}</td>
+                  <td class="n sorted">{line.points}</td>
+                  <td class="n">{line.penaltyMinutes}</td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr>
+                <td>Career</td>
+                <td class="wide-only" />
+                <td class="n">{career.gamesPlayed}</td>
+                <td class="n">{career.goals}</td>
+                <td class="n">{career.assists}</td>
+                <td class="n sorted">{career.points}</td>
+                <td class="n">{career.penaltyMinutes}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    goals.length > 0 && (
+      <section id="goals">
+        <div class="sec-head">
+          <h2>Goals</h2>
+          <span class="muted">
+            {goals.length === 1 ? "1 goal" : `${goals.length} goals`}
+            {videos > 0 && ` · ${videos} with a video`}
+          </span>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table class="goals">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Goal</th>
+                  <th>Video</th>
+                </tr>
+              </thead>
+              <GoalRows goals={recent} games={gameById} nameOf={nameOf} />
+            </table>
+          </div>
+          {
+            older.length > 0 && (
+              <details class="more">
+                <summary>Show the {older.length} older goals</summary>
+                <div class="table-wrap">
+                  <table class="goals">
+                    <GoalRows goals={older} games={gameById} nameOf={nameOf} />
+                  </table>
+                </div>
+              </details>
+            )
+          }
+        </div>
+      </section>
+    )
+  }
+</Base>

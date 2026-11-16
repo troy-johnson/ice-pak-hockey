@@ -1,0 +1,17 @@
+---
+import { shortDate, type GameSummary } from "../../lib/game-format";
+import GameTags from "./GameTags.astro";
+import ScoreBug from "./ScoreBug.astro";
+
+interface Props {
+  game: GameSummary;
+}
+
+const { game } = Astro.props;
+---
+
+<a class="game-card card" href={`/games/${game.id}`}>
+  <div class="meta"><span>{shortDate(game.startsAt)}</span><span>{game.leagueSeason}</span></div>
+  <ScoreBug game={game} />
+  <div class="foot"><GameTags game={game} long links={false} /></div>
+</a>

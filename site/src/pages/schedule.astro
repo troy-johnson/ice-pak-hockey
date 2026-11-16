@@ -1,0 +1,283 @@
+---
+import Base from "../layouts/Base.astro";
+import GameTags from "../components/site/GameTags.astro";
+import OppMark from "../components/site/OppMark.astro";
+import { clockTime, monthName, opponentName, resultLabel, shortDate, utahTime, versus, type GameSummary } from "../lib/game-format";
+import { gamesOf } from "../lib/site-data";
+import { formatRecord, hhgSeason, result, teamRecord } from "../lib/stats";
+
+export const prerender = false;
+
+const LEAGUES = ["MIC", "County", "UHL"];
+const league = Astro.url.searchParams.get("league");
+const chosen = LEAGUES.includes(league ?? "") ? league : null;
+
+const now = utahTime(new Date());
+const today = now.slice(0, 10);
+const allGames = await gamesOf(Astro.locals);
+const games = allGames.filter((game) => !chosen || game.league === chosen);
+const past = games.filter((game) => game.startsAt < now);
+const record = teamRecord(past);
+const withScore = record.wins + record.losses + record.ties;
+const firstYear = games[0]?.startsAt.slice(0, 4);
+
+// The calendar has the months of this HHG Season and the one before, up to the last Game or today.
+const season = hhgSeason(now);
+const startYear = Number(season.slice(0, 4)) - 1;
+const lastDay = [today, ...games.map((game) => game.startsAt.slice(0, 10))].sort().at(-1)!;
+const months: { year: number; month: number }[] = [];
+for (let year = startYear, month = 8; `${year}-${String(month).padStart(2, "0")}` <= lastDay.slice(0, 7); ) {
+  months.push({ year, month });
+  month = month === 12 ? 1 : month + 1;
+  if (month === 1) year += 1;
+}
+const byDay = new Map<string, GameSummary[]>();
+for (const game of games) {
+  const day = game.startsAt.slice(0, 10);
+  byDay.set(day, [...(byDay.get(day) ?? []), game]);
+}
+const cells = (year: number, month: number) => {
+  const first = new Date(Date.UTC(year, month - 1, 1)).getUTCDay();
+  const length = new Date(Date.UTC(year, month, 0)).getUTCDate();
+  const days: (string | null)[] = Array(first).fill(null);
+  for (let day = 1; day <= length; day += 1) {
+    days.push(`${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`);
+  }
+  while (days.length % 7) days.push(null);
+  return days;
+};
+const thisMonth = today.slice(0, 7);
+
+// The list: one table for each League Season, newest first. The League Seasons of this HHG Season are open.
+const seasons: { id: number; name: string; games: GameSummary[] }[] = [];
+for (const game of [...past].reverse()) {
+  let entry = seasons.find((each) => each.id === game.leagueSeasonId);
+  if (!entry) seasons.push((entry = { id: game.leagueSeasonId, name: game.leagueSeason, games: [] }));
+  entry.games.push(game);
+}
+const upcoming = games.filter((game) => game.startsAt >= now);
+const summary = (list: GameSummary[]) => {
+  const seasonRecord = teamRecord(list);
+  const scored = seasonRecord.wins + seasonRecord.losses + seasonRecord.ties;
+  const parts = [
+    list.length === 1 ? "1 Game" : `${list.length} Games`,
+    `${seasonRecord.goalsFor} goals for`,
+    `${seasonRecord.goalsAgainst} against`,
+  ];
+  if (scored < list.length) parts.push(`${list.length - scored} with no Box Score`);
+  return { record: formatRecord(seasonRecord), text: parts.join(" · ") };
+};
+---
+
+<Base title="Schedule · Ice Pak Hockey" current="schedule">
+  <div slot="band" class="band">
+    <div class="wrap">
+      <h1>Schedule</h1>
+      <p class="muted">
+        {past.length} Games since {firstYear}. The record is {formatRecord(record)} in the {withScore} Games with a final score.
+      </p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="month-nav" data-panel="cal">
+      <button type="button" data-step="-1" aria-label="Previous month">‹</button>
+      <b data-month-name></b>
+      <button type="button" data-step="1" aria-label="Next month">›</button>
+    </div>
+    <form method="get">
+      <label class="muted">
+        League
+        <select name="league" data-submit>
+          <option value="">All Leagues</option>
+          {LEAGUES.map((name) => <option selected={name === chosen}>{name}</option>)}
+        </select>
+      </label>
+      <noscript><button>Show</button></noscript>
+    </form>
+  </div>
+
+  <div class="tabs" role="group" aria-label="Schedule view">
+    <button type="button" data-view="cal" aria-pressed="true">Calendar</button>
+    <button type="button" data-view="list" aria-pressed="false">List</button>
+  </div>
+
+  <div data-panel="cal">
+    {
+      months.map(({ year, month }) => {
+        const key = `${year}-${String(month).padStart(2, "0")}`;
+        return (
+          <div data-month={key} data-name={`${monthName(month)} ${year}`} data-current={String(key === thisMonth)} hidden>
+            <div class="cal-bar">
+              <h2>
+                {monthName(month)} {year}
+              </h2>
+              <div class="legend">
+                <span>
+                  <i class="w" />
+                  Win
+                </span>
+                <span>
+                  <i />
+                  Loss, tie, or next game
+                </span>
+                <span>
+                  <i class="t" />
+                  Today
+                </span>
+              </div>
+            </div>
+            <div class="cal" style="margin-top:16px">
+              {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((name) => (
+                <div class="dow">{name}</div>
+              ))}
+              {cells(year, month).map((day) => {
+                if (!day) return <div class="day out" />;
+                const game = byDay.get(day)?.[0];
+                const number = Number(day.slice(8));
+                if (!game) return <div class:list={["day", { today: day === today }]}><span class="d">{number}</span></div>;
+                const outcome = result(game);
+                const next = game.startsAt >= now;
+                return (
+                  <a class:list={["day game", { win: outcome === "win", today: day === today }]} href={`/games/${game.id}`}>
+                    <span class="d">{number}</span>
+                    <OppMark opponent={game.opponent} />
+                    <span class:list={["res", { time: next }]}>
+                      {next ? clockTime(game.startsAt) : resultLabel(game) ?? "–"}
+                    </span>
+                    <span class="who">
+                      {versus(game.side)} {opponentName(game.opponent)}
+                    </span>
+                    <span class="marks">
+                      <span class="tag">{game.league}</span>
+                      {game.recapUrl && <span class="tag vid">Recap</span>}
+                    </span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })
+    }
+  </div>
+
+  <div class="stack" data-panel="list" hidden>
+    {
+      upcoming.length > 0 && (
+        <section>
+          <div class="season-head">
+            <h2>Next games</h2>
+          </div>
+          <div class="card table-wrap">
+            <table class="sched">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Game</th>
+                  <th>League</th>
+                  <th class="wide-only">Rink</th>
+                </tr>
+              </thead>
+              <tbody>
+                {upcoming.map((game) => (
+                  <tr>
+                    <td class="date">
+                      {shortDate(game.startsAt)}
+                      <small>{clockTime(game.startsAt)}</small>
+                    </td>
+                    <td class="match">
+                      <a href={`/games/${game.id}`}>
+                        <OppMark opponent={game.opponent} />
+                        <span>{versus(game.side)}</span>
+                        <b>{opponentName(game.opponent)}</b>
+                      </a>
+                    </td>
+                    <td class="score">
+                      <span class="tag">{game.league}</span>
+                    </td>
+                    <td class="wide-only muted">{game.rink}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )
+    }
+    {
+      seasons.map((entry) => {
+        const { record: seasonRecord, text } = summary(entry.games);
+        const open = hhgSeason(entry.games[0].startsAt) === season;
+        const head = (
+          <div class="season-head">
+            <h2>{entry.name}</h2>
+            <span class="rec">{seasonRecord}</span>
+            <span class="muted">{text}</span>
+          </div>
+        );
+        const table = (
+          <div class="table-wrap">
+            <table class="sched">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Game</th>
+                  <th>Result</th>
+                  <th class="wide-only">Rink</th>
+                  <th>Watch</th>
+                </tr>
+              </thead>
+              <tbody>
+                {entry.games.map((game) => {
+                  const outcome = result(game);
+                  return (
+                    <tr>
+                      <td class="date">
+                        {shortDate(game.startsAt)}
+                        <small>{game.startsAt.slice(0, 4)}</small>
+                      </td>
+                      <td class="match">
+                        <a href={`/games/${game.id}`}>
+                          <OppMark opponent={game.opponent} />
+                          <span>{versus(game.side)}</span>
+                          <b>{opponentName(game.opponent)}</b>
+                        </a>
+                      </td>
+                      <td class="score">
+                        {outcome ? (
+                          <>
+                            <span class:list={["tag", outcome]}>{outcome[0].toUpperCase()}</span>
+                            {game.icePakScore}-{game.opponentScore}
+                            {game.shootout && " SO"}
+                          </>
+                        ) : (
+                          <span class="muted">–</span>
+                        )}
+                      </td>
+                      <td class="wide-only muted">{game.rink}</td>
+                      <td class="watch">
+                        <GameTags game={game} showResult={false} />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        );
+        return open ? (
+          <section>
+            {head}
+            <div class="card">{table}</div>
+          </section>
+        ) : (
+          <details class="season card">
+            <summary>{head}</summary>
+            {table}
+          </details>
+        );
+      })
+    }
+  </div>
+</Base>

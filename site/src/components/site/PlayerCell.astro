@@ -1,0 +1,16 @@
+---
+import { initials } from "../../lib/game-format";
+import type { PublicPlayer } from "../../lib/site-data";
+
+interface Props {
+  player: PublicPlayer | undefined;
+}
+
+const { player } = Astro.props;
+const name = player ? `${player.firstName} ${player.lastName}` : "Unknown player";
+---
+
+<span class="who">
+  <span class="av" aria-hidden="true">{initials(name, 2)}</span>
+  {player ? <a href={`/players/${player.id}`}>{name}</a> : <span>{name}</span>}
+</span>

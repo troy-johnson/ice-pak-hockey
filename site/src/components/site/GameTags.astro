@@ -1,0 +1,28 @@
+---
+import { result } from "../../lib/stats";
+import type { GameSummary } from "../../lib/game-format";
+
+interface Props {
+  game: GameSummary;
+  /** Long words, as on a game card: "Win" in place of "W". */
+  long?: boolean;
+  /** Also show the result tag. */
+  showResult?: boolean;
+  /** False inside a link, such as a game card. */
+  links?: boolean;
+}
+
+const { game, long = false, showResult = true, links = true } = Astro.props;
+const outcome = result({ ...game });
+const words = { win: ["W", "Win"], loss: ["L", "Loss"], tie: ["T", "Tie"] } as const;
+const others = game.videoCount - game.shortCount;
+const count = (value: number, word: string) => `${value} ${word}${value === 1 ? "" : "s"}`;
+---
+
+{showResult && outcome && <span class:list={["tag", outcome]}>{words[outcome][long ? 1 : 0]}</span>}
+{game.gameType === "playoff" && <span class="tag">Playoffs</span>}
+{game.gameType === "preseason" && <span class="tag">Preseason</span>}
+{outcome === null && <span class="tag">No Box Score</span>}
+{game.recapUrl && (links ? <a class="tag vid" href={game.recapUrl}>Recap</a> : <span class="tag vid">Recap</span>)}
+{game.shortCount > 0 && <span class="tag vid">{count(game.shortCount, "Short")}</span>}
+{others > 0 && <span class="tag vid">{count(others, "video")}</span>}

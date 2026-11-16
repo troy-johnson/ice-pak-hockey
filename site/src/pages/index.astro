@@ -1,15 +1,164 @@
 ---
 import Base from "../layouts/Base.astro";
+import GameCard from "../components/site/GameCard.astro";
+import PlayerCell from "../components/site/PlayerCell.astro";
+import ScoreBug from "../components/site/ScoreBug.astro";
+import { headline, periodName, plainDate, utahTime, videoImage } from "../lib/game-format";
+import { boxScore, gamesOf, playersById, statData } from "../lib/site-data";
+import { byStat, hhgSeason, only, played, skaterLines } from "../lib/stats";
+
+export const prerender = false;
+
+const now = utahTime(new Date());
+const games = await gamesOf(Astro.locals);
+const past = games.filter((game) => game.startsAt < now);
+// The hero is the newest Game with a final score, or else the newest Game.
+const latest = past.findLast((game) => game.icePakScore !== null) ?? past.at(-1);
+const season = hhgSeason(now);
+const [data, players, box] = await Promise.all([
+  statData(games),
+  playersById(),
+  latest ? boxScore(latest.id) : Promise.resolve(null),
+]);
+
+// The Games of this HHG Season, newest first. With none yet, the newest three Games.
+const seasonGames = past.filter((game) => hhgSeason(game.startsAt) === season).reverse();
+const cards = (seasonGames.length ? seasonGames : [...past].reverse()).slice(0, 3);
+const leaders = skaterLines(only(played(data, now), (game) => hhgSeason(game.startsAt) === season))
+  .filter((line) => line.points > 0)
+  .sort(byStat("points"))
+  .slice(0, 6);
+const shorts = (box?.goals ?? []).filter((goal) => goal.team === "ice-pak" && goal.videoIsShort).slice(0, 3);
+const recapImage = latest?.recapUrl ? videoImage(latest.recapUrl, latest.recapImage) : null;
+const nameOf = (playerId: number | null) => {
+  const player = playerId === null ? undefined : players.get(playerId);
+  return player ? `${player.firstName} ${player.lastName}` : "Ice Pak";
+};
 ---
 
-<Base title="Ice Pak Hockey">
+<Base title="Ice Pak Hockey" description="The game videos, the schedule, and the stats of Ice Pak, a hockey team in Salt Lake City.">
   <div slot="band" class="band">
     <div class="wrap">
-      <h1>Ice Pak Hockey</h1>
-      <p class="muted">We are building a new site. The game history and the stats come back soon.</p>
-      <p>
-        <a class="button" href="https://www.youtube.com/@icepakhockey">Watch the Recaps on YouTube</a>
-      </p>
+      {
+        latest ? (
+          <div class:list={["hero", { "no-video": !recapImage }]}>
+            {recapImage && (
+              <a class="video" href={latest.recapUrl}>
+                <img src={recapImage} alt={`Recap of ${headline(latest)}`} />
+                <span class="play">Watch the Recap</span>
+              </a>
+            )}
+            <div class="side">
+              <span class="label">
+                {latest.icePakScore === null ? "Latest game" : "Final"} · {plainDate(latest.startsAt)} · {latest.leagueSeason}
+              </span>
+              <h1>{headline(latest)}</h1>
+              <ScoreBug game={latest} large />
+              <a class="text-link" href={`/games/${latest.id}`}>
+                {shorts.length ? "Box Score and Shorts" : "Box Score"}
+              </a>
+            </div>
+          </div>
+        ) : (
+          <h1>Ice Pak Hockey</h1>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    cards.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>{seasonGames.length ? "This season" : "Latest games"}</h2>
+          <a href="/schedule">Full Schedule</a>
+        </div>
+        <div class="cards three">
+          {cards.map((game) => (
+            <GameCard game={game} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <div class="two-col">
+    {
+      shorts.length > 0 ? (
+        <section>
+          <div class="sec-head">
+            <h2>Shorts</h2>
+            <span class="muted">{latest && headline(latest)}</span>
+          </div>
+          <div class="shorts three">
+            {shorts.map((goal) => {
+              const image = videoImage(goal.videoUrl);
+              return (
+                <a class="short" href={goal.videoUrl}>
+                  <span class="frame">
+                    {image && <img src={image} alt="" />}
+                    <span class="play">Short</span>
+                  </span>
+                  <span>
+                    {nameOf(goal.scorerId)} · {periodName(goal.period)} {goal.clock}
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ) : (
+        <section>
+          <div class="sec-head">
+            <h2>Videos</h2>
+          </div>
+          <p class="muted">
+            The Recaps and the Shorts are on <a href="https://www.youtube.com/@icepakhockey">YouTube</a>.
+          </p>
+        </section>
+      )
+    }
+    <div class="stack">
+      <section>
+        <div class="sec-head">
+          <h2>Points leaders</h2>
+          <a href="/stats">All Stats</a>
+        </div>
+        {
+          leaders.length === 0 ? (
+            <p class="muted">No Player has a point in this HHG Season yet.</p>
+          ) : (
+            <div class="card table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="n" />
+                    <th>Player</th>
+                    <th class="n">GP</th>
+                    <th class="n">G</th>
+                    <th class="n">A</th>
+                    <th class="n sorted">Pts</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {leaders.map((line, index) => (
+                    <tr>
+                      <td class="rank">{index + 1}</td>
+                      <td class="name">
+                        <PlayerCell player={players.get(line.playerId)} />
+                      </td>
+                      <td class="n">{line.gamesPlayed}</td>
+                      <td class="n">{line.goals}</td>
+                      <td class="n">{line.assists}</td>
+                      <td class="n sorted">{line.points}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        }
+      </section>
     </div>
   </div>
 </Base>

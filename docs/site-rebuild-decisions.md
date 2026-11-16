@@ -21,6 +21,9 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **Look:** a rink with skate marks behind each page, a band at the top of each page, Inter for text and Barlow Condensed for titles and scores, and one accent for each Theme. The site hosts the font files.
 - **Pages:** Home, Schedule, Stats, Roster, Shop, a Game page, and a Player page.
 - **Schedule:** a Schedule page with a calendar view and a list view shows the past Games and the next games from the Calendar Feed. This replaces the earlier decision of no schedule page. The site has no attendance, because BenchApp has it.
+- **Opponent logos:** the site uses the 17 opponent logos, NHL logos included. Troy accepted them on 2026-11-16.
+- **Shop page:** the Shop page and its link wait for the Printful Quick Store.
+- **Headline of a Game:** the site writes "Ice Pak at Night Owls" or "Ice Pak vs Wild". A headline in the HHG Game File replaces it.
 - **Next game:** the Home page shows the next game with the date, opponent, rink, and League.
 - **Dropped:** news posts, comments, text alerts, player logins, contact data, and the custom shop checkout.
 

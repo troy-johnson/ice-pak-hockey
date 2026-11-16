@@ -1,0 +1,54 @@
+---
+import { bugRows, opponentName, periodShort, type GameSummary, type lineScore } from "../../lib/game-format";
+import OppMark from "./OppMark.astro";
+
+interface Props {
+  game: GameSummary;
+  large?: boolean;
+  line?: ReturnType<typeof lineScore>;
+}
+
+const { game, large = false, line = null } = Astro.props;
+const rows = bugRows(game);
+const colours = game.opponent?.color
+  ? `--opp:${game.opponent.color};--opp-2:${game.opponent.color2 || game.opponent.color}`
+  : undefined;
+const sideLabel = { home: "Home", away: "Away" };
+---
+
+<div class:list={["bug", { lg: large, line: !!line }]} style={line ? `--periods:${line.periods.length}` : undefined}>
+  {
+    line && (
+      <div class="row head">
+        <span />
+        {line.periods.map((period) => <span>{periodShort(period)}</span>)}
+        <span>Final</span>
+      </div>
+    )
+  }
+  {
+    rows.map((row) => (
+      <div
+        class:list={["row", row.team === "ice-pak" ? "ipk" : "opp", { lost: row.lost, none: row.score === null }]}
+        style={row.team === "opponent" ? colours : undefined}
+      >
+        <div class="team">
+          {row.team === "ice-pak" ? (
+            large && (
+              <>
+                <img class="crest-navy" src="/crest-navy.png" alt="" />
+                <img class="crest-third" src="/crest-third.svg" alt="" />
+              </>
+            )
+          ) : (
+            <OppMark opponent={game.opponent} chip={false} />
+          )}
+          {row.team === "ice-pak" ? "Ice Pak" : opponentName(game.opponent)}
+          {row.side && <span class="side">{sideLabel[row.side]}</span>}
+        </div>
+        {line && (row.team === "ice-pak" ? line.icePak : line.opponent).map((goals) => <div class="per">{goals}</div>)}
+        <div class="pts">{row.score ?? "–"}</div>
+      </div>
+    ))
+  }
+</div>

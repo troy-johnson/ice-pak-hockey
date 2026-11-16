@@ -1,0 +1,24 @@
+---
+import { initials, type Opponent } from "../../lib/game-format";
+
+interface Props {
+  opponent: Opponent | null;
+  /** Show the chip when the opponent has no logo. A score bug shows nothing. */
+  chip?: boolean;
+}
+
+const { opponent, chip = true } = Astro.props;
+const colours = opponent?.color ? `--opp:${opponent.color};--opp-2:${opponent.color2 || opponent.color}` : undefined;
+---
+
+{
+  opponent?.logo ? (
+    <img class="opp-logo" src={`/img/opp/${opponent.logo}`} alt="" />
+  ) : (
+    chip && (
+      <i class="opp-chip" style={colours} aria-hidden="true">
+        {opponent ? initials(opponent.name) : "?"}
+      </i>
+    )
+  )
+}

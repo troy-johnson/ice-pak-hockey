@@ -5,14 +5,35 @@ import "@fontsource/inter/700.css";
 import "@fontsource/barlow-condensed/700.css";
 import "@fontsource/barlow-condensed/800-italic.css";
 import "../styles/site.css";
+import { formatRecord, hhgSeason, teamRecord } from "../lib/stats";
+import { utahTime } from "../lib/game-format";
+import { gamesOf } from "../lib/site-data";
 
 interface Props {
   title: string;
   /** Keeps a page out of search engines. */
   noindex?: boolean;
+  /** The header link of this page. */
+  current?: "schedule" | "stats" | "roster";
+  /** The link preview: a description and an image. */
+  description?: string;
+  image?: string;
 }
 
-const { title, noindex = false } = Astro.props;
+const { title, noindex = false, current, description, image } = Astro.props;
+const links = [
+  { name: "schedule", label: "Schedule", href: "/schedule" },
+  { name: "stats", label: "Stats", href: "/stats" },
+  { name: "roster", label: "Roster", href: "/roster" },
+] as const;
+
+// The header shows the record of the current HHG Season. The manager pages have no record.
+const showRecord = !Astro.url.pathname.startsWith("/manager");
+const now = utahTime(new Date());
+const season = hhgSeason(now);
+const record = showRecord
+  ? teamRecord((await gamesOf(Astro.locals)).filter((game) => game.startsAt < now && hhgSeason(game.startsAt) === season))
+  : null;
 const themes = [
   { name: "home", label: "Home" },
   { name: "away", label: "Away" },
@@ -27,6 +48,10 @@ const themes = [
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" type="image/png" href="/favicon.png" />
     <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    {image && <meta property="og:image" content={new URL(image, Astro.url).href} />}
     <script is:inline>
       // The visitor's choice selects the Theme. With no choice, the device setting selects Home or Away.
       (() => {
@@ -45,7 +70,25 @@ const themes = [
           <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
           <span>Ice Pak</span>
         </a>
-        <slot name="nav" />
+        <slot name="nav">
+          <nav aria-label="Main">
+            {
+              links.map((link) => (
+                <a href={link.href} aria-current={link.name === current ? "page" : undefined}>
+                  {link.label}
+                </a>
+              ))
+            }
+          </nav>
+        </slot>
+        {
+          record && record.gamesPlayed > 0 && (
+            <span class="rec">
+              {season.slice(0, 5) + season.slice(7)}
+              <b>{formatRecord(record)}</b>
+            </span>
+          )
+        }
         <div class="switch" role="group" aria-label="Theme">
           {
             themes.map((theme) => (
@@ -67,6 +110,8 @@ const themes = [
         <img class="crest-navy" src="/crest-navy.png" alt="" width="399" height="420" />
         <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
         <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
+        <a href="/schedule">Schedule</a>
+        <a href="/stats">Stats</a>
         <span class="right"><a href="/manager">Managers</a></span>
       </div>
     </footer>
@@ -86,6 +131,42 @@ const themes = [
           }),
         );
         show();
+
+        // Views: one panel for each button. Add ?view=<name> to the address to open that view.
+        const views = document.querySelectorAll("[data-view]");
+        const panels = document.querySelectorAll("[data-panel]");
+        const wanted = new URLSearchParams(location.search).get("view");
+        views.forEach((view) => {
+          view.addEventListener("click", () => {
+            views.forEach((other) => other.setAttribute("aria-pressed", String(other === view)));
+            panels.forEach((panel) => (panel.hidden = panel.dataset.panel !== view.dataset.view));
+          });
+          if (view.dataset.view === wanted) view.click();
+        });
+
+        // Schedule calendar: one panel for each month. The month of today opens first.
+        const months = [...document.querySelectorAll("[data-month]")];
+        const prev = document.querySelector("[data-step='-1']");
+        const next = document.querySelector("[data-step='1']");
+        const month = (index) => {
+          months.forEach((panel, i) => (panel.hidden = i !== index));
+          prev.disabled = index === 0;
+          next.disabled = index === months.length - 1;
+          prev.dataset.at = next.dataset.at = index;
+          document.querySelector("[data-month-name]").textContent = months[index].dataset.name;
+        };
+        if (months.length) {
+          [prev, next].forEach((button) =>
+            button.addEventListener("click", () => month(Number(button.dataset.at) + Number(button.dataset.step))),
+          );
+          const start = months.findIndex((panel) => panel.dataset.current === "true");
+          month(start < 0 ? months.length - 1 : start);
+        }
+
+        // A list that changes the page: the form sends the choice.
+        document.querySelectorAll("select[data-submit]").forEach((select) =>
+          select.addEventListener("change", () => select.form.submit()),
+        );
       })();
     </script>
   </body>
