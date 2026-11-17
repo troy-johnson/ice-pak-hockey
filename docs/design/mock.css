@@ -3175,3 +3175,13 @@ tr.dragging td,
     flex-basis: 150px;
   }
 }
+
+/* The slash before a section title has the main colour of the jersey of the Theme.
+   Home and Away keep light blue and navy, because a navy slash on the navy ground and a white slash on the white ground do not show. */
+:root[data-theme="third"] .sec-head h2::before {
+  background: #c0211c;
+}
+
+:root[data-theme="third"] .band .sec-head h2::before {
+  background: #000000;
+}
