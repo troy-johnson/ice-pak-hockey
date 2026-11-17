@@ -5406,3 +5406,270 @@ td.name .who:has(.av) + .pnote {
   -webkit-text-stroke: 6px #5ba5d1;
   paint-order: stroke fill;
 }
+
+/* ---------- Notice styles: five options to compare (Mockup panel, "style") ---------- */
+.notice .nlogo,
+.notice .nscore {
+  display: none;
+}
+
+.notice .nbody {
+  display: contents;
+}
+
+.gbadge {
+  display: none;
+}
+
+/* Slim: a thin line in the panel colour. The tag is small coloured text, and the link is at the right. */
+:root[data-nstyle="slim"][data-notice] .notice {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: inset 3px 0 0 var(--accent), inset 0 -1px 0 var(--rule);
+  border: 0;
+}
+
+:root[data-nstyle="slim"][data-notice="alert"] .notice {
+  box-shadow: inset 3px 0 0 #e0a526, inset 0 -1px 0 var(--rule);
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .wrap {
+  gap: 4px 14px;
+  padding-block: 9px;
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .ntag {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  color: var(--accent);
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  animation: none;
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nstyle="slim"][data-notice="alert"] .notice .ntag {
+  color: #e0a526;
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .ntext {
+  font-weight: 500;
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .nlink {
+  margin-left: auto;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .nlink::after {
+  content: " →";
+  color: var(--accent);
+}
+
+:root[data-nstyle="slim"][data-notice] .notice .nclose {
+  margin-left: 0;
+  color: var(--frost);
+  font-size: 18px;
+}
+
+/* Card: a card inside the page width, with the opponent logo, the tag above the text, and a button. */
+:root[data-nstyle="card"][data-notice] .notice {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  color: var(--ink);
+}
+
+:root[data-nstyle="card"][data-notice] .notice .wrap {
+  margin-block: 10px;
+  padding-block: 12px;
+  gap: 14px;
+  flex-wrap: nowrap;
+  background: var(--panel);
+  box-shadow: inset 4px 0 0 var(--accent), 0 0 0 1px var(--rule);
+}
+
+:root[data-nstyle="card"][data-notice="alert"] .notice .wrap {
+  box-shadow: inset 4px 0 0 #e0a526, 0 0 0 1px var(--rule);
+}
+
+:root[data-nstyle="card"][data-notice] .notice .nlogo {
+  display: block;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+:root[data-nstyle="card"][data-notice] .notice .nbody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+:root[data-nstyle="card"][data-notice] .notice .ntag {
+  justify-content: flex-start;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  color: var(--accent);
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  animation: none;
+}
+
+:root[data-nstyle="card"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nstyle="card"][data-notice="alert"] .notice .ntag {
+  color: #e0a526;
+}
+
+:root[data-nstyle="card"][data-notice] .notice .ntext {
+  font-size: 15px;
+}
+
+:root[data-nstyle="card"][data-notice] .notice .nlink {
+  flex: none;
+  margin-left: auto;
+  padding: 9px 16px;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+:root[data-nstyle="card"][data-notice] .notice .nclose {
+  margin-left: 0;
+  color: var(--frost);
+  align-self: flex-start;
+}
+
+/* Score: a broadcast line in the kit colour, with the score in scoreboard type. */
+:root[data-nstyle="score"][data-notice] .notice {
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  border: 0;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .wrap {
+  gap: 4px 16px;
+  padding-block: 8px 11px;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .nlogo {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .ntag {
+  height: 22px;
+  background: var(--on-fill);
+  color: var(--kit-fill);
+}
+
+:root[data-nstyle="score"][data-notice="alert"] .notice .ntag {
+  background: #e0a526;
+  color: #10182b;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .nscore {
+  display: inline;
+  font: italic 800 20px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .ntext {
+  display: none;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .nlink {
+  margin-left: auto;
+  color: inherit;
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+:root[data-nstyle="score"][data-notice] .notice .nclose {
+  margin-left: 0;
+  color: inherit;
+}
+
+/* Tile: no bar. A badge on the game tile in the game bar. */
+:root[data-nstyle="tile"] .notice {
+  display: none !important;
+}
+
+:root[data-nstyle="tile"] .gbadge {
+  display: inline-block;
+  padding: 2px 5px;
+  background: var(--accent);
+  color: #0d1930;
+  font: 700 9px/1 var(--body);
+  letter-spacing: 0.08em;
+  animation: ntag-shine-pulse 2.4s ease-in-out infinite;
+}
+
+:root[data-nstyle="tile"] .gbadge.alert {
+  background: #e0a526;
+}
+
+@keyframes ntag-shine-pulse {
+  50% {
+    opacity: 0.65;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-nstyle="tile"] .gbadge {
+    animation: none;
+  }
+}
+
+@media (max-width: 760px) {
+  :root[data-nstyle="card"][data-notice] .notice .nlink {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  :root[data-nstyle="score"][data-notice] .notice .nscore {
+    font-size: 17px;
+  }
+}
+
+/* Score style in Heritage: a black bar, so it does not merge with the red header */
+:root[data-theme="third"][data-nstyle="score"][data-notice] .notice {
+  background: #0d0d0d;
+  color: #ffffff;
+  box-shadow: inset 0 -3px 0 #c0211c;
+}
+
+:root[data-theme="third"][data-nstyle="score"][data-notice="info"] .notice .ntag {
+  background: #c0211c;
+  color: #ffffff;
+}
+
+/* Tile style: the badge takes the place of "Final" or of the old start time */
+.gtile .gh:has(.gbadge) > span:nth-child(2) {
+  display: none;
+}

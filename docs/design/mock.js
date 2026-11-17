@@ -31,6 +31,8 @@
   root.dataset.recent = read("recent", legacy === "off" ? "cards" : "bar");
   root.dataset.bar = root.dataset.recent === "bar" ? "on" : "off";
   root.dataset.notice = read("notice", "none");
+  // Notice style: five options to compare. "slim" is the default.
+  root.dataset.nstyle = read("nstyle", "slim");
   root.dataset.switcher = read("switcher", "buttons");
   root.dataset.auth = read("auth", "out");
   root.dataset.panel = read("panel", "open");
@@ -507,6 +509,7 @@
       '<div class="dv-row"><span class="dv-k">switch</span><span class="dv-seg" data-key="switcher"><button value="buttons">buttons</button><button value="dropdown">dropdown</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">recent</span><span class="dv-seg" data-key="recent"><button value="bar">bar</button><button value="cards">cards</button><button value="list">list</button><button value="board">scores</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="notice"><button value="none">none</button><button value="info">info</button><button value="alert">alert</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="score">score</button><button value="tile">tile</button><button value="stripes">stripes</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
@@ -540,7 +543,7 @@
         root.dataset[key] = b.value;
         save(key === "theme" ? "theme-x" : key, b.value);
         if (key === "recent") root.dataset.bar = b.value === "bar" ? "on" : "off";
-        if (key === "notice") fillNotice();
+        if (key === "notice" || key === "nstyle") fillNotice();
         if (key === "theme") {
           try {
             localStorage.setItem("theme", b.value);
@@ -561,18 +564,36 @@
       button.addEventListener("click", syncPanel);
     });
     // Notice bar: it shows only when a notice is active. The text here is an example.
+    // Each notice: tag, text, link text, link, opponent logo, score line, and the game tile that gets the badge in the "tile" style.
     var notices = {
-      info: ["New", "The Recap of Ice Pak at Night Owls is up.", "Watch it", "game.html"],
-      alert: ["Changed", "Sun, Nov 22 vs Yetis now starts at 8:15 PM at County Ice Center.", "Schedule", "schedule.html"]
+      info: ["New Recap", "The Recap of Ice Pak at Night Owls is up.", "Watch it", "game.html", "img/opp/nightowls.png", "Ice Pak 4 · Night Owls 3", "Sun Nov 8", "Recap"],
+      alert: ["Time change", "Sun, Nov 22 vs Yetis now starts at 8:15 PM at County Ice Center.", "Schedule", "schedule.html", "img/opp/yetis.png", "Nov 22 · Now 8:15 PM", "Sun Nov 22", "8:15 PM"]
     };
     function fillNotice() {
       var bar = document.querySelector("[data-notice-bar]");
       var n = notices[root.dataset.notice];
+      document.querySelectorAll(".gbadge").forEach(function (x) { x.remove(); });
       if (!bar || !n) return;
       bar.querySelector(".ntag").textContent = n[0];
       bar.querySelector(".ntext").textContent = n[1];
       bar.querySelector(".nlink").textContent = n[2];
       bar.querySelector(".nlink").href = n[3];
+      var logo = bar.querySelector(".nlogo");
+      if (logo) logo.src = n[4];
+      var score = bar.querySelector(".nscore");
+      if (score) score.textContent = n[5];
+      // Tile style: no bar. A badge on the game tile opens the Recap or shows the new time.
+      if (root.dataset.nstyle === "tile") {
+        var tile = Array.prototype.find.call(document.querySelectorAll(".gtile"), function (t) {
+          var h = t.querySelector(".gh span"); return h && h.textContent === n[6];
+        });
+        if (tile) {
+          var badge = document.createElement("span");
+          badge.className = "gbadge " + root.dataset.notice;
+          badge.textContent = n[7];
+          tile.querySelector(".gh").appendChild(badge);
+        }
+      }
     }
     var nclose = document.querySelector(".nclose");
     if (nclose) nclose.addEventListener("click", function () {
