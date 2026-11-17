@@ -4528,32 +4528,31 @@ td.name .who {
   }
 }
 
-/* Jerseys: one status list for each jersey */
+/* Jerseys: one status list for each jersey. Each list has the shape and arrow of the other lists, and a bottom line in the colour of its status. */
 select.jst {
-  height: 34px;
-  padding: 0 8px;
-  border: 1px solid var(--rule);
-  background: var(--panel-2);
-  color: var(--ink);
-  font: 600 13px/1 var(--body);
+  height: 36px;
+  min-width: 150px;
+  padding: 0 34px 0 18px;
+  font-size: 14px;
+  background-position: calc(100% - 20px) 52%, calc(100% - 14px) 52%;
+  --st: var(--kit-line);
+  box-shadow: inset 0 -3px 0 var(--st);
 }
 
 select.jst[data-st="paid"] {
-  border-color: #2f9e5b;
-  box-shadow: inset 3px 0 0 #2f9e5b;
+  --st: #2f9e5b;
 }
 
 select.jst[data-st="owes"] {
-  border-color: #d9534f;
-  box-shadow: inset 3px 0 0 #d9534f;
+  --st: #d9534f;
 }
 
 select.jst[data-st="loan"] {
-  border-color: #e0a526;
-  box-shadow: inset 3px 0 0 #e0a526;
+  --st: #e0a526;
 }
 
 select.jst[data-st="none"] {
+  --st: var(--rule);
   color: var(--frost);
 }
 
