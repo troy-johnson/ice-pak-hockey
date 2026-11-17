@@ -152,6 +152,11 @@
       });
     });
 
+    // A dialog sits at the end of the page, so it covers the sticky header too.
+    document.querySelectorAll(".modal").forEach(function (m) {
+      document.body.appendChild(m);
+    });
+
     // Manager: open and close a form.
     document.querySelectorAll("[data-open]").forEach(function (button) {
       button.addEventListener("click", function () {

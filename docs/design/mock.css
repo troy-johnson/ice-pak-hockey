@@ -3904,3 +3904,95 @@ td.bal.zero {
 td.nowrap {
   white-space: nowrap;
 }
+
+/* Seasons page: one list of all seasons, grouped by League, and one New season button */
+.season-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.season-bar select {
+  min-width: min(360px, 100%);
+}
+
+/* Dialog over the page */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgb(4 8 14 / 0.72);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-box {
+  width: min(620px, 100%);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--panel);
+}
+
+:root[data-theme="away"] .modal-box {
+  background: #ffffff;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-head .nclose {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+
+.modal-box label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.fields.two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modal-box select {
+  font: 600 15px/1.2 var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  clip-path: none;
+  box-shadow: none;
+  border: 1px solid var(--rule);
+  border-bottom: 3px solid var(--kit-line);
+  background-color: var(--ground);
+  padding: 9px 30px 9px 11px;
+}
+
+@media (max-width: 520px) {
+  .fields.two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
