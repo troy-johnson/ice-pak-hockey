@@ -4595,3 +4595,9 @@ select.jst[data-st="none"] {
 :root[data-theme="away"] .band .button {
   box-shadow: inset 0 -3px 0 #5ba5d1;
 }
+
+/* Theme dropdown button: the italic display font of the other buttons */
+.dd-btn {
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.06em;
+}
