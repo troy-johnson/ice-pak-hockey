@@ -209,6 +209,10 @@ Each control has a forward lean: the left and right edges are cut at an angle, t
 - `--link`: the colour of a link. It is white in the Home Theme. In Away and Third it is `--accent`.
 - `--second`: the second Kit colour for a small mark, for example the arrow of "Watch the Recap". It is light blue in Home and Away, and white in Third.
 
+### Game bar
+
+A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date, the time, and the rink. Each tile is a link to its Game. On a phone the bar scrolls sideways. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
+
 ### League names
 
 A visitor sees "SLC County" and "Mammoth". The data keeps the short names County and MIC.

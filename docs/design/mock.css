@@ -3040,3 +3040,138 @@ tr.dragging td,
 .login .step2[hidden] {
   display: none;
 }
+
+/* ---------- Game bar: the last results and the next games, below the header ---------- */
+.gamebar {
+  position: relative;
+  z-index: 1;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.gamebar .wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding-block: 6px;
+}
+
+.gtrack {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.gtrack::-webkit-scrollbar {
+  display: none;
+}
+
+.gtile {
+  flex: 0 0 168px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 10px;
+  background: var(--panel);
+  border-left: 3px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.gtile:hover {
+  border-left-color: var(--kit-line);
+}
+
+.gtile.next {
+  border-left-color: var(--accent);
+}
+
+.gtile .gh {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font: 600 10px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.gtile .fin {
+  color: var(--ink);
+}
+
+.gtile .gt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.gtile .gt b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.gtile .gt em {
+  font: 700 16px/1 var(--display);
+  font-style: normal;
+}
+
+.gtile .gt.lost {
+  color: var(--frost);
+}
+
+.gtile .gt img,
+.gtile .gt .opp-chip {
+  width: 16px;
+  height: 16px;
+  font-size: 7px;
+  flex: none;
+}
+
+.gtile .gr {
+  font-size: 10px;
+  color: var(--frost);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:root[data-theme="third"] .gtile .gt .crest-third {
+  background: #c0211c;
+}
+
+.gall {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0 14px;
+  text-align: center;
+  font: italic 800 14px/1.05 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--panel);
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+@media (max-width: 760px) {
+  .gall {
+    display: none;
+  }
+
+  .gtile {
+    flex-basis: 150px;
+  }
+}
