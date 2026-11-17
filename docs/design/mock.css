@@ -5086,3 +5086,96 @@ body.mgr-area .band:not(.gate) {
   margin-left: auto;
   box-shadow: -8px 0 12px -4px rgb(0 0 0 / 0.35);
 }
+
+/* Stats: five leader cards in one row on a wide screen */
+.leaders {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+/* Stats: the strip of a League Season has a League label and a Season label */
+.strip .title.lsname {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.strip .title.lsname > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.strip .title.lsname .label {
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+/* Stats: the season list is clearly off when "All time" is on */
+.seg select:not(.on) {
+  color: var(--frost);
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--rule);
+  opacity: 0.8;
+}
+
+.seg select:not(.on):hover {
+  opacity: 1;
+  color: var(--ink);
+}
+
+/* Leader card: the name can shrink, and the number never leaves the card */
+.leader .top {
+  gap: 10px;
+}
+
+.leader .top a {
+  flex: 1;
+  min-width: 0;
+}
+
+.leader .top b {
+  font-size: 40px;
+}
+
+.leader .top .av {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+}
+
+.leader .top b {
+  font-size: 34px;
+}
+
+.leader .top a {
+  font-size: 15px;
+}
+
+.leaders {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.leader .top .av {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+.leader .top a {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1279px) {
+  .leaders {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .leaders {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

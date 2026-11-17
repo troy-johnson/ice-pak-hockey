@@ -23,7 +23,7 @@ Troy asked for these changes:
 - **Opponent logos:** 17 opponents have their real logo, from the logo folder on the NAS.
 - **Home and away:** the home team is the first row of the score bug, and each row has a "Home" or "Away" label.
 - **Roster:** the page is now a set of Player cards with no stats and no Roster Status. Roster Status is for Managers only.
-- **Stats:** the page has four leader cards above the table.
+- **Stats:** the page has five leader cards above the table.
 - **Roster jerseys:** each Player is a jersey with the number, in rows of three forwards and two defense, as on a line chart. The reference is the line combinations page of Daily Faceoff.
 - **Third Theme:** the Theme has black, red, and white only. The dark tones had a blue tint before.
 - **From the design review:** a next-game bar on the Home page, a short calendar row for a week with no Game, the record against the opponent on the Game page, and links to the Game before and the Game after.
@@ -227,7 +227,7 @@ The real logo, with no disc and no border. Troy asked for this on 2026-11-16. A 
 
 ### Leader card
 
-The Stats page has four cards: points, goals, assists, and penalty minutes. Each card has the leader with a large number, and the next three Players.
+The Stats page has five cards: points, goals, assists, games played, and penalty minutes. Each card has the leader with a large number, and the next four Players. The cards are in one row from 1280 px, in three columns below that, and in one column on a phone.
 
 ### Jersey
 
@@ -247,7 +247,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 - **Video:** a 16:9 image with a "Watch the Recap" label, and a 9:16 image for a Short. A click opens a pop-out player over the page, so the visitor stays on the site. Escape, Close, or a click outside closes it. In the artifact viewer the YouTube player cannot load, so the mockup shows a fake player bar.
 - **Opponent page:** `opponent.html`. Each opponent name opens it. It has the record, the game history, and the top scorers against that team. The label is black with a red arrow in each Theme, because it is on a photo.
 - **Tabs:** Calendar and List on the Schedule page.
-- **Stats control:** an "All time" button and one list of the League Seasons. Troy removed the HHG Season view on 2026-11-16.
+- **Stats control:** an "All time" button and one list of the League Seasons, in one group for each League. Each choice shows the League and the Season, such as "SLC County · Winter '26-27". When "All time" is on, the list has a thin outline, dim text, and the word "Season", so it is clearly off. The strip of a League Season has a "League" label and a "Season" label. Troy removed the HHG Season view on 2026-11-16.
 - **Event list:** the goals and penalties of a Game on a card, with one head row for each period. Each row has the logo of the team.
 - **Player highlights:** the Player page lists only the goals with a video that the Player scored or assisted.
 
@@ -256,7 +256,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 | Page | From the NHL page | Left out or changed |
 |---|---|---|
 | Schedule | Month control, Calendar and List tabs, a legend, a day cell with the opponent and the result. | No Full Season view, no tickets, no TV links. The fill shows a win, not a home game. The list has one table for each League Season. |
-| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. A team strip and four leader cards are above the table. A goalie table is below it, with GP, W, L, T, GA, GAA, and SO. It has no save percentage, because the data has no saves. |
+| Stats | A "Skaters" table with a rank, a Player cell, and a tint on the sorted column. | The columns are Pos, GP, G, A, P, PIM, and P/GP. A team strip and five leader cards are above the table. A goalie table is below it, with GP, W, L, T, GA, GAA, and SO. It has no save percentage, because the data has no saves. |
 | Roster | One group for each position, and a link to the stats. | Jerseys in rows, as on the Daily Faceoff line chart, in place of a table. The Roster answers "who is on the team", and the Stats page has all numbers. |
 | Player | A band with the name and the number, a season strip and a career strip, "Last 5 Games", and "Career Stats". | No photo, no Bio tab. A "Goals" table with the links to the Shorts is added. |
 
