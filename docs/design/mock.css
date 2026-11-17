@@ -6451,3 +6451,25 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root[data-theme="away"][data-nmsg="recap"] .nside-tab {
   --n-on: #ffffff;
 }
+
+/* Home Theme: darker circles and tabs, so the white icon has at least 4.4 to 1 contrast. The tag text keeps the bright colour on the dark card. */
+:root[data-theme="home"][data-nmsg="recap"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="recap"] .nside-tab,
+:root:not([data-theme])[data-nmsg="recap"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="recap"] .nside-tab {
+  background: #2a78a8;
+}
+
+:root[data-theme="home"][data-nmsg="event"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="event"] .nside-tab,
+:root:not([data-theme])[data-nmsg="event"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="event"] .nside-tab {
+  background: #2f7a55;
+}
+
+:root[data-theme="home"][data-nmsg="change"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="change"] .nside-tab,
+:root:not([data-theme])[data-nmsg="change"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="change"] .nside-tab {
+  background: #a8690f;
+}
