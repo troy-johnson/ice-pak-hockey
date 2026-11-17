@@ -6511,3 +6511,35 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     margin: 0;
   }
 }
+
+/* Side tab: a bell with an unread dot, with no sideways text. Text turned on its side is blurry on some screens. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  writing-mode: horizontal-tb;
+  transform: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 52px;
+  padding: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.nside-tab svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nside-tab .nst-dot {
+  position: absolute;
+  top: 11px;
+  right: 9px;
+  width: 9px;
+  height: 9px;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--n-acc);
+}
+
+:root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
+  background: #c0211c;
+}

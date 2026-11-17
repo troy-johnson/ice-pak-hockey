@@ -688,7 +688,7 @@
     // Side tab and side panel: centred on whole pixels. A half pixel makes the text blurry.
     function placeSide() {
       var tab = document.querySelector(".nside-tab"), panel = document.querySelector("[data-notice-bar]");
-      if (tab) tab.style.top = Math.round((innerHeight - 96) / 2) + "px";
+      if (tab) tab.style.top = Math.round((innerHeight - 52) / 2) + "px";
       if (panel && root.dataset.nview === "side" && !matchMedia("(max-width: 760px)").matches) {
         panel.style.top = Math.round((innerHeight - panel.offsetHeight) / 2) + "px";
       } else if (panel) {
@@ -762,8 +762,8 @@
           ], { duration: 700, easing: "ease-out" });
         } else if (tab && !still && tab.animate) {
           tab.animate([
-            { transform: "rotate(180deg) scale(1.35)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
-            { transform: "rotate(180deg) scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+            { transform: "scale(1.25)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
+            { transform: "scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
           ], { duration: 650, easing: "cubic-bezier(0.3, 1.6, 0.5, 1)" });
         }
       };
