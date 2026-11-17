@@ -3796,3 +3796,34 @@ body > .band,
 body > .site-foot {
   flex: none;
 }
+
+/* Player Bank: position and number change in the row */
+select.cell,
+input.cell {
+  clip-path: none;
+  box-shadow: none;
+  font: 600 14px/1 var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 6px 22px 6px 8px;
+}
+
+input.cell.no-in {
+  width: 3.4em;
+  padding: 6px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+select.cell {
+  background-position: calc(100% - 12px) 52%, calc(100% - 7px) 52%;
+  background-size: 5px 5px;
+}
+
+select.cell:focus,
+input.cell:focus {
+  border-color: var(--accent);
+}
