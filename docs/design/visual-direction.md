@@ -235,7 +235,8 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 ### Other parts
 
 - **Tag:** an 11 px uppercase label with a 1 px border. Sheet Only has a dashed border. A Recap tag in the list view is a link.
-- **Video link:** a 16:9 image with a "Watch the Recap" label. A Short is a 9:16 image with a "Short" label. The label is black with a red arrow in each Theme, because it is on a photo.
+- **Video:** a 16:9 image with a "Watch the Recap" label, and a 9:16 image for a Short. A click plays the video in the page with the YouTube player, so the visitor stays on the site. In the artifact viewer the player cannot load, so the mockup shows a fake player bar.
+- **Opponent page:** `opponent.html`. Each opponent name opens it. It has the record, the game history, and the top scorers against that team. The label is black with a red arrow in each Theme, because it is on a photo.
 - **Tabs:** Calendar and List on the Schedule page.
 - **Stats control:** an "All time" button and one list of the League Seasons. Troy removed the HHG Season view on 2026-11-16.
 - **Event list:** the goals and penalties of a Game on a card, with one head row for each period. Each row has the logo of the team.
@@ -280,17 +281,18 @@ I did this review myself, as a UX designer would. The first four items are in th
 
 ## 7. The crest for each Theme
 
-| Theme | Crest | File in the mockups | Source |
-|---|---|---|---|
-| Home | Navy and light blue | `img/crest-navy.png` | `Ext. Images/Ice Pak/Logos/icepak_logo2.png` on the NAS |
-| Away | Navy and light blue | `img/crest-navy.png` | Same |
-| Third | Black with white letters | `img/crest-third.svg` | `IcePak_RedBlk.ai`, the art file of the third jersey. The other session made the SVG. |
+Troy named the art file for each Theme on 2026-11-16. Each crest is made for the colour of its jersey.
 
-- **Header:** the crest is 52 px high, and 44 px on a phone.
-- **Score bug:** the large size shows the crest at 30 px in the Ice Pak row.
-- **Third Theme:** the black crest needs red behind it. It is on the red header and on the red Ice Pak row. In the Third band, the Ice Pak row is black, so the crest is hidden there. The footer of the Third Theme is dark and has no crest.
-- **Player page:** a large crest at 10% strength is at the right of the band.
-- **File type:** the navy crest is a PNG, 399 px by 420 px, 84 kB. The NAS has the vector file `Logo_IcePak.ai`. I did not make an SVG of the navy crest.
+| Theme | Art file | File in the mockups | Made for |
+|---|---|---|---|
+| Home | `Jesey_Logos.ai` | `img/crest-home.png` | A navy ground. The lower outline is white. |
+| Away | `Logo_IcePak.ai` | `img/crest-away.png` | A white ground. The lower outline is navy. |
+| Third | `IcePak_RedBlk.ai` | `img/crest-third.svg` | A red ground. The crest is black with white letters. |
+
+- **Extraction:** `sips` rendered the art files. The Home crest is on a navy artboard with sponsor logos, so a script cropped it and removed the artboard colour. The navy parts of the Home wordmark are now clear, and they show the ground. On a navy ground this looks the same. For the real site, export each crest as SVG from the art file.
+- **Score bug, Away:** the Ice Pak row is white with navy text, as the away jersey, so the navy crest shows.
+- **Score bug, Third band:** the Ice Pak row is black, so the black crest sits on a small red square.
+- **Rink renders:** they still use `icepak_logo2.png` from the NAS at centre ice. I did not render them again.
 
 ## 8. Open questions for Troy
 

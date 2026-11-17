@@ -277,14 +277,32 @@ p {
   width: auto;
 }
 
-/* The black crest of the third jersey goes with the Third Theme. */
+/* One crest for each Theme, from the art file of that jersey:
+   Home: Jesey_Logos.ai (white outlines, for a navy ground).
+   Away: Logo_IcePak.ai (navy outlines, for a white ground).
+   Third: IcePak_RedBlk.ai (black, for a red ground). */
+.crest-away,
 .crest-third,
-:root[data-theme="third"] .crest-navy {
+:root[data-theme="away"] .crest-home,
+:root[data-theme="third"] .crest-home {
   display: none;
 }
 
+:root[data-theme="away"] .crest-away,
 :root[data-theme="third"] .crest-third {
   display: block;
+}
+
+/* Away: the Ice Pak row of a score bug is white, as the away jersey, so the navy crest shows. */
+:root[data-theme="away"] .bug .ipk .team {
+  background: #ffffff;
+  color: #1d315f;
+  box-shadow: inset 0 0 0 1px #b9c6dc, inset 0 -3px 0 #1d315f;
+}
+
+:root[data-theme="away"] .bug .ipk .pts {
+  background: #1d315f;
+  color: #ffffff;
 }
 
 .site-head nav {
