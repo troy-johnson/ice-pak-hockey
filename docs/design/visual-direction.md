@@ -163,7 +163,7 @@ Rules that go with the tokens:
 Two rows, one for each team. Each row has a team cell and a score cell.
 
 - **Ice Pak row:** filled with `--kit-fill`, with a 2 px line of `--kit-line` at the bottom.
-- **Opponent row:** filled with the primary colour of the opponent. The text is white or dark, from the brightness of that colour. The mockups show two variants for a comparison: with a line in the secondary colour (Night Owls) and with no line (Blue Devils). An opponent with no colours has a `--panel-2` row.
+- **Opponent row:** filled with the primary colour of the opponent, with no line. The text is white or dark, from the brightness of that colour. For an opponent with no colours in HHG, a script took the main colour from its logo.
 - **Score cell:** digits in Barlow Condensed. The score of the team that lost is `--frost`.
 - **No score:** a Game with no Box Score shows a dash in each score cell.
 - **Order:** the home team is the first row. Each row has a "Home" or "Away" label. A Game with no home data has Ice Pak in the first row and no labels.
@@ -235,7 +235,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 ### Other parts
 
 - **Tag:** an 11 px uppercase label with a 1 px border. Sheet Only has a dashed border. A Recap tag in the list view is a link.
-- **Video:** a 16:9 image with a "Watch the Recap" label, and a 9:16 image for a Short. A click plays the video in the page with the YouTube player, so the visitor stays on the site. In the artifact viewer the player cannot load, so the mockup shows a fake player bar.
+- **Video:** a 16:9 image with a "Watch the Recap" label, and a 9:16 image for a Short. A click opens a pop-out player over the page, so the visitor stays on the site. Escape, Close, or a click outside closes it. In the artifact viewer the YouTube player cannot load, so the mockup shows a fake player bar.
 - **Opponent page:** `opponent.html`. Each opponent name opens it. It has the record, the game history, and the top scorers against that team. The label is black with a red arrow in each Theme, because it is on a photo.
 - **Tabs:** Calendar and List on the Schedule page.
 - **Stats control:** an "All time" button and one list of the League Seasons. Troy removed the HHG Season view on 2026-11-16.
@@ -293,6 +293,21 @@ Troy named the art file for each Theme on 2026-11-16. Each crest is made for the
 - **Score bug, Away:** the Ice Pak row is white with navy text, as the away jersey, so the navy crest shows.
 - **Score bug, Third band:** the Ice Pak row is black, so the black crest sits on a small red square.
 - **Rink renders:** they still use `icepak_logo2.png` from the NAS at centre ice. I did not render them again.
+
+## 7a. Manager pages
+
+Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header style, with "Ice Pak Manager" and its own links.
+
+| Page | File | What it does |
+|---|---|---|
+| Players | `manager.html` | The Player Bank in three Priority Tiers. Drag a row to change the order in a tier. A list changes the tier. "Add a Player" opens a form. |
+| Seasons | `manager-season.html` | The Leagues and their League Seasons at the left. For one League Season: the League Fee and the Target Counts, the proposed fees, the Roster Builder, the chase message, and the Payments. |
+| Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and "has it" and "paid" for each Kit. The free numbers are below. |
+
+- **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
+- **Fee:** the formula of the Fee Sheet. A goalie pays $0. "Lock the fee" fixes it.
+- **Payments:** the fee, the paid amount, the Balance, and a status for each Player with a fee.
+- **Data:** the names, tiers, answers, and amounts are invented. This repository is public, and this data is for Managers only.
 
 ## 8. Open questions for Troy
 

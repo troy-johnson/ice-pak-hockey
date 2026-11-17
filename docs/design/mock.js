@@ -66,11 +66,32 @@
       }
     }
 
-    // Video: a Recap or a Short plays in the page. The visitor stays on the site.
+    // Video: a click opens a pop-out player over the page. The visitor stays on the site.
+    function closePop() {
+      var pop = document.querySelector(".player-pop");
+      if (pop) pop.remove();
+    }
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closePop();
+    });
     document.querySelectorAll("[data-yt]").forEach(function (frame) {
       frame.addEventListener("click", function () {
-        if (frame.classList.contains("playing")) return;
-        frame.classList.add("playing");
+        var pop = document.createElement("div");
+        pop.className = "player-pop" + (frame.classList.contains("frame") ? " vertical" : "");
+        pop.setAttribute("role", "dialog");
+        pop.setAttribute("aria-label", "Video player");
+        var box = document.createElement("div");
+        box.className = "box";
+        var close = document.createElement("button");
+        close.type = "button";
+        close.className = "close";
+        close.textContent = "Close";
+        close.addEventListener("click", closePop);
+        var title = document.createElement("span");
+        title.className = "title";
+        title.textContent = frame.getAttribute("aria-label") || "Recap";
+        box.appendChild(title);
+        box.appendChild(close);
         // The artifact viewer does not allow an embedded player, so it shows a mockup player.
         var local = location.protocol === "file:" || location.hostname === "localhost";
         if (local) {
@@ -78,13 +99,121 @@
           player.src = "https://www.youtube-nocookie.com/embed/" + frame.dataset.yt + "?autoplay=1&rel=0";
           player.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
           player.title = "Video player";
-          frame.appendChild(player);
+          box.appendChild(player);
         } else {
+          var still = frame.querySelector("img").cloneNode();
+          box.appendChild(still);
           var bar = document.createElement("span");
           bar.className = "fake-player";
           bar.innerHTML = "<span>❚❚</span><i></i><span>0:12 / 1:04</span>";
-          frame.appendChild(bar);
+          box.appendChild(bar);
         }
+        pop.appendChild(box);
+        pop.addEventListener("click", function (event) {
+          if (event.target === pop) closePop();
+        });
+        document.body.appendChild(pop);
+        close.focus();
+      });
+    });
+
+    // Manager: open and close a form.
+    document.querySelectorAll("[data-open]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document.getElementById(button.dataset.open).hidden = false;
+      });
+    });
+    document.querySelectorAll("[data-close]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        document.getElementById(button.dataset.close).hidden = true;
+      });
+    });
+
+    // Manager: drag a row to change the priority inside a tier.
+    var dragged = null;
+    document.querySelectorAll("table[data-sort] tbody").forEach(function (body) {
+      body.addEventListener("dragstart", function (event) {
+        dragged = event.target.closest("tr");
+        dragged.classList.add("dragging");
+      });
+      body.addEventListener("dragend", function () {
+        if (dragged) dragged.classList.remove("dragging");
+        body.querySelectorAll("tr").forEach(function (row, i) {
+          row.querySelector(".rank").textContent = i + 1;
+        });
+        dragged = null;
+      });
+      body.addEventListener("dragover", function (event) {
+        var over = event.target.closest("tr");
+        if (!dragged || !over || over === dragged || over.parentNode !== body) return;
+        event.preventDefault();
+        var box = over.getBoundingClientRect();
+        body.insertBefore(dragged, event.clientY > box.top + box.height / 2 ? over.nextSibling : over);
+      });
+    });
+
+    // Roster Builder: drag a Player to a column. The counts and the fees change.
+    var board = document.querySelector(".board");
+    if (board) {
+      var card = null;
+      function recount() {
+        board.querySelectorAll("[data-drop]").forEach(function (col) {
+          col.querySelector(".count").textContent = col.querySelectorAll(".pcard").length;
+        });
+        var skaters = function (answer) {
+          return board.querySelectorAll("[data-drop='" + answer + "'] .pcard:not([data-pos='G'])").length;
+        };
+        var ft = skaters("full-time");
+        var pt = skaters("part-time");
+        var fee = Number(document.getElementById("fee").value) * 100 || 0;
+        var full = Math.ceil(fee / Math.max(12, ft + pt / 2));
+        var money = function (cents) {
+          return "$" + Math.floor(cents / 100).toLocaleString("en-US") + "." + String(cents % 100).padStart(2, "0");
+        };
+        document.getElementById("fee-full").textContent = money(full);
+        document.getElementById("fee-part").textContent = money(Math.ceil(full / 2));
+        document.getElementById("fee-count").textContent = ft + " + " + pt + "/2";
+        var count = function (pos) {
+          return board.querySelectorAll("[data-drop='full-time'] .pcard[data-pos='" + pos + "'], [data-drop='part-time'] .pcard[data-pos='" + pos + "']").length;
+        };
+        document.getElementById("targets").textContent =
+          "Forwards " + count("F") + " of " + document.getElementById("tf").value +
+          " · Defense " + count("D") + " of " + document.getElementById("td").value +
+          " · Goalies " + count("G") + " of " + document.getElementById("tg").value;
+      }
+      board.addEventListener("dragstart", function (event) {
+        card = event.target.closest(".pcard");
+        if (card) card.classList.add("dragging");
+      });
+      board.addEventListener("dragend", function () {
+        if (card) card.classList.remove("dragging");
+        board.querySelectorAll(".over").forEach(function (col) { col.classList.remove("over"); });
+        card = null;
+        recount();
+      });
+      board.querySelectorAll("[data-drop]").forEach(function (col) {
+        col.addEventListener("dragover", function (event) {
+          event.preventDefault();
+          col.classList.add("over");
+        });
+        col.addEventListener("dragleave", function () { col.classList.remove("over"); });
+        col.addEventListener("drop", function (event) {
+          event.preventDefault();
+          if (card) col.querySelector("ul").appendChild(card);
+        });
+      });
+      ["fee", "tf", "td", "tg"].forEach(function (id) {
+        document.getElementById(id).addEventListener("input", recount);
+      });
+      recount();
+    }
+
+    // Copy the chase message.
+    document.querySelectorAll("[data-copy]").forEach(function (button) {
+      button.addEventListener("click", function () {
+        var text = document.getElementById(button.dataset.copy).textContent;
+        var done = function () { button.textContent = "Copied"; };
+        if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
       });
     });
 

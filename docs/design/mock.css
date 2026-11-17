@@ -2555,3 +2555,424 @@ h1 a {
 .sched.hist th {
   width: auto;
 }
+
+/* ---------- Pass of 2026-11-16, evening ---------- */
+/* Sticky top: the header and the next-game bar stay at the top during a scroll. */
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+}
+
+/* Controls in parts: each part is its own slanted shape, with a small gap. */
+.seg,
+.switch,
+.month-nav {
+  clip-path: none;
+  background: none;
+  box-shadow: none;
+  gap: 4px;
+}
+
+.seg > *,
+.switch > *,
+.month-nav > * {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  margin-left: -6px;
+}
+
+.seg > :first-child,
+.switch > :first-child,
+.month-nav > :first-child {
+  margin-left: 0;
+}
+
+.seg select {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  padding-left: 22px;
+}
+
+.month-nav b {
+  display: grid;
+  place-items: center;
+}
+
+.switch button {
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.05em;
+}
+
+/* Tables: every second row has a light fill. */
+tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--panel-2) 45%, transparent);
+}
+
+tbody tr:nth-child(even) td.sorted {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* Third band: the Ice Pak row is red, the colour of the third jersey. */
+:root[data-theme="third"] .band .bug .ipk .team {
+  background: #c0211c;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35), inset 0 -3px 0 #000000;
+}
+
+:root[data-theme="third"] .band .bug .ipk .team img.crest-third {
+  background: none;
+  padding: 0;
+}
+
+/* The Short label: room before the arrow */
+.short .play {
+  padding: 7px 14px 7px 16px;
+}
+
+/* A section subtitle with the opponent logo */
+.sec-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px 6px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  background: var(--panel-2);
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.sec-sub .opp-logo {
+  width: 22px;
+  height: 22px;
+}
+
+/* Player page: League and Season columns, then a gap before the numbers */
+td.gap,
+th.gap {
+  width: 32px;
+  padding: 0;
+}
+
+/* Video pop-out player */
+.player-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px;
+  background: rgb(4 8 14 / 0.86);
+  backdrop-filter: blur(6px);
+}
+
+.player-pop .box {
+  position: relative;
+  width: min(1100px, 100%);
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  box-shadow: 0 30px 80px -20px #000000;
+}
+
+.player-pop.vertical .box {
+  width: auto;
+  height: min(86vh, 900px);
+  aspect-ratio: 9 / 16;
+}
+
+.player-pop iframe,
+.player-pop img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.player-pop .close {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  border: 0;
+  background: #ffffff;
+  color: #10182b;
+  padding: 9px 18px 10px;
+  font: italic 800 16px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+.player-pop .title {
+  position: absolute;
+  left: 0;
+  top: -40px;
+  color: #ffffff;
+  font: italic 800 20px/1 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Manager pages ---------- */
+.add-form,
+.settings,
+.chase {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+
+.add-form label,
+.settings label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+input,
+textarea {
+  font: 500 16px/1.3 var(--body);
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--rule);
+  border-bottom: 3px solid var(--kit-line);
+  padding: 9px 11px;
+  min-width: 0;
+}
+
+textarea {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ghost.small {
+  padding: 7px 18px 8px 16px;
+  font-size: 14px;
+}
+
+td.grip,
+th.grip {
+  width: 1%;
+  cursor: grab;
+  color: var(--frost);
+  letter-spacing: -2px;
+  user-select: none;
+}
+
+tr.dragging td,
+.pcard.dragging {
+  opacity: 0.4;
+}
+
+/* Seasons: the list of Leagues at the left, the season at the right */
+.mgr {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.lg-list {
+  padding: 14px 16px;
+}
+
+.lg-list ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lg-list li a {
+  display: block;
+  padding: 8px 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.lg-list li.on a {
+  background: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font: italic 800 18px/1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fee-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 32px;
+}
+
+.fee-row b {
+  display: block;
+  margin-top: 4px;
+  font: 700 30px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+.small {
+  font-size: 13px;
+}
+
+/* Roster Builder: one column for each Roster Answer */
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.col {
+  padding: 12px;
+  min-height: 220px;
+}
+
+.col .count {
+  font: 700 22px/1 var(--display);
+  color: var(--accent);
+}
+
+.col ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 160px;
+}
+
+.col.over {
+  outline: 2px dashed var(--accent);
+  outline-offset: -4px;
+}
+
+.pcard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  background: var(--panel-2);
+  border-left: 3px solid var(--kit-line);
+  cursor: grab;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.pcard .av {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.pcard small {
+  display: block;
+  color: var(--frost);
+  font-size: 11px;
+}
+
+/* Jerseys */
+.jno {
+  font: italic 800 26px/1 var(--display);
+}
+
+.chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 6px;
+  font-size: 12px;
+  color: var(--frost);
+  white-space: nowrap;
+}
+
+.numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.numbers span {
+  min-width: 44px;
+  padding: 8px 10px;
+  text-align: center;
+  background: var(--panel-2);
+  font: italic 800 20px/1 var(--display);
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+@media (max-width: 1000px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mgr {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .chk {
+    display: flex;
+    margin: 2px 0;
+  }
+
+  .fee-row {
+    gap: 12px 20px;
+  }
+}
+
+.phone-only {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .phone-only {
+    display: block;
+  }
+
+  .jerseys .chk {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .jerseys td.n,
+  .jerseys th.n {
+    padding-inline: 3px;
+  }
+}
