@@ -6445,3 +6445,9 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root:not([data-theme]) .nside-tab {
   --n-on: #ffffff;
 }
+
+/* Away Theme: the recap icon is white on the navy accent. */
+:root[data-theme="away"][data-nmsg="recap"] .notice,
+:root[data-theme="away"][data-nmsg="recap"] .nside-tab {
+  --n-on: #ffffff;
+}
