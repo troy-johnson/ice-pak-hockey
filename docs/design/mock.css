@@ -4601,3 +4601,14 @@ select.jst[data-st="none"] {
   font: italic 800 17px/1 var(--display);
   letter-spacing: 0.06em;
 }
+
+/* Jerseys: the row that the Add a jersey dialog changed has a short highlight. */
+tr.flash td {
+  animation: row-flash 1.6s ease-out;
+}
+
+@keyframes row-flash {
+  from {
+    background-color: rgb(91 165 209 / 0.45);
+  }
+}

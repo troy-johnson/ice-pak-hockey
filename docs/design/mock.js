@@ -312,6 +312,51 @@
       matchMedia("(min-width: 761px)").addEventListener("change", function (m) { if (m.matches) openMenu(false); });
     }
 
+    // Add a jersey: the dialog fills the number and size of the Player, and Add changes the row, the counts, and the free numbers.
+    var aj = document.querySelector("[data-add-jersey]");
+    if (aj) {
+      var ajPlayer = aj.querySelector("#aj-player"), ajNo = aj.querySelector("#aj-no"), ajSize = aj.querySelector("#aj-size");
+      var fillNo = function () {
+        var o = ajPlayer.selectedOptions[0];
+        var free = Array.prototype.map.call(document.querySelectorAll("#free-numbers span"), function (x) { return x.dataset.no; });
+        var mine = o.dataset.no;
+        var list = (mine ? [mine] : []).concat(free);
+        ajNo.innerHTML = list.map(function (n) { return "<option>" + n + "</option>"; }).join("");
+        ajSize.value = o.dataset.size;
+      };
+      ajPlayer.addEventListener("change", fillNo);
+      document.querySelectorAll("[data-open='add-jersey']").forEach(function (b) { b.addEventListener("click", fillNo); });
+      var recountJ = function () {
+        var c = { paid: 0, owes: 0, loan: 0 };
+        document.querySelectorAll("select.jst").forEach(function (sel) { if (c[sel.value] !== undefined) c[sel.value]++; });
+        document.getElementById("jc-owned").textContent = c.paid + c.owes;
+        document.getElementById("jc-loan").textContent = c.loan;
+        document.getElementById("jc-owes").textContent = c.owes;
+      };
+      aj.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var o = ajPlayer.selectedOptions[0];
+        var row = document.querySelector('tr[data-player="' + o.value.replace(/"/g, '\\"') + '"]');
+        var no = ajNo.value;
+        if (row) {
+          var sel = row.querySelector('select.jst[data-kit="' + aj.querySelector("#aj-kit").value + '"]');
+          sel.value = sel.dataset.st = aj.querySelector("#aj-st").value;
+          row.querySelector(".jno").textContent = no;
+          row.querySelector(".jsize").textContent = ajSize.value;
+          row.classList.remove("flash"); void row.offsetWidth; row.classList.add("flash");
+        }
+        if (no !== o.dataset.no) {
+          var chip = document.querySelector('#free-numbers span[data-no="' + no + '"]');
+          if (chip) chip.remove();
+          if (!o.dataset.no) document.getElementById("jc-taken").textContent = Number(document.getElementById("jc-taken").textContent) + 1;
+          o.dataset.no = no;
+        }
+        recountJ();
+        aj.closest(".modal").hidden = true;
+      });
+      document.querySelectorAll("select.jst").forEach(function (sel) { sel.addEventListener("change", recountJ); });
+    }
+
     // Jerseys: the status list takes the colour of its status.
     document.querySelectorAll("select.jst").forEach(function (sel) {
       sel.addEventListener("change", function () { sel.dataset.st = sel.value; });
