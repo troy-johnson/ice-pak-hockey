@@ -38,6 +38,8 @@
   root.dataset.nstyle = read("nstyle", "slim");
   root.dataset.switcher = read("switcher", "buttons");
   root.dataset.auth = read("auth", "out");
+  // Manager style: how a signed-in Manager sees the Manager links. "menu" is the default.
+  root.dataset.mstyle = read("mstyle", "menu");
   root.dataset.panel = read("panel", "open");
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -309,6 +311,39 @@
         setAuth("out");
       });
     });
+    // Account menu and floating Manage button: a click opens the list of Manager links. Escape or a click outside closes it.
+    document.querySelectorAll(".acct-btn, .mpill-btn").forEach(function (btn) {
+      var list = document.getElementById(btn.getAttribute("aria-controls"));
+      btn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var open = list.hidden;
+        list.hidden = !open;
+        btn.setAttribute("aria-expanded", String(open));
+      });
+    });
+    function closeMgrMenus() {
+      document.querySelectorAll(".acct-btn, .mpill-btn").forEach(function (btn) {
+        document.getElementById(btn.getAttribute("aria-controls")).hidden = true;
+        btn.setAttribute("aria-expanded", "false");
+      });
+    }
+    document.addEventListener("click", function (event) {
+      if (!event.target.closest(".acct-menu, .mpill-menu")) closeMgrMenus();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") closeMgrMenus();
+    });
+    // Pencils: each section title on a public page gets an Edit link.
+    if (!document.body.classList.contains("mgr-area")) {
+      document.querySelectorAll("main .sec-head, .band .title-row, .band > .wrap > h1").forEach(function (head) {
+        var pen = document.createElement("a");
+        pen.href = "#";
+        pen.className = "edit-pen";
+        pen.setAttribute("data-auth", "in");
+        pen.innerHTML = '<span aria-hidden="true">✎</span> Edit';
+        if (head.tagName === "H1") head.insertAdjacentElement("afterend", pen); else head.appendChild(pen);
+      });
+    }
     function setAuth(value) {
       root.dataset.auth = value;
       save("auth", value);
@@ -514,6 +549,7 @@
       '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="nmsg"><button value="none">none</button><button value="recap">recap</button><button value="event">event</button><button value="change">change</button><button value="cancel">cancel</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="menu">menu</button><button value="pill">button</button><button value="inline">pencils</button><button value="strip">strip</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
     document.body.appendChild(panel);
@@ -532,7 +568,7 @@
       var note = notes[root.dataset.recent];
       note += root.dataset.notice === "none" ? " No notice is active, so no notice bar shows." : " A notice is active. The style row sets how it shows.";
       note += root.dataset.auth === "in"
-        ? " Signed in: a Manager strip shows above the header, and the Manager pages open."
+        ? " Signed in: the mgr style row sets how the Manager links show, and the Manager pages open."
         : " Signed out: the Manager pages show the sign-in step.";
       panel.querySelector(".dv-note").textContent = note;
       panel.querySelector(".dv-toggle").setAttribute("aria-expanded", String(root.dataset.panel === "open"));
