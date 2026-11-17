@@ -6437,3 +6437,11 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root[data-nview="card"][data-notice] .notice {
   background: var(--ground);
 }
+
+/* Home Theme: the notice icon and the tab text are white. */
+:root[data-theme="home"] .notice,
+:root[data-theme="home"] .nside-tab,
+:root:not([data-theme]) .notice,
+:root:not([data-theme]) .nside-tab {
+  --n-on: #ffffff;
+}
