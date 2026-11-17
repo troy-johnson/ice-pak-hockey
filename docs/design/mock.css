@@ -3515,3 +3515,40 @@ section[data-recent] {
 .gall {
   font-size: 13px;
 }
+
+/* Info notice: the colours of the jersey of each Theme. The alert notice stays orange in each Theme. */
+:root[data-notice="info"] .notice {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice {
+  background: #000000;
+  color: #ffffff;
+  border-bottom: 3px solid #c0211c;
+}
+
+:root[data-notice="info"] .notice .nlink,
+:root[data-notice="info"] .notice .nclose {
+  color: inherit;
+}
+
+:root[data-notice="info"] .notice .ntag {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice .ntag {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice .ntag {
+  background: #c0211c;
+  color: #ffffff;
+}
