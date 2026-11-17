@@ -4591,3 +4591,8 @@ select.jst[data-st="none"] {
     font-size: 13px;
   }
 }
+
+/* Away band: the white button keeps a light blue line at the bottom. A white line does not show on a white button. */
+:root[data-theme="away"] .band .button {
+  box-shadow: inset 0 -3px 0 #5ba5d1;
+}
