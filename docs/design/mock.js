@@ -681,13 +681,38 @@
           root.dataset.nview = "card";
         } else {
           root.dataset.nview = "toast";
-          nTimer = setTimeout(function () { root.dataset.nview = "side"; showState(); }, 8000);
+          nTimer = setTimeout(dockToast, 8000);
         }
       } else {
         root.dataset.nview = "side";
         root.dataset.nread = String(st === "viewed");
       }
       showState();
+    }
+    // The toast flies to the right edge and shrinks into the side tab. Then the tab pops out with a short glow.
+    function dockToast() {
+      var bar = document.querySelector("[data-notice-bar]");
+      var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var finish = function () {
+        root.dataset.nview = "side";
+        showState();
+        var tab = document.querySelector(".nside-tab");
+        if (tab && !still && tab.animate) {
+          tab.animate([
+            { transform: "translateY(-50%) rotate(180deg) scale(1.35)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
+            { transform: "translateY(-50%) rotate(180deg) scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+          ], { duration: 650, easing: "cubic-bezier(0.3, 1.6, 0.5, 1)" });
+        }
+      };
+      if (!bar || still || !bar.animate) { finish(); return; }
+      var r = bar.getBoundingClientRect();
+      var dx = innerWidth - 18 - (r.left + r.width / 2);
+      var dy = innerHeight / 2 - (r.top + r.height / 2);
+      bar.animate([
+        { transform: "translate(0, 0) scale(1)", opacity: 1, borderRadius: "0" },
+        { transform: "translate(" + dx * 0.55 + "px, " + dy * 0.35 + "px) scale(0.55)", opacity: 0.9, borderRadius: "12px", offset: 0.55 },
+        { transform: "translate(" + dx + "px, " + dy + "px) scale(0.08)", opacity: 0, borderRadius: "40px" }
+      ], { duration: 700, easing: "cubic-bezier(0.55, 0, 0.35, 1)" }).onfinish = finish;
     }
     function showState() {
       var out = document.querySelector(".dv-nstate");
