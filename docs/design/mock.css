@@ -4118,3 +4118,47 @@ select:not(.cell):not(.dv-page):not(td select) {
 .modal-box .ghost {
   height: 44px;
 }
+
+/* The notice bar and the game bar touch: no line and no padding between them. */
+:root[data-theme="third"][data-notice="info"] .notice {
+  border-bottom: 0;
+}
+
+:root[data-notice="info"] .gamebar .wrap,
+:root[data-notice="alert"] .gamebar .wrap {
+  padding-top: 0;
+}
+
+/* Theme dropdown: a solid list in each Theme */
+.dd-menu {
+  background: #14244a;
+}
+
+:root[data-theme="away"] .dd-menu {
+  background: #ffffff;
+}
+
+:root[data-theme="third"] .dd-menu {
+  background: #151515;
+  border-color: #343434;
+  --ink: #f5f5f5;
+  --frost: #b4b4b4;
+  --panel-2: #262626;
+  --kit-line: #c0211c;
+}
+
+/* One text size for each main button and list: 17 px */
+.button,
+.ghost:not(.small),
+select:not(.cell):not(.dv-page):not(td select),
+.seg button,
+.seg a,
+.dd-btn {
+  font-size: 17px;
+}
+
+.button,
+.ghost:not(.small) {
+  padding-left: 22px;
+  padding-right: 24px;
+}
