@@ -4671,3 +4671,30 @@ tr.flash td {
     display: inline;
   }
 }
+
+/* Player Bank: the Manager note, one line under the name; a click shows all of it */
+td.name .pnote {
+  display: block;
+  max-width: 36ch;
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--frost);
+  font: italic 400 13px/1.35 var(--body);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+td.name .pnote::before {
+  content: "Note: ";
+  font-style: normal;
+  font-weight: 600;
+}
+
+td.name .pnote[aria-expanded="true"] {
+  white-space: normal;
+}

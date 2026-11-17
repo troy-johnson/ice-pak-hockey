@@ -565,3 +565,43 @@
     }
   });
 })();
+
+// Player Bank: a click on a Manager note shows the full text or one line
+document.addEventListener("click", (ev) => {
+  const b = ev.target.closest(".pnote");
+  if (!b) return;
+  b.setAttribute("aria-expanded", b.getAttribute("aria-expanded") === "true" ? "false" : "true");
+});
+
+// Add a Player: put a new row at the end of the chosen tier, with the Manager note under the name
+document.addEventListener("DOMContentLoaded", () => {
+  const f = document.getElementById("add-player");
+  if (!f) return;
+  f.addEventListener("submit", () => {
+    const name = `${f.querySelector("#ap-first").value.trim()} ${f.querySelector("#ap-last").value.trim()}`.trim();
+    const tier = f.querySelector("#ap-tier").selectedIndex;
+    const tb = document.querySelectorAll("table.bank tbody")[tier];
+    if (!name || !tb || !tb.rows[0]) return;
+    const tr = tb.rows[0].cloneNode(true);
+    const no = f.querySelector("#ap-no").value.trim();
+    const note = f.querySelector("#ap-note").value.trim();
+    tr.querySelector("td.name a").textContent = name;
+    tr.querySelector(".av").textContent = no || name.split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+    tr.querySelector(".rank").textContent = tb.rows.length + 1;
+    const ni = tr.querySelector(".no-in"); if (ni) ni.value = no;
+    tr.querySelectorAll("td.muted").forEach((td) => { td.textContent = "–"; });
+    const bal = tr.querySelector(".bal"); if (bal) { bal.textContent = "$0.00"; bal.className = "n bal zero"; }
+    tr.querySelector(".pnote")?.remove();
+    if (note) {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "pnote"; b.title = "Manager note";
+      b.setAttribute("aria-expanded", "false"); b.textContent = note;
+      tr.querySelector("td.name").append(b);
+    }
+    tb.append(tr);
+    const h = tb.closest("section").querySelector("h2 small"); if (h) h.textContent = `(${tb.rows.length})`;
+    tr.classList.add("flash");
+    tr.scrollIntoView({ block: "center" });
+    f.reset();
+  });
+});
