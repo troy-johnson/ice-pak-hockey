@@ -28,6 +28,10 @@ Troy asked for these changes:
 - **Third Theme:** the Theme has black, red, and white only. The dark tones had a blue tint before.
 - **From the design review:** a next-game bar on the Home page, a short calendar row for a week with no Game, the record against the opponent on the Game page, and links to the Game before and the Game after.
 
+## Theme names
+
+On 2026-11-17 Troy renamed the Third Theme to **Heritage** for the visitor. The switch and the settings panel say "Heritage". The code and this document still use `third` and "Third". `CONTEXT.md` still says "Third"; update the glossary if the name stays.
+
 ## The mockups
 
 | Page | File |

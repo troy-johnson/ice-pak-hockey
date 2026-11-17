@@ -3552,3 +3552,15 @@ section[data-recent] {
   background: #c0211c;
   color: #ffffff;
 }
+
+/* The tag of a notice: the text is centred in its box. */
+.notice .ntag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  min-width: 64px;
+  padding: 0 12px;
+  line-height: 1;
+  text-align: center;
+}
