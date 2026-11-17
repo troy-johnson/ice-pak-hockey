@@ -267,6 +267,7 @@
       ["game.html", "Game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
       ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-jerseys.html", "Mgr: Jerseys"]];
     var here = location.pathname.split("/").pop() || "home.html";
+    if (here === "index.html" || here.indexOf(".") < 0) here = "home.html";
     var panel = document.createElement("aside");
     panel.className = "devbar";
     panel.setAttribute("aria-label", "Mockup settings");
