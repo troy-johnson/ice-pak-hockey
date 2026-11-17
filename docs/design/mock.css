@@ -6428,3 +6428,12 @@ body.mgr-area .mm-acct a:not([data-signout]) {
   font: 700 15px/1 var(--display);
   text-align: right;
 }
+
+/* The sticky top part is solid, so the page never shows through a gap or a margin in it during a scroll. */
+.sticky {
+  background: var(--ground);
+}
+
+:root[data-nview="card"][data-notice] .notice {
+  background: var(--ground);
+}

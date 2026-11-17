@@ -373,6 +373,9 @@
     var setHeadH = function () { if (siteHead) root.style.setProperty("--head-h0", siteHead.offsetHeight + "px"); };
     setHeadH();
     addEventListener("resize", setHeadH);
+    // The header can change height after the fonts load; measure it again when it does.
+    if (siteHead && window.ResizeObserver) new ResizeObserver(setHeadH).observe(siteHead);
+    if (document.fonts) document.fonts.ready.then(setHeadH);
 
     // Game bar: drag with the mouse to scroll. A phone swipes with no script. The bar starts at the next game.
     var track = document.querySelector(".gtrack");
