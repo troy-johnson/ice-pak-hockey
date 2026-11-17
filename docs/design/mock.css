@@ -5419,23 +5419,23 @@ td.name .who:has(.av) + .pnote {
 
 
 /* Slim: a thin line in the panel colour. The tag is small coloured text, and the link is at the right. */
-:root[data-nstyle="slim"][data-notice] .notice {
+:root[data-nview="slim"][data-notice] .notice {
   background: var(--panel);
   color: var(--ink);
   box-shadow: inset 3px 0 0 var(--accent), inset 0 -1px 0 var(--rule);
   border: 0;
 }
 
-:root[data-nstyle="slim"][data-notice="alert"] .notice {
+:root[data-nview="slim"][data-notice="alert"] .notice {
   box-shadow: inset 3px 0 0 #e0a526, inset 0 -1px 0 var(--rule);
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .wrap {
+:root[data-nview="slim"][data-notice] .notice .wrap {
   gap: 4px 14px;
   padding-block: 9px;
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .ntag {
+:root[data-nview="slim"][data-notice] .notice .ntag {
   min-width: 0;
   height: auto;
   padding: 0;
@@ -5447,45 +5447,45 @@ td.name .who:has(.av) + .pnote {
   animation: none;
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .ntag::after {
+:root[data-nview="slim"][data-notice] .notice .ntag::after {
   display: none;
 }
 
-:root[data-nstyle="slim"][data-notice="alert"] .notice .ntag {
+:root[data-nview="slim"][data-notice="alert"] .notice .ntag {
   color: #e0a526;
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .ntext {
+:root[data-nview="slim"][data-notice] .notice .ntext {
   font-weight: 500;
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .nlink {
+:root[data-nview="slim"][data-notice] .notice .nlink {
   margin-left: auto;
   color: var(--ink);
   font-weight: 600;
   text-decoration: none;
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .nlink::after {
+:root[data-nview="slim"][data-notice] .notice .nlink::after {
   content: " →";
   color: var(--accent);
 }
 
-:root[data-nstyle="slim"][data-notice] .notice .nclose {
+:root[data-nview="slim"][data-notice] .notice .nclose {
   margin-left: 0;
   color: var(--frost);
   font-size: 18px;
 }
 
 /* Card: a card inside the page width, with the opponent logo, the tag above the text, and a button. */
-:root[data-nstyle="card"][data-notice] .notice {
+:root[data-nview="card"][data-notice] .notice {
   background: transparent;
   box-shadow: none;
   border: 0;
   color: var(--ink);
 }
 
-:root[data-nstyle="card"][data-notice] .notice .wrap {
+:root[data-nview="card"][data-notice] .notice .wrap {
   margin-block: 10px;
   padding-block: 12px;
   gap: 14px;
@@ -5494,22 +5494,22 @@ td.name .who:has(.av) + .pnote {
   box-shadow: inset 4px 0 0 var(--accent), 0 0 0 1px var(--rule);
 }
 
-:root[data-nstyle="card"][data-notice="alert"] .notice .wrap {
+:root[data-nview="card"][data-notice="alert"] .notice .wrap {
   box-shadow: inset 4px 0 0 #e0a526, 0 0 0 1px var(--rule);
 }
 
-:root[data-nstyle="card"][data-notice] .notice .nicon {
+:root[data-nview="card"][data-notice] .notice .nicon {
   display: grid;
 }
 
-:root[data-nstyle="card"][data-notice] .notice .nbody {
+:root[data-nview="card"][data-notice] .notice .nbody {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
 
-:root[data-nstyle="card"][data-notice] .notice .ntag {
+:root[data-nview="card"][data-notice] .notice .ntag {
   justify-content: flex-start;
   min-width: 0;
   height: auto;
@@ -5522,19 +5522,19 @@ td.name .who:has(.av) + .pnote {
   animation: none;
 }
 
-:root[data-nstyle="card"][data-notice] .notice .ntag::after {
+:root[data-nview="card"][data-notice] .notice .ntag::after {
   display: none;
 }
 
-:root[data-nstyle="card"][data-notice="alert"] .notice .ntag {
+:root[data-nview="card"][data-notice="alert"] .notice .ntag {
   color: #e0a526;
 }
 
-:root[data-nstyle="card"][data-notice] .notice .ntext {
+:root[data-nview="card"][data-notice] .notice .ntext {
   font-size: 15px;
 }
 
-:root[data-nstyle="card"][data-notice] .notice .nlink {
+:root[data-nview="card"][data-notice] .notice .nlink {
   flex: none;
   margin-left: auto;
   padding: 9px 16px;
@@ -5547,14 +5547,14 @@ td.name .who:has(.av) + .pnote {
   clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
 }
 
-:root[data-nstyle="card"][data-notice] .notice .nclose {
+:root[data-nview="card"][data-notice] .notice .nclose {
   margin-left: 0;
   color: var(--frost);
   align-self: flex-start;
 }
 
 @media (max-width: 760px) {
-  :root[data-nstyle="card"][data-notice] .notice .nlink {
+  :root[data-nview="card"][data-notice] .notice .nlink {
     padding: 8px 12px;
     font-size: 13px;
   }
@@ -5584,15 +5584,15 @@ td.name .who:has(.av) + .pnote {
   color: var(--n-acc);
 }
 
-:root[data-nstyle="slim"][data-notice] .notice {
+:root[data-nview="slim"][data-notice] .notice {
   box-shadow: inset 3px 0 0 var(--n-acc), inset 0 -1px 0 var(--rule);
 }
 
-:root[data-nstyle="card"][data-notice] .notice .wrap {
+:root[data-nview="card"][data-notice] .notice .wrap {
   box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule);
 }
 
-:root[data-nstyle="stripes"][data-notice] .notice .ntag {
+:root[data-nview="stripes"][data-notice] .notice .ntag {
   color: inherit;
 }
 
@@ -5622,9 +5622,9 @@ td.name .who:has(.av) + .pnote {
 }
 
 /* Toast, side tab, and bottom bar: the same card layout. The icon, the tag and text, and the close are in a row, and the link is below the text. */
-:root[data-nstyle="toast"][data-notice] .notice,
-:root[data-nstyle="side"][data-notice] .notice,
-:root[data-nstyle="bottom"][data-notice] .notice {
+:root[data-nview="toast"][data-notice] .notice,
+:root[data-nview="side"][data-notice] .notice,
+:root[data-nview="bottom"][data-notice] .notice {
   position: fixed;
   z-index: 60;
   background: var(--panel);
@@ -5633,8 +5633,8 @@ td.name .who:has(.av) + .pnote {
   box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule), 0 14px 34px -10px rgb(0 0 0 / 0.55);
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .wrap,
-:root[data-nstyle="side"][data-notice] .notice .wrap {
+:root[data-nview="toast"][data-notice] .notice .wrap,
+:root[data-nview="side"][data-notice] .notice .wrap {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
   grid-template-areas: "icon body close" "icon link link";
@@ -5644,15 +5644,15 @@ td.name .who:has(.av) + .pnote {
   max-width: none;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .nicon,
-:root[data-nstyle="side"][data-notice] .notice .nicon {
+:root[data-nview="toast"][data-notice] .notice .nicon,
+:root[data-nview="side"][data-notice] .notice .nicon {
   display: grid;
   grid-area: icon;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .nbody,
-:root[data-nstyle="side"][data-notice] .notice .nbody,
-:root[data-nstyle="bottom"][data-notice] .notice .nbody {
+:root[data-nview="toast"][data-notice] .notice .nbody,
+:root[data-nview="side"][data-notice] .notice .nbody,
+:root[data-nview="bottom"][data-notice] .notice .nbody {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -5660,9 +5660,9 @@ td.name .who:has(.av) + .pnote {
   min-width: 0;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .ntag,
-:root[data-nstyle="side"][data-notice] .notice .ntag,
-:root[data-nstyle="bottom"][data-notice] .notice .ntag {
+:root[data-nview="toast"][data-notice] .notice .ntag,
+:root[data-nview="side"][data-notice] .notice .ntag,
+:root[data-nview="bottom"][data-notice] .notice .ntag {
   justify-content: flex-start;
   min-width: 0;
   height: auto;
@@ -5675,44 +5675,44 @@ td.name .who:has(.av) + .pnote {
   animation: none;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .ntag::after,
-:root[data-nstyle="side"][data-notice] .notice .ntag::after,
-:root[data-nstyle="bottom"][data-notice] .notice .ntag::after {
+:root[data-nview="toast"][data-notice] .notice .ntag::after,
+:root[data-nview="side"][data-notice] .notice .ntag::after,
+:root[data-nview="bottom"][data-notice] .notice .ntag::after {
   display: none;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .ntext,
-:root[data-nstyle="side"][data-notice] .notice .ntext {
+:root[data-nview="toast"][data-notice] .notice .ntext,
+:root[data-nview="side"][data-notice] .notice .ntext {
   font-weight: 500;
   line-height: 1.4;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .nlink,
-:root[data-nstyle="side"][data-notice] .notice .nlink,
-:root[data-nstyle="bottom"][data-notice] .notice .nlink {
+:root[data-nview="toast"][data-notice] .notice .nlink,
+:root[data-nview="side"][data-notice] .notice .nlink,
+:root[data-nview="bottom"][data-notice] .notice .nlink {
   grid-area: link;
   color: var(--ink);
   font-weight: 600;
   text-decoration: none;
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .nlink::after,
-:root[data-nstyle="side"][data-notice] .notice .nlink::after,
-:root[data-nstyle="bottom"][data-notice] .notice .nlink::after {
+:root[data-nview="toast"][data-notice] .notice .nlink::after,
+:root[data-nview="side"][data-notice] .notice .nlink::after,
+:root[data-nview="bottom"][data-notice] .notice .nlink::after {
   content: " →";
   color: var(--n-acc);
 }
 
-:root[data-nstyle="toast"][data-notice] .notice .nclose,
-:root[data-nstyle="side"][data-notice] .notice .nclose,
-:root[data-nstyle="bottom"][data-notice] .notice .nclose {
+:root[data-nview="toast"][data-notice] .notice .nclose,
+:root[data-nview="side"][data-notice] .notice .nclose,
+:root[data-nview="bottom"][data-notice] .notice .nclose {
   grid-area: close;
   margin: 0;
   color: var(--frost);
 }
 
 /* Toast: a card at the bottom left that slides up. On a phone it spans the width. */
-:root[data-nstyle="toast"][data-notice] .notice {
+:root[data-nview="toast"][data-notice] .notice {
   left: max(16px, env(safe-area-inset-left, 0px));
   bottom: max(16px, env(safe-area-inset-bottom, 0px));
   width: min(380px, calc(100vw - 32px));
@@ -5727,8 +5727,8 @@ td.name .who:has(.av) + .pnote {
 }
 
 /* Side tab: a tab on the right edge. The tab opens a panel with the notice. */
-:root[data-nstyle="side"][data-notice="info"] .nside-tab,
-:root[data-nstyle="side"][data-notice="alert"] .nside-tab {
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
   position: fixed;
   z-index: 61;
   top: 50%;
@@ -5763,7 +5763,7 @@ td.name .who:has(.av) + .pnote {
   }
 }
 
-:root[data-nstyle="side"][data-notice] .notice {
+:root[data-nview="side"][data-notice] .notice {
   top: 50%;
   right: calc(36px + env(safe-area-inset-right, 0px));
   width: min(320px, calc(100vw - 60px));
@@ -5774,13 +5774,13 @@ td.name .who:has(.av) + .pnote {
   transition: opacity 0.2s, visibility 0.2s;
 }
 
-:root[data-nstyle="side"][data-nopen="true"] .notice {
+:root[data-nview="side"][data-nopen="true"] .notice {
   visibility: visible;
   opacity: 1;
 }
 
 /* Bottom bar: a strip pinned to the bottom of the screen. The page gets room for it. */
-:root[data-nstyle="bottom"][data-notice] .notice {
+:root[data-nview="bottom"][data-notice] .notice {
   left: 0;
   right: 0;
   bottom: 0;
@@ -5788,24 +5788,24 @@ td.name .who:has(.av) + .pnote {
   animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 
-:root[data-nstyle="bottom"][data-notice] .notice .wrap {
+:root[data-nview="bottom"][data-notice] .notice .wrap {
   gap: 4px 16px;
   padding-block: 12px max(12px, env(safe-area-inset-bottom, 0px));
 }
 
-:root[data-nstyle="bottom"][data-notice] .notice .nicon {
+:root[data-nview="bottom"][data-notice] .notice .nicon {
   display: grid;
   width: 28px;
   height: 28px;
   font-size: 15px;
 }
 
-:root[data-nstyle="bottom"][data-notice] .notice .nbody {
+:root[data-nview="bottom"][data-notice] .notice .nbody {
   flex: 1;
 }
 
-:root[data-nstyle="bottom"][data-notice="info"] body,
-:root[data-nstyle="bottom"][data-notice="alert"] body {
+:root[data-nview="bottom"][data-notice="info"] body,
+:root[data-nview="bottom"][data-notice="alert"] body {
   padding-bottom: 90px;
 }
 
@@ -6097,4 +6097,52 @@ body.mgr-area .mm-acct a:not([data-signout]) {
   :root[data-mstyle="nav"] .mm-acct {
     display: flex;
   }
+}
+
+/* Event notices have their own colour: green. Recaps use the Theme accent. */
+:root[data-nmsg="event"] .notice,
+:root[data-nmsg="event"] .nside-tab {
+  --n-acc: #3fb27f;
+  --n-on: #0d1930;
+}
+
+:root[data-nmsg="event"] .notice .nicon::before {
+  content: "★";
+  font-size: 16px;
+}
+
+/* Auto: a closed notice is gone. A viewed notice keeps the tab, with no dot. */
+:root[data-ngone="true"] .notice,
+:root[data-ngone="true"] .nside-tab {
+  display: none !important;
+}
+
+:root[data-nread="true"] .nside-tab .nst-dot {
+  display: none;
+}
+
+/* The toast goes to the side tab with a short slide. */
+:root[data-nview="side"][data-notice] .nside-tab {
+  animation: tab-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    translate: 20px 0;
+  }
+}
+
+.dv-replay {
+  border: 1px solid #3c3f44;
+  background: #2b2d31;
+  color: #e8eaed;
+  padding: 3px 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dv-nstate {
+  margin-left: 8px;
+  color: #9aa0a6;
 }

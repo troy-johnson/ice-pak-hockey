@@ -35,7 +35,16 @@
   root.dataset.nmsg = read("nmsg", { info: "recap", alert: "change" }[oldNotice] || "none");
   root.dataset.notice = { recap: "info", event: "info", change: "alert", cancel: "alert" }[root.dataset.nmsg] || "none";
   // Notice style: six options to compare. "slim" is the default.
-  root.dataset.nstyle = read("nstyle", "slim");
+  root.dataset.nstyle = read("nstyle", "auto");
+  // nview is the style that the page shows. In "auto" it changes with the state of the notice.
+  root.dataset.nview = root.dataset.nstyle;
+  // Auto: choose the style before the page draws, so the notice does not flash as a bar.
+  if (root.dataset.nstyle === "auto" && root.dataset.notice !== "none") {
+    var nst0 = read("nstate-" + root.dataset.nmsg, "new");
+    root.dataset.nview = nst0 === "new" ? (root.dataset.notice === "alert" ? "card" : "toast") : "side";
+    root.dataset.ngone = String(nst0 === "closed");
+    root.dataset.nread = String(nst0 === "viewed");
+  }
   root.dataset.switcher = read("switcher", "buttons");
   root.dataset.auth = read("auth", "out");
   // Manager style: how a signed-in Manager sees the Manager links. "menu" is the default.
@@ -547,7 +556,8 @@
       '<div class="dv-row"><span class="dv-k">switch</span><span class="dv-seg" data-key="switcher"><button value="buttons">buttons</button><button value="dropdown">dropdown</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">recent</span><span class="dv-seg" data-key="recent"><button value="bar">bar</button><button value="cards">cards</button><button value="list">list</button><button value="board">scores</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="nmsg"><button value="none">none</button><button value="recap">recap</button><button value="event">event</button><button value="change">change</button><button value="cancel">cancel</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="auto">auto</button><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">auto</span><button type="button" class="dv-replay">replay the first visit</button><span class="dv-nstate"></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="nav">nav</button><button value="menu">menu</button><button value="pill">button</button><button value="inline">pencils</button><button value="strip">strip</button></span></div>' +
       '<p class="dv-note"></p>' +
@@ -583,7 +593,7 @@
         save(key === "theme" ? "theme-x" : key, b.value);
         if (key === "recent") root.dataset.bar = b.value === "bar" ? "on" : "off";
         if (key === "nmsg") { root.dataset.notice = { recap: "info", event: "info", change: "alert", cancel: "alert" }[b.value] || "none"; save("notice", root.dataset.notice); }
-        if (key === "nmsg" || key === "nstyle") { root.dataset.nopen = "false"; fillNotice(); }
+        if (key === "nmsg" || key === "nstyle") { root.dataset.nopen = "false"; fillNotice(); startNotice(); }
         if (key === "theme") {
           try {
             localStorage.setItem("theme", b.value);
@@ -628,14 +638,72 @@
       root.dataset.nopen = root.dataset.nopen === "true" ? "false" : "true";
       fillNotice();
     });
+    // Auto: announce once, then stay quietly in the side tab.
+    // - First visit: a change or a cancellation shows as a card; a recap or an event shows as a toast.
+    // - No action: the toast goes to the side tab after 8 seconds. On the next page, the notice is in the side tab with an unread dot.
+    // - Viewed (the link): the tab stays, with no dot. Closed (×): the notice is gone on every page.
+    // The state of each message is kept for each message, so a new notice starts again with the first visit.
+    var nTimer = null;
+    function nKey() { return "nstate-" + root.dataset.nmsg; }
+    function nState(v) {
+      if (v !== undefined) save(nKey(), v);
+      return read(nKey(), "new");
+    }
+    function startNotice() {
+      clearTimeout(nTimer);
+      root.dataset.nread = "false";
+      root.dataset.ngone = "false";
+      if (root.dataset.nstyle !== "auto" || root.dataset.notice === "none") {
+        root.dataset.nview = root.dataset.nstyle === "auto" ? "toast" : root.dataset.nstyle;
+        showState();
+        return;
+      }
+      var st = nState();
+      if (st === "closed") root.dataset.ngone = "true";
+      if (st === "new") {
+        nState("seen");
+        if (root.dataset.notice === "alert") {
+          root.dataset.nview = "card";
+        } else {
+          root.dataset.nview = "toast";
+          nTimer = setTimeout(function () { root.dataset.nview = "side"; showState(); }, 8000);
+        }
+      } else {
+        root.dataset.nview = "side";
+        root.dataset.nread = String(st === "viewed");
+      }
+      showState();
+    }
+    function showState() {
+      var out = document.querySelector(".dv-nstate");
+      if (out) out.textContent = root.dataset.nstyle === "auto" && root.dataset.notice !== "none" ? "now: " + (root.dataset.ngone === "true" ? "closed" : root.dataset.nview) : "";
+    }
+    var nlink = document.querySelector(".notice .nlink");
+    if (nlink) nlink.addEventListener("click", function () {
+      if (root.dataset.nstyle === "auto") nState("viewed");
+    });
+    var replay = document.querySelector(".dv-replay");
+    if (replay) replay.addEventListener("click", function () {
+      ["recap", "event", "change", "cancel"].forEach(function (m) { save("nstate-" + m, "new"); });
+      root.dataset.nopen = "false";
+      startNotice();
+    });
     var nclose = document.querySelector(".nclose");
     if (nclose) nclose.addEventListener("click", function () {
+      if (root.dataset.nstyle === "auto") {
+        clearTimeout(nTimer);
+        nState("closed");
+        root.dataset.ngone = "true";
+        showState();
+        return;
+      }
       root.dataset.notice = root.dataset.nmsg = "none";
       save("notice", "none");
       save("nmsg", "none");
       syncPanel();
     });
     fillNotice();
+    startNotice();
     syncPanel();
 
     // Schedule calendar: one panel for each month.
