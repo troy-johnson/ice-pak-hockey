@@ -2857,17 +2857,17 @@ tr.dragging td,
   align-items: start;
 }
 
-.col {
+.board .col {
   padding: 12px;
   min-height: 220px;
 }
 
-.col .count {
+.board .col .count {
   font: 700 22px/1 var(--display);
   color: var(--accent);
 }
 
-.col ul {
+.board .col ul {
   margin: 10px 0 0;
   padding: 0;
   list-style: none;
@@ -2877,7 +2877,7 @@ tr.dragging td,
   min-height: 160px;
 }
 
-.col.over {
+.board .col.over {
   outline: 2px dashed var(--accent);
   outline-offset: -4px;
 }
