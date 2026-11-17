@@ -783,6 +783,14 @@
     });
     var nclose = document.querySelector(".nclose");
     if (nclose) nclose.addEventListener("click", function () {
+      // Phone: the game bar comes back in the place of the closed card, with a short slide.
+      var gbar = document.querySelector(".gamebar");
+      if (gbar) { gbar.classList.remove("bar-back"); void gbar.offsetWidth; gbar.classList.add("bar-back"); }
+      // The bar was hidden, so it starts again at the next game.
+      setTimeout(function () {
+        var tr = document.querySelector(".gtrack"), nx = tr && tr.querySelector(".gtile.next");
+        if (nx && matchMedia("(max-width: 760px)").matches) tr.scrollLeft = nx.offsetLeft - tr.offsetLeft;
+      }, 0);
       if (root.dataset.nstyle === "auto") {
         clearTimeout(nTimer);
         nState("closed");

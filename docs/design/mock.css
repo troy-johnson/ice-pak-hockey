@@ -6361,3 +6361,53 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     color: var(--on-fill);
   }
 }
+
+/* Phone: a card notice takes the place of the game bar, below the header. When the card closes, the game bar comes back. */
+@media (max-width: 760px) {
+  :root[data-nview="card"][data-notice="info"]:not([data-ngone="true"]) .sticky > .gamebar,
+  :root[data-nview="card"][data-notice="alert"]:not([data-ngone="true"]) .sticky > .gamebar {
+    display: none;
+  }
+
+  :root[data-nview="card"][data-notice="info"]:not([data-ngone="true"]) .sticky > .notice,
+  :root[data-nview="card"][data-notice="alert"]:not([data-ngone="true"]) .sticky > .notice {
+    position: sticky;
+    top: var(--head-h0, 65px);
+    z-index: 21;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+  }
+
+  :root[data-nview="card"][data-notice] .notice .wrap {
+    margin-block: 6px;
+  }
+
+  .sticky > .gamebar.bar-back {
+    animation: bar-back 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@keyframes bar-back {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky > .gamebar.bar-back {
+    animation: none;
+  }
+}
+
+/* Phone: no bell while the card shows. The card has the message and its own close. */
+@media (max-width: 760px) {
+  :root[data-nview="card"] .nbell {
+    display: none !important;
+  }
+
+  :root[data-nview="card"] .site-head .nbell + .menu-btn {
+    margin-left: auto !important;
+  }
+}
