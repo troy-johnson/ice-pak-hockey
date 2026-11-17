@@ -3996,3 +3996,85 @@ td.nowrap {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Team ledger */
+td.bal a {
+  color: inherit;
+}
+
+.tag.k-owes {
+  border-color: #e2584f;
+  color: #e2584f;
+}
+
+.tag.k-pay,
+.tag.k-in {
+  border-color: #3fb371;
+  color: #3fb371;
+}
+
+.tag.k-out {
+  border-color: var(--frost);
+  color: var(--ink);
+}
+
+:root[data-theme="away"] .tag.k-owes {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
+:root[data-theme="away"] .tag.k-pay,
+:root[data-theme="away"] .tag.k-in {
+  border-color: #1b7f46;
+  color: #1b7f46;
+}
+
+.ledger td.n {
+  white-space: nowrap;
+}
+
+.sec-head .controls select {
+  font-size: 14px;
+  padding-block: 8px 9px;
+}
+
+@media (max-width: 760px) {
+  .ledger th:nth-child(2),
+  .ledger td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Ledger on a phone: the Team Fund column is hidden. The strip at the top has the Team Fund. */
+  .ledger th:nth-child(7),
+  .ledger td:nth-child(7) {
+    display: none;
+  }
+
+  .ledger td,
+  .ledger th {
+    padding-inline: 6px;
+  }
+}
+
+@media (max-width: 420px) {
+  /* A strip with long labels: two columns, the key value on its own row */
+  .strip.team[style*="--n:3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .ledger td.date {
+    font-size: 13px;
+  }
+
+  .ledger td.date small {
+    display: none;
+  }
+
+  .ledger td.n {
+    font-size: 14px;
+  }
+}

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Ledger · Manager · Ice Pak</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,800&family=Inter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="mock.css">
+<script src="mock.js"></script>
+</head>
+<body>
+<div class="sticky">
+<div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" data-signout>Sign out</a></div></div>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="manager.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak Manager</span></a>
+  <nav aria-label="Main"><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-ledger.html" aria-current="page">Ledger</a><a href="manager-jerseys.html">Jerseys</a><a href="home.html">Public site</a></nav>
+  
+  <div class="switch" role="group" aria-label="Theme">
+    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
+    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
+    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Heritage</span></button>
+  </div>
+  <div class="theme-dd">
+    <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false"><i class="kit-chip"></i><span class="dd-name">Home</span><span class="dd-arrow" aria-hidden="true">▾</span></button>
+    <ul class="dd-menu" role="listbox" aria-label="Theme" hidden>
+      <li><button type="button" role="option" data-theme-choice="home"><i class="kit-chip home"></i>Home<small>Navy jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="away"><i class="kit-chip away"></i>Away<small>White jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="third"><i class="kit-chip third"></i>Heritage<small>Red jersey</small></button></li>
+    </ul>
+  </div>
+</div></header>
+<div class="notice" role="status" data-notice-bar><div class="wrap"><span class="ntag"></span><span class="ntext"></span><a class="nlink" href="schedule.html"></a><button type="button" class="nclose" aria-label="Close the notice">×</button></div></div>
+</div><div class="band gate" data-auth="out"><div class="wrap"><p class="crumbs">Managers</p><h1>Manager sign-in</h1></div></div>
+<main class="wrap" data-auth="out"><form class="card login" data-login>
+  <p>The Manager pages are for the team Managers only. Enter your email address. You get a one-time code by email.</p>
+  <label>Email address <input type="email" autocomplete="email" required></label>
+  <div class="step2" hidden><label>One-time code <input inputmode="numeric" autocomplete="one-time-code" size="8"></label></div>
+  <button type="submit" class="button">Continue</button>
+  <p class="muted small">Not a Manager? <a href="home.html">Go back to the site</a>.</p>
+</form></main><div class="band" data-auth="in"><div class="wrap">
+<p class="crumbs">Manager / Ledger</p>
+<div class="title-row"><h1>Team ledger</h1><button type="button" class="button" data-open="new-line">Add a line</button></div>
+<p class="muted">Each money line of the team: what Players owe, what they pay, and what the team pays out. Each Balance and the Team Fund come from these lines.</p>
+</div></div>
+<main class="wrap" data-auth="in">
+<div class="card strip team" style="--n:3"><span class="title">Team</span>
+  <div class="key"><span class="label">Team Fund</span><b>$4,123.50</b></div><div><span class="label">Owed by Players</span><b>$2,837.14</b></div><div><span class="label">Player credits</span><b>$75.00</b></div></div>
+<div class="modal" id="new-line" hidden role="dialog" aria-modal="true" aria-labelledby="nl-title">
+<form class="card modal-box" onsubmit="event.preventDefault(); this.closest('.modal').hidden = true;">
+  <div class="modal-head"><h2 id="nl-title">Add a line</h2><button type="button" class="nclose" data-close="new-line" aria-label="Close">×</button></div>
+  <div class="fields two">
+    <label>Kind <select id="nl-kind"><option>Payment</option><option>Charge</option><option>League Fee</option><option>Expense</option><option>Income</option></select></label>
+    <label>Date <input id="nl-date" type="date" value="2026-11-17"></label>
+    <label>Player or payee <input id="nl-who" value="Jamie Lund"></label>
+    <label>Season <select id="nl-season"><option>Mammoth Winter '27</option><option>SLC County Winter '26-27</option><option>No season</option></select></label>
+    <label>Amount <input id="nl-amt" value="40.00" inputmode="decimal"></label>
+    <label>Method <select id="nl-method"><option>Zelle</option><option>Venmo</option><option>Cash</option><option>Check</option></select></label>
+  </div>
+  <label>Note <input id="nl-note" value="Sub fee, Nov 8"></label>
+  <div class="actions"><button type="submit" class="button">Save the line</button><button type="button" class="ghost" data-close="new-line">Cancel</button></div>
+</form>
+</div>
+<section>
+  <div class="sec-head"><h2>Lines</h2><div class="controls"><select aria-label="Season"><option>All seasons</option><option>Mammoth Winter '27</option><option>SLC County Winter '26-27</option><option>Mammoth Summer '26</option></select><select aria-label="Kind"><option>All kinds</option><option>Charges</option><option>Payments</option><option>League Fees</option><option>Expenses</option><option>Income</option></select><select aria-label="Player"><option>All Players</option><option>Alex Rivera</option><option>Sam Okafor</option><option>Jordan Blake</option><option>Casey Nguyen</option><option>Riley Haas</option><option>Morgan Price</option><option>Drew Kowalski</option><option>Taylor Brooks</option><option>Jamie Lund</option><option>Quinn Mercer</option><option>Avery Stone</option><option>Parker Wells</option><option>Reese Calder</option><option>Emerson Tate</option><option>Rowan Pike</option><option>Hayden Cruz</option><option>Skyler Moss</option><option>Logan Farr</option><option>Jesse Morrow</option><option>Blair Sutton</option><option>Dana Whit</option><option>Kai Brennan</option><option>Robin Ash</option><option>Shawn Vale</option></select></div></div>
+  <div class="card table-wrap"><table class="ledger"><thead><tr><th>Date</th><th>Kind</th><th>Who</th><th class="wide-only">Season</th><th class="n">Owes</th><th class="n">Paid</th><th class="n">Team Fund</th></tr></thead><tbody><tr><td class="date">Mon, Dec 28<small>2026</small></td><td><span class="tag k-out">League Fee</span></td><td class="name">Mammoth Ice Center<small>First half of the League Fee</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n muted">–</td><td class="n muted">–</td><td class="n bal owes">-$1,750.00</td></tr><tr><td class="date">Tue, Dec 22<small>2026</small></td><td><span class="tag k-pay">Payment</span></td><td class="name">Sam Okafor<small>Venmo</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n muted">–</td><td class="n bal credit">$145.83</td><td class="n bal credit">+$145.83</td></tr><tr><td class="date">Mon, Dec 21<small>2026</small></td><td><span class="tag k-pay">Payment</span></td><td class="name">Alex Rivera<small>Zelle</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n muted">–</td><td class="n bal credit">$291.67</td><td class="n bal credit">+$291.67</td></tr><tr><td class="date">Sun, Dec 20<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Alex Rivera<small>Full-time fee</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n bal owes">+$291.67</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Sun, Dec 20<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Sam Okafor<small>Full-time fee</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n bal owes">+$291.67</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Sun, Dec 20<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Jordan Blake<small>Full-time fee</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n bal owes">+$291.67</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Sun, Dec 20<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Parker Wells<small>Part-time fee</small></td><td class="muted wide-only">Mammoth Winter &#x27;27</td><td class="n bal owes">+$145.84</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Mon, Nov 9<small>2026</small></td><td><span class="tag k-pay">Payment</span></td><td class="name">Hayden Cruz<small>Cash</small></td><td class="muted wide-only">Mammoth Summer &#x27;26</td><td class="n muted">–</td><td class="n bal credit">$40.00</td><td class="n bal credit">+$40.00</td></tr><tr><td class="date">Sun, Nov 8<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Jamie Lund<small>Sub fee, Nov 8</small></td><td class="muted wide-only">Mammoth Summer &#x27;26</td><td class="n bal owes">+$40.00</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Sun, Nov 8<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Hayden Cruz<small>Sub fee, Nov 8</small></td><td class="muted wide-only">Mammoth Summer &#x27;26</td><td class="n bal owes">+$40.00</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Mon, Nov 2<small>2026</small></td><td><span class="tag k-pay">Payment</span></td><td class="name">Riley Haas<small>Zelle, jersey and credit</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n muted">–</td><td class="n bal credit">$104.00</td><td class="n bal credit">+$104.00</td></tr><tr><td class="date">Fri, Oct 30<small>2026</small></td><td><span class="tag k-out">Expense</span></td><td class="name">Printful<small>Six heritage jerseys</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n muted">–</td><td class="n muted">–</td><td class="n bal owes">-$324.00</td></tr><tr><td class="date">Fri, Oct 30<small>2026</small></td><td><span class="tag k-owes">Charge</span></td><td class="name">Riley Haas<small>Heritage jersey</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n bal owes">+$54.00</td><td class="n muted">–</td><td class="n muted">–</td></tr><tr><td class="date">Sun, Oct 11<small>2026</small></td><td><span class="tag k-in">Income</span></td><td class="name">Team Fund<small>Surplus from Mammoth Summer &#x27;26</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n muted">–</td><td class="n muted">–</td><td class="n bal credit">+$210.00</td></tr><tr><td class="date">Mon, Oct 5<small>2026</small></td><td><span class="tag k-out">League Fee</span></td><td class="name">County Ice Center<small>League Fee</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n muted">–</td><td class="n muted">–</td><td class="n bal owes">-$3,200.00</td></tr><tr><td class="date">Thu, Oct 1<small>2026</small></td><td><span class="tag k-pay">Payment</span></td><td class="name">Avery Stone<small>Zelle</small></td><td class="muted wide-only">SLC County Winter &#x27;26-27</td><td class="n muted">–</td><td class="n bal credit">$25.00</td><td class="n bal credit">+$25.00</td></tr></tbody></table></div>
+  <p class="muted small">A Charge adds to what a Player owes. A Payment takes from it and adds to the Team Fund. A League Fee or an Expense takes from the Team Fund. A Player's Balance is the sum of the Player's Charges less the Player's Payments.</p>
+</section>
+<p class="mock-note">Mockup note: the names, tiers, answers, and amounts on the manager pages are invented examples. This repository is public, and this data is for Managers only.</p>
+</main>
+<footer class="site-foot"><div class="wrap">
+  <img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">
+  <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
+  <a href="schedule.html">Schedule</a>
+  <a href="shop.html">Shop</a>
+  <span class="right"><a href="#">Team Page</a> · <a href="login.html">Managers</a></span>
+</div></footer>
+</body>
+</html>

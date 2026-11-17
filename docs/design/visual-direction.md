@@ -331,6 +331,17 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 - **Balance of all seasons:** the decisions say each Player has one Balance across all Leagues. The Players page shows it in each row, in red when the Player owes and in green for a credit. A strip at the top shows the total owed to the team, the number of Players who owe, and the total of credits.
 - **Data:** the names, tiers, answers, and amounts are invented. This repository is public, and this data is for Managers only.
 
+### Team ledger
+
+`manager-ledger.html`. Each money line of the team in one list, newest first. The Players page keeps the totals bar and the Balance of each Player; a Balance and the bar link to the ledger.
+
+- **Kinds:** Charge (a Player owes the team, for example a fee, a sub fee, or a jersey), Payment (a Player pays), League Fee (the team pays a League), Expense (the team pays for something), and Income (money in that is not from a Player).
+- **Columns:** date, kind, who and a note, season, Owes, Paid, and the change to the Team Fund.
+- **Top strip:** the Team Fund, the total owed by Players, and the Player credits.
+- **Lists:** filter by season, kind, and Player. "Add a line" opens a dialog.
+- **Rule:** a Player's Balance is the sum of the Player's Charges less the Player's Payments. The Team Fund is the Payments and Income less the League Fees and Expenses.
+- **Data:** invented, as on the other Manager pages.
+
 ## 8. Open questions for Troy
 
 ### Data and terms

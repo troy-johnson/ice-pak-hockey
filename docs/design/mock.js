@@ -326,7 +326,7 @@
     // Dev panel: a bar of mockup settings, as in browser dev tools. It is not part of the design.
     var pages = [["home.html", "Home"], ["schedule.html", "Schedule"], ["stats.html", "Stats"], ["roster.html", "Roster"], ["player.html", "Player"],
       ["game.html", "Game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
-      ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-jerseys.html", "Mgr: Jerseys"]];
+      ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-ledger.html", "Mgr: Ledger"], ["manager-jerseys.html", "Mgr: Jerseys"]];
     var here = location.pathname.split("/").pop() || "home.html";
     if (here === "index.html" || here.indexOf(".") < 0) here = "home.html";
     var panel = document.createElement("aside");
