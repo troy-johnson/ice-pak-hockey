@@ -256,6 +256,10 @@
         document.getElementById("fee-full").textContent = money(full);
         document.getElementById("fee-part").textContent = money(Math.ceil(full / 2));
         document.getElementById("fee-count").textContent = ft + " + " + pt + "/2";
+        var n = ft + pt / 2, used = Math.max(12, n);
+        document.getElementById("fee-info").textContent = ft + " full-time Players count as 1 each. " + pt + " part-time Players count as half each (" + pt + "/2 = " + pt / 2 + "). " +
+          "Goalies pay no fee and are not counted. That is " + n + " Players. " + (n < 12 ? "The minimum count is 12, so the fee uses 12. " : "") +
+          "Full-time fee = " + money(fee) + " ÷ " + used + " = " + money(full) + ", rounded up to the next cent.";
         var count = function (pos) {
           return board.querySelectorAll("[data-drop='full-time'] .pcard[data-pos='" + pos + "'], [data-drop='part-time'] .pcard[data-pos='" + pos + "']").length;
         };
@@ -353,6 +357,17 @@
         if (head.tagName === "H1") head.insertAdjacentElement("afterend", pen); else head.appendChild(pen);
       });
     }
+    // Info button: the explanation shows on hover and on a click or a tap. Escape or a click outside closes it.
+    document.querySelectorAll(".info-btn").forEach(function (btn) {
+      var pop = document.getElementById(btn.getAttribute("aria-controls"));
+      var wrap = btn.closest(".info-wrap");
+      var set = function (open) { pop.hidden = !open; btn.setAttribute("aria-expanded", String(open)); };
+      btn.addEventListener("click", function (event) { event.stopPropagation(); btn.dataset.pinned = btn.dataset.pinned === "1" ? "" : "1"; set(btn.dataset.pinned === "1"); });
+      wrap.addEventListener("mouseenter", function () { set(true); });
+      wrap.addEventListener("mouseleave", function () { if (btn.dataset.pinned !== "1") set(false); });
+      document.addEventListener("click", function (event) { if (!wrap.contains(event.target)) { btn.dataset.pinned = ""; set(false); } });
+      document.addEventListener("keydown", function (event) { if (event.key === "Escape") { btn.dataset.pinned = ""; set(false); } });
+    });
     function setAuth(value) {
       root.dataset.auth = value;
       save("auth", value);

@@ -326,7 +326,7 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 
 ## 7a. Manager pages
 
-Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header, with "Ice Pak", a yellow "Manager" badge, and its own links. A yellow line under the header and yellow stripes in the band show that the page is a manager page. The badge also shows on a phone. Each page has a breadcrumb, such as "Manager / Players", and the footer has no "Managers" link.
+Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header, with "Ice Pak", a yellow "Manager" badge, and its own links. A yellow line under the header shows that the page is a manager page. The badge also shows on a phone. Each page has a breadcrumb, such as "Manager / Players", and the footer has no "Managers" link.
 
 | Page | File | What it does |
 |---|---|---|
@@ -335,7 +335,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 | Jerseys | `manager-jerseys.html` | One row for each Player, with one slot for each Kit (Home, Away, Heritage). Each jersey has its own number and size, because a Player can have #4 on Home, #44 on Away, and no Heritage jersey. A slot has the Kit colours, the number, the size, and a status tag: "Owns · paid", "Owns · owes", or "On loan" (a team jersey that the Player has). An empty slot is a dashed "+ Kit" box. Below, a board of the numbers 1 to 99 for each Kit shows the taken numbers in the Kit colours; the name of the Player shows on hover. A slot or "Add a jersey" opens one dialog: Player, Jersey, Number (the free numbers of that Kit and the Player's own number on it), Size, and Status ("No jersey" empties the slot). Save changes the slot, the counts, and the boards. On a phone, each Player is a card with the three slots in a row. |
 
 - **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
-- **Fee:** the formula of the Fee Sheet. A goalie pays $0. Until a Manager locks it, the fee changes when an answer changes. "Lock the fee" makes each Player Fee final for the League Season (the Fee Lock), and a later surplus goes to the Team Fund. In the mockup, the button changes to "Unlock the fee" and the fields go dim.
+- **Fee:** the formula of the Fee Sheet. A goalie pays $0. An "i" button beside "Counted Players" explains the count and the sum, on hover and on a click or a tap. Until a Manager locks it, the fee changes when an answer changes. "Lock the fee" makes each Player Fee final for the League Season (the Fee Lock), and a later surplus goes to the Team Fund. In the mockup, the button changes to "Unlock the fee" and the fields go dim.
 - **Payments:** for each Player with a fee: the paid amount of the fee, the balance of this season, the balance of all seasons, and a status. The status is for this season.
 - **Balance of all seasons:** the decisions say each Player has one Balance across all Leagues. The Players page shows it in each row, in red when the Player owes and in green for a credit. A strip at the top shows the total owed to the team, the number of Players who owe, and the total of credits.
 - **Data:** the names, tiers, answers, and amounts are invented. This repository is public, and this data is for Managers only.
