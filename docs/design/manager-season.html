@@ -9,11 +9,11 @@
 <link rel="stylesheet" href="mock.css">
 <script src="mock.js"></script>
 </head>
-<body>
+<body class="mgr-area">
 <div class="sticky">
 <div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" data-signout>Sign out</a></div></div>
 <header class="site-head"><div class="wrap">
-  <a class="brand" href="manager.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak Manager</span></a>
+  <a class="brand" href="manager.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span><span class="mgr-badge">Manager</span></a>
   <nav aria-label="Main"><a href="manager.html">Players</a><a href="manager-season.html" aria-current="page">Seasons</a><a href="manager-ledger.html">Ledger</a><a href="manager-jerseys.html">Jerseys</a><a href="home.html">Public site</a></nav>
   
   <div class="switch" role="group" aria-label="Theme">
@@ -49,7 +49,7 @@
   <button type="submit" class="button">Continue</button>
   <p class="muted small">Not a Manager? <a href="home.html">Go back to the site</a>.</p>
 </form></main><div class="band" data-auth="in"><div class="wrap">
-<p class="crumbs">Manager / Seasons</p>
+<p class="crumbs"><a href="manager.html">Manager</a> / Seasons</p>
 <div class="title-row"><h1>Mammoth Winter '27</h1></div>
 <p class="muted">Mammoth Ice Center · Sundays · Starts Sun, Jan 4, 2027</p>
 </div></div>
@@ -119,7 +119,7 @@
 </div>
 <div class="stack">
 <section class="card settings">
-  <div class="sec-head"><h2>Season settings</h2><span class="tag">Fee not locked</span></div>
+  <div class="sec-head"><h2>Season settings</h2><span class="tag" id="lock-tag">Fee not locked</span></div>
   <div class="fields">
     <label>League Fee <input id="fee" value="3500" inputmode="numeric" size="7"></label>
     <label>Target forwards <input id="tf" value="10" size="3"></label>
@@ -131,9 +131,9 @@
     <div><span class="label">Part-time fee</span><b id="fee-part">$145.84</b></div>
     <div><span class="label">Goalie</span><b>$0.00</b></div>
     <div><span class="label">Counted Players</span><b id="fee-count">10 + 3/2</b></div>
-    <button type="button" class="button">Lock the fee</button>
+    <button type="button" class="button" data-lock>Lock the fee</button>
   </div>
-  <p class="muted small">Full-time fee = League Fee ÷ (full-time count + half of the part-time count), with a minimum count of 12. Part-time is half. Each fee rounds up to the next cent.</p>
+  <p class="muted small">Full-time fee = League Fee ÷ (full-time count + half of the part-time count), with a minimum count of 12. Part-time is half. Each fee rounds up to the next cent. Until you lock it, the fee changes when a Player's answer changes. "Lock the fee" makes each Player Fee final for this League Season. A later surplus goes to the Team Fund.</p>
 </section>
 <section>
   <div class="sec-head"><h2>Roster Builder</h2><span class="muted" id="targets">Drag a Player to a column</span></div>
@@ -152,7 +152,7 @@
   <img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">
   <span class="social" aria-label="Ice Pak on social media"><a href="https://www.youtube.com/@icepakhockey" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="#instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5z"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor"/></svg></a><a href="#facebook" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22z"/></svg></a></span>
   <span class="contact">Contact: <a href="mailto:contact@icepakhockey.com">contact@icepakhockey.com</a></span>
-  <span class="right">© 2026 Ice Pak Hockey. The Ice Pak™ name and crest belong to the team. · <a href="login.html">Managers</a></span>
+  <span class="right">© 2026 Ice Pak Hockey. The Ice Pak™ name and crest belong to the team.</span>
 </div></footer>
 </body>
 </html>

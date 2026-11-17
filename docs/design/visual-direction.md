@@ -318,7 +318,7 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 
 ## 7a. Manager pages
 
-Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header style, with "Ice Pak Manager" and its own links.
+Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header, with "Ice Pak", a yellow "Manager" badge, and its own links. A yellow line under the header and yellow stripes in the band show that the page is a manager page. The badge also shows on a phone. Each page has a breadcrumb, such as "Manager / Players", and the footer has no "Managers" link.
 
 | Page | File | What it does |
 |---|---|---|
@@ -327,7 +327,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 | Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and one status for each Kit: "Owns · paid", "Owns · owes", "On loan" (a team jersey that the Player has), or "None". The free numbers are below. "Add a jersey" opens a dialog: Player, Number (the free numbers and the number of the Player), Size, Jersey, and Status. Add changes the row, the counts, and the free numbers. |
 
 - **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
-- **Fee:** the formula of the Fee Sheet. A goalie pays $0. "Lock the fee" fixes it.
+- **Fee:** the formula of the Fee Sheet. A goalie pays $0. Until a Manager locks it, the fee changes when an answer changes. "Lock the fee" makes each Player Fee final for the League Season (the Fee Lock), and a later surplus goes to the Team Fund. In the mockup, the button changes to "Unlock the fee" and the fields go dim.
 - **Payments:** for each Player with a fee: the paid amount of the fee, the balance of this season, the balance of all seasons, and a status. The status is for this season.
 - **Balance of all seasons:** the decisions say each Player has one Balance across all Leagues. The Players page shows it in each row, in red when the Player owes and in green for a credit. A strip at the top shows the total owed to the team, the number of Players who owe, and the total of credits.
 - **Data:** the names, tiers, answers, and amounts are invented. This repository is public, and this data is for Managers only.
@@ -339,7 +339,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 - **Kinds:** Charge (a Player owes the team, for example a fee, a sub fee, or a jersey), Payment (a Player pays), League Fee (the team pays a League), Expense (the team pays for something), and Income (money in that is not from a Player).
 - **Columns:** date, kind, who and a note, season, Owes, Paid, and the change to the Team Fund.
 - **Top strip:** the Team Fund, the total owed by Players, and the Player credits.
-- **Lists:** filter by season, kind, and Player. "Add a line" opens a dialog.
+- **Lists:** filter by season and Player. The totals bar has no title. "Add a line" opens a dialog.
 - **Rule:** a Player's Balance is the sum of the Player's Charges less the Player's Payments. The Team Fund is the Payments and Income less the League Fees and Expenses.
 - **Data:** invented, as on the other Manager pages.
 

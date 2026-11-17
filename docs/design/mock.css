@@ -4698,3 +4698,40 @@ td.name .pnote::before {
 td.name .pnote[aria-expanded="true"] {
   white-space: normal;
 }
+
+/* Manager pages: the yellow of the admin strip marks the header, so a Manager always sees the area */
+.mgr-badge {
+  margin-left: 4px;
+  padding: 5px 9px 4px;
+  background: #f5c542;
+  color: #10182b;
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: skewX(-8deg);
+}
+
+body.mgr-area .site-head {
+  border-bottom: 4px solid #f5c542;
+}
+
+body.mgr-area .band:not(.gate) {
+  background-image: repeating-linear-gradient(-45deg, transparent 0 14px, rgb(245 197 66 / 0.07) 14px 28px);
+}
+
+/* Season settings: the locked fee */
+.settings.locked input {
+  opacity: 0.6;
+}
+
+#lock-tag.locked {
+  background: #2f9e5b;
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .brand .mgr-badge {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}

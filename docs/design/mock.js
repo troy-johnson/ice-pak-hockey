@@ -605,3 +605,19 @@ document.addEventListener("DOMContentLoaded", () => {
     f.reset();
   });
 });
+
+// Season settings: "Lock the fee" makes the fee final; "Unlock the fee" undoes it in the mockup
+document.addEventListener("DOMContentLoaded", () => {
+  const b = document.querySelector("[data-lock]");
+  if (!b) return;
+  const card = b.closest(".settings"), tag = document.getElementById("lock-tag");
+  b.addEventListener("click", () => {
+    const on = !card.classList.contains("locked");
+    card.classList.toggle("locked", on);
+    card.querySelectorAll("input").forEach((i) => { i.disabled = on; });
+    tag.textContent = on ? "Fee locked Nov 17" : "Fee not locked";
+    tag.classList.toggle("locked", on);
+    b.textContent = on ? "Unlock the fee" : "Lock the fee";
+    b.className = on ? "ghost" : "button";
+  });
+});
