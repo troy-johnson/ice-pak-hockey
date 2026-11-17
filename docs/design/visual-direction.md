@@ -197,7 +197,7 @@ One label and a row of large numbers on a card. The Stats page has one strip for
 
 ### Calendar
 
-- Seven columns, Sunday first. The arrows change the month. Each day has the same size.
+- Seven columns, Sunday first. The arrows change the month. Each arrow is a solid button in the kit fill colour, with a large arrow. Each day has the same size.
 - **A day with a Game:** the opponent logo, the result or the start time, and the opponent. The day is a link to the Game page. It has no tags.
 - **Home and away:** a home Game has the primary Kit colour, and an away Game has the secondary Kit colour. A Game with no home data has no colour.
 - **Result:** a green label for a win and a red label for a loss.
@@ -216,7 +216,7 @@ Each control has a forward lean: the left and right edges are cut at an angle, t
 
 ### Game bar
 
-A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date and the time. Each tile is a link to its Game. A tile of a Game that is not played opens the next-game page (`game-next.html`). On a phone the bar shows the next game only, with the link to the full Schedule. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
+A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date and the time. Each tile is a link to its Game. A tile of a Game that is not played opens the next-game page (`game-next.html`). The last tile is "Schedule · All games" in the kit fill colour, with a calendar icon and an arrow. It stays at the right end of the bar while the games scroll under it. On a phone the bar shows the next game and this tile. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
 
 ### League names
 
@@ -313,7 +313,7 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 | theme | home, away, third | Sets the Theme. |
 | switch | buttons, dropdown | The Theme control in the header. **buttons:** three slanted buttons. **dropdown:** one button with the current Kit chip and name, and a list of the three Themes with the jersey colour of each. On a phone the dropdown button shows the chip only. |
 | recent | bar, cards, list, scores | How the recent Games show. **bar:** the game bar on each page, and no results section on the Home page. **cards:** three game cards ("This season"). **list:** a "Recent results" table of the last 6 Games. **scores:** a scoreboard of the last 4 Games with large scores. Each option except "bar" also shows "Next games" on the Home page. |
-| notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** has the jersey colours: light blue in Home, navy in Away, and black in Heritage. The bar slides in, a light passes over the tag every few seconds, and the link arrow moves. With reduced motion set, nothing moves. It is for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
+| notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** has the colours and the hem stripes of a jersey: a navy bar with light blue and white stripes in Home, a white bar with navy and light blue stripes in Away, and a black bar with red and white stripes in Heritage. The tag has the stripe colour. The bar slides in, a light passes over the tag every few seconds, and the link arrow moves. With reduced motion set, nothing moves. It is for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
 | manager | signed out, signed in | Signed out: the header has a Managers link, and each Manager page shows the sign-in step. Signed in: a yellow Manager strip is above the header of each page, with links to the Manager pages, "Edit this page", and "Sign out". |
 
 ## 7a. Manager pages
@@ -324,7 +324,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 |---|---|---|
 | Players | `manager.html` | The Player Bank in three Priority Tiers. Drag a row to change the order in a tier. In each row, three toggles set the positions (F, D, G; a Player can have more than one, and at least one stays on), a list changes the tier, and a field changes the number. A Roster Builder card shows "F / D" for a Player with two positions. "Add a Player" opens a form, and "Save the Player" puts the new row at the end of its tier. A Manager note shows as one line under the name; a click on the note shows all of it. |
 | Seasons | `manager-season.html` | One list of all League Seasons, grouped by League, and two buttons: "New season" and "New League". The New League dialog has the League name, a short name, the main rink, the usual game day, the seasons in a year, the score source, the usual League Fee and Target Counts, and a box to create the first season next. "New League…" in the League list of the New season dialog opens the same dialog. The button opens a dialog: League (or a new League), season name, rink, game day, first game, answer-by date, League Fee and Target Counts from the last season of that League, and the season to copy Players from. For one League Season: the League Fee and the Target Counts, the proposed fees, the Roster Builder, the chase message, and the Payments. |
-| Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and one status for each Kit: "Owns · paid", "Owns · owes", "On loan" (a team jersey that the Player has), or "None". The free numbers are below. "Add a jersey" opens a dialog: Player, Number (the free numbers and the number of the Player), Size, Jersey, and Status. Add changes the row, the counts, and the free numbers. |
+| Jerseys | `manager-jerseys.html` | One row for each Player, with one slot for each Kit (Home, Away, Heritage). Each jersey has its own number and size, because a Player can have #4 on Home, #44 on Away, and no Heritage jersey. A slot has the Kit colours, the number, the size, and a status tag: "Owns · paid", "Owns · owes", or "On loan" (a team jersey that the Player has). An empty slot is a dashed "+ Kit" box. Below, a board of the numbers 1 to 99 for each Kit shows the taken numbers in the Kit colours; the name of the Player shows on hover. A slot or "Add a jersey" opens one dialog: Player, Jersey, Number (the free numbers of that Kit and the Player's own number on it), Size, and Status ("No jersey" empties the slot). Save changes the slot, the counts, and the boards. On a phone, each Player is a card with the three slots in a row. |
 
 - **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
 - **Fee:** the formula of the Fee Sheet. A goalie pays $0. Until a Manager locks it, the fee changes when an answer changes. "Lock the fee" makes each Player Fee final for the League Season (the Fee Lock), and a later surplus goes to the Team Fund. In the mockup, the button changes to "Unlock the fee" and the fields go dim.
@@ -334,12 +334,12 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 
 ### Team ledger
 
-`manager-ledger.html`. Each money line of the team in one list, newest first. The Players page keeps the totals bar and the Balance of each Player; a Balance and the bar link to the ledger.
+`manager-ledger.html`. Each transaction of the team in one list, newest first. The Players page keeps the totals bar and the Balance of each Player; a Balance and the bar link to the ledger.
 
 - **Kinds:** Charge (a Player owes the team, for example a fee, a sub fee, or a jersey), Payment (a Player pays), League Fee (the team pays a League), Expense (the team pays for something), and Income (money in that is not from a Player).
 - **Columns:** date, kind, who and a note, season, Owes, Paid, and the change to the Team Fund.
 - **Top strip:** the Team Fund, the total owed by Players, and the Player credits.
-- **Lists:** filter by season and Player. The totals bar has no title. "Add a line" opens a dialog.
+- **Lists:** filter by season and Player. The totals bar has no title. "Add a transaction" opens a dialog.
 - **Rule:** a Player's Balance is the sum of the Player's Charges less the Player's Payments. The Team Fund is the Payments and Income less the League Fees and Expenses.
 - **Data:** invented, as on the other Manager pages.
 

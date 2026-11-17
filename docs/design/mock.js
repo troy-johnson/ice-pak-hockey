@@ -312,56 +312,87 @@
       matchMedia("(min-width: 761px)").addEventListener("change", function (m) { if (m.matches) openMenu(false); });
     }
 
-    // Add a jersey: the dialog fills the number and size of the Player, and Add changes the row, the counts, and the free numbers.
+    // Jerseys: each slot is one jersey of one Player. A slot opens the dialog for that Player and that jersey.
     var aj = document.querySelector("[data-add-jersey]");
     if (aj) {
-      var ajPlayer = aj.querySelector("#aj-player"), ajNo = aj.querySelector("#aj-no"), ajSize = aj.querySelector("#aj-size");
+      var ajPlayer = aj.querySelector("#aj-player"), ajKit = aj.querySelector("#aj-kit"), ajNo = aj.querySelector("#aj-no");
+      var ajSize = aj.querySelector("#aj-size"), ajSt = aj.querySelector("#aj-st"), ajTitle = aj.querySelector("#aj-title");
+      var stText = { paid: "Owns · paid", owes: "Owns · owes", loan: "On loan" };
+      var kitText = { home: "Home", away: "Away", third: "Heritage" };
+      var slotOf = function () {
+        var row = Array.prototype.find.call(document.querySelectorAll(".jrow"), function (r) { return r.dataset.player === ajPlayer.value; });
+        return row && row.querySelector('.jslot[data-kit="' + ajKit.value + '"]');
+      };
       var fillNo = function () {
-        var o = ajPlayer.selectedOptions[0];
-        var free = Array.prototype.map.call(document.querySelectorAll("#free-numbers span"), function (x) { return x.dataset.no; });
-        var mine = o.dataset.no;
+        var slot = slotOf(), kit = ajKit.value;
+        var mine = slot ? slot.dataset.no : "";
+        var free = Array.prototype.filter.call(document.querySelectorAll('.nboard[data-kit="' + kit + '"] .nb-grid span'), function (x) { return !x.classList.contains("taken"); })
+          .map(function (x) { return x.dataset.no; });
         var list = (mine ? [mine] : []).concat(free);
         ajNo.innerHTML = list.map(function (n) { return "<option>" + n + "</option>"; }).join("");
-        ajSize.value = o.dataset.size;
+        // A new jersey starts with the Player's number on another jersey, when that number is free.
+        var other = slot && !mine && Array.prototype.map.call(slot.closest(".jrow").querySelectorAll(".jslot"), function (x) { return x.dataset.no; })
+          .find(function (n) { return n && free.indexOf(n) >= 0; });
+        if (other) ajNo.value = other;
+        if (slot) {
+          ajSize.value = slot.dataset.size;
+          ajSt.value = slot.dataset.st === "none" ? "paid" : slot.dataset.st;
+          ajTitle.textContent = slot.dataset.st === "none" ? "Add a jersey" : "Change a jersey";
+        }
       };
       ajPlayer.addEventListener("change", fillNo);
-      document.querySelectorAll("[data-open='add-jersey']").forEach(function (b) { b.addEventListener("click", fillNo); });
+      ajKit.addEventListener("change", fillNo);
+      document.querySelectorAll("[data-open='add-jersey']").forEach(function (b) {
+        b.addEventListener("click", function () {
+          if (b.classList.contains("jslot")) {
+            ajPlayer.value = b.closest(".jrow").dataset.player;
+            ajKit.value = b.dataset.kit;
+          }
+          fillNo();
+        });
+      });
+      // The counts and the number boards come from the slots.
       var recountJ = function () {
         var c = { paid: 0, owes: 0, loan: 0 };
-        document.querySelectorAll("select.jst").forEach(function (sel) { if (c[sel.value] !== undefined) c[sel.value]++; });
+        document.querySelectorAll(".jslot").forEach(function (x) { if (c[x.dataset.st] !== undefined) c[x.dataset.st]++; });
+        document.getElementById("jc-out").textContent = c.paid + c.owes + c.loan;
         document.getElementById("jc-owned").textContent = c.paid + c.owes;
         document.getElementById("jc-loan").textContent = c.loan;
         document.getElementById("jc-owes").textContent = c.owes;
+        document.querySelectorAll(".nboard").forEach(function (bd) {
+          var who = {};
+          document.querySelectorAll('.jslot[data-kit="' + bd.dataset.kit + '"]').forEach(function (x) {
+            if (x.dataset.no && x.dataset.st !== "none") who[x.dataset.no] = x.closest(".jrow").dataset.player;
+          });
+          var n = 0;
+          bd.querySelectorAll(".nb-grid span").forEach(function (x) {
+            var t = who[x.dataset.no];
+            x.classList.toggle("taken", !!t);
+            if (t) x.title = t; else { x.removeAttribute("title"); n++; }
+          });
+          bd.querySelector("[data-free-count]").textContent = n;
+        });
       };
       aj.addEventListener("submit", function (event) {
         event.preventDefault();
-        var o = ajPlayer.selectedOptions[0];
-        var row = document.querySelector('tr[data-player="' + o.value.replace(/"/g, '\\"') + '"]');
-        var no = ajNo.value;
-        if (row) {
-          var sel = row.querySelector('select.jst[data-kit="' + aj.querySelector("#aj-kit").value + '"]');
-          sel.value = sel.dataset.st = aj.querySelector("#aj-st").value;
-          row.querySelector(".jno").textContent = no;
-          row.querySelector(".jsize").textContent = ajSize.value;
-          row.classList.remove("flash"); void row.offsetWidth; row.classList.add("flash");
-        }
-        if (no !== o.dataset.no) {
-          var chip = document.querySelector('#free-numbers span[data-no="' + no + '"]');
-          if (chip) chip.remove();
-          if (!o.dataset.no) document.getElementById("jc-taken").textContent = Number(document.getElementById("jc-taken").textContent) + 1;
-          if (o.dataset.no) {
-            // The old number of the Player is free again: it goes back into the list, in order.
-            var box = document.getElementById("free-numbers"), back = document.createElement("span");
-            back.dataset.no = back.textContent = o.dataset.no;
-            var after = Array.prototype.find.call(box.children, function (x) { return Number(x.dataset.no) > Number(o.dataset.no); });
-            box.insertBefore(back, after || null);
+        var slot = slotOf();
+        if (slot) {
+          var st = ajSt.value, kit = slot.dataset.kit, name = ajPlayer.value;
+          slot.dataset.st = st;
+          slot.dataset.size = ajSize.value;
+          slot.dataset.no = st === "none" ? "" : ajNo.value;
+          if (st === "none") {
+            slot.innerHTML = '<span class="js-add">+ ' + kitText[kit] + "</span>";
+            slot.setAttribute("aria-label", "Add a " + kitText[kit] + " jersey for " + name);
+          } else {
+            slot.innerHTML = '<span class="js-kit">' + kitText[kit] + '</span><span class="js-no">' + (ajNo.value || "–") + '</span><span class="js-size">' + ajSize.value + '</span><span class="js-st">' + stText[st] + "</span>";
+            slot.setAttribute("aria-label", kitText[kit] + " jersey of " + name + ": number " + ajNo.value + ", size " + ajSize.value + ", " + stText[st] + ". Change it");
           }
-          o.dataset.no = no;
+          slot.classList.remove("flash"); void slot.offsetWidth; slot.classList.add("flash");
         }
         recountJ();
         aj.closest(".modal").hidden = true;
       });
-      document.querySelectorAll("select.jst").forEach(function (sel) { sel.addEventListener("change", recountJ); });
     }
 
     // + Payment: the dialog shows what the Player owes, and Save changes the row of the Player.
@@ -399,10 +430,6 @@
       });
     }
 
-    // Jerseys: the status list takes the colour of its status.
-    document.querySelectorAll("select.jst").forEach(function (sel) {
-      sel.addEventListener("change", function () { sel.dataset.st = sel.value; });
-    });
 
     // Theme dropdown: one button that opens a list of the three Themes.
     var dd = document.querySelector(".theme-dd");

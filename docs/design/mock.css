@@ -3149,25 +3149,8 @@ tr.dragging td,
 
 
 
-.gall {
-  flex: none;
-  display: grid;
-  place-items: center;
-  padding: 0 14px;
-  text-align: center;
-  font: italic 800 14px/1.05 var(--display);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ink);
-  text-decoration: none;
-  background: var(--panel);
-  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
-}
 
 @media (max-width: 760px) {
-  .gall {
-    display: none;
-  }
 
   .gtile {
     flex-basis: 150px;
@@ -3510,9 +3493,6 @@ section[data-recent] {
   height: 17px;
 }
 
-.gall {
-  font-size: 13px;
-}
 
 /* Info notice: the colours of the jersey of each Theme. The alert notice stays orange in each Theme. */
 :root[data-notice="info"] .notice {
@@ -4329,9 +4309,6 @@ select:not(.cell):not(.dv-page):not(td select),
     flex: 1 1 auto;
   }
 
-  .gall {
-    display: grid;
-  }
 
   /* Tables on a phone: smaller text */
   .table-wrap td,
@@ -4528,34 +4505,6 @@ td.name .who {
   }
 }
 
-/* Jerseys: one status list for each jersey. Each list has the shape and arrow of the other lists, and a bottom line in the colour of its status. */
-select.jst {
-  height: 36px;
-  min-width: 150px;
-  padding: 0 34px 0 18px;
-  font-size: 14px;
-  background-position: calc(100% - 20px) 52%, calc(100% - 14px) 52%;
-  --st: var(--kit-line);
-  box-shadow: inset 0 -3px 0 var(--st);
-}
-
-select.jst[data-st="paid"] {
-  --st: #2f9e5b;
-}
-
-select.jst[data-st="owes"] {
-  --st: #d9534f;
-}
-
-select.jst[data-st="loan"] {
-  --st: #e0a526;
-}
-
-select.jst[data-st="none"] {
-  --st: var(--rule);
-  color: var(--frost);
-}
-
 /* Footer: social links, the contact address, and the copyright line */
 .site-foot .social {
   display: inline-flex;
@@ -4734,4 +4683,406 @@ body.mgr-area .band:not(.gate) {
     display: inline-block;
     margin-left: 10px;
   }
+}
+
+/* Jerseys: one row for each Player, with one slot for each jersey. Each slot has its own number, size, and status. */
+.jgrid {
+  padding: 0;
+}
+
+.jhead,
+.jrow {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.3fr) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.jhead {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--frost);
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jhead span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jrow + .jrow {
+  border-top: 1px solid var(--rule);
+}
+
+.jname {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.jname b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jname .muted {
+  font-size: 12px;
+}
+
+.jslot {
+  --jbg: #1d315f;
+  --jfg: #ffffff;
+  --jedge: #5ba5d1;
+  --st: var(--rule);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "no size" "no st";
+  align-items: center;
+  column-gap: 10px;
+  min-height: 52px;
+  padding: 6px 10px 6px 12px;
+  border: 0;
+  background: var(--jbg);
+  box-shadow: inset 0 0 0 1px var(--jedge), inset 4px 0 0 var(--st);
+  color: var(--jfg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.jslot[data-kit="away"] {
+  --jbg: #ffffff;
+  --jfg: #1d315f;
+  --jedge: #1d315f;
+}
+
+.jslot[data-kit="third"] {
+  --jbg: #c0211c;
+  --jfg: #ffffff;
+  --jedge: #0d0d0d;
+}
+
+.jslot[data-st="paid"] { --st: #2f9e5b; }
+.jslot[data-st="owes"] { --st: #d9534f; }
+.jslot[data-st="loan"] { --st: #e0a526; }
+
+.jslot .js-kit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.jslot .js-no {
+  grid-area: no;
+  min-width: 1.6em;
+  font: italic 800 28px/1 var(--display);
+  text-align: center;
+}
+
+.jslot .js-size {
+  grid-area: size;
+  font: 600 12px/1.2 var(--body);
+  opacity: 0.8;
+}
+
+.jslot .js-st {
+  grid-area: st;
+  justify-self: start;
+  padding: 2px 6px;
+  background: var(--st);
+  color: #fff;
+  font: 600 11px/1.3 var(--body);
+  white-space: nowrap;
+}
+
+.jslot[data-st="loan"] .js-st {
+  color: #10182b;
+}
+
+.jslot[data-st="none"] {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--rule);
+  outline-offset: -1px;
+  color: var(--frost);
+}
+
+.jslot[data-st="none"]:hover {
+  outline-color: var(--frost);
+  color: var(--ink);
+}
+
+.jslot .js-add {
+  font: 600 13px/1 var(--body);
+}
+
+.jslot:not([data-st="none"]):hover {
+  filter: brightness(1.08);
+}
+
+.jslot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.jslot.flash {
+  animation: slot-flash 1.2s ease-out;
+}
+
+@keyframes slot-flash {
+  from {
+    transform: scale(1.06);
+    box-shadow: inset 0 0 0 1px var(--jedge), inset 4px 0 0 var(--st), 0 0 0 4px rgb(91 165 209 / 0.6);
+  }
+}
+
+.jkey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--frost);
+}
+
+.jkey span::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.jkey [data-st="paid"]::before { background: #2f9e5b; }
+.jkey [data-st="owes"]::before { background: #d9534f; }
+.jkey [data-st="loan"]::before { background: #e0a526; }
+
+/* Jerseys: a board of the numbers 1 to 99 for each jersey */
+.nboards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.nboard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.nb-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nb-head .muted {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+.nb-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.nb-grid span {
+  padding: 5px 0;
+  background: var(--panel-2);
+  color: var(--frost);
+  font: 600 12px/1 var(--body);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.nb-grid span:first-child {
+  grid-column: 2;
+}
+
+.nboard[data-kit="home"] .nb-grid span.taken { background: #1d315f; color: #fff; box-shadow: inset 0 0 0 1px #5ba5d1; }
+.nboard[data-kit="away"] .nb-grid span.taken { background: #fff; color: #1d315f; box-shadow: inset 0 0 0 1px #1d315f; }
+.nboard[data-kit="third"] .nb-grid span.taken { background: #c0211c; color: #fff; }
+
+.nb-grid span.taken {
+  font-weight: 800;
+  cursor: help;
+}
+
+@media (max-width: 1000px) {
+  .nboards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .jhead {
+    display: none;
+  }
+
+  .jrow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .jname {
+    grid-column: 1 / -1;
+  }
+
+  .jslot {
+    grid-template-columns: 1fr;
+    grid-template-areas: "no" "size" "st";
+    justify-items: center;
+    row-gap: 4px;
+    padding: 8px 4px 8px 8px;
+    text-align: center;
+  }
+
+  .jslot .js-st {
+    justify-self: center;
+    font-size: 10px;
+  }
+
+  .jslot[data-st="none"] {
+    min-height: 92px;
+  }
+}
+
+/* Game bar: the last tile opens the Schedule. It has the size of a game tile and the kit colour. */
+.gtile.gsched {
+  flex: 0 0 156px;
+  background: var(--kit-fill);
+  border-left-color: var(--kit-line);
+  color: var(--on-fill);
+}
+
+.gtile.gsched .gh {
+  color: inherit;
+  opacity: 0.75;
+}
+
+.gtile.gsched .gs-main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gtile.gsched svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.gtile.gsched b {
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.gtile.gsched .gs-arrow {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.gtile.gsched:hover {
+  filter: brightness(1.1);
+}
+
+.gtile.gsched:hover .gs-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 760px) {
+  .gtile.gsched {
+    display: flex;
+    flex: 0 0 112px;
+  }
+
+  .gtile.gsched .gs-main {
+    font-size: 15px;
+  }
+}
+
+/* Schedule: the month arrows are solid buttons in the kit colour, with large arrows */
+.month-nav button {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  padding-block: 4px 6px;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  font: 700 30px/1 var(--body);
+}
+
+.month-nav button:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.month-nav button:disabled {
+  background: var(--panel-2);
+  color: var(--frost);
+  opacity: 0.6;
+}
+
+/* Notice bar: the colours and the hem stripes of the jersey of each Theme. The alert notice stays orange. */
+:root[data-notice="info"] .notice {
+  border-bottom: 0;
+  background: #1d315f;
+  color: #ffffff;
+  box-shadow: inset 0 3px 0 #5ba5d1, inset 0 5px 0 #ffffff, inset 0 -3px 0 #5ba5d1, inset 0 -5px 0 #ffffff;
+}
+
+:root[data-notice="info"] .notice .ntag {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice {
+  background: #ffffff;
+  color: #1d315f;
+  box-shadow: inset 0 3px 0 #1d315f, inset 0 5px 0 #5ba5d1, inset 0 -3px 0 #1d315f, inset 0 -5px 0 #5ba5d1;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice .ntag {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice {
+  background: #0d0d0d;
+  color: #ffffff;
+  box-shadow: inset 0 3px 0 #c0211c, inset 0 5px 0 #ffffff, inset 0 -3px 0 #c0211c, inset 0 -5px 0 #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice .ntag {
+  background: #c0211c;
+  color: #ffffff;
+}
+
+:root[data-notice="info"] .notice .wrap {
+  padding-block: 11px;
+}
+
+/* The Schedule tile stays at the right end of the game bar while the games scroll under it. */
+.gtile.gsched {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  margin-left: auto;
+  box-shadow: -8px 0 12px -4px rgb(0 0 0 / 0.35);
 }
