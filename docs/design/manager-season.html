@@ -44,12 +44,12 @@
 <p class="muted">Mammoth Ice Center · Sundays · Starts Sun, Jan 4, 2027</p>
 </div></div>
 <main class="wrap" data-auth="in">
-<div class="season-bar"><select id="season-pick" aria-label="Season"><optgroup label="Mammoth"><option selected>Mammoth Winter &#x27;27 · Starts Jan 4</option><option>Mammoth Summer &#x27;26 · Done</option></optgroup><optgroup label="SLC County"><option>SLC County Winter &#x27;26-27 · Now</option><option>SLC County Winter &#x27;25-26 · Done</option></optgroup></select><button type="button" class="button" data-open="new-season">New season</button></div>
+<div class="season-bar"><select id="season-pick" aria-label="Season"><optgroup label="Mammoth"><option selected>Mammoth Winter &#x27;27 · Starts Jan 4</option><option>Mammoth Summer &#x27;26 · Done</option></optgroup><optgroup label="SLC County"><option>SLC County Winter &#x27;26-27 · Now</option><option>SLC County Winter &#x27;25-26 · Done</option></optgroup></select><button type="button" class="button" data-open="new-season">New season</button><button type="button" class="ghost" data-open="new-league">New League</button></div>
 <div class="modal" id="new-season" hidden role="dialog" aria-modal="true" aria-labelledby="ns-title">
 <form class="card modal-box" onsubmit="event.preventDefault(); this.closest('.modal').hidden = true;">
   <div class="modal-head"><h2 id="ns-title">New season</h2><button type="button" class="nclose" data-close="new-season" aria-label="Close">×</button></div>
   <div class="fields two">
-    <label>League <select id="ns-league"><option>Mammoth</option><option>SLC County</option><option>New League…</option></select></label>
+    <label>League <select id="ns-league" data-new-league><option>Mammoth</option><option>SLC County</option><option value="new">New League…</option></select></label>
     <label>Season <input id="ns-name" value="Summer '27"></label>
     <label>Rink <input id="ns-rink" value="Mammoth Ice Center"></label>
     <label>Game day <select id="ns-day"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></label>
@@ -66,6 +66,28 @@
   <label>Copy Players from <select id="ns-copy"><option>Mammoth Winter '27 (24 Players)</option><option>Mammoth Summer '26 (19 Players)</option><option>No copy: start empty</option></select></label>
   <p class="muted small">Copied Players start under "No answer" in the Roster Builder. Their Priority Tier stays.</p>
   <div class="actions"><button type="submit" class="button">Create the season</button><button type="button" class="ghost" data-close="new-season">Cancel</button></div>
+</form>
+</div>
+<div class="modal" id="new-league" hidden role="dialog" aria-modal="true" aria-labelledby="nlg-title">
+<form class="card modal-box" onsubmit="event.preventDefault(); this.closest('.modal').hidden = true;">
+  <div class="modal-head"><h2 id="nlg-title">New League</h2><button type="button" class="nclose" data-close="new-league" aria-label="Close">×</button></div>
+  <div class="fields two">
+    <label>League name <input id="nl-name" placeholder="Salt Lake Adult Hockey" required></label>
+    <label>Short name <input id="nl-short" placeholder="SLAH" maxlength="8"></label>
+    <label>Main rink <input id="nl-rink" placeholder="Acord Ice Center"></label>
+    <label>Usual game day <select id="nl-day"><option>Sunday</option><option>Monday</option><option>Tuesday</option><option>Wednesday</option><option>Thursday</option><option>Friday</option><option>Saturday</option></select></label>
+    <label>Seasons in a year <select id="nl-per"><option>Winter and Summer</option><option>Fall, Winter, and Spring</option><option>One season</option></select></label>
+    <label>Score source <select id="nl-src"><option>GameSheet</option><option>Paper Scoresheet</option><option>None</option></select></label>
+  </div>
+  <p class="muted small">These values fill in each new season of this League. You can change them for each season.</p>
+  <div class="fields">
+    <label>Usual League Fee <input id="nl-fee" placeholder="3500" inputmode="numeric" size="7"></label>
+    <label>Forwards <input id="nl-tf" value="10" size="3"></label>
+    <label>Defense <input id="nl-td" value="6" size="3"></label>
+    <label>Goalies <input id="nl-tg" value="1" size="3"></label>
+  </div>
+  <label class="check"><input type="checkbox" id="nl-then" checked> Then create its first season</label>
+  <div class="actions"><button type="submit" class="button">Create the League</button><button type="button" class="ghost" data-close="new-league">Cancel</button></div>
 </form>
 </div>
 <div class="stack">

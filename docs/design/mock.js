@@ -157,6 +157,16 @@
       document.body.appendChild(m);
     });
 
+    // New season dialog: "New League…" in the League list opens the New League dialog.
+    document.querySelectorAll("[data-new-league]").forEach(function (sel) {
+      sel.addEventListener("change", function () {
+        if (sel.value !== "new") return;
+        sel.selectedIndex = 0;
+        document.getElementById("new-season").hidden = true;
+        document.getElementById("new-league").hidden = false;
+      });
+    });
+
     // Manager: open and close a form.
     document.querySelectorAll("[data-open]").forEach(function (button) {
       button.addEventListener("click", function () {
