@@ -26,7 +26,11 @@
       localStorage.setItem("mock-" + key, value);
     } catch (error) {}
   }
-  root.dataset.bar = read("bar", "on");
+  // Recent games: the game bar, cards, a list, or a scoreboard. Only "bar" shows the game bar.
+  var legacy = read("bar", null);
+  root.dataset.recent = read("recent", legacy === "off" ? "cards" : "bar");
+  root.dataset.bar = root.dataset.recent === "bar" ? "on" : "off";
+  root.dataset.notice = read("notice", "none");
   root.dataset.auth = read("auth", "out");
   root.dataset.panel = read("panel", "open");
 
@@ -278,7 +282,8 @@
       pages.map(function (p) { return '<option value="' + p[0] + '"' + (p[0] === here ? " selected" : "") + ">" + p[1] + "</option>"; }).join("") +
       '</select></div>' +
       '<div class="dv-row"><span class="dv-k">theme</span><span class="dv-seg" data-key="theme"><button value="home">home</button><button value="away">away</button><button value="third">third</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">game bar</span><span class="dv-seg" data-key="bar"><button value="on">on</button><button value="off">off</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">recent</span><span class="dv-seg" data-key="recent"><button value="bar">bar</button><button value="cards">cards</button><button value="list">list</button><button value="board">scores</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="notice"><button value="none">none</button><button value="info">info</button><button value="alert">alert</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
@@ -289,9 +294,14 @@
           b.setAttribute("aria-pressed", String(b.value === root.dataset[seg.dataset.key]));
         });
       });
-      var note = root.dataset.bar === "on"
-        ? "Game bar on: Home hides This season and Next games."
-        : "Game bar off: Home shows This season and Next games.";
+      var notes = {
+        bar: "Recent: the game bar on each page. Home has no results section.",
+        cards: "Recent: no game bar. Home shows three game cards and Next games.",
+        list: "Recent: no game bar. Home shows a results list and Next games.",
+        board: "Recent: no game bar. Home shows a scoreboard of four Games and Next games."
+      };
+      var note = notes[root.dataset.recent];
+      note += root.dataset.notice === "none" ? " No notice is active, so no notice bar shows." : " A notice is active, so the notice bar shows below the menu.";
       note += root.dataset.auth === "in"
         ? " Signed in: a Manager strip shows above the header, and the Manager pages open."
         : " Signed out: the Manager pages show the sign-in step.";
@@ -306,6 +316,8 @@
         var key = seg.dataset.key;
         root.dataset[key] = b.value;
         save(key === "theme" ? "theme-x" : key, b.value);
+        if (key === "recent") root.dataset.bar = b.value === "bar" ? "on" : "off";
+        if (key === "notice") fillNotice();
         if (key === "theme") {
           try {
             localStorage.setItem("theme", b.value);
@@ -325,6 +337,27 @@
     buttons.forEach(function (button) {
       button.addEventListener("click", syncPanel);
     });
+    // Notice bar: it shows only when a notice is active. The text here is an example.
+    var notices = {
+      info: ["New", "The Recap of Ice Pak at Night Owls is up.", "Watch it", "game.html"],
+      alert: ["Changed", "Sun, Nov 22 vs Yetis now starts at 8:15 PM at County Ice Center.", "Schedule", "schedule.html"]
+    };
+    function fillNotice() {
+      var bar = document.querySelector("[data-notice-bar]");
+      var n = notices[root.dataset.notice];
+      if (!bar || !n) return;
+      bar.querySelector(".ntag").textContent = n[0];
+      bar.querySelector(".ntext").textContent = n[1];
+      bar.querySelector(".nlink").textContent = n[2];
+      bar.querySelector(".nlink").href = n[3];
+    }
+    var nclose = document.querySelector(".nclose");
+    if (nclose) nclose.addEventListener("click", function () {
+      root.dataset.notice = "none";
+      save("notice", "none");
+      syncPanel();
+    });
+    fillNotice();
     syncPanel();
 
     // Schedule calendar: one panel for each month.

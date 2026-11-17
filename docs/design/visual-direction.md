@@ -306,7 +306,8 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 |---|---|---|
 | page | each mockup page | Opens that page. |
 | theme | home, away, third | Sets the Theme. |
-| game bar | on, off | On: the game bar shows, and the Home page hides "This season" and "Next games". Off: the bar is hidden, and the Home page shows both sections. |
+| recent | bar, cards, list, scores | How the recent Games show. **bar:** the game bar on each page, and no results section on the Home page. **cards:** three game cards ("This season"). **list:** a "Recent results" table of the last 6 Games. **scores:** a scoreboard of the last 4 Games with large scores. Each option except "bar" also shows "Next games" on the Home page. |
+| notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** is blue, for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
 | manager | signed out, signed in | Signed out: the header has a Managers link, and each Manager page shows the sign-in step. Signed in: a yellow Manager strip is above the header of each page, with links to the Manager pages, "Edit this page", and "Sign out". |
 
 ## 7a. Manager pages

@@ -3324,3 +3324,175 @@ tr.dragging td,
   color: #9aa0a6;
   font-size: 11px;
 }
+
+/* ---------- Recent games variants ---------- */
+section[data-recent] {
+  display: none;
+}
+
+:root[data-recent="cards"] section[data-recent="cards"],
+:root[data-recent="list"] section[data-recent="list"],
+:root[data-recent="board"] section[data-recent="board"] {
+  display: flex;
+}
+
+/* Scoreboard: four large tiles, as on a league scores page */
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sb {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  color: var(--ink);
+  text-decoration: none;
+  border-top: 3px solid var(--kit-line);
+  transition: transform 0.15s;
+}
+
+.sb:hover {
+  transform: translateY(-2px);
+}
+
+.sbh {
+  display: flex;
+  justify-content: space-between;
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.sbh .fin {
+  color: var(--ink);
+}
+
+.sbt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sbt img,
+.sbt .opp-chip {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  object-fit: contain;
+}
+
+.sbt b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sbt em {
+  font: 700 34px/1 var(--display);
+  font-style: normal;
+}
+
+.sbt.lost {
+  color: var(--frost);
+}
+
+:root[data-theme="third"] .sbt .crest-third {
+  background: #c0211c;
+}
+
+.sbf {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- Notice bar: only when a notice is active ---------- */
+.notice {
+  display: none;
+  background: var(--notice-bg, #1f6fa5);
+  color: #ffffff;
+  font-size: 14px;
+}
+
+:root[data-notice="info"] .notice {
+  display: block;
+  --notice-bg: #1f6fa5;
+}
+
+:root[data-notice="alert"] .notice {
+  display: block;
+  --notice-bg: #c77700;
+}
+
+.notice .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding-block: 7px;
+}
+
+.notice .ntag {
+  padding: 3px 10px 4px;
+  background: rgb(0 0 0 / 0.25);
+  font: italic 800 13px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+}
+
+.notice .ntext {
+  font-weight: 600;
+}
+
+.notice .nlink {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.notice .nclose {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  clip-path: none;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .scoreboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .sbt em {
+    font-size: 26px;
+  }
+
+  .sbt img,
+  .sbt .opp-chip {
+    width: 26px;
+    height: 26px;
+  }
+
+  .sbt {
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  .sb {
+    padding: 12px;
+  }
+}
