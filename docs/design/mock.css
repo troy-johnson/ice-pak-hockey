@@ -4628,3 +4628,46 @@ tr.flash td {
   font: 700 26px/1 var(--display);
   font-variant-numeric: tabular-nums;
 }
+
+/* Next games on the Home page: each card opens the next-game page. */
+.next li {
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.next .next-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.next li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--shade);
+}
+
+/* Heritage phone menu: the chosen Theme is white with black text, so it stands out on the red header. */
+:root[data-theme="third"] .mm-theme button[aria-pressed="true"] {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+/* Payments: "+ Payment" on a wide screen, "Pay" on a phone */
+[data-pay] {
+  white-space: nowrap;
+}
+
+.pay-short {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .pay-long {
+    display: none;
+  }
+
+  .pay-short {
+    display: inline;
+  }
+}

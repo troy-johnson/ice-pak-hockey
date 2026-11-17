@@ -349,6 +349,13 @@
           var chip = document.querySelector('#free-numbers span[data-no="' + no + '"]');
           if (chip) chip.remove();
           if (!o.dataset.no) document.getElementById("jc-taken").textContent = Number(document.getElementById("jc-taken").textContent) + 1;
+          if (o.dataset.no) {
+            // The old number of the Player is free again: it goes back into the list, in order.
+            var box = document.getElementById("free-numbers"), back = document.createElement("span");
+            back.dataset.no = back.textContent = o.dataset.no;
+            var after = Array.prototype.find.call(box.children, function (x) { return Number(x.dataset.no) > Number(o.dataset.no); });
+            box.insertBefore(back, after || null);
+          }
           o.dataset.no = no;
         }
         recountJ();
