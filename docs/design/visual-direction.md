@@ -298,6 +298,17 @@ Troy named the art file for each Theme on 2026-11-16. Each crest is made for the
 - **Score bug, Third band:** the Ice Pak row is black, so the black crest sits on a small red square.
 - **Rink renders:** they still use `icepak_logo2.png` from the NAS at centre ice. I did not render them again.
 
+## 6a. Mockup settings panel
+
+Each mockup page has a small panel at the bottom right, in the style of browser dev tools. It is not part of the design. The ⚙ button opens and closes it. The browser keeps each choice, and an address can set one, for example `?bar=off&auth=in`.
+
+| Setting | Values | Effect |
+|---|---|---|
+| page | each mockup page | Opens that page. |
+| theme | home, away, third | Sets the Theme. |
+| game bar | on, off | On: the game bar shows, and the Home page hides "This season" and "Next games". Off: the bar is hidden, and the Home page shows both sections. |
+| manager | signed out, signed in | Signed out: the header has a Managers link, and each Manager page shows the sign-in step. Signed in: a yellow Manager strip is above the header of each page, with links to the Manager pages, "Edit this page", and "Sign out". |
+
 ## 7a. Manager pages
 
 Three pages behind the Manager login, from part 1 of the order of work. Each one has the same header style, with "Ice Pak Manager" and its own links.

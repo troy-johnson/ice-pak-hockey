@@ -10,10 +10,12 @@
 <script src="mock.js"></script>
 </head>
 <body>
-<div class="sticky"><header class="site-head"><div class="wrap">
+<div class="sticky">
+<div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" class="edit-link">Edit this page</a><a href="#" data-signout>Sign out</a></div></div>
+<header class="site-head"><div class="wrap">
   <a class="brand" href="home.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span></a>
   <nav aria-label="Main"><a href="schedule.html">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html">Shop</a></nav>
-  <a class="mgr-link" href="login.html"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><span>Managers</span></a>
+  <a class="mgr-link" data-auth="out" href="login.html"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><span>Managers</span></a>
   <div class="switch" role="group" aria-label="Theme">
     <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
     <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
@@ -33,7 +35,7 @@
 </div>
 </div></div>
 <main class="wrap">
-<section>
+<section data-variant="no-bar">
   <div class="sec-head"><h2>This season</h2><a href="schedule.html">Full Schedule</a></div>
   <div class="cards three"><a class="game-card card" href="game.html"><div class="meta"><span>Sun, Nov 8</span><span>Final</span></div><div class="bug "><div class="row opp lost col" style="--opp:#6608A1;--opp-2:#A3D60A;--opp-ink:#ffffff"><div class="team"><img class="opp-logo" src="img/opp/nightowls.png" alt="">Night Owls<span class="side">Home</span></div><div class="pts">3</div></div><div class="row ipk "><div class="team"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">Ice Pak<span class="side">Away</span></div><div class="pts">4</div></div></div><div class="foot"><span class="tag win">Win</span><span class="tag vid">Highlights</span></div></a><a class="game-card card" href="game.html"><div class="meta"><span>Sun, Oct 25</span><span>Final</span></div><div class="bug "><div class="row ipk "><div class="team"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">Ice Pak<span class="side">Home</span></div><div class="pts">10</div></div><div class="row opp lost col" style="--opp:#77A4D9;--opp-2:#29364B;--opp-ink:#10182b"><div class="team"><img class="opp-logo" src="img/opp/bluedevils.png" alt="">Blue Devils<span class="side">Away</span></div><div class="pts">1</div></div></div><div class="foot"><span class="tag win">Win</span><span class="tag vid">Highlights</span></div></a><a class="game-card card" href="game.html"><div class="meta"><span>Sun, Oct 11</span><span>Final</span></div><div class="bug "><div class="row ipk "><div class="team"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">Ice Pak</div><div class="pts">5</div></div><div class="row opp lost col" style="--opp:#8147AD;--opp-2:#75BF1E;--opp-ink:#ffffff"><div class="team">Buzz Light Beer</div><div class="pts">1</div></div></div><div class="foot"><span class="tag win">Win</span></div></a></div>
 </section>
@@ -50,6 +52,11 @@
     </section>
   </div>
 </div>
+
+<section data-variant="no-bar">
+  <div class="sec-head"><h2>Next games</h2><a href="schedule.html">Calendar</a></div>
+  <ul class="next row"><li class="card"><span class="day">Nov 22<small>Sun · 7:30 PM</small></span><span class="opp-name">vs Yetis<span class="rink">County Ice Center</span></span><span class="tag">SLC County</span><img class="opp-logo" src="img/opp/yetis.png" alt=""></li><li class="card"><span class="day">Nov 29<small>Sun · 9:00 PM</small></span><span class="opp-name">vs Night Owls<span class="rink">Mammoth Ice Center</span></span><span class="tag">Mammoth</span><img class="opp-logo" src="img/opp/nightowls.png" alt=""></li><li class="card"><span class="day">Dec 6<small>Sun · 6:15 PM</small></span><span class="opp-name">vs Wild<span class="rink">SLC Sports Complex</span></span><span class="tag">SLC County</span><img class="opp-logo" src="img/opp/wild.png" alt=""></li><li class="card"><span class="day">Dec 13<small>Sun · 8:15 PM</small></span><span class="opp-name">vs Buzz Light Beer<span class="rink">Mammoth Ice Center</span></span><span class="tag">Mammoth</span><i class="opp-chip" style="--opp:#8147AD;--opp-2:#75BF1E" aria-hidden="true">BLB</i></li></ul>
+</section>
 </main>
 <footer class="site-foot"><div class="wrap">
   <img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">

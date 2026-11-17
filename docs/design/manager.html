@@ -10,7 +10,9 @@
 <script src="mock.js"></script>
 </head>
 <body>
-<div class="sticky"><header class="site-head"><div class="wrap">
+<div class="sticky">
+<div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" data-signout>Sign out</a></div></div>
+<header class="site-head"><div class="wrap">
   <a class="brand" href="manager.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak Manager</span></a>
   <nav aria-label="Main"><a href="manager.html" aria-current="page">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="home.html">Public site</a></nav>
   
@@ -20,12 +22,19 @@
     <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Third</span></button>
   </div>
 </div></header>
-</div><div class="band"><div class="wrap">
+</div><div class="band gate" data-auth="out"><div class="wrap"><p class="crumbs">Managers</p><h1>Manager sign-in</h1></div></div>
+<main class="wrap" data-auth="out"><form class="card login" data-login>
+  <p>The Manager pages are for the team Managers only. Enter your email address. You get a one-time code by email.</p>
+  <label>Email address <input type="email" autocomplete="email" required></label>
+  <div class="step2" hidden><label>One-time code <input inputmode="numeric" autocomplete="one-time-code" size="8"></label></div>
+  <button type="submit" class="button">Continue</button>
+  <p class="muted small">Not a Manager? <a href="home.html">Go back to the site</a>.</p>
+</form></main><div class="band" data-auth="in"><div class="wrap">
 <p class="crumbs">Manager</p>
 <div class="title-row"><h1>Players</h1><button type="button" class="button" data-open="add-player">Add a Player</button></div>
 <p class="muted">The Player Bank: each person the team can draw on, in order of priority inside each tier.</p>
 </div></div>
-<main class="wrap">
+<main class="wrap" data-auth="in">
 <form class="card add-form" id="add-player" hidden onsubmit="event.preventDefault(); this.hidden = true;">
   <h2>Add a Player</h2>
   <div class="fields">

@@ -3185,3 +3185,142 @@ tr.dragging td,
 :root[data-theme="third"] .band .sec-head h2::before {
   background: #000000;
 }
+
+/* ---------- Variants ---------- */
+:root[data-bar="off"] .gamebar,
+:root[data-bar="on"] [data-variant="no-bar"],
+:root[data-auth="out"] [data-auth="in"],
+:root[data-auth="in"] [data-auth="out"] {
+  display: none !important;
+}
+
+/* Signed in: a thin Manager strip above the header */
+.admin-strip {
+  background: #f5c542;
+  color: #10182b;
+  font: 600 12px/1 var(--body);
+}
+
+.admin-strip .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  padding-block: 7px;
+}
+
+.admin-strip .who-mgr {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-strip a {
+  color: #10182b;
+}
+
+.admin-strip [data-signout] {
+  margin-left: auto;
+}
+
+/* ---------- Dev panel: mockup settings, not part of the design ---------- */
+.devbar {
+  position: fixed;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  z-index: 60;
+  width: min(330px, calc(100vw - 24px));
+  background: #1e1f22;
+  color: #d4d7dc;
+  border: 1px solid #3c3f44;
+  box-shadow: 0 12px 40px -10px rgb(0 0 0 / 0.7);
+  font: 12px/1.4 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+:root[data-panel="closed"] .devbar {
+  width: auto;
+}
+
+:root[data-panel="closed"] .devbar .dv-body {
+  display: none;
+}
+
+.dv-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #3c3f44;
+  background: #2b2d31;
+  color: #e8eaed;
+  padding: 6px 10px;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+:root[data-panel="closed"] .dv-toggle {
+  border-bottom: 0;
+}
+
+.dv-body {
+  padding: 8px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.dv-row {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.dv-k {
+  color: #8ab4f8;
+}
+
+.dv-seg {
+  display: flex;
+  border: 1px solid #3c3f44;
+}
+
+.dv-seg button,
+.dv-page {
+  flex: 1;
+  border: 0;
+  border-left: 1px solid #3c3f44;
+  background: #1e1f22;
+  color: #c4c7cc;
+  padding: 4px 6px;
+  font: inherit;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.dv-seg button:first-child {
+  border-left: 0;
+}
+
+.dv-seg button[aria-pressed="true"] {
+  background: #394457;
+  color: #ffffff;
+}
+
+.dv-page {
+  border: 1px solid #3c3f44;
+  appearance: auto;
+  -webkit-appearance: auto;
+  background-image: none;
+}
+
+.dv-note {
+  margin: 2px 0 0;
+  color: #9aa0a6;
+  font-size: 11px;
+}

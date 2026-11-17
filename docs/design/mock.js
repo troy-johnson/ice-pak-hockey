@@ -11,6 +11,25 @@
   // With no choice, the device setting selects Home or Away.
   root.dataset.theme = choice || (matchMedia("(prefers-color-scheme: light)").matches ? "away" : "home");
 
+  // Variants for the dev panel: the game bar, and the Manager sign-in. The address wins, then the browser keeps the choice.
+  function read(key, fallback) {
+    var fromUrl = new URLSearchParams(location.search).get(key);
+    if (fromUrl !== null) return fromUrl;
+    try {
+      var v = localStorage.getItem("mock-" + key);
+      if (v !== null) return v;
+    } catch (error) {}
+    return fallback;
+  }
+  function save(key, value) {
+    try {
+      localStorage.setItem("mock-" + key, value);
+    } catch (error) {}
+  }
+  root.dataset.bar = read("bar", "on");
+  root.dataset.auth = read("auth", "out");
+  root.dataset.panel = read("panel", "open");
+
   document.addEventListener("DOMContentLoaded", function () {
     var buttons = document.querySelectorAll("[data-theme-choice]");
     function show() {
@@ -216,6 +235,96 @@
         if (navigator.clipboard) navigator.clipboard.writeText(text).then(done, function () {});
       });
     });
+
+    // Sign-in: the first step asks for the code, the second step signs in.
+    document.querySelectorAll("[data-login]").forEach(function (form) {
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var step2 = form.querySelector(".step2");
+        if (step2.hidden) {
+          step2.hidden = false;
+          step2.querySelector("input").focus();
+          return;
+        }
+        setAuth("in");
+        if (/login\.html$/.test(location.pathname)) location.href = "manager.html";
+      });
+    });
+    document.querySelectorAll("[data-signout]").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        event.preventDefault();
+        setAuth("out");
+      });
+    });
+    function setAuth(value) {
+      root.dataset.auth = value;
+      save("auth", value);
+      syncPanel();
+    }
+
+    // Dev panel: a bar of mockup settings, as in browser dev tools. It is not part of the design.
+    var pages = [["home.html", "Home"], ["schedule.html", "Schedule"], ["stats.html", "Stats"], ["roster.html", "Roster"], ["player.html", "Player"],
+      ["game.html", "Game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
+      ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-jerseys.html", "Mgr: Jerseys"]];
+    var here = location.pathname.split("/").pop() || "home.html";
+    var panel = document.createElement("aside");
+    panel.className = "devbar";
+    panel.setAttribute("aria-label", "Mockup settings");
+    panel.innerHTML =
+      '<button type="button" class="dv-toggle" aria-expanded="true" title="Mockup settings">⚙ <span>Mockup</span></button>' +
+      '<div class="dv-body">' +
+      '<div class="dv-row"><span class="dv-k">page</span><select class="dv-page">' +
+      pages.map(function (p) { return '<option value="' + p[0] + '"' + (p[0] === here ? " selected" : "") + ">" + p[1] + "</option>"; }).join("") +
+      '</select></div>' +
+      '<div class="dv-row"><span class="dv-k">theme</span><span class="dv-seg" data-key="theme"><button value="home">home</button><button value="away">away</button><button value="third">third</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">game bar</span><span class="dv-seg" data-key="bar"><button value="on">on</button><button value="off">off</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
+      '<p class="dv-note"></p>' +
+      '</div>';
+    document.body.appendChild(panel);
+    function syncPanel() {
+      panel.querySelectorAll(".dv-seg").forEach(function (seg) {
+        seg.querySelectorAll("button").forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b.value === root.dataset[seg.dataset.key]));
+        });
+      });
+      var note = root.dataset.bar === "on"
+        ? "Game bar on: Home hides This season and Next games."
+        : "Game bar off: Home shows This season and Next games.";
+      note += root.dataset.auth === "in"
+        ? " Signed in: a Manager strip shows above the header, and the Manager pages open."
+        : " Signed out: the Manager pages show the sign-in step.";
+      panel.querySelector(".dv-note").textContent = note;
+      panel.querySelector(".dv-toggle").setAttribute("aria-expanded", String(root.dataset.panel === "open"));
+      show();
+    }
+    panel.querySelectorAll(".dv-seg").forEach(function (seg) {
+      seg.addEventListener("click", function (event) {
+        var b = event.target.closest("button");
+        if (!b) return;
+        var key = seg.dataset.key;
+        root.dataset[key] = b.value;
+        save(key === "theme" ? "theme-x" : key, b.value);
+        if (key === "theme") {
+          try {
+            localStorage.setItem("theme", b.value);
+          } catch (error) {}
+        }
+        syncPanel();
+      });
+    });
+    panel.querySelector(".dv-page").addEventListener("change", function (event) {
+      location.href = event.target.value;
+    });
+    panel.querySelector(".dv-toggle").addEventListener("click", function () {
+      root.dataset.panel = root.dataset.panel === "open" ? "closed" : "open";
+      save("panel", root.dataset.panel);
+      syncPanel();
+    });
+    buttons.forEach(function (button) {
+      button.addEventListener("click", syncPanel);
+    });
+    syncPanel();
 
     // Schedule calendar: one panel for each month.
     var months = Array.prototype.slice.call(document.querySelectorAll("[data-month]"));
