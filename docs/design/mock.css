@@ -4612,3 +4612,19 @@ tr.flash td {
     background-color: rgb(91 165 209 / 0.45);
   }
 }
+
+/* + Payment dialog: what the Player owes, above the fields */
+.pay-owes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--panel-2);
+}
+
+.pay-owes b {
+  display: block;
+  margin-top: 4px;
+  font: 700 26px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}

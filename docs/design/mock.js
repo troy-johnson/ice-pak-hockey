@@ -357,6 +357,41 @@
       document.querySelectorAll("select.jst").forEach(function (sel) { sel.addEventListener("change", recountJ); });
     }
 
+    // + Payment: the dialog shows what the Player owes, and Save changes the row of the Player.
+    var payForm = document.querySelector("[data-add-payment]");
+    if (payForm) {
+      var payRow = null, payData = null;
+      var usd = function (c) { return (c < 0 ? "-" : "") + "$" + (Math.abs(c) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+      document.querySelectorAll("[data-pay]").forEach(function (b) {
+        b.addEventListener("click", function () {
+          var p = b.dataset.pay.split("|");
+          payRow = b.closest("tr");
+          payData = { name: p[0], season: Number(p[1]), all: Number(p[2]), fee: Number(p[3]) };
+          payForm.querySelector("[data-pay-name]").textContent = payData.name;
+          payForm.querySelector("[data-pay-season]").textContent = usd(payData.season);
+          payForm.querySelector("[data-pay-all]").textContent = usd(payData.all);
+          payForm.querySelector("#pay-amt").value = (Math.max(payData.season, 0) / 100).toFixed(2);
+          payForm.querySelector("#pay-note").value = "";
+        });
+      });
+      payForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var cents = Math.round(parseFloat(payForm.querySelector("#pay-amt").value.replace(/[$,]/g, "")) * 100) || 0;
+        if (payRow && payData) {
+          var season = payData.season - cents, all = payData.all - cents, paid = payData.fee - season;
+          var td = payRow.children;
+          td[1].innerHTML = usd(paid) + ' <span class="muted">of ' + usd(payData.fee) + "</span>";
+          td[2].textContent = usd(season);
+          td[3].className = "n wide-only bal " + (all > 0 ? "owes" : all < 0 ? "credit" : "zero");
+          td[3].textContent = all < 0 ? usd(-all) + " credit" : usd(all);
+          td[4].innerHTML = season <= 0 ? '<span class="tag win">Paid</span>' : '<span class="tag">Part paid</span>';
+          payRow.querySelector("[data-pay]").dataset.pay = [payData.name, season, all, payData.fee].join("|");
+          payRow.classList.remove("flash"); void payRow.offsetWidth; payRow.classList.add("flash");
+        }
+        payForm.closest(".modal").hidden = true;
+      });
+    }
+
     // Jerseys: the status list takes the colour of its status.
     document.querySelectorAll("select.jst").forEach(function (sel) {
       sel.addEventListener("change", function () { sel.dataset.st = sel.value; });
