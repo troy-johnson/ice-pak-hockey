@@ -648,10 +648,16 @@
       if (tab) tab.setAttribute("aria-expanded", String(root.dataset.nopen === "true"));
     }
     // Side tab: the tab opens and closes the notice panel.
-    var sideTab = document.querySelector(".nside-tab");
-    if (sideTab) sideTab.addEventListener("click", function () {
-      root.dataset.nopen = root.dataset.nopen === "true" ? "false" : "true";
-      fillNotice();
+    // Side tab on a wide screen, bell in the header on a phone: each one opens and closes the notice panel.
+    document.querySelectorAll(".nside-tab, .nbell").forEach(function (opener) {
+      opener.addEventListener("click", function (event) {
+        event.stopPropagation();
+        root.dataset.nopen = root.dataset.nopen === "true" ? "false" : "true";
+        var head = document.querySelector(".sticky");
+        if (head) root.style.setProperty("--head-h", head.getBoundingClientRect().bottom + "px");
+        fillNotice();
+        document.querySelectorAll(".nbell").forEach(function (b) { b.setAttribute("aria-expanded", root.dataset.nopen); });
+      });
     });
     // Auto: announce once, then stay quietly in the side tab.
     // - First visit: a change or a cancellation shows as a card; a recap or an event shows as a toast.
@@ -697,7 +703,14 @@
         root.dataset.nview = "side";
         showState();
         var tab = document.querySelector(".nside-tab");
-        if (tab && !still && tab.animate) {
+        var bellEl = document.querySelector(".nbell");
+        if (bellEl && bellEl.offsetParent && !still && bellEl.animate) {
+          bellEl.animate([
+            { transform: "scale(1.4) rotate(-14deg)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
+            { transform: "scale(1.15) rotate(12deg)", offset: 0.35 },
+            { transform: "scale(1) rotate(0)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+          ], { duration: 700, easing: "ease-out" });
+        } else if (tab && !still && tab.animate) {
           tab.animate([
             { transform: "translateY(-50%) rotate(180deg) scale(1.35)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
             { transform: "translateY(-50%) rotate(180deg) scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
@@ -706,8 +719,13 @@
       };
       if (!bar || still || !bar.animate) { finish(); return; }
       var r = bar.getBoundingClientRect();
-      var dx = innerWidth - 18 - (r.left + r.width / 2);
-      var dy = innerHeight / 2 - (r.top + r.height / 2);
+      // The target: the bell in the header on a phone, the side tab at the right edge on a wide screen.
+      var bell = document.querySelector(".nbell");
+      var phone = matchMedia("(max-width: 760px)").matches && bell && bell.offsetParent;
+      var tx = innerWidth - 18, ty = innerHeight / 2;
+      if (phone) { var br = bell.getBoundingClientRect(); tx = br.left + br.width / 2; ty = br.top + br.height / 2; }
+      var dx = tx - (r.left + r.width / 2);
+      var dy = ty - (r.top + r.height / 2);
       bar.animate([
         { transform: "translate(0, 0) scale(1)", opacity: 1, borderRadius: "0" },
         { transform: "translate(" + dx * 0.55 + "px, " + dy * 0.35 + "px) scale(0.55)", opacity: 0.9, borderRadius: "12px", offset: 0.55 },
