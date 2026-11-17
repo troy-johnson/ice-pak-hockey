@@ -66,6 +66,28 @@
       }
     }
 
+    // Video: a Recap or a Short plays in the page. The visitor stays on the site.
+    document.querySelectorAll("[data-yt]").forEach(function (frame) {
+      frame.addEventListener("click", function () {
+        if (frame.classList.contains("playing")) return;
+        frame.classList.add("playing");
+        // The artifact viewer does not allow an embedded player, so it shows a mockup player.
+        var local = location.protocol === "file:" || location.hostname === "localhost";
+        if (local) {
+          var player = document.createElement("iframe");
+          player.src = "https://www.youtube-nocookie.com/embed/" + frame.dataset.yt + "?autoplay=1&rel=0";
+          player.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+          player.title = "Video player";
+          frame.appendChild(player);
+        } else {
+          var bar = document.createElement("span");
+          bar.className = "fake-player";
+          bar.innerHTML = "<span>❚❚</span><i></i><span>0:12 / 1:04</span>";
+          frame.appendChild(bar);
+        }
+      });
+    });
+
     // Schedule calendar: one panel for each month.
     var months = Array.prototype.slice.call(document.querySelectorAll("[data-month]"));
     var prev = document.querySelector("[data-step='-1']");
