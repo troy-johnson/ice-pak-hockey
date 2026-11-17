@@ -4093,3 +4093,28 @@ td.bal a {
   width: 18px;
   height: 18px;
 }
+
+/* One height for each main button and list: 44 px. The small buttons in tables keep their size. */
+.button,
+.ghost:not(.small),
+select:not(.cell):not(.dv-page):not(td select) {
+  box-sizing: border-box;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
+}
+
+select:not(.cell):not(.dv-page):not(td select) {
+  display: inline-block;
+  line-height: 44px;
+}
+
+.modal-box select,
+.modal-box .button,
+.modal-box .ghost {
+  height: 44px;
+}
