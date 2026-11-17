@@ -76,14 +76,17 @@ export async function listGames(): Promise<GameSummary[]> {
             opponent_score AS opponentScore, ice_pak_shots AS icePakShots,
             opponent_shots AS opponentShots, shootout, headline, recap_url AS recapUrl,
             recap_image AS recapImage,
-            (SELECT COUNT(*) FROM goals WHERE game_id = games.id AND video_url <> '') AS videoCount,
-            (SELECT COUNT(*) FROM goals WHERE game_id = games.id AND video_is_short = 1) AS shortCount,
-            (SELECT COUNT(*) FROM goals WHERE game_id = games.id) AS goalCount
+            COALESCE(goal_counts.videoCount, 0) AS videoCount,
+            COALESCE(goal_counts.shortCount, 0) AS shortCount,
+            COALESCE(goal_counts.goalCount, 0) AS goalCount
      FROM games
      JOIN league_seasons ON league_seasons.id = league_season_id
      JOIN leagues ON leagues.id = league_seasons.league_id
      LEFT JOIN opponents ON opponents.id = opponent_id
      LEFT JOIN rinks ON rinks.id = rink_id
+     LEFT JOIN (SELECT game_id, COUNT(*) AS goalCount, SUM(video_url <> '') AS videoCount,
+                       SUM(video_is_short = 1) AS shortCount
+                FROM goals GROUP BY game_id) AS goal_counts ON goal_counts.game_id = games.id
      ORDER BY starts_at, games.id`,
   );
   return rows.map(toSummary);
