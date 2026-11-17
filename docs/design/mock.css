@@ -3496,3 +3496,22 @@ section[data-recent] {
     padding: 12px;
   }
 }
+
+/* Game bar: shorter, with no rink */
+.gamebar .wrap {
+  padding-block: 4px;
+}
+
+.gtile {
+  gap: 1px;
+  padding: 4px 10px;
+  line-height: 1.15;
+}
+
+.gtile .gt {
+  height: 17px;
+}
+
+.gall {
+  font-size: 13px;
+}

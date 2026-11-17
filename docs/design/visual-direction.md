@@ -211,7 +211,7 @@ Each control has a forward lean: the left and right edges are cut at an angle, t
 
 ### Game bar
 
-A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date, the time, and the rink. Each tile is a link to its Game. On a phone the bar scrolls sideways. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
+A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date and the time. Each tile is a link to its Game. On a phone the bar scrolls sideways. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
 
 ### League names
 
