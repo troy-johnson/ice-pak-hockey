@@ -69,20 +69,37 @@
       if (view.dataset.view === wanted) view.click();
     });
 
-    // Stats: the season list opens the season panel.
+    // Stats: the League list shows the seasons of that League, and the Season list opens the season panel.
     var pick = document.querySelector("[data-view-select]");
     if (pick) {
       var all = document.querySelector("[data-view='all']");
+      var lg = document.querySelector("[data-league]");
+      var showLeague = function (name) {
+        Array.prototype.forEach.call(pick.options, function (o, i) {
+          if (i) o.hidden = o.disabled = !!name && o.dataset.lg !== name;
+        });
+      };
       pick.addEventListener("change", function () {
+        if (!pick.value) return;
         all.setAttribute("aria-pressed", "false");
         pick.classList.add("on");
+        if (lg) { lg.value = pick.selectedOptions[0].dataset.lg; lg.classList.add("on"); showLeague(lg.value); }
         panels.forEach(function (panel) {
           panel.hidden = panel.dataset.panel !== "ls";
         });
       });
+      if (lg) lg.addEventListener("change", function () {
+        showLeague(lg.value);
+        if (!lg.value) return;
+        // A new League opens its newest season.
+        var first = Array.prototype.find.call(pick.options, function (o) { return o.dataset.lg === lg.value; });
+        pick.value = first.value;
+        pick.dispatchEvent(new Event("change"));
+      });
       all.addEventListener("click", function () {
         pick.classList.remove("on");
         pick.selectedIndex = 0;
+        if (lg) { lg.classList.remove("on"); lg.selectedIndex = 0; showLeague(""); }
       });
       if (wanted === "ls") {
         pick.selectedIndex = 1;

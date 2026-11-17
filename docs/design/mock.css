@@ -5196,3 +5196,213 @@ td.name .who:has(.av) + .pnote {
     padding-left: 40px;
   }
 }
+
+/* Home: the Points leaders switch between the current League Seasons */
+.lead-pick {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.lead-pick button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.lead-pick .lp-sn {
+  font: 600 11px/1 var(--body);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+/* Stats: the League list and the Season list sit side by side */
+@media (max-width: 760px) {
+  .controls .seg {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+}
+
+/* Roster jersey: the real Ice Pak design. Home has the colours of the real jersey. Away and Heritage use the same design in their Kit colours. */
+.jersey {
+  --j-body: #1d315f;
+  --j-stripe: #f3ead2;
+  --j-line2: #5ba5d1;
+  --j-num: #f3ead2;
+  --j-num-line: #5ba5d1;
+  --j-edge: #5ba5d1;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-stripe: #1d315f;
+  --j-line2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #9fb1cf;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #c0211c;
+  --j-stripe: #000000;
+  --j-line2: #ffffff;
+  --j-num: #ffffff;
+  --j-num-line: #000000;
+  --j-edge: #000000;
+}
+
+.jersey .stripe {
+  fill: var(--j-stripe);
+}
+
+.jersey .yoke,
+.jersey .arc {
+  fill: none;
+  stroke: var(--j-stripe);
+  stroke-width: 6;
+}
+
+.jersey .arc {
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.jersey .line2 {
+  fill: none;
+  stroke: var(--j-line2);
+  stroke-width: 2.5;
+  stroke-linejoin: miter;
+}
+
+.jersey .collar {
+  stroke: var(--j-stripe);
+  stroke-width: 5;
+}
+
+.jersey text {
+  font: 400 70px/1 "Graduate", var(--display);
+  fill: var(--j-num);
+  stroke: var(--j-num-line);
+  stroke-width: 6;
+  letter-spacing: -2px;
+}
+
+/* Stats on a phone: the second row of the lists starts at the left edge */
+@media (max-width: 760px) {
+  .controls .seg > * {
+    margin-left: 0;
+  }
+}
+
+/* Player page: the large number uses the block font of the real jersey */
+.jersey-no {
+  font: 400 96px/0.9 "Graduate", var(--display);
+  letter-spacing: -3px;
+}
+
+/* Roster jersey: one drawing for each real Kit. The Theme shows its own Kit. */
+.jersey .k-home,
+.jersey .k-away,
+.jersey .k-third {
+  display: none;
+}
+
+:root[data-theme="home"] .jersey .k-home,
+:root:not([data-theme]) .jersey .k-home,
+:root[data-theme="away"] .jersey .k-away,
+:root[data-theme="third"] .jersey .k-third {
+  display: inline;
+}
+
+.jersey .body {
+  stroke: none;
+}
+
+.jersey .body-edge {
+  fill: none;
+  stroke: var(--j-edge);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.jersey .navy {
+  fill: #1d315f;
+}
+
+.jersey .black {
+  fill: #111111;
+}
+
+.jersey .chev {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+
+.jersey .line3 {
+  fill: none;
+  stroke: #a9b3c2;
+  stroke-width: 2;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-line2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #1d315f;
+  --j-stripe: #1d315f;
+}
+
+:root[data-theme="away"] .jersey .collar {
+  stroke: #5ba5d1;
+  stroke-width: 4;
+}
+
+:root[data-theme="away"] .jersey text {
+  font: italic 800 84px/1 var(--display);
+  stroke-width: 7;
+  letter-spacing: 0;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #e2231a;
+  --j-num: #111111;
+  --j-edge: #8f1510;
+}
+
+:root[data-theme="third"] .jersey .collar {
+  stroke: #111111;
+  stroke-width: 4;
+}
+
+:root[data-theme="third"] .jersey text {
+  font: 700 84px/1 var(--display);
+  stroke: none;
+  letter-spacing: 0;
+}
+
+:root[data-theme="away"] .jersey text {
+  font-size: 72px;
+  transform: translateY(4px);
+}
+
+:root[data-theme="away"] .jersey-no {
+  font: italic 800 112px/0.86 var(--display);
+  letter-spacing: 0;
+}
+
+:root[data-theme="third"] .jersey-no {
+  font: 700 112px/0.86 var(--display);
+  letter-spacing: 0;
+}
+
+:root[data-theme="home"] .jersey-no,
+:root:not([data-theme]) .jersey-no {
+  background: #1d315f;
+  color: #f3ead2;
+  -webkit-text-stroke: 6px #5ba5d1;
+  paint-order: stroke fill;
+}

@@ -10,7 +10,7 @@ Troy asked for these changes:
 
 - **Ice texture:** the pages have the skated-ice marks of the Recap thumbnails. The first pass had a flat background.
 - **Schedule:** the Games page is now the Schedule page, with a calendar view and a list view. The reference is the schedule page of an NHL team.
-- **Home:** the page has the layout of the first draft: the Recap with a headline and the score, then the games of this season, then the Shorts and the points leaders.
+- **Home:** the page has the layout of the first draft: the Recap with a headline and the score, then the games of this season, then the Shorts and the points leaders. The points leaders have one table for each current League Season (SLC County Winter '26-27 and Mammoth Summer '26), with a switch that names the League and the Season.
 - **Stats, Roster, Player:** each page follows the matching NHL team page. The Roster has only the columns that the team has data for.
 - **Polish:** cards with a border and a soft shadow, table heads with a fill, a band at the top of each page, and a footer.
 
@@ -227,13 +227,19 @@ The real logo, with no disc and no border. Troy asked for this on 2026-11-16. A 
 
 ### Leader card
 
-The Stats page has five cards: points, goals, assists, games played, and penalty minutes. Each card has the leader with a large number, and the next four Players. The cards are in one row from 1280 px, in three columns below that, and in one column on a phone.
+The Stats page has five cards, in the order of the table columns: games played, goals, assists, points, and penalty minutes. Each card has the leader with a large number, and the next four Players. The cards are in one row from 1280 px, in three columns below that, and in one column on a phone.
 
 ### Jersey
 
 The Roster page shows each Player as the back of a jersey with the number, and the name below it. The jersey has no nameplate. It is an SVG drawing, and CSS gives it the Kit colours of the Theme: navy for Home, white for Away, and red with black for Third. The number style follows the number art on the NAS (`athletic_shirt_*.png`): a solid number with an outline.
 
-I did not find a jersey mockup of Ice Pak on the NAS. The stripes of the drawing are my assumption. The rows are in order of the number, and they are not line combinations.
+Each Theme shows the drawing of its own real jersey, from Troy's photos of 2026-11-17. The drawings have no sponsor logos and no shoulder patch.
+
+- **Home:** navy, a cream stripe across the yoke, a cream arc on each sleeve, a mountain zigzag at the cuffs and at the hem with a thin light blue line above it, and cream peaks below the hem band. The number is a varsity block (Graduate, from Google Fonts), cream with a light blue outline.
+- **Away:** white, with navy shoulders and sleeves and a light blue line on the edge of the shoulders. Each sleeve has a white and light blue chevron. The navy hem rises to one peak in the middle, with a light blue line and a grey line on its edge. The number is navy, italic Barlow Condensed, with a light blue outline.
+- **Heritage:** plain red, with black shoulder patches and a black collar. The number is plain black Barlow Condensed with no outline.
+
+The large number on the Player page uses the number font of the Kit. The rows are in order of the number, and they are not line combinations.
 
 ### Theme switch
 
@@ -247,7 +253,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 - **Video:** a 16:9 image with a "Watch the Recap" label, and a 9:16 image for a Short. A click opens a pop-out player over the page, so the visitor stays on the site. Escape, Close, or a click outside closes it. In the artifact viewer the YouTube player cannot load, so the mockup shows a fake player bar.
 - **Opponent page:** `opponent.html`. Each opponent name opens it. It has the record, the game history, and the top scorers against that team. The label is black with a red arrow in each Theme, because it is on a photo.
 - **Tabs:** Calendar and List on the Schedule page.
-- **Stats control:** an "All time" button and one list of the League Seasons, in one group for each League. Each choice shows the League and the Season, such as "SLC County · Winter '26-27". When "All time" is on, the list has a thin outline, dim text, and the word "Season", so it is clearly off. The strip of a League Season has a "League" label and a "Season" label. Troy removed the HHG Season view on 2026-11-16.
+- **Stats control:** an "All time" button, a League list, and a Season list. The Season list shows the seasons of the chosen League, newest first, and a new League opens its newest season. When "All time" is on, both lists have a thin outline and dim text, so they are clearly off. The strip of a League Season has a "League" label and a "Season" label. Troy removed the HHG Season view on 2026-11-16.
 - **Event list:** the goals and penalties of a Game on a card, with one head row for each period. Each row has the logo of the team.
 - **Player highlights:** the Player page lists only the goals with a video that the Player scored or assisted.
 
@@ -367,7 +373,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 15. **Opponents with no logo.** Buzz Light Beer and Dragon Juice have no logo file. Do you have these logos?
 16. **Photos.** A Player has initials in place of a photo. Do you want Player photos later?
 17b. **Rink images.** At 30 cm above the ice, the crest at centre ice is a thin shape and is not readable. Is that acceptable, or do you want the camera higher or the crest nearer?
-17a. **Jersey design.** I did not find the jersey mockups on the NAS. Which file or folder has them? The drawing needs the real stripes and the real number colours of each Kit.
+17a. **Jersey design.** Done: the three drawings follow Troy's photos of 2026-11-17.
 
 ### Privacy
 
