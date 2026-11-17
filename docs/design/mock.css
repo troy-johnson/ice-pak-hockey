@@ -2446,6 +2446,10 @@ label.muted {
 }
 
 @media (max-width: 760px) {
+  .site-head .mgr-link span {
+    display: none;
+  }
+
   .switch button {
     padding: 13px;
   }
@@ -2975,4 +2979,64 @@ tr.dragging td,
   .jerseys th.n {
     padding-inline: 3px;
   }
+}
+
+/* Score bug: no bottom line on any row. The white Away row keeps a thin edge, so it shows on a white card. */
+.bug .team,
+.bug .ipk .team,
+:root[data-theme="third"] .band .bug .ipk .team {
+  box-shadow: none;
+}
+
+:root[data-theme="away"] .bug .ipk .team {
+  box-shadow: inset 0 0 0 1px #b9c6dc;
+}
+
+/* Header: the link to the Manager pages, behind a login */
+.site-head .mgr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+  text-decoration: none;
+}
+
+.site-head .mgr-link:hover {
+  color: var(--ink);
+}
+
+.site-head .mgr-link svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Login page */
+.login {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.login .button {
+  align-self: flex-start;
+}
+
+.login .step2[hidden] {
+  display: none;
 }
