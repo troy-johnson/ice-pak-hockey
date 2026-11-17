@@ -3874,3 +3874,33 @@ input.cell:focus {
   width: 40px;
   height: 38px;
 }
+
+/* Balance: what a Player owes in all seasons. A credit is green. */
+td.bal {
+  font-weight: 700;
+}
+
+td.bal.owes {
+  color: #e2584f;
+}
+
+:root[data-theme="away"] td.bal.owes {
+  color: #b3261e;
+}
+
+td.bal.credit {
+  color: #3fb371;
+}
+
+:root[data-theme="away"] td.bal.credit {
+  color: #1b7f46;
+}
+
+td.bal.zero {
+  color: var(--frost);
+  font-weight: 400;
+}
+
+td.nowrap {
+  white-space: nowrap;
+}

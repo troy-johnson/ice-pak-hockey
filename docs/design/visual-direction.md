@@ -327,7 +327,8 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 
 - **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
 - **Fee:** the formula of the Fee Sheet. A goalie pays $0. "Lock the fee" fixes it.
-- **Payments:** the fee, the paid amount, the Balance, and a status for each Player with a fee.
+- **Payments:** for each Player with a fee: the paid amount of the fee, the balance of this season, the balance of all seasons, and a status. The status is for this season.
+- **Balance of all seasons:** the decisions say each Player has one Balance across all Leagues. The Players page shows it in each row, in red when the Player owes and in green for a credit. A strip at the top shows the total owed to the team, the number of Players who owe, and the total of credits.
 - **Data:** the names, tiers, answers, and amounts are invented. This repository is public, and this data is for Managers only.
 
 ## 8. Open questions for Troy
