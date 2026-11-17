@@ -368,6 +368,40 @@
       document.addEventListener("click", function (event) { if (!wrap.contains(event.target)) { btn.dataset.pinned = ""; set(false); } });
       document.addEventListener("keydown", function (event) { if (event.key === "Escape") { btn.dataset.pinned = ""; set(false); } });
     });
+    // Phone: the game bar sticks below the header, so the page needs the height of the header.
+    var siteHead = document.querySelector(".site-head");
+    var setHeadH = function () { if (siteHead) root.style.setProperty("--head-h0", siteHead.offsetHeight + "px"); };
+    setHeadH();
+    addEventListener("resize", setHeadH);
+
+    // Game bar: drag with the mouse to scroll. A phone swipes with no script. The bar starts at the next game.
+    var track = document.querySelector(".gtrack");
+    if (track) {
+      var nextTile = track.querySelector(".gtile.next");
+      if (nextTile && matchMedia("(max-width: 760px)").matches) track.scrollLeft = nextTile.offsetLeft - track.offsetLeft;
+      var drag = null;
+      track.addEventListener("pointerdown", function (event) {
+        if (event.pointerType !== "mouse" || event.button !== 0) return;
+        drag = { x: event.clientX, left: track.scrollLeft, moved: false };
+      });
+      addEventListener("pointermove", function (event) {
+        if (!drag) return;
+        var dx = event.clientX - drag.x;
+        if (!drag.moved && Math.abs(dx) > 5) { drag.moved = true; track.classList.add("dragging"); }
+        if (drag.moved) track.scrollLeft = drag.left - dx;
+      });
+      addEventListener("pointerup", function () {
+        if (!drag) return;
+        var moved = drag.moved;
+        drag = null;
+        if (!moved) return;
+        // A drag is not a click: the tile under the pointer does not open.
+        var stop = function (event) { event.preventDefault(); event.stopPropagation(); };
+        track.addEventListener("click", stop, { capture: true, once: true });
+        setTimeout(function () { track.removeEventListener("click", stop, { capture: true }); track.classList.remove("dragging"); }, 0);
+      });
+    }
+
     function setAuth(value) {
       root.dataset.auth = value;
       save("auth", value);
@@ -653,7 +687,8 @@
       opener.addEventListener("click", function (event) {
         event.stopPropagation();
         root.dataset.nopen = root.dataset.nopen === "true" ? "false" : "true";
-        var head = document.querySelector(".sticky");
+        var bar = document.querySelector(".gamebar");
+        var head = bar && bar.offsetParent ? bar : document.querySelector(".site-head");
         if (head) root.style.setProperty("--head-h", head.getBoundingClientRect().bottom + "px");
         fillNotice();
         document.querySelectorAll(".nbell").forEach(function (b) { b.setAttribute("aria-expanded", root.dataset.nopen); });

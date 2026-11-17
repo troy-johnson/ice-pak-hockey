@@ -4299,15 +4299,6 @@ select:not(.cell):not(.dv-page):not(td select),
     text-transform: uppercase;
   }
 
-  /* Game bar on a phone: the next game only, with the link to the full Schedule */
-  .gtile:not(.next),
-  .gtile.next ~ .gtile.next {
-    display: none;
-  }
-
-  .gtile.next {
-    flex: 1 1 auto;
-  }
 
 
   /* Tables on a phone: smaller text */
@@ -6263,11 +6254,110 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root[data-nmsg="cancel"] .nbell { --n-acc: #d9534f; }
 
 @media (max-width: 760px) {
-  .site-head .nbell + .menu-btn {
-    margin-left: 4px;
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .site-head .nbell + .menu-btn,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .site-head .nbell + .menu-btn {
+    margin-left: 6px;
   }
 }
 
 :root[data-theme="third"] .nbell .nb-dot {
   box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* Game bar: drag with the mouse, swipe on a phone. Each tile snaps to the left edge. */
+.gtrack {
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+}
+
+.gtrack.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.gtrack.dragging a {
+  pointer-events: none;
+}
+
+.gtile {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 760px) {
+  .gtile {
+    flex: 0 0 150px;
+  }
+
+  .gtrack {
+    cursor: auto;
+  }
+}
+
+/* Phone: the header and the game bar stay at the top. A card notice sits between them at the top of the page, and it scrolls away. */
+@media (max-width: 760px) {
+  body > .sticky {
+    display: contents;
+  }
+
+  .sticky > .site-head {
+    position: sticky;
+    top: 0;
+    z-index: 22;
+  }
+
+  .sticky > .gamebar {
+    position: sticky;
+    top: var(--head-h0, 65px);
+    z-index: 21;
+    box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+  }
+
+  .sticky > .notice {
+    position: relative;
+    z-index: 20;
+  }
+
+  .mmenu:not([hidden]) {
+    position: fixed;
+    top: var(--head-h0, 65px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: calc(100dvh - var(--head-h0, 65px));
+    overflow-y: auto;
+  }
+}
+
+/* Phone bell: the same slanted panel as the Menu button. */
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .nbell,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .nbell {
+    width: 52px;
+    height: 44px;
+    border-radius: 0;
+    background: var(--panel-2);
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .nbell svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nbell .nb-dot {
+    top: 8px;
+    right: 13px;
+    box-shadow: 0 0 0 2px var(--panel-2);
+  }
+
+  :root[data-theme="third"] .nbell .nb-dot {
+    box-shadow: 0 0 0 2px var(--panel-2);
+  }
+
+  .nbell[aria-expanded="true"] {
+    background: var(--kit-fill);
+    color: var(--on-fill);
+  }
 }
