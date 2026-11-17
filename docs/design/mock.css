@@ -1335,7 +1335,8 @@ select {
   font-variant-numeric: tabular-nums;
 }
 
-.leader ol {
+.leader ol,
+.leader ul {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -6410,4 +6411,20 @@ body.mgr-area .mm-acct a:not([data-signout]) {
   :root[data-nview="card"] .site-head .nbell + .menu-btn {
     margin-left: auto !important;
   }
+}
+
+/* Leader card: the jersey number in front of each name, in place of a rank */
+.leader li > span:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.leader .lno {
+  flex: none;
+  min-width: 1.6em;
+  color: var(--frost);
+  font: 700 15px/1 var(--display);
+  text-align: right;
 }

@@ -227,7 +227,7 @@ The real logo, with no disc and no border. Troy asked for this on 2026-11-16. A 
 
 ### Leader card
 
-The Stats page has five cards, in the order of the table columns: games played, goals, assists, points, and penalty minutes. Each card has the leader with a large number, and the next four Players. The cards are in one row from 1280 px, in three columns below that, and in one column on a phone.
+The Stats page has five cards, in the order of the table columns: games played, goals, assists, points, and penalty minutes. Each card has the leader with a large number, and the next four Players with their jersey numbers in place of a rank ("–" when a Player has no number). The cards are in one row from 1280 px, in three columns below that, and in one column on a phone.
 
 ### Jersey
 
