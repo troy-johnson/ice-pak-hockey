@@ -312,7 +312,7 @@
       });
     });
     // Account menu and floating Manage button: a click opens the list of Manager links. Escape or a click outside closes it.
-    document.querySelectorAll(".acct-btn, .mpill-btn").forEach(function (btn) {
+    document.querySelectorAll(".acct-btn, .mpill-btn, .mgr-dd-btn").forEach(function (btn) {
       var list = document.getElementById(btn.getAttribute("aria-controls"));
       btn.addEventListener("click", function (event) {
         event.stopPropagation();
@@ -322,7 +322,7 @@
       });
     });
     function closeMgrMenus() {
-      document.querySelectorAll(".acct-btn, .mpill-btn").forEach(function (btn) {
+      document.querySelectorAll(".acct-btn, .mpill-btn, .mgr-dd-btn").forEach(function (btn) {
         document.getElementById(btn.getAttribute("aria-controls")).hidden = true;
         btn.setAttribute("aria-expanded", "false");
       });
@@ -549,7 +549,7 @@
       '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="nmsg"><button value="none">none</button><button value="recap">recap</button><button value="event">event</button><button value="change">change</button><button value="cancel">cancel</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="menu">menu</button><button value="pill">button</button><button value="inline">pencils</button><button value="strip">strip</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="nav">nav</button><button value="menu">menu</button><button value="pill">button</button><button value="inline">pencils</button><button value="strip">strip</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
     document.body.appendChild(panel);

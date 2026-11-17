@@ -6052,3 +6052,49 @@ body.mgr-area .acct-btn {
 body.mgr-area .mm-acct a:not([data-signout]) {
   display: none;
 }
+
+/* Nav: the "Managers" link stays in the header with an open lock, and a click opens the Manager links. */
+.mgr-dd {
+  display: none;
+  position: relative;
+}
+
+:root[data-mstyle="nav"] .mgr-dd {
+  display: block;
+}
+
+:root[data-mstyle="nav"] body.mgr-area .acct {
+  display: none;
+}
+
+.site-head .mgr-dd-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.site-head .mgr-dd-btn svg {
+  color: #f5c542;
+}
+
+.site-head .mgr-dd-btn[aria-expanded="true"] {
+  color: #f5c542;
+}
+
+.mgr-dd .acct-menu {
+  right: auto;
+  left: 0;
+  top: calc(100% + 2px);
+}
+
+@media (max-width: 760px) {
+  .mgr-dd {
+    display: none !important;
+  }
+
+  :root[data-mstyle="nav"] .mm-acct {
+    display: flex;
+  }
+}
