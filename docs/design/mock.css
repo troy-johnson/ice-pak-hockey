@@ -6473,3 +6473,41 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root:not([data-theme])[data-nmsg="change"] .nside-tab {
   background: #a8690f;
 }
+
+/* Side tab and side panel: centred with auto margins, not translateY(-50%). A half-pixel move made the text blurry. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  top: 0;
+  bottom: 0;
+  height: fit-content;
+  margin-block: auto;
+  transform: rotate(180deg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 761px) {
+  :root[data-nview="side"][data-notice] .notice {
+    top: 0;
+    bottom: 0;
+    height: fit-content;
+    margin-block: auto;
+    transform: none;
+  }
+}
+
+/* The script places the tab and the panel on whole pixels (see placeSide in mock.js). */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  bottom: auto;
+  height: 96px;
+  margin: 0;
+  justify-content: center;
+}
+
+@media (min-width: 761px) {
+  :root[data-nview="side"][data-notice] .notice {
+    bottom: auto;
+    height: auto;
+    margin: 0;
+  }
+}

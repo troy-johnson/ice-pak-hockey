@@ -685,6 +685,17 @@
       if (tab) tab.setAttribute("aria-expanded", String(root.dataset.nopen === "true"));
     }
     // Side tab: the tab opens and closes the notice panel.
+    // Side tab and side panel: centred on whole pixels. A half pixel makes the text blurry.
+    function placeSide() {
+      var tab = document.querySelector(".nside-tab"), panel = document.querySelector("[data-notice-bar]");
+      if (tab) tab.style.top = Math.round((innerHeight - 96) / 2) + "px";
+      if (panel && root.dataset.nview === "side" && !matchMedia("(max-width: 760px)").matches) {
+        panel.style.top = Math.round((innerHeight - panel.offsetHeight) / 2) + "px";
+      } else if (panel) {
+        panel.style.top = "";
+      }
+    }
+    addEventListener("resize", placeSide);
     // Side tab on a wide screen, bell in the header on a phone: each one opens and closes the notice panel.
     document.querySelectorAll(".nside-tab, .nbell").forEach(function (opener) {
       opener.addEventListener("click", function (event) {
@@ -695,6 +706,7 @@
         if (head) root.style.setProperty("--head-h", head.getBoundingClientRect().bottom + "px");
         fillNotice();
         document.querySelectorAll(".nbell").forEach(function (b) { b.setAttribute("aria-expanded", root.dataset.nopen); });
+        placeSide();
       });
     });
     // Auto: announce once, then stay quietly in the side tab.
@@ -750,8 +762,8 @@
           ], { duration: 700, easing: "ease-out" });
         } else if (tab && !still && tab.animate) {
           tab.animate([
-            { transform: "translateY(-50%) rotate(180deg) scale(1.35)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
-            { transform: "translateY(-50%) rotate(180deg) scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+            { transform: "rotate(180deg) scale(1.35)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
+            { transform: "rotate(180deg) scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
           ], { duration: 650, easing: "cubic-bezier(0.3, 1.6, 0.5, 1)" });
         }
       };
@@ -771,6 +783,7 @@
       ], { duration: 700, easing: "cubic-bezier(0.55, 0, 0.35, 1)" }).onfinish = finish;
     }
     function showState() {
+      if (typeof placeSide === "function") placeSide();
       var out = document.querySelector(".dv-nstate");
       if (out) out.textContent = root.dataset.nstyle === "auto" && root.dataset.notice !== "none" ? "now: " + (root.dataset.ngone === "true" ? "closed" : root.dataset.nview) : "";
     }
