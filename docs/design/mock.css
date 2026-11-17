@@ -3724,3 +3724,56 @@ section[data-recent] {
 .theme-dd {
   margin-left: auto;
 }
+
+/* Theme buttons: one connected bar. Each button keeps its slant on both sides, has the same width, and centres its text. */
+.site-head .switch {
+  gap: 0;
+}
+
+.site-head .switch > * {
+  width: 112px;
+  justify-content: center;
+  margin-left: -9px;
+  padding: 8px 14px 9px;
+}
+
+.site-head .switch > :first-child {
+  margin-left: 0;
+  padding-left: 14px;
+}
+
+.site-head .switch > :last-child {
+  padding-right: 14px;
+}
+
+@media (max-width: 760px) {
+  .site-head .switch > * {
+    width: 50px;
+    padding: 12px 0;
+  }
+
+  .site-head .switch > :first-child,
+  .site-head .switch > :last-child {
+    padding: 12px 0;
+  }
+}
+
+.site-head .switch button {
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+}
+
+.site-head .switch button[aria-pressed="true"] {
+  background-color: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: none;
+}
+
+:root[data-theme="away"] .site-head .switch button {
+  background-color: #e6ecf6;
+}
+
+:root[data-theme="away"] .site-head .switch button[aria-pressed="true"] {
+  background-color: #1d315f;
+  color: #ffffff;
+}
