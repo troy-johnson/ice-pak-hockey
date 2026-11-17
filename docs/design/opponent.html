@@ -14,18 +14,26 @@
 <div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" class="edit-link">Edit this page</a><a href="#" data-signout>Sign out</a></div></div>
 <header class="site-head"><div class="wrap">
   <a class="brand" href="home.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span></a>
-  <nav aria-label="Main"><a href="schedule.html" aria-current="page">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html">Shop</a></nav>
+  <nav aria-label="Main"><a href="schedule.html">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="opponents.html" aria-current="page">Opponents</a><a href="shop.html">Shop</a></nav>
   <a class="mgr-link" data-auth="out" href="login.html"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><span>Managers</span></a>
   <div class="switch" role="group" aria-label="Theme">
     <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
     <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
     <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Heritage</span></button>
   </div>
+  <div class="theme-dd">
+    <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false"><i class="kit-chip"></i><span class="dd-name">Home</span><span class="dd-arrow" aria-hidden="true">▾</span></button>
+    <ul class="dd-menu" role="listbox" aria-label="Theme" hidden>
+      <li><button type="button" role="option" data-theme-choice="home"><i class="kit-chip home"></i>Home<small>Navy jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="away"><i class="kit-chip away"></i>Away<small>White jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="third"><i class="kit-chip third"></i>Heritage<small>Red jersey</small></button></li>
+    </ul>
+  </div>
 </div></header>
 <div class="notice" role="status" data-notice-bar><div class="wrap"><span class="ntag"></span><span class="ntext"></span><a class="nlink" href="schedule.html"></a><button type="button" class="nclose" aria-label="Close the notice">×</button></div></div>
 <div class="gamebar"><div class="wrap"><div class="gtrack"><a class="gtile" href="game.html"><span class="gh"><span>Sun Oct 25</span><span class="fin">Final</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b><em>10</em></span><span class="gt lost"><img class="opp-logo" src="img/opp/bluedevils.png" alt=""><b>Blue Devils</b><em>1</em></span></a><a class="gtile" href="game.html"><span class="gh"><span>Sun Nov 8</span><span class="fin">Final</span></span><span class="gt lost"><img class="opp-logo" src="img/opp/nightowls.png" alt=""><b>Night Owls</b><em>3</em></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b><em>4</em></span></a><a class="gtile next" href="game.html"><span class="gh"><span>Sun Nov 22</span><span>7:30 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/yetis.png" alt=""><b>Yetis</b></span></a><a class="gtile next" href="game.html"><span class="gh"><span>Sun Nov 29</span><span>9:00 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/nightowls.png" alt=""><b>Night Owls</b></span></a><a class="gtile next" href="game.html"><span class="gh"><span>Sun Dec 6</span><span>6:15 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/wild.png" alt=""><b>Wild</b></span></a><a class="gtile next" href="game.html"><span class="gh"><span>Sun Dec 13</span><span>8:15 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><i class="opp-chip" style="--opp:#8147AD;--opp-2:#75BF1E" aria-hidden="true">BLB</i><b>Buzz Light Beer</b></span></a></div><a class="gall" href="schedule.html">Full<br>Schedule</a></div></div>
 </div><div class="band"><div class="wrap">
-<p class="crumbs"><a href="schedule.html">Schedule</a> / Opponents</p>
+<p class="crumbs"><a href="opponents.html">Opponents</a> / Wild</p>
 <div class="opp-head"><img class="opp-logo" src="img/opp/wild.png" alt="">
   <div><span class="label">Opponent</span><h1>Wild</h1>
   <p class="bio">13 Games since 2021 · Next game Sun, Dec 6 · 6:15 PM</p></div>

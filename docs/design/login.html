@@ -14,12 +14,20 @@
 <div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" class="edit-link">Edit this page</a><a href="#" data-signout>Sign out</a></div></div>
 <header class="site-head"><div class="wrap">
   <a class="brand" href="home.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span></a>
-  <nav aria-label="Main"><a href="schedule.html">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html">Shop</a></nav>
+  <nav aria-label="Main"><a href="schedule.html">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="opponents.html">Opponents</a><a href="shop.html">Shop</a></nav>
   <a class="mgr-link" data-auth="out" href="login.html"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><span>Managers</span></a>
   <div class="switch" role="group" aria-label="Theme">
     <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
     <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
     <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Heritage</span></button>
+  </div>
+  <div class="theme-dd">
+    <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false"><i class="kit-chip"></i><span class="dd-name">Home</span><span class="dd-arrow" aria-hidden="true">▾</span></button>
+    <ul class="dd-menu" role="listbox" aria-label="Theme" hidden>
+      <li><button type="button" role="option" data-theme-choice="home"><i class="kit-chip home"></i>Home<small>Navy jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="away"><i class="kit-chip away"></i>Away<small>White jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="third"><i class="kit-chip third"></i>Heritage<small>Red jersey</small></button></li>
+    </ul>
   </div>
 </div></header>
 <div class="notice" role="status" data-notice-bar><div class="wrap"><span class="ntag"></span><span class="ntext"></span><a class="nlink" href="schedule.html"></a><button type="button" class="nclose" aria-label="Close the notice">×</button></div></div>

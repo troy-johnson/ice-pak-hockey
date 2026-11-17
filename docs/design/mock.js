@@ -31,6 +31,7 @@
   root.dataset.recent = read("recent", legacy === "off" ? "cards" : "bar");
   root.dataset.bar = root.dataset.recent === "bar" ? "on" : "off";
   root.dataset.notice = read("notice", "none");
+  root.dataset.switcher = read("switcher", "buttons");
   root.dataset.auth = read("auth", "out");
   root.dataset.panel = read("panel", "open");
 
@@ -266,8 +267,48 @@
       syncPanel();
     }
 
+    // Theme dropdown: one button that opens a list of the three Themes.
+    var dd = document.querySelector(".theme-dd");
+    if (dd) {
+      var ddBtn = dd.querySelector(".dd-btn");
+      var ddMenu = dd.querySelector(".dd-menu");
+      var names = { home: "Home", away: "Away", third: "Heritage" };
+      var syncDd = function () {
+        ddBtn.querySelector(".kit-chip").className = "kit-chip " + root.dataset.theme;
+        ddBtn.querySelector(".dd-name").textContent = names[root.dataset.theme];
+        ddMenu.querySelectorAll("[data-theme-choice]").forEach(function (o) {
+          o.setAttribute("aria-selected", String(o.dataset.themeChoice === root.dataset.theme));
+        });
+      };
+      var openDd = function (open) {
+        ddMenu.hidden = !open;
+        ddBtn.setAttribute("aria-expanded", String(open));
+      };
+      ddBtn.addEventListener("click", function () { openDd(ddMenu.hidden); });
+      ddMenu.querySelectorAll("[data-theme-choice]").forEach(function (o) {
+        o.addEventListener("click", function () {
+          root.dataset.theme = o.dataset.themeChoice;
+          try {
+            localStorage.setItem("theme", o.dataset.themeChoice);
+          } catch (error) {}
+          openDd(false);
+          show();
+          syncDd();
+          if (typeof syncPanel === "function") syncPanel();
+        });
+      });
+      document.addEventListener("click", function (event) {
+        if (!dd.contains(event.target)) openDd(false);
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") openDd(false);
+      });
+      buttons.forEach(function (b) { b.addEventListener("click", syncDd); });
+      syncDd();
+    }
+
     // Dev panel: a bar of mockup settings, as in browser dev tools. It is not part of the design.
-    var pages = [["home.html", "Home"], ["schedule.html", "Schedule"], ["stats.html", "Stats"], ["roster.html", "Roster"], ["player.html", "Player"],
+    var pages = [["home.html", "Home"], ["schedule.html", "Schedule"], ["stats.html", "Stats"], ["roster.html", "Roster"], ["player.html", "Player"], ["opponents.html", "Opponents"],
       ["game.html", "Game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
       ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-jerseys.html", "Mgr: Jerseys"]];
     var here = location.pathname.split("/").pop() || "home.html";
@@ -282,6 +323,7 @@
       pages.map(function (p) { return '<option value="' + p[0] + '"' + (p[0] === here ? " selected" : "") + ">" + p[1] + "</option>"; }).join("") +
       '</select></div>' +
       '<div class="dv-row"><span class="dv-k">theme</span><span class="dv-seg" data-key="theme"><button value="home">home</button><button value="away">away</button><button value="third">heritage</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">switch</span><span class="dv-seg" data-key="switcher"><button value="buttons">buttons</button><button value="dropdown">dropdown</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">recent</span><span class="dv-seg" data-key="recent"><button value="bar">bar</button><button value="cards">cards</button><button value="list">list</button><button value="board">scores</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="notice"><button value="none">none</button><button value="info">info</button><button value="alert">alert</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +

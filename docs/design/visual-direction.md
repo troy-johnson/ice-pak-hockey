@@ -310,6 +310,7 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 |---|---|---|
 | page | each mockup page | Opens that page. |
 | theme | home, away, third | Sets the Theme. |
+| switch | buttons, dropdown | The Theme control in the header. **buttons:** three slanted buttons. **dropdown:** one button with the current Kit chip and name, and a list of the three Themes with the jersey colour of each. On a phone the dropdown button shows the chip only. |
 | recent | bar, cards, list, scores | How the recent Games show. **bar:** the game bar on each page, and no results section on the Home page. **cards:** three game cards ("This season"). **list:** a "Recent results" table of the last 6 Games. **scores:** a scoreboard of the last 4 Games with large scores. Each option except "bar" also shows "Next games" on the Home page. |
 | notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** has the jersey colours: light blue in Home, navy in Away, and black with a red line in Third. It is for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
 | manager | signed out, signed in | Signed out: the header has a Managers link, and each Manager page shows the sign-in step. Signed in: a yellow Manager strip is above the header of each page, with links to the Manager pages, "Edit this page", and "Sign out". |
