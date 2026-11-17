@@ -55,7 +55,7 @@
 
     // Views: one panel for each button. Add ?view=<name> to the address to open that view.
     var views = document.querySelectorAll("[data-view]");
-    var panels = document.querySelectorAll("[data-panel]");
+    var panels = document.querySelectorAll("body [data-panel]");
     var wanted = new URLSearchParams(location.search).get("view");
     views.forEach(function (view) {
       view.addEventListener("click", function () {
@@ -293,6 +293,30 @@
       syncPanel();
     }
 
+    // Phone menu: one button opens the pages, the Theme, and the Manager link.
+    var menuBtn = document.querySelector(".menu-btn");
+    var menu = document.getElementById("menu");
+    if (menuBtn && menu) {
+      var openMenu = function (open) {
+        menu.hidden = !open;
+        menuBtn.setAttribute("aria-expanded", String(open));
+        root.classList.toggle("menu-open", open);
+      };
+      menuBtn.addEventListener("click", function () { openMenu(menu.hidden); });
+      menu.querySelectorAll("[data-theme-choice]").forEach(function (b) {
+        b.addEventListener("click", function () { if (typeof syncDd === "function") syncDd(); });
+      });
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape") openMenu(false);
+      });
+      matchMedia("(min-width: 761px)").addEventListener("change", function (m) { if (m.matches) openMenu(false); });
+    }
+
+    // Jerseys: the status list takes the colour of its status.
+    document.querySelectorAll("select.jst").forEach(function (sel) {
+      sel.addEventListener("change", function () { sel.dataset.st = sel.value; });
+    });
+
     // Theme dropdown: one button that opens a list of the three Themes.
     var dd = document.querySelector(".theme-dd");
     if (dd) {
@@ -335,7 +359,7 @@
 
     // Dev panel: a bar of mockup settings, as in browser dev tools. It is not part of the design.
     var pages = [["home.html", "Home"], ["schedule.html", "Schedule"], ["stats.html", "Stats"], ["roster.html", "Roster"], ["player.html", "Player"],
-      ["game.html", "Game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
+      ["game.html", "Game"], ["game-next.html", "Next game"], ["game-sheet-only.html", "Sheet Only"], ["opponent.html", "Opponent"], ["shop.html", "Shop"], ["login.html", "Sign-in"],
       ["manager.html", "Mgr: Players"], ["manager-season.html", "Mgr: Seasons"], ["manager-ledger.html", "Mgr: Ledger"], ["manager-jerseys.html", "Mgr: Jerseys"]];
     var here = location.pathname.split("/").pop() || "home.html";
     if (here === "index.html" || here.indexOf(".") < 0) here = "home.html";

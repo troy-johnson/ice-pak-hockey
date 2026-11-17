@@ -160,7 +160,8 @@ Rules that go with the tokens:
 
 - **Header:** crest, "Ice Pak", four links, and the Theme switch.
 - **Band:** the top of each page. It has the page title and the main controls. On the Home page it has the Recap, the headline, and the score. On a Player page it has the jersey number, the name, and a large faint crest.
-- **Footer:** crest, three links, and the links to the Team Page and the Manager pages.
+- **Footer:** crest, social links (YouTube, Instagram, Facebook), the contact address, the copyright line, and the link to the Manager pages.
+- **Phone header:** the crest and a Menu button. The menu has the pages, the Theme, and the Manager link.
 
 ### Score bug
 
@@ -185,7 +186,7 @@ One link for one Game, on a card. It has the date and the status (Final, Live, o
 ### Table
 
 - **Head:** a `--panel-2` fill with 12 px uppercase text.
-- **Player cell:** an avatar and the name. The avatar is the photo of the Player. With no photo, it is the jersey number. The site has no photos now, so each avatar shows a number.
+- **Player cell:** the name, with the position in a small box after it. The team has no Player photos, so a player table has no avatar. The first column is the jersey number.
 - **Sorted column:** an `--accent` tint down the full column and a small arrow in the head.
 - **Totals row:** a `--panel-2` fill and a 2 px line of `--kit-line` above it.
 - **Phone:** the columns with the class `wide-only` are hidden at 760 px and less. No table needs a sideways scroll at 390 px.
@@ -215,7 +216,7 @@ Each control has a forward lean: the left and right edges are cut at an angle, t
 
 ### Game bar
 
-A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date and the time. Each tile is a link to its Game. On a phone the bar scrolls sideways. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
+A bar below the header of each public page, as the scores bar of a league site. It has the last 2 Games with their final scores, then the next games with the date and the time. Each tile is a link to its Game. A tile of a Game that is not played opens the next-game page (`game-next.html`). On a phone the bar shows the next game only, with the link to the full Schedule. It replaces the next-game bar and the "Next games" section of the Home page. The header and the bar stay at the top during a scroll.
 
 ### League names
 
@@ -263,7 +264,7 @@ Proposed change to `site/src/layouts/Base.astro`: when the visitor has made no c
 
 The second pass had the same Players and the same numbers on both pages. Recommendation: keep both pages, and give each one job.
 
-- **Roster:** who is on the team in one League Season. Jerseys with the number and the name, and no stats.
+- **Roster:** who is on the team in one League Season, or "All time". Two views: Jerseys (the number and the name, and no stats) and List (a table with the position, the year joined, and career totals).
 - **Stats:** how the Players and the team did. Leaders, the table, and the three views.
 
 The other option is one "Team" page with a Roster view and a Stats view. It removes one header link. I did not select it, because a visitor looks for "Roster" and "Stats" by those names on a team site.
@@ -312,7 +313,7 @@ Each mockup page has a small panel at the bottom right, in the style of browser 
 | theme | home, away, third | Sets the Theme. |
 | switch | buttons, dropdown | The Theme control in the header. **buttons:** three slanted buttons. **dropdown:** one button with the current Kit chip and name, and a list of the three Themes with the jersey colour of each. On a phone the dropdown button shows the chip only. |
 | recent | bar, cards, list, scores | How the recent Games show. **bar:** the game bar on each page, and no results section on the Home page. **cards:** three game cards ("This season"). **list:** a "Recent results" table of the last 6 Games. **scores:** a scoreboard of the last 4 Games with large scores. Each option except "bar" also shows "Next games" on the Home page. |
-| notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** has the jersey colours: light blue in Home, navy in Away, and black with a red line in Third. It is for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
+| notice | none, info, alert | The notice bar below the menu. It shows only when a notice is active. **info** has the jersey colours: light blue in Home, navy in Away, and black in Heritage. The bar slides in, a light passes over the tag every few seconds, and the link arrow moves. With reduced motion set, nothing moves. It is for news such as a new Recap. **alert** is orange, for a change such as a new start time. A visitor can close it. |
 | manager | signed out, signed in | Signed out: the header has a Managers link, and each Manager page shows the sign-in step. Signed in: a yellow Manager strip is above the header of each page, with links to the Manager pages, "Edit this page", and "Sign out". |
 
 ## 7a. Manager pages
@@ -323,7 +324,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 |---|---|---|
 | Players | `manager.html` | The Player Bank in three Priority Tiers. Drag a row to change the order in a tier. In each row, three toggles set the positions (F, D, G; a Player can have more than one, and at least one stays on), a list changes the tier, and a field changes the number. A Roster Builder card shows "F / D" for a Player with two positions. "Add a Player" opens a form. |
 | Seasons | `manager-season.html` | One list of all League Seasons, grouped by League, and two buttons: "New season" and "New League". The New League dialog has the League name, a short name, the main rink, the usual game day, the seasons in a year, the score source, the usual League Fee and Target Counts, and a box to create the first season next. "New League…" in the League list of the New season dialog opens the same dialog. The button opens a dialog: League (or a new League), season name, rink, game day, first game, answer-by date, League Fee and Target Counts from the last season of that League, and the season to copy Players from. For one League Season: the League Fee and the Target Counts, the proposed fees, the Roster Builder, the chase message, and the Payments. |
-| Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and "has it" and "paid" for each Kit. The free numbers are below. |
+| Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and one status for each Kit: "Owns · paid", "Owns · owes", "On loan" (a team jersey that the Player has), or "None". The free numbers are below. |
 
 - **Roster Builder:** one column for each Roster Answer: Full-time, Part-time, Sub only, Out, and No answer. Drag a Player card to a column. The counts, the Target Counts, and the fees change at once.
 - **Fee:** the formula of the Fee Sheet. A goalie pays $0. "Lock the fee" fixes it.

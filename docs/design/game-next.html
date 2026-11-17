@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
+<meta name="robots" content="noindex">
+<title>Ice Pak vs Yetis · Ice Pak Hockey</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,700;1,800&family=Inter:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="mock.css">
+<script src="mock.js"></script>
+</head>
+<body>
+<div class="sticky">
+<div class="admin-strip" data-auth="in"><div class="wrap"><span class="who-mgr">Signed in as a Manager</span><a href="manager.html">Players</a><a href="manager-season.html">Seasons</a><a href="manager-jerseys.html">Jerseys</a><a href="#" class="edit-link">Edit this page</a><a href="#" data-signout>Sign out</a></div></div>
+<header class="site-head"><div class="wrap">
+  <a class="brand" href="home.html"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><span>Ice Pak</span></a>
+  <nav aria-label="Main"><a href="schedule.html" aria-current="page">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html">Shop</a></nav>
+  <a class="mgr-link" data-auth="out" href="login.html"><svg viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z"/></svg><span>Managers</span></a>
+  <div class="switch" role="group" aria-label="Theme">
+    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i><span>Home</span></button>
+    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i><span>Away</span></button>
+    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i><span>Heritage</span></button>
+  </div>
+  <div class="theme-dd">
+    <button type="button" class="dd-btn" aria-haspopup="listbox" aria-expanded="false"><i class="kit-chip"></i><span class="dd-name">Home</span><span class="dd-arrow" aria-hidden="true">▾</span></button>
+    <ul class="dd-menu" role="listbox" aria-label="Theme" hidden>
+      <li><button type="button" role="option" data-theme-choice="home"><i class="kit-chip home"></i>Home<small>Navy jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="away"><i class="kit-chip away"></i>Away<small>White jersey</small></button></li>
+      <li><button type="button" role="option" data-theme-choice="third"><i class="kit-chip third"></i>Heritage<small>Red jersey</small></button></li>
+    </ul>
+  </div>
+  <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="mb-text">Menu</span></button>
+</div></header>
+<div class="mmenu" id="menu" hidden>
+  <nav aria-label="Menu"><a href="schedule.html" aria-current="page">Schedule</a><a href="stats.html">Stats</a><a href="roster.html">Roster</a><a href="shop.html">Shop</a></nav>
+  <div class="mm-theme" role="group" aria-label="Theme"><span class="label">Theme</span>
+    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i>Home</button>
+    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i>Away</button>
+    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i>Heritage</button>
+  </div>
+  <a class="mm-mgr" data-auth="out" href="login.html">Managers</a>
+</div>
+<div class="notice" role="status" data-notice-bar><div class="wrap"><span class="ntag"></span><span class="ntext"></span><a class="nlink" href="schedule.html"></a><button type="button" class="nclose" aria-label="Close the notice">×</button></div></div>
+<div class="gamebar"><div class="wrap"><div class="gtrack"><a class="gtile" href="game.html"><span class="gh"><span>Sun Oct 25</span><span class="fin">Final</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b><em>10</em></span><span class="gt lost"><img class="opp-logo" src="img/opp/bluedevils.png" alt=""><b>Blue Devils</b><em>1</em></span></a><a class="gtile" href="game.html"><span class="gh"><span>Sun Nov 8</span><span class="fin">Final</span></span><span class="gt lost"><img class="opp-logo" src="img/opp/nightowls.png" alt=""><b>Night Owls</b><em>3</em></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b><em>4</em></span></a><a class="gtile next" href="game-next.html"><span class="gh"><span>Sun Nov 22</span><span>7:30 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/yetis.png" alt=""><b>Yetis</b></span></a><a class="gtile next" href="game-next.html"><span class="gh"><span>Sun Nov 29</span><span>9:00 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/nightowls.png" alt=""><b>Night Owls</b></span></a><a class="gtile next" href="game-next.html"><span class="gh"><span>Sun Dec 6</span><span>6:15 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><img class="opp-logo" src="img/opp/wild.png" alt=""><b>Wild</b></span></a><a class="gtile next" href="game-next.html"><span class="gh"><span>Sun Dec 13</span><span>8:15 PM</span></span><span class="gt"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt=""><b>Ice Pak</b></span><span class="gt"><i class="opp-chip" style="--opp:#8147AD;--opp-2:#75BF1E" aria-hidden="true">BLB</i><b>Buzz Light Beer</b></span></a></div><a class="gall" href="schedule.html">Full<br>Schedule</a></div></div>
+</div><div class="band"><div class="wrap">
+<p class="crumbs"><a href="schedule.html">Schedule</a> / <a href="schedule.html">SLC County Winter &#x27;26-27</a></p>
+<h1>Ice Pak vs <a href="opponent.html">Yetis</a></h1>
+<p class="muted">Sun, Nov 22, 2026 · 7:30 PM · County Ice Center · SLC County Winter &#x27;26-27</p>
+<div class="game-nav"><a href="game.html">‹ Last game: Sun, Nov 8 · at Night Owls</a><span class="muted">Next: Sun, Nov 29 · vs Night Owls ›</span></div>
+</div></div>
+<main class="wrap">
+<div class="game-top even">
+  <section>
+    <span class="label">Next game · Sun Nov 22 · 7:30 PM</span>
+    <div class="bug lg pre"><div class="row ipk"><div class="team"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">Ice Pak<span class="side">Home</span></div><div class="pts">–</div></div><div class="row opp col" style="--opp:#290739;--opp-2:#290739;--opp-ink:#ffffff"><div class="team"><img class="opp-logo" src="img/opp/yetis.png" alt="">Yetis<span class="side">Away</span></div><div class="pts">–</div></div></div>
+    <div class="actions"><a class="button" href="#">Add to calendar</a><a class="ghost" href="schedule.html">Full Schedule</a></div>
+  </section>
+  <section class="card pre-facts">
+    <div><span class="label">Rink</span><b>County Ice Center</b></div>
+    <div><span class="label">All time against Yetis</span><b>1-0-0</b></div>
+    <div><span class="label">Ice Pak this season</span><b>2-0-0</b></div>
+  </section>
+</div>
+<section>
+  <div class="sec-head"><h2>Last games against Yetis</h2><a href="opponent.html">All Games</a></div>
+  <div class="cards three"><a class="game-card card" href="game.html"><div class="meta"><span>Sun, Nov 2</span><span>Final</span></div><div class="bug "><div class="row ipk "><div class="team"><img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">Ice Pak<span class="side">Home</span></div><div class="pts">8</div></div><div class="row opp lost col" style="--opp:#290739;--opp-2:#290739;--opp-ink:#ffffff"><div class="team"><img class="opp-logo" src="img/opp/yetis.png" alt="">Yetis<span class="side">Away</span></div><div class="pts">1</div></div></div><div class="foot"><span class="tag win">Win</span></div></a></div>
+</section>
+<p class="mock-note">Mockup note: the date, time, and rink come from the Calendar Feed. After the Game, this page becomes the Game page, with the score, the video, and the Box Score.</p>
+</main>
+<footer class="site-foot"><div class="wrap">
+  <img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">
+  <span class="social" aria-label="Ice Pak on social media"><a href="https://www.youtube.com/@icepakhockey" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="#instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5z"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor"/></svg></a><a href="#facebook" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22z"/></svg></a></span>
+  <span class="contact">Contact: <a href="mailto:contact@icepakhockey.com">contact@icepakhockey.com</a></span>
+  <span class="right">© 2026 Ice Pak Hockey. The Ice Pak™ name and crest belong to the team. · <a href="login.html">Managers</a></span>
+</div></footer>
+</body>
+</html>

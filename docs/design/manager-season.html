@@ -29,7 +29,17 @@
       <li><button type="button" role="option" data-theme-choice="third"><i class="kit-chip third"></i>Heritage<small>Red jersey</small></button></li>
     </ul>
   </div>
+  <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span><span class="mb-text">Menu</span></button>
 </div></header>
+<div class="mmenu" id="menu" hidden>
+  <nav aria-label="Menu"><a href="manager.html">Players</a><a href="manager-season.html" aria-current="page">Seasons</a><a href="manager-ledger.html">Ledger</a><a href="manager-jerseys.html">Jerseys</a><a href="home.html">Public site</a></nav>
+  <div class="mm-theme" role="group" aria-label="Theme"><span class="label">Theme</span>
+    <button type="button" data-theme-choice="home"><i class="kit-chip home"></i>Home</button>
+    <button type="button" data-theme-choice="away"><i class="kit-chip away"></i>Away</button>
+    <button type="button" data-theme-choice="third"><i class="kit-chip third"></i>Heritage</button>
+  </div>
+  
+</div>
 <div class="notice" role="status" data-notice-bar><div class="wrap"><span class="ntag"></span><span class="ntext"></span><a class="nlink" href="schedule.html"></a><button type="button" class="nclose" aria-label="Close the notice">×</button></div></div>
 </div><div class="band gate" data-auth="out"><div class="wrap"><p class="crumbs">Managers</p><h1>Manager sign-in</h1></div></div>
 <main class="wrap" data-auth="out"><form class="card login" data-login>
@@ -123,10 +133,9 @@
 </main>
 <footer class="site-foot"><div class="wrap">
   <img class="crest-home" src="img/crest-home.png" alt=""><img class="crest-away" src="img/crest-away.png" alt=""><img class="crest-third" src="img/crest-third.svg" alt="">
-  <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
-  <a href="schedule.html">Schedule</a>
-  <a href="shop.html">Shop</a>
-  <span class="right"><a href="#">Team Page</a> · <a href="login.html">Managers</a></span>
+  <span class="social" aria-label="Ice Pak on social media"><a href="https://www.youtube.com/@icepakhockey" aria-label="YouTube"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"/></svg></a><a href="#instagram" aria-label="Instagram"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5z"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.6" cy="6.4" r="1.3" fill="currentColor"/></svg></a><a href="#facebook" aria-label="Facebook"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M13.5 22v-8.2h2.8l.4-3.2h-3.2V8.5c0-.9.3-1.6 1.6-1.6h1.7V4.1c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.2h2.8V22z"/></svg></a></span>
+  <span class="contact">Contact: <a href="mailto:contact@icepakhockey.com">contact@icepakhockey.com</a></span>
+  <span class="right">© 2026 Ice Pak Hockey. The Ice Pak™ name and crest belong to the team. · <a href="login.html">Managers</a></span>
 </div></footer>
 </body>
 </html>
