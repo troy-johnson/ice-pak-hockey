@@ -5179,3 +5179,20 @@ body.mgr-area .band:not(.gate) {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Player Bank: a gap between the number badge and the name */
+td.name .who .av {
+  display: inline-grid;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+td.name .who:has(.av) + .pnote {
+  padding-left: 46px;
+}
+
+@media (max-width: 760px) {
+  td.name .who:has(.av) + .pnote {
+    padding-left: 40px;
+  }
+}
