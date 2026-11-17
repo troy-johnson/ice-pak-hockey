@@ -141,6 +141,17 @@
       });
     });
 
+    // Manager: each position button turns on or off. At least one stays on.
+    document.querySelectorAll(".pos-tg").forEach(function (group) {
+      group.addEventListener("click", function (event) {
+        var b = event.target.closest("button");
+        if (!b) return;
+        var on = b.getAttribute("aria-pressed") === "true";
+        if (on && group.querySelectorAll('[aria-pressed="true"]').length === 1) return;
+        b.setAttribute("aria-pressed", String(!on));
+      });
+    });
+
     // Manager: open and close a form.
     document.querySelectorAll("[data-open]").forEach(function (button) {
       button.addEventListener("click", function () {

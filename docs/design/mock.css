@@ -3827,3 +3827,50 @@ select.cell:focus,
 input.cell:focus {
   border-color: var(--accent);
 }
+
+/* Positions: a Player can have more than one. The first one set is the main position. */
+.pos-tg {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pos-tg button {
+  width: 28px;
+  height: 26px;
+  border: 1px solid var(--rule);
+  background: var(--ground);
+  color: var(--frost);
+  font: 700 13px/1 var(--body);
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+
+.pos-tg button[aria-pressed="true"] {
+  background: var(--kit-fill);
+  border-color: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.pos-field {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pos-field legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.pos-field .pos-tg button {
+  width: 40px;
+  height: 38px;
+}

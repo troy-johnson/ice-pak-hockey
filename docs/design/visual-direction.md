@@ -321,7 +321,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 
 | Page | File | What it does |
 |---|---|---|
-| Players | `manager.html` | The Player Bank in three Priority Tiers. Drag a row to change the order in a tier. In each row, a list changes the position and the tier, and a field changes the number. "Add a Player" opens a form. |
+| Players | `manager.html` | The Player Bank in three Priority Tiers. Drag a row to change the order in a tier. In each row, three toggles set the positions (F, D, G; a Player can have more than one, and at least one stays on), a list changes the tier, and a field changes the number. A Roster Builder card shows "F / D" for a Player with two positions. "Add a Player" opens a form. |
 | Seasons | `manager-season.html` | The Leagues and their League Seasons at the left. For one League Season: the League Fee and the Target Counts, the proposed fees, the Roster Builder, the chase message, and the Payments. |
 | Jerseys | `manager-jerseys.html` | For each Player: the number, the size, and "has it" and "paid" for each Kit. The free numbers are below. |
 
