@@ -30,8 +30,11 @@
   var legacy = read("bar", null);
   root.dataset.recent = read("recent", legacy === "off" ? "cards" : "bar");
   root.dataset.bar = root.dataset.recent === "bar" ? "on" : "off";
-  root.dataset.notice = read("notice", "none");
-  // Notice style: five options to compare. "slim" is the default.
+  // Notice: the message (nmsg) sets the kind (notice): info or alert. ?notice=info and ?notice=alert still work.
+  var oldNotice = read("notice", "none");
+  root.dataset.nmsg = read("nmsg", { info: "recap", alert: "change" }[oldNotice] || "none");
+  root.dataset.notice = { recap: "info", event: "info", change: "alert", cancel: "alert" }[root.dataset.nmsg] || "none";
+  // Notice style: six options to compare. "slim" is the default.
   root.dataset.nstyle = read("nstyle", "slim");
   root.dataset.switcher = read("switcher", "buttons");
   root.dataset.auth = read("auth", "out");
@@ -508,8 +511,8 @@
       '<div class="dv-row"><span class="dv-k">theme</span><span class="dv-seg" data-key="theme"><button value="home">home</button><button value="away">away</button><button value="third">heritage</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">switch</span><span class="dv-seg" data-key="switcher"><button value="buttons">buttons</button><button value="dropdown">dropdown</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">recent</span><span class="dv-seg" data-key="recent"><button value="bar">bar</button><button value="cards">cards</button><button value="list">list</button><button value="board">scores</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="notice"><button value="none">none</button><button value="info">info</button><button value="alert">alert</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="score">score</button><button value="tile">tile</button><button value="stripes">stripes</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">notice</span><span class="dv-seg" data-key="nmsg"><button value="none">none</button><button value="recap">recap</button><button value="event">event</button><button value="change">change</button><button value="cancel">cancel</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
@@ -527,7 +530,7 @@
         board: "Recent: no game bar. Home shows a scoreboard of four Games and Next games."
       };
       var note = notes[root.dataset.recent];
-      note += root.dataset.notice === "none" ? " No notice is active, so no notice bar shows." : " A notice is active, so the notice bar shows below the menu.";
+      note += root.dataset.notice === "none" ? " No notice is active, so no notice bar shows." : " A notice is active. The style row sets how it shows.";
       note += root.dataset.auth === "in"
         ? " Signed in: a Manager strip shows above the header, and the Manager pages open."
         : " Signed out: the Manager pages show the sign-in step.";
@@ -543,7 +546,8 @@
         root.dataset[key] = b.value;
         save(key === "theme" ? "theme-x" : key, b.value);
         if (key === "recent") root.dataset.bar = b.value === "bar" ? "on" : "off";
-        if (key === "notice" || key === "nstyle") fillNotice();
+        if (key === "nmsg") { root.dataset.notice = { recap: "info", event: "info", change: "alert", cancel: "alert" }[b.value] || "none"; save("notice", root.dataset.notice); }
+        if (key === "nmsg" || key === "nstyle") { root.dataset.nopen = "false"; fillNotice(); }
         if (key === "theme") {
           try {
             localStorage.setItem("theme", b.value);
@@ -563,42 +567,36 @@
     buttons.forEach(function (button) {
       button.addEventListener("click", syncPanel);
     });
-    // Notice bar: it shows only when a notice is active. The text here is an example.
-    // Each notice: tag, text, link text, link, opponent logo, score line, and the game tile that gets the badge in the "tile" style.
+    // Notice: it shows only when a notice is active. The messages are examples: a notice can be about a Game or about anything else.
+    // Each message: tag, text, link text, link.
     var notices = {
-      info: ["New Recap", "The Recap of Ice Pak at Night Owls is up.", "Watch it", "game.html", "img/opp/nightowls.png", "Ice Pak 4 · Night Owls 3", "Sun Nov 8", "Recap"],
-      alert: ["Time change", "Sun, Nov 22 vs Yetis now starts at 8:15 PM at County Ice Center.", "Schedule", "schedule.html", "img/opp/yetis.png", "Nov 22 · Now 8:15 PM", "Sun Nov 22", "8:15 PM"]
+      recap: ["New Recap", "The Recap of Ice Pak at Night Owls is up.", "Watch it", "game.html"],
+      event: ["Team event", "End-of-season party on Sat, Dec 19 at 7 PM. Partners and kids are welcome.", "Details", "#"],
+      change: ["Time change", "Sun, Nov 22 vs Yetis now starts at 8:15 PM at County Ice Center.", "Schedule", "schedule.html"],
+      cancel: ["Cancelled", "Sun, Dec 6 vs Wild is cancelled. The rink is closed for repairs.", "Schedule", "schedule.html"]
     };
     function fillNotice() {
       var bar = document.querySelector("[data-notice-bar]");
-      var n = notices[root.dataset.notice];
-      document.querySelectorAll(".gbadge").forEach(function (x) { x.remove(); });
+      var n = notices[root.dataset.nmsg];
       if (!bar || !n) return;
       bar.querySelector(".ntag").textContent = n[0];
       bar.querySelector(".ntext").textContent = n[1];
       bar.querySelector(".nlink").textContent = n[2];
       bar.querySelector(".nlink").href = n[3];
-      var logo = bar.querySelector(".nlogo");
-      if (logo) logo.src = n[4];
-      var score = bar.querySelector(".nscore");
-      if (score) score.textContent = n[5];
-      // Tile style: no bar. A badge on the game tile opens the Recap or shows the new time.
-      if (root.dataset.nstyle === "tile") {
-        var tile = Array.prototype.find.call(document.querySelectorAll(".gtile"), function (t) {
-          var h = t.querySelector(".gh span"); return h && h.textContent === n[6];
-        });
-        if (tile) {
-          var badge = document.createElement("span");
-          badge.className = "gbadge " + root.dataset.notice;
-          badge.textContent = n[7];
-          tile.querySelector(".gh").appendChild(badge);
-        }
-      }
+      var tab = document.querySelector(".nside-tab");
+      if (tab) tab.setAttribute("aria-expanded", String(root.dataset.nopen === "true"));
     }
+    // Side tab: the tab opens and closes the notice panel.
+    var sideTab = document.querySelector(".nside-tab");
+    if (sideTab) sideTab.addEventListener("click", function () {
+      root.dataset.nopen = root.dataset.nopen === "true" ? "false" : "true";
+      fillNotice();
+    });
     var nclose = document.querySelector(".nclose");
     if (nclose) nclose.addEventListener("click", function () {
-      root.dataset.notice = "none";
+      root.dataset.notice = root.dataset.nmsg = "none";
       save("notice", "none");
+      save("nmsg", "none");
       syncPanel();
     });
     fillNotice();

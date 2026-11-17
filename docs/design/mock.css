@@ -5408,8 +5408,8 @@ td.name .who:has(.av) + .pnote {
 }
 
 /* ---------- Notice styles: five options to compare (Mockup panel, "style") ---------- */
-.notice .nlogo,
-.notice .nscore {
+.notice .nicon,
+.nside-tab {
   display: none;
 }
 
@@ -5417,9 +5417,6 @@ td.name .who:has(.av) + .pnote {
   display: contents;
 }
 
-.gbadge {
-  display: none;
-}
 
 /* Slim: a thin line in the panel colour. The tag is small coloured text, and the link is at the right. */
 :root[data-nstyle="slim"][data-notice] .notice {
@@ -5501,12 +5498,8 @@ td.name .who:has(.av) + .pnote {
   box-shadow: inset 4px 0 0 #e0a526, 0 0 0 1px var(--rule);
 }
 
-:root[data-nstyle="card"][data-notice] .notice .nlogo {
-  display: block;
-  flex: none;
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
+:root[data-nstyle="card"][data-notice] .notice .nicon {
+  display: grid;
 }
 
 :root[data-nstyle="card"][data-notice] .notice .nbody {
@@ -5560,116 +5553,265 @@ td.name .who:has(.av) + .pnote {
   align-self: flex-start;
 }
 
-/* Score: a broadcast line in the kit colour, with the score in scoreboard type. */
-:root[data-nstyle="score"][data-notice] .notice {
-  background: var(--kit-fill);
-  color: var(--on-fill);
-  box-shadow: inset 0 -3px 0 var(--kit-line);
-  border: 0;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .wrap {
-  gap: 4px 16px;
-  padding-block: 8px 11px;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .nlogo {
-  display: block;
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .ntag {
-  height: 22px;
-  background: var(--on-fill);
-  color: var(--kit-fill);
-}
-
-:root[data-nstyle="score"][data-notice="alert"] .notice .ntag {
-  background: #e0a526;
-  color: #10182b;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .nscore {
-  display: inline;
-  font: italic 800 20px/1 var(--display);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .ntext {
-  display: none;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .nlink {
-  margin-left: auto;
-  color: inherit;
-  font: italic 800 15px/1 var(--display);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-:root[data-nstyle="score"][data-notice] .notice .nclose {
-  margin-left: 0;
-  color: inherit;
-}
-
-/* Tile: no bar. A badge on the game tile in the game bar. */
-:root[data-nstyle="tile"] .notice {
-  display: none !important;
-}
-
-:root[data-nstyle="tile"] .gbadge {
-  display: inline-block;
-  padding: 2px 5px;
-  background: var(--accent);
-  color: #0d1930;
-  font: 700 9px/1 var(--body);
-  letter-spacing: 0.08em;
-  animation: ntag-shine-pulse 2.4s ease-in-out infinite;
-}
-
-:root[data-nstyle="tile"] .gbadge.alert {
-  background: #e0a526;
-}
-
-@keyframes ntag-shine-pulse {
-  50% {
-    opacity: 0.65;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :root[data-nstyle="tile"] .gbadge {
-    animation: none;
-  }
-}
-
 @media (max-width: 760px) {
   :root[data-nstyle="card"][data-notice] .notice .nlink {
     padding: 8px 12px;
     font-size: 13px;
   }
 
-  :root[data-nstyle="score"][data-notice] .notice .nscore {
-    font-size: 17px;
+}
+
+
+/* Notice accent: info uses the Theme accent, a change is orange, and a cancellation is red. */
+:root[data-notice] .notice,
+:root[data-notice] .nside-tab {
+  --n-acc: var(--accent);
+  --n-on: #0d1930;
+}
+
+:root[data-nmsg="change"] .notice,
+:root[data-nmsg="change"] .nside-tab {
+  --n-acc: #e0a526;
+}
+
+:root[data-nmsg="cancel"] .notice,
+:root[data-nmsg="cancel"] .nside-tab {
+  --n-acc: #d9534f;
+  --n-on: #ffffff;
+}
+
+:root[data-nstyle][data-notice] .notice .ntag {
+  color: var(--n-acc);
+}
+
+:root[data-nstyle="slim"][data-notice] .notice {
+  box-shadow: inset 3px 0 0 var(--n-acc), inset 0 -1px 0 var(--rule);
+}
+
+:root[data-nstyle="card"][data-notice] .notice .wrap {
+  box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule);
+}
+
+:root[data-nstyle="stripes"][data-notice] .notice .ntag {
+  color: inherit;
+}
+
+/* The type icon: i for news, ! for a change, × for a cancellation */
+.notice .nicon {
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--n-acc);
+  color: var(--n-on);
+  font: 800 18px/1 var(--body);
+}
+
+.notice .nicon::before {
+  content: "i";
+}
+
+:root[data-nmsg="change"] .notice .nicon::before {
+  content: "!";
+}
+
+:root[data-nmsg="cancel"] .notice .nicon::before {
+  content: "×";
+  font-size: 22px;
+}
+
+/* Toast, side tab, and bottom bar: the same card layout. The icon, the tag and text, and the close are in a row, and the link is below the text. */
+:root[data-nstyle="toast"][data-notice] .notice,
+:root[data-nstyle="side"][data-notice] .notice,
+:root[data-nstyle="bottom"][data-notice] .notice {
+  position: fixed;
+  z-index: 60;
+  background: var(--panel);
+  color: var(--ink);
+  border: 0;
+  box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule), 0 14px 34px -10px rgb(0 0 0 / 0.55);
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .wrap,
+:root[data-nstyle="side"][data-notice] .notice .wrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "icon body close" "icon link link";
+  gap: 8px 12px;
+  align-items: start;
+  padding: 14px 14px 14px 18px;
+  max-width: none;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .nicon,
+:root[data-nstyle="side"][data-notice] .notice .nicon {
+  display: grid;
+  grid-area: icon;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .nbody,
+:root[data-nstyle="side"][data-notice] .notice .nbody,
+:root[data-nstyle="bottom"][data-notice] .notice .nbody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  grid-area: body;
+  min-width: 0;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .ntag,
+:root[data-nstyle="side"][data-notice] .notice .ntag,
+:root[data-nstyle="bottom"][data-notice] .notice .ntag {
+  justify-content: flex-start;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: none;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .ntag::after,
+:root[data-nstyle="side"][data-notice] .notice .ntag::after,
+:root[data-nstyle="bottom"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .ntext,
+:root[data-nstyle="side"][data-notice] .notice .ntext {
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .nlink,
+:root[data-nstyle="side"][data-notice] .notice .nlink,
+:root[data-nstyle="bottom"][data-notice] .notice .nlink {
+  grid-area: link;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .nlink::after,
+:root[data-nstyle="side"][data-notice] .notice .nlink::after,
+:root[data-nstyle="bottom"][data-notice] .notice .nlink::after {
+  content: " →";
+  color: var(--n-acc);
+}
+
+:root[data-nstyle="toast"][data-notice] .notice .nclose,
+:root[data-nstyle="side"][data-notice] .notice .nclose,
+:root[data-nstyle="bottom"][data-notice] .notice .nclose {
+  grid-area: close;
+  margin: 0;
+  color: var(--frost);
+}
+
+/* Toast: a card at the bottom left that slides up. On a phone it spans the width. */
+:root[data-nstyle="toast"][data-notice] .notice {
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  width: min(380px, calc(100vw - 32px));
+  animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
   }
 }
 
-/* Score style in Heritage: a black bar, so it does not merge with the red header */
-:root[data-theme="third"][data-nstyle="score"][data-notice] .notice {
-  background: #0d0d0d;
-  color: #ffffff;
-  box-shadow: inset 0 -3px 0 #c0211c;
+/* Side tab: a tab on the right edge. The tab opens a panel with the notice. */
+:root[data-nstyle="side"][data-notice="info"] .nside-tab,
+:root[data-nstyle="side"][data-notice="alert"] .nside-tab {
+  position: fixed;
+  z-index: 61;
+  top: 50%;
+  right: env(safe-area-inset-right, 0px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 9px;
+  border: 0;
+  background: var(--n-acc);
+  color: var(--n-on);
+  font: italic 800 14px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.6);
+  cursor: pointer;
 }
 
-:root[data-theme="third"][data-nstyle="score"][data-notice="info"] .notice .ntag {
-  background: #c0211c;
-  color: #ffffff;
+.nside-tab .nst-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ntag-dot 1.6s ease-in-out infinite;
 }
 
-/* Tile style: the badge takes the place of "Final" or of the old start time */
-.gtile .gh:has(.gbadge) > span:nth-child(2) {
-  display: none;
+@keyframes ntag-dot {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+:root[data-nstyle="side"][data-notice] .notice {
+  top: 50%;
+  right: calc(36px + env(safe-area-inset-right, 0px));
+  width: min(320px, calc(100vw - 60px));
+  transform: translateY(-50%);
+  animation: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+:root[data-nstyle="side"][data-nopen="true"] .notice {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Bottom bar: a strip pinned to the bottom of the screen. The page gets room for it. */
+:root[data-nstyle="bottom"][data-notice] .notice {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 3px 0 var(--n-acc), 0 -10px 30px -12px rgb(0 0 0 / 0.5);
+  animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+:root[data-nstyle="bottom"][data-notice] .notice .wrap {
+  gap: 4px 16px;
+  padding-block: 12px max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+:root[data-nstyle="bottom"][data-notice] .notice .nicon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  font-size: 15px;
+}
+
+:root[data-nstyle="bottom"][data-notice] .notice .nbody {
+  flex: 1;
+}
+
+:root[data-nstyle="bottom"][data-notice="info"] body,
+:root[data-nstyle="bottom"][data-notice="alert"] body {
+  padding-bottom: 90px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-nstyle] .notice,
+  .nside-tab .nst-dot {
+    animation: none !important;
+  }
 }
