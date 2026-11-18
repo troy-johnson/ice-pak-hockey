@@ -7228,3 +7228,8 @@ tr.jrow {
     transform: translateY(4px);
   }
 }
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 7px;
+  height: 4px;
+}
