@@ -760,9 +760,9 @@
         var bellEl = document.querySelector(".nbell");
         if (bellEl && bellEl.offsetParent && !still && bellEl.animate) {
           bellEl.animate([
-            { transform: "scale(1.4) rotate(-14deg)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
-            { transform: "scale(1.15) rotate(12deg)", offset: 0.35 },
-            { transform: "scale(1) rotate(0)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+            { transform: "scale(1.3) rotate(-14deg)" },
+            { transform: "scale(1.1) rotate(12deg)", offset: 0.35 },
+            { transform: "scale(1) rotate(0)" }
           ], { duration: 700, easing: "ease-out" });
         } else if (tab && !still && tab.animate) {
           tab.animate([
