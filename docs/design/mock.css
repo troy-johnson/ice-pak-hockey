@@ -7239,3 +7239,28 @@ tr.jrow {
   height: 3px;
   box-shadow: 0 0 0 1px var(--head);
 }
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  transform: translateY(6.5px);
+  animation-name: puck-drop-3;
+}
+
+@keyframes puck-drop-3 {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(8px);
+  }
+
+  75% {
+    transform: translateY(5.5px);
+  }
+
+  100% {
+    transform: translateY(6.5px);
+  }
+}
