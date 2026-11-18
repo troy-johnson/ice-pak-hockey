@@ -6596,3 +6596,13 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     box-shadow: 0 0 0 2px var(--head);
   }
 }
+
+/* Phone Menu button: no background, like the bell. */
+@media (max-width: 760px) {
+  .menu-btn,
+  .menu-btn[aria-expanded="true"] {
+    background: none;
+    clip-path: none;
+    color: var(--ink);
+  }
+}
