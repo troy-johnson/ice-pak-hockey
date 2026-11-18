@@ -7011,3 +7011,135 @@ tr.flash td {
 .menu-btn .sticks .blade {
   stroke-width: 3.6;
 }
+
+/* Jerseys: a table. One row for each Player, and one column for each Kit, with the Kit in the column title. */
+.jtable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.jtable thead th {
+  text-align: left;
+}
+
+.jtable thead th:first-child {
+  width: 26%;
+}
+
+.jtable .jh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+tr.jrow {
+  display: table-row;
+  padding: 0;
+}
+
+.jtable tbody th,
+.jtable tbody td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  border-top: 1px solid var(--rule);
+}
+
+.jtable tbody th {
+  font-weight: 400;
+  text-align: left;
+}
+
+.jtable .jslot {
+  width: 100%;
+}
+
+/* The column title names the Kit, so a slot has no kit chip. */
+.jtable .jslot::after {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .jtable thead th:first-child {
+    width: 28%;
+  }
+
+  .jtable thead th,
+  .jtable tbody th,
+  .jtable tbody td {
+    padding: 6px 3px;
+  }
+
+  .jtable .jh {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .jtable .jname {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .jtable .jname b {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .jtable .jslot {
+    padding: 6px 2px;
+  }
+
+  .jtable .jslot .js-st {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+
+  .jtable .jslot[data-st="paid"] .js-st {
+    padding-inline: 0;
+  }
+
+  .jtable .jslot[data-st="none"] {
+    min-height: 84px;
+  }
+
+  .jtable .jslot .js-add {
+    font-size: 11px;
+  }
+}
+
+.jtable tbody th.jname,
+.jtable tbody th.jname b {
+  background: none;
+  color: var(--ink);
+  font: 600 15px/1.25 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+
+.jtable tbody th.jname {
+  display: table-cell;
+}
+
+.jtable tbody th.jname .muted {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .jtable tbody th.jname {
+    display: table-cell;
+  }
+
+  .jtable tbody th.jname b {
+    display: block;
+    font-size: 13px;
+  }
+
+  .jtable tbody th.jname .muted {
+    margin-left: 0;
+  }
+}
