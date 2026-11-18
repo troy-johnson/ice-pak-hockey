@@ -6543,3 +6543,40 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
   background: #c0211c;
 }
+
+/* Side tab: the kind of notice in upright letters, one under the other. The letters are not turned, so they are as sharp as other text. Every size is a whole pixel. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 34px;
+  height: auto;
+  padding: 12px 0 10px;
+  border-radius: 6px 0 0 6px;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+
+.nside-tab .nst-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font: 700 14px/16px var(--display);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.nside-tab .nst-dot {
+  position: static;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  box-shadow: none;
+  background: currentColor;
+}
+
+:root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
+  background: #c0211c;
+}

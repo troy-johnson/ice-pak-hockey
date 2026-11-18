@@ -682,13 +682,17 @@
       bar.querySelector(".nlink").textContent = n[2];
       bar.querySelector(".nlink").href = n[3];
       var tab = document.querySelector(".nside-tab");
-      if (tab) tab.setAttribute("aria-expanded", String(root.dataset.nopen === "true"));
+      if (tab) {
+        tab.setAttribute("aria-expanded", String(root.dataset.nopen === "true"));
+        // The tab names the kind of notice.
+        tab.querySelector(".nst-text").textContent = { recap: "Recap", event: "Event", change: "Change", cancel: "Cancelled" }[root.dataset.nmsg] || "Notice";
+      }
     }
     // Side tab: the tab opens and closes the notice panel.
     // Side tab and side panel: centred on whole pixels. A half pixel makes the text blurry.
     function placeSide() {
       var tab = document.querySelector(".nside-tab"), panel = document.querySelector("[data-notice-bar]");
-      if (tab) tab.style.top = Math.round((innerHeight - 52) / 2) + "px";
+      if (tab) tab.style.top = Math.round((innerHeight - tab.offsetHeight) / 2) + "px";
       if (panel && root.dataset.nview === "side" && !matchMedia("(max-width: 760px)").matches) {
         panel.style.top = Math.round((innerHeight - panel.offsetHeight) / 2) + "px";
       } else if (panel) {
