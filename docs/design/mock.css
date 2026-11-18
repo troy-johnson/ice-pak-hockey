@@ -6969,3 +6969,45 @@ tr.flash td {
   background: none;
   border-color: #e0a526;
 }
+
+/* Menu button: when the menu is open, two crossed hockey sticks take the place of the three bars. */
+.menu-btn .sticks {
+  display: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.menu-btn[aria-expanded="true"] .bars {
+  display: none;
+}
+
+.menu-btn[aria-expanded="true"] .sticks {
+  display: block;
+  animation: sticks-in 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes sticks-in {
+  from {
+    opacity: 0;
+    transform: rotate(-30deg) scale(0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .sticks {
+    animation: none;
+  }
+}
+
+.menu-btn .sticks {
+  stroke-width: 2.1;
+}
+
+.menu-btn .sticks .blade {
+  stroke-width: 3.6;
+}

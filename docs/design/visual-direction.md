@@ -161,7 +161,7 @@ Rules that go with the tokens:
 - **Header:** crest, "Ice Pak", four links, and the Theme switch.
 - **Band:** the top of each page. It has the page title and the main controls. On the Home page it has the Recap, the headline, and the score. On a Player page it has the jersey number, the name, and a large faint crest.
 - **Footer:** crest, social links (YouTube, Instagram, Facebook), the contact address, the copyright line, and the link to the Manager pages.
-- **Phone header:** the crest and a Menu button. The menu has the pages, the Theme, and the Manager link.
+- **Phone header:** the crest and a Menu button. When the menu is open, two crossed hockey sticks take the place of the three bars. The menu has the pages, the Theme, and the Manager link.
 
 ### Score bug
 
