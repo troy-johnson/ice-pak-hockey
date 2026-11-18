@@ -5809,8 +5809,6 @@ td.name .who:has(.av) + .pnote {
 .admin-strip,
 .acct,
 .mpill,
-.mfoot,
-.edit-pen,
 .mm-acct {
   display: none;
 }
@@ -5948,40 +5946,10 @@ td.name .who:has(.av) + .pnote {
   left: 0;
 }
 
-/* Pencils: an Edit link beside each section title, and the Manager links in the footer. No bar. */
-:root[data-mstyle="inline"] .edit-pen {
-  display: inline-flex;
-}
-
-:root[data-mstyle="inline"] .mfoot {
-  display: inline;
-}
-
-.edit-pen {
-  align-items: center;
-  gap: 4px;
-  margin-left: 12px;
-  padding: 4px 9px;
-  border: 1px dashed #f5c542;
-  color: #f5c542;
-  font: 600 12px/1 var(--body);
-  text-decoration: none;
-  vertical-align: middle;
-}
-
-.band > .wrap > h1 + .edit-pen {
-  margin: 0 0 8px;
-}
-
-.mfoot {
-  font-size: 13px;
-  color: var(--frost);
-}
 
 /* Phone: the Manager links are in the phone menu, and the account button shows only the letter. */
 @media (max-width: 760px) {
-  :root[data-mstyle="menu"] .mm-acct,
-  :root[data-mstyle="inline"] .mm-acct {
+  :root[data-mstyle="menu"] .mm-acct {
     display: flex;
   }
 
@@ -7186,5 +7154,77 @@ tr.jrow {
   .menu-btn .sticks,
   .menu-btn[aria-expanded="true"] .sticks {
     transition: none;
+  }
+}
+
+/* Menu button: the middle bar becomes a puck that drops between the crossed sticks, as at a faceoff. */
+.menu-btn .bars i:nth-child(2) {
+  justify-self: center;
+  width: 18px;
+  transition: width 0.22s ease, height 0.22s ease, border-radius 0.22s ease, transform 0.22s ease, opacity 0.18s ease;
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 1;
+  transform: translateY(6px);
+  animation: puck-drop 0.5s cubic-bezier(0.3, 0, 0.4, 1) both;
+}
+
+@keyframes puck-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(7px);
+  }
+
+  75% {
+    transform: translateY(4.5px);
+  }
+
+  100% {
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+    animation: none;
+  }
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 9px;
+  height: 5px;
+  transform: translateY(4px);
+  box-shadow: 0 0 0 1.5px var(--head);
+  animation-name: puck-drop-2;
+}
+
+@keyframes puck-drop-2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(5.5px);
+  }
+
+  75% {
+    transform: translateY(3px);
+  }
+
+  100% {
+    transform: translateY(4px);
   }
 }

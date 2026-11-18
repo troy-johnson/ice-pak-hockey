@@ -49,6 +49,7 @@
   root.dataset.auth = read("auth", "out");
   // Manager style: how a signed-in Manager sees the Manager links. "menu" is the default.
   root.dataset.mstyle = read("mstyle", "menu");
+  if (root.dataset.mstyle === "inline") root.dataset.mstyle = "menu";
   root.dataset.panel = read("panel", "open");
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -394,65 +395,6 @@
     document.addEventListener("keydown", function (event) {
       if (event.key === "Escape") closeMgrMenus();
     });
-    // Pencils: each section title on a public page gets an Edit link.
-    if (!document.body.classList.contains("mgr-area")) {
-      document.querySelectorAll("main .sec-head, .band .title-row, .band > .wrap > h1").forEach(function (head) {
-        var pen = document.createElement("a");
-        pen.href = "#";
-        pen.className = "edit-pen";
-        pen.setAttribute("data-auth", "in");
-        pen.innerHTML = '<span aria-hidden="true">✎</span> Edit';
-        if (head.tagName === "H1") head.insertAdjacentElement("afterend", pen); else head.appendChild(pen);
-      });
-    }
-    // Info button: the explanation shows on hover and on a click or a tap. Escape or a click outside closes it.
-    document.querySelectorAll(".info-btn").forEach(function (btn) {
-      var pop = document.getElementById(btn.getAttribute("aria-controls"));
-      var wrap = btn.closest(".info-wrap");
-      var set = function (open) { pop.hidden = !open; btn.setAttribute("aria-expanded", String(open)); };
-      btn.addEventListener("click", function (event) { event.stopPropagation(); btn.dataset.pinned = btn.dataset.pinned === "1" ? "" : "1"; set(btn.dataset.pinned === "1"); });
-      wrap.addEventListener("mouseenter", function () { set(true); });
-      wrap.addEventListener("mouseleave", function () { if (btn.dataset.pinned !== "1") set(false); });
-      document.addEventListener("click", function (event) { if (!wrap.contains(event.target)) { btn.dataset.pinned = ""; set(false); } });
-      document.addEventListener("keydown", function (event) { if (event.key === "Escape") { btn.dataset.pinned = ""; set(false); } });
-    });
-    // Phone: the game bar sticks below the header, so the page needs the height of the header.
-    var siteHead = document.querySelector(".site-head");
-    var setHeadH = function () { if (siteHead) root.style.setProperty("--head-h0", siteHead.offsetHeight + "px"); };
-    setHeadH();
-    addEventListener("resize", setHeadH);
-    // The header can change height after the fonts load; measure it again when it does.
-    if (siteHead && window.ResizeObserver) new ResizeObserver(setHeadH).observe(siteHead);
-    if (document.fonts) document.fonts.ready.then(setHeadH);
-
-    // Game bar: drag with the mouse to scroll. A phone swipes with no script. The bar starts at the next game.
-    var track = document.querySelector(".gtrack");
-    if (track) {
-      var nextTile = track.querySelector(".gtile.next");
-      if (nextTile && matchMedia("(max-width: 760px)").matches) track.scrollLeft = nextTile.offsetLeft - track.offsetLeft;
-      var drag = null;
-      track.addEventListener("pointerdown", function (event) {
-        if (event.pointerType !== "mouse" || event.button !== 0) return;
-        drag = { x: event.clientX, left: track.scrollLeft, moved: false };
-      });
-      addEventListener("pointermove", function (event) {
-        if (!drag) return;
-        var dx = event.clientX - drag.x;
-        if (!drag.moved && Math.abs(dx) > 5) { drag.moved = true; track.classList.add("dragging"); }
-        if (drag.moved) track.scrollLeft = drag.left - dx;
-      });
-      addEventListener("pointerup", function () {
-        if (!drag) return;
-        var moved = drag.moved;
-        drag = null;
-        if (!moved) return;
-        // A drag is not a click: the tile under the pointer does not open.
-        var stop = function (event) { event.preventDefault(); event.stopPropagation(); };
-        track.addEventListener("click", stop, { capture: true, once: true });
-        setTimeout(function () { track.removeEventListener("click", stop, { capture: true }); track.classList.remove("dragging"); }, 0);
-      });
-    }
-
     function setAuth(value) {
       root.dataset.auth = value;
       save("auth", value);
@@ -659,7 +601,7 @@
       '<div class="dv-row"><span class="dv-k">style</span><span class="dv-seg" data-key="nstyle"><button value="auto">auto</button><button value="slim">slim</button><button value="card">card</button><button value="toast">toast</button><button value="side">side tab</button><button value="bottom">bottom</button><button value="stripes">stripes</button></span></div>' +
       '<div class="dv-row"><span class="dv-k">auto</span><button type="button" class="dv-replay">replay the first visit</button><span class="dv-nstate"></span></div>' +
       '<div class="dv-row"><span class="dv-k">manager</span><span class="dv-seg" data-key="auth"><button value="out">signed out</button><button value="in">signed in</button></span></div>' +
-      '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="nav">nav</button><button value="menu">menu</button><button value="pill">button</button><button value="inline">pencils</button><button value="strip">strip</button></span></div>' +
+      '<div class="dv-row"><span class="dv-k">mgr style</span><span class="dv-seg" data-key="mstyle"><button value="nav">nav</button><button value="menu">menu</button><button value="pill">button</button><button value="strip">strip</button></span></div>' +
       '<p class="dv-note"></p>' +
       '</div>';
     document.body.appendChild(panel);
