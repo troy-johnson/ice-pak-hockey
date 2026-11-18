@@ -6606,3 +6606,72 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     color: var(--ink);
   }
 }
+
+/* Money totals: the hint under a label */
+.strip.money .label small {
+  display: block;
+  margin-top: 3px;
+  font: 400 11px/1.2 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--frost);
+}
+
+/* Phone: the money totals are rows, with the label at the left and the amount at the right. */
+@media (max-width: 760px) {
+  .strip.money {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 14px 16px;
+  }
+
+  .strip.money .title {
+    padding-bottom: 10px;
+    text-align: left;
+  }
+
+  .strip.money > div,
+  .strip.money > div.key {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+    text-align: left;
+    grid-column: auto;
+  }
+
+  .strip.money > div .label {
+    margin: 0;
+    text-align: left;
+  }
+
+  .strip.money > div b {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .strip.money {
+    align-items: stretch;
+  }
+
+  .strip.money.team .title {
+    display: block;
+    padding-left: 0;
+  }
+
+  .strip.money > div b {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .strip.money > div:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}

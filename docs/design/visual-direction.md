@@ -342,7 +342,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 
 ### Team ledger
 
-`manager-ledger.html`. Each transaction of the team in one list, newest first. The Players page keeps the totals bar and the Balance of each Player; a Balance and the bar link to the ledger.
+`manager-ledger.html`. Each transaction of the team in one list, newest first. The totals say "Players paid ahead" (with the hint "Credit for later fees") for the money that Players paid before it is due; a credit is not money owed. On a phone the totals are rows, with the label at the left and the amount at the right. The Players page keeps the totals bar and the Balance of each Player; a Balance and the bar link to the ledger.
 
 - **Kinds:** Charge (a Player owes the team, for example a fee, a sub fee, or a jersey), Payment (a Player pays), League Fee (the team pays a League), Expense (the team pays for something), and Income (money in that is not from a Player).
 - **Columns:** date, kind, who and a note, season, Owes, Paid, and the change to the Team Fund.
