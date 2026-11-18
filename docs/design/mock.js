@@ -766,8 +766,8 @@
           ], { duration: 700, easing: "ease-out" });
         } else if (tab && !still && tab.animate) {
           tab.animate([
-            { transform: "scale(1.25)", boxShadow: "0 0 0 10px rgb(245 197 66 / 0.55)" },
-            { transform: "scale(1)", boxShadow: "0 0 0 0 rgb(245 197 66 / 0)" }
+            { transform: "scale(1.2)" },
+            { transform: "scale(1)" }
           ], { duration: 650, easing: "cubic-bezier(0.3, 1.6, 0.5, 1)" });
         }
       };
