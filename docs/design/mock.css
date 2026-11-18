@@ -7264,3 +7264,55 @@ tr.jrow {
     transform: translateY(6.5px);
   }
 }
+
+/* The puck is drawn in the sticks icon, so it shares their grid and sits in the exact centre.
+   The middle bar shrinks toward the centre and fades while the puck drops in. */
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 5px;
+  height: 2px;
+  opacity: 0;
+  box-shadow: none;
+  transform: translateY(4px);
+  animation: none;
+}
+
+.menu-btn .sticks .puck {
+  fill: currentColor;
+  stroke: var(--head);
+  stroke-width: 2.2;
+  paint-order: stroke;
+  opacity: 0;
+}
+
+.menu-btn[aria-expanded="true"] .sticks .puck {
+  animation: puck-drop-svg 0.5s cubic-bezier(0.3, 0, 0.4, 1) 0.1s both;
+}
+
+@keyframes puck-drop-svg {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(1.5px);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .sticks .puck {
+    animation: none;
+    opacity: 1;
+  }
+}
