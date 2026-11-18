@@ -269,6 +269,7 @@
           " · Goalies " + count("G") + " of " + document.getElementById("tg").value;
       }
       board.addEventListener("dragstart", function (event) {
+        board.querySelectorAll(".move-row").forEach(function (r) { r.remove(); });
         card = event.target.closest(".pcard");
         if (card) card.classList.add("dragging");
       });
@@ -288,6 +289,53 @@
           event.preventDefault();
           if (card) col.querySelector("ul").appendChild(card);
         });
+      });
+      // Tap a card (or press Enter on it) to move it. A row of buttons opens under the card, one for each other column.
+      // A phone has no drag and drop, so this is how a Manager moves a Player there. Drag still works with a mouse.
+      var cols = Array.prototype.map.call(board.querySelectorAll("[data-drop]"), function (col) {
+        return { key: col.dataset.drop, name: col.querySelector(".col-head b").textContent, el: col };
+      });
+      function closeMove() {
+        board.querySelectorAll(".move-row").forEach(function (r) { r.remove(); });
+        board.querySelectorAll(".pcard[aria-expanded='true']").forEach(function (c) { c.setAttribute("aria-expanded", "false"); });
+      }
+      function openMove(pc) {
+        var open = pc.getAttribute("aria-expanded") === "true";
+        closeMove();
+        if (open) return;
+        var here = pc.closest("[data-drop]").dataset.drop;
+        var row = document.createElement("li");
+        row.className = "move-row";
+        row.innerHTML = '<span class="mr-label">Move to</span>' + cols.filter(function (c) { return c.key !== here; })
+          .map(function (c) { return '<button type="button" data-to="' + c.key + '">' + c.name + "</button>"; }).join("");
+        pc.after(row);
+        pc.setAttribute("aria-expanded", "true");
+        row.querySelector("button").focus({ preventScroll: true });
+        row.addEventListener("click", function (event) {
+          var btn = event.target.closest("[data-to]");
+          if (!btn) return;
+          var to = cols.find(function (c) { return c.key === btn.dataset.to; });
+          closeMove();
+          to.el.querySelector("ul").appendChild(pc);
+          recount();
+          pc.classList.remove("flash"); void pc.offsetWidth; pc.classList.add("flash");
+          pc.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        });
+      }
+      board.querySelectorAll(".pcard").forEach(function (pc) {
+        pc.tabIndex = 0;
+        pc.setAttribute("role", "button");
+        pc.setAttribute("aria-expanded", "false");
+        pc.setAttribute("aria-label", pc.dataset.name + ": move to another column");
+      });
+      board.addEventListener("click", function (event) {
+        var pc = event.target.closest(".pcard");
+        if (pc) openMove(pc);
+      });
+      board.addEventListener("keydown", function (event) {
+        var pc = event.target.closest(".pcard");
+        if (pc && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openMove(pc); }
+        if (event.key === "Escape") closeMove();
       });
       ["fee", "tf", "td", "tg"].forEach(function (id) {
         document.getElementById(id).addEventListener("input", recount);

@@ -6675,3 +6675,121 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     padding-top: 0;
   }
 }
+
+/* Phone, Player Bank: the name, the positions, and the Balance fit on the screen with no sideways scroll. */
+@media (max-width: 760px) {
+  table.bank {
+    width: 100%;
+  }
+
+  table.bank td.name {
+    max-width: 0;
+    width: 100%;
+  }
+
+  table.bank td.name .who {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  table.bank td.name .who a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  table.bank td.name .pnote {
+    max-width: 100%;
+  }
+
+  table.bank td.name .who:has(.av) + .pnote {
+    padding-left: 0;
+  }
+
+  table.bank .av {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    font-size: 13px;
+  }
+
+  table.bank .pos-tg button {
+    width: 26px;
+    height: 28px;
+    padding: 0;
+    font-size: 12px;
+  }
+
+  table.bank td,
+  table.bank th {
+    padding-inline: 6px;
+  }
+
+  table.bank td.bal {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
+/* Roster Builder: tap a card to move it. The row of column buttons opens under the card. */
+.pcard {
+  cursor: pointer;
+}
+
+.pcard:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pcard[aria-expanded="true"] {
+  border-left-color: #f5c542;
+}
+
+.move-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--panel);
+  border-left: 3px solid #f5c542;
+  list-style: none;
+}
+
+.move-row .mr-label {
+  width: 100%;
+  color: var(--frost);
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.move-row button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  background: var(--ground);
+  color: var(--ink);
+  font: italic 800 14px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.move-row button:hover,
+.move-row button:focus-visible {
+  background: var(--kit-fill);
+  border-color: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.pcard.flash {
+  animation: row-flash 1.6s ease-out;
+}
+
+@media (max-width: 760px) {
+  .pcard {
+    cursor: pointer;
+  }
+}
