@@ -6877,3 +6877,8 @@ tr.flash td {
 :root[data-theme="away"] .info-pop {
   background: #ffffff;
 }
+
+/* The Player form stops below the sticky header when it scrolls into view. */
+#add-player {
+  scroll-margin-top: 90px;
+}
