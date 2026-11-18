@@ -6580,3 +6580,19 @@ body.mgr-area .mm-acct a:not([data-signout]) {
 :root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
   background: #c0211c;
 }
+
+/* Phone bell: no background. Only the bell and its dot show. */
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .nbell,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .nbell,
+  .nbell[aria-expanded="true"] {
+    background: none;
+    clip-path: none;
+    color: var(--ink);
+  }
+
+  .nbell .nb-dot,
+  :root[data-theme="third"] .nbell .nb-dot {
+    box-shadow: 0 0 0 2px var(--head);
+  }
+}
