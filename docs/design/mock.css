@@ -6882,3 +6882,90 @@ tr.flash td {
 #add-player {
   scroll-margin-top: 90px;
 }
+
+/* Jerseys: one colour system at a time. The slot is neutral, a small chip shows the kit,
+   and only the status has colour: Owes is a solid red tag, On loan is an outlined amber tag, Paid is quiet text. */
+.jslot,
+.jslot[data-kit="away"],
+.jslot[data-kit="third"] {
+  --jbg: var(--panel-2);
+  --jfg: var(--ink);
+  --jedge: var(--rule);
+}
+
+.jslot {
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.jslot[data-st="owes"] {
+  box-shadow: inset 0 0 0 1px var(--rule), inset 3px 0 0 #d9534f;
+}
+
+/* The kit chip at the top right of a slot */
+.jslot:not([data-st="none"])::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #5ba5d1;
+  background: #1d315f;
+}
+
+.jslot[data-kit="away"]:not([data-st="none"])::after {
+  border-color: #1d315f;
+  background: #ffffff;
+}
+
+.jslot[data-kit="third"]:not([data-st="none"])::after {
+  border-color: #111111;
+  background: #c0211c;
+}
+
+.jslot .js-size {
+  color: var(--frost);
+  opacity: 1;
+}
+
+.jslot .js-st {
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.jslot[data-st="paid"] .js-st {
+  padding-inline: 0;
+  background: none;
+  color: var(--frost);
+}
+
+.jslot[data-st="owes"] .js-st {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+.jslot[data-st="loan"] .js-st {
+  background: none;
+  border-color: #e0a526;
+  color: var(--ink);
+}
+
+/* The key above the list uses the same three looks. */
+.jkey [data-st]::before {
+  border: 1px solid transparent;
+}
+
+.jkey [data-st="paid"]::before {
+  background: var(--frost);
+  opacity: 0.5;
+}
+
+.jkey [data-st="owes"]::before {
+  background: #d9534f;
+}
+
+.jkey [data-st="loan"]::before {
+  background: none;
+  border-color: #e0a526;
+}
