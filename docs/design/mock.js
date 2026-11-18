@@ -957,3 +957,83 @@ document.addEventListener("DOMContentLoaded", () => {
     b.className = on ? "ghost" : "button";
   });
 });
+
+// Ledger: "Edit" on a row opens the transaction dialog with the values of that row. Save changes the row; Delete removes it.
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("[data-tx-form]");
+  const table = document.querySelector("table.ledger");
+  if (!form || !table) return;
+  const modal = form.closest(".modal");
+  const $ = (id) => form.querySelector("#" + id);
+  const title = $("nl-title"), save = $("tx-save"), del = form.querySelector("[data-tx-delete]");
+  const kinds = { Charge: "owes", Payment: "pay", "League Fee": "out", Expense: "out", Income: "in" };
+  const usd = (c) => "$" + (c / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const esc = (t) => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+  let editRow = null;
+
+  // The cells of a row, built from the values of a transaction.
+  function cells(t) {
+    const [y, m, d] = t.date.split("-").map(Number);
+    const c = t.amt, k = t.kind, dash = '<td class="n muted">–</td>';
+    const owes = k === "Charge" ? `<td class="n bal owes">+${usd(c)}</td>` : dash;
+    const paid = k === "Payment" ? `<td class="n bal credit">${usd(c)}</td>` : dash;
+    const fund = k === "Payment" || k === "Income" ? `<td class="n bal credit">+${usd(c)}</td>` : k === "League Fee" || k === "Expense" ? `<td class="n bal owes">-${usd(c)}</td>` : dash;
+    const sub = k === "Payment" ? t.method : t.note;
+    const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][new Date(y, m - 1, d).getDay()];
+    return `<td class="date">${wd}, ${months[m - 1]} ${d}<small>${y}</small></td><td><span class="tag k-${kinds[k]}">${k}</span></td>` +
+      `<td class="name">${esc(t.who)}<small>${esc(sub)}</small></td><td class="muted wide-only">${esc(t.season)}</td>${owes}${paid}${fund}` +
+      `<td class="n tx-cell"><button type="button" class="ghost small tx-edit" aria-label="Edit the transaction of ${esc(t.who)}, ${months[m - 1]} ${d}">Edit</button></td>`;
+  }
+  function setRow(tr, t) {
+    Object.entries(t).forEach(([key, v]) => { tr.dataset[key] = v; });
+    tr.innerHTML = cells(t);
+    tr.classList.remove("flash"); void tr.offsetWidth; tr.classList.add("flash");
+  }
+  function mode(edit) {
+    title.textContent = edit ? "Edit the transaction" : "Add a transaction";
+    save.textContent = edit ? "Save changes" : "Save the transaction";
+    del.hidden = !edit;
+    del.textContent = "Delete the transaction";
+    del.classList.remove("confirm");
+  }
+  // "Add a transaction" opens the dialog in add mode.
+  document.querySelectorAll("[data-open='new-line']").forEach((b) => b.addEventListener("click", () => { editRow = null; mode(false); }));
+  // "Edit" fills the fields from the row and opens the dialog.
+  table.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".tx-edit");
+    if (!btn) return;
+    editRow = btn.closest("tr");
+    const t = editRow.dataset;
+    $("nl-kind").value = t.kind;
+    $("nl-date").value = t.date;
+    $("nl-who").value = t.who;
+    $("nl-season").value = [...$("nl-season").options].some((o) => o.value === t.season) ? t.season : $("nl-season").options[0].value;
+    $("nl-amt").value = (Number(t.amt) / 100).toFixed(2);
+    if (t.method) $("nl-method").value = t.method;
+    $("nl-note").value = t.note;
+    mode(true);
+    modal.hidden = false;
+    $("nl-amt").focus();
+  });
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const t = {
+      date: $("nl-date").value, kind: $("nl-kind").value, season: $("nl-season").value, who: $("nl-who").value.trim(),
+      method: $("nl-kind").value === "Payment" ? $("nl-method").value : "", note: $("nl-kind").value === "Payment" ? "" : $("nl-note").value.trim(),
+      amt: String(Math.round(parseFloat($("nl-amt").value.replace(/[$,]/g, "")) * 100) || 0)
+    };
+    if (editRow) setRow(editRow, t);
+    else { const tr = document.createElement("tr"); table.tBodies[0].prepend(tr); setRow(tr, t); }
+    editRow = null;
+    modal.hidden = true;
+  });
+  // Delete asks once more in the same button, then removes the row.
+  del.addEventListener("click", () => {
+    if (!editRow) return;
+    if (!del.classList.contains("confirm")) { del.classList.add("confirm"); del.textContent = "Delete it? Select again"; return; }
+    editRow.remove();
+    editRow = null;
+    modal.hidden = true;
+  });
+});

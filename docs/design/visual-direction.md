@@ -305,7 +305,7 @@ Troy named the art file for each Theme on 2026-11-16. Each crest is made for the
 | Third | `IcePak_RedBlk.ai` | `img/crest-third.svg` | A red ground. The crest is black with white letters. |
 
 - **Extraction:** `sips` rendered the art files. The Home crest is on a navy artboard with sponsor logos, so a script cropped it and removed the artboard colour. The navy parts of the Home wordmark are now clear, and they show the ground. On a navy ground this looks the same. For the real site, export each crest as SVG from the art file.
-- **Score bug, Away:** the Ice Pak row is white with navy text, as the away jersey, so the navy crest shows.
+- **Score bug, Away:** the Ice Pak row is white with navy text, as the away jersey, so the navy crest shows. Both score boxes have the same background.
 - **Score bug, Third band:** the Ice Pak row is black, so the black crest sits on a small red square.
 - **Rink renders:** they still use `icepak_logo2.png` from the NAS at centre ice. I did not render them again.
 
@@ -347,7 +347,7 @@ Three pages behind the Manager login, from part 1 of the order of work. Each one
 - **Kinds:** Charge (a Player owes the team, for example a fee, a sub fee, or a jersey), Payment (a Player pays), League Fee (the team pays a League), Expense (the team pays for something), and Income (money in that is not from a Player).
 - **Columns:** date, kind, who and a note, season, Owes, Paid, and the change to the Team Fund.
 - **Top strip:** the Team Fund, the total owed by Players, and the Player credits.
-- **Lists:** filter by season and Player. The totals bar has no title. "Add a transaction" opens a dialog.
+- **Lists:** filter by season and Player. The totals bar has no title. "Add a transaction" opens a dialog. Each row has an "Edit" button: it opens the same dialog with the values of that transaction, with "Save changes" and "Delete the transaction" (Delete asks once more in the same button). On the real site an edit changes the Balance of the Player and the totals; in the mockup only the row changes.
 - **Rule:** a Player's Balance is the sum of the Player's Charges less the Player's Payments. The Team Fund is the Payments and Income less the League Fees and Expenses.
 - **Data:** invented, as on the other Manager pages.
 

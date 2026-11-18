@@ -6793,3 +6793,63 @@ body.mgr-area .mm-acct a:not([data-signout]) {
     cursor: pointer;
   }
 }
+
+/* Away: both score boxes of a score bug have the same background. */
+:root[data-theme="away"] .bug .ipk .pts {
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+/* Ledger: the Edit button in each row, and the Delete button in the dialog */
+.ledger .tx-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.ledger .tx-edit {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.modal .tx-delete {
+  margin-left: auto;
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
+.modal .tx-delete.confirm {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+tr.flash td {
+  animation: row-flash 1.6s ease-out;
+}
+
+/* Phone, Ledger: a small Edit button, so the table fits the screen. */
+@media (max-width: 760px) {
+  .ledger .tx-edit {
+    min-height: 30px;
+    padding: 0 7px;
+    font-size: 11px;
+  }
+
+  .ledger td.tx-cell,
+  .ledger th.tx-cell {
+    padding-left: 2px;
+    padding-right: 6px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ledger td.n,
+  .ledger td.date {
+    font-size: 13px;
+  }
+
+  .ledger td,
+  .ledger th {
+    padding-inline: 5px;
+  }
+}
