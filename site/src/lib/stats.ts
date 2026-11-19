@@ -185,8 +185,10 @@ export interface GoalieLine {
   losses: number;
   ties: number;
   goalsAgainst: number;
-  /** Goals against for each Game in goal with a final score. */
-  goalsAgainstAverage: number;
+  /** Goals against for each Game in goal with a final score, or null with no such Game. */
+  goalsAgainstAverage: number | null;
+  /** The Games in goal with a final score and one goalie: the Games that GA counts. */
+  scoredGames: number;
   shotsAgainst: number;
   saves: number;
   /** Saves for each shot, or null with no Game that has shots. */
@@ -208,7 +210,7 @@ export function goalieLines(data: StatData): GoalieLine[] {
   for (const row of data.gamePlayers) {
     if (row.isGoalie) goaliesOf.set(row.gameId, (goaliesOf.get(row.gameId) ?? 0) + 1);
   }
-  const lines = new Map<number, GoalieLine & { scoredGames: number }>();
+  const lines = new Map<number, GoalieLine>();
   for (const row of data.gamePlayers) {
     const game = games.get(row.gameId);
     if (!row.isGoalie || !game) continue;
@@ -236,9 +238,9 @@ export function goalieLines(data: StatData): GoalieLine[] {
       found.saves += game.opponentShots - against;
     }
   }
-  return [...lines.values()].map(({ scoredGames, ...line }) => ({
+  return [...lines.values()].map((line) => ({
     ...line,
-    goalsAgainstAverage: scoredGames ? line.goalsAgainst / scoredGames : 0,
+    goalsAgainstAverage: line.scoredGames ? line.goalsAgainst / line.scoredGames : null,
     savePercentage: line.shotsAgainst ? line.saves / line.shotsAgainst : null,
   }));
 }

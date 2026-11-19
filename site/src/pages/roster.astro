@@ -1,4 +1,6 @@
 ---
+import Jersey from "../components/Jersey.astro";
+import JerseyKits from "../components/JerseyKits.astro";
 import Base from "../layouts/Base.astro";
 import { utahTime } from "../lib/game-format";
 import { gamesOf, leagueSeasons, playersById, rosters, statData, type PublicPlayer } from "../lib/site-data";
@@ -74,6 +76,7 @@ const record = teamRecord(seasonGames);
     </div>
   </div>
 
+  <JerseyKits />
   {
     groups.map((group) => (
       <section>
@@ -84,17 +87,7 @@ const record = teamRecord(seasonGames);
         <div class="lines card" style={`--cols:${group.cols}`}>
           {group.list.map((player) => (
             <a class="skater" href={`/players/${player.id}`}>
-              <svg class="jersey" viewBox="0 0 200 190" aria-hidden="true">
-                <path class="body" d="M72 10C86 22 114 22 128 10L158 22L192 62V142H154V92L150 96V180H50V96L46 92V142H8V62L42 22Z" />
-                <path class="trim" d="M8 110H46V123H8zM154 110H192V123H154zM50 154H150V166H50z" />
-                <path class="trim-2" d="M8 126H46V132H8zM154 126H192V132H154zM50 169H150V174H50z" />
-                <path class="collar" d="M72 10C86 22 114 22 128 10" />
-                {player.number !== null && (
-                  <text x="100" y="128">
-                    {player.number}
-                  </text>
-                )}
-              </svg>
+              <Jersey number={player.number} />
               <span class="nm">
                 {player.firstName} {player.lastName}
               </span>

@@ -62,6 +62,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **Playoffs:** a playoff run is part of its League Season. Each Game has a type: regular, playoff, or preseason. The Old Site kept the playoffs as a separate season.
 - **Home and away:** the old Games have no home or away data. A Game with no such data shows Ice Pak as the home team. The database keeps no value for it, so a Manager can set the real side later.
 - **Goalies:** some Players play goalie in one Game and skate in another. Each Game Player has a goalie mark. The stats show the position from the Player Bank, and a Manager corrects it there.
+- **UHL Games:** the 20 UHL Games of summer 2021 have no Scoresheets, and the Old Site has no opponent goals for them. The Ice Pak goals count for the Players, and the Games have no final score. Troy confirmed on 2026-11-18.
 - **No Box Score:** a Game with no Scoresheet and no Box Score shows the tag "No Box Score". The site gets this state from the data.
 - **Game Players from HHG:** the Import adds the Players that HHG lists. A Manager adds the other Players.
 - **BenchApp as a source:** BenchApp has each Game from Winter 2021-22, with the date, opponent, rink, side, type, and score. Troy confirmed on 2026-11-16:

@@ -233,12 +233,12 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
                     <td class="n wide-only">
                       {line.wins}-{line.losses}-{line.ties}
                     </td>
-                    <td class="n">{line.goalsAgainst}</td>
-                    <td class="n wide-only">{line.goalsAgainstAverage.toFixed(2)}</td>
+                    <td class="n">{line.scoredGames ? line.goalsAgainst : "–"}</td>
+                    <td class="n wide-only">{line.goalsAgainstAverage?.toFixed(2) ?? "–"}</td>
                     <td class="n wide-only">{line.gamesWithShots ? line.shotsAgainst : "–"}</td>
                     <td class="n">{line.gamesWithShots ? line.saves : "–"}</td>
                     <td class="n">{formatSavePercentage(line.savePercentage)}</td>
-                    <td class="n wide-only">{line.shutouts}</td>
+                    <td class="n wide-only">{line.scoredGames ? line.shutouts : "–"}</td>
                   </tr>
                 ))}
               </tbody>

@@ -1272,69 +1272,27 @@ select,
 
 /* Jersey: the back of the jersey of the Theme, with the number and no nameplate */
 .jersey {
-  width: min(168px, 100%);
+  width: min(200px, 100%);
   height: auto;
   filter: drop-shadow(0 10px 12px var(--shade));
   transition: transform 0.15s;
-  --j-body: #1d315f;
-  --j-trim: #5ba5d1;
-  --j-trim-2: #ffffff;
-  --j-num: #ffffff;
-  --j-num-line: #5ba5d1;
-  --j-edge: #5ba5d1;
 }
 
-:root[data-theme="away"] .jersey {
-  --j-body: #ffffff;
-  --j-trim: #1d315f;
-  --j-trim-2: #5ba5d1;
-  --j-num: #1d315f;
-  --j-num-line: #5ba5d1;
-  --j-edge: #9fb1cf;
+/* The art of each Kit comes from site/scripts/jersey_art.py. The jersey shows the Kit of the Theme. */
+.jersey .kit-away,
+.jersey .kit-third,
+:root[data-theme="away"] .jersey .kit-home,
+:root[data-theme="third"] .jersey .kit-home {
+  display: none;
 }
 
-:root[data-theme="third"] .jersey {
-  --j-body: #c0211c;
-  --j-trim: #000000;
-  --j-trim-2: #ffffff;
-  --j-num: #000000;
-  --j-num-line: #ffffff;
-  --j-edge: #000000;
+:root[data-theme="away"] .jersey .kit-away,
+:root[data-theme="third"] .jersey .kit-third {
+  display: inline;
 }
 
 .skater:hover .jersey {
   transform: translateY(-3px);
-}
-
-.jersey .body {
-  fill: var(--j-body);
-  stroke: var(--j-edge);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
-}
-
-.jersey .trim {
-  fill: var(--j-trim);
-}
-
-.jersey .trim-2 {
-  fill: var(--j-trim-2);
-}
-
-.jersey .collar {
-  fill: none;
-  stroke: var(--j-trim);
-  stroke-width: 7;
-}
-
-.jersey text {
-  font: 700 84px/1 var(--display);
-  fill: var(--j-num);
-  stroke: var(--j-num-line);
-  stroke-width: 5;
-  paint-order: stroke;
-  text-anchor: middle;
-  font-variant-numeric: tabular-nums;
 }
 
 /* Game page: the links to the Game before and the Game after */
@@ -1930,7 +1888,7 @@ details.more > summary::-webkit-details-marker {
   }
 
   .jersey {
-    width: min(112px, 100%);
+    width: min(132px, 100%);
   }
 
   .nextbar a {

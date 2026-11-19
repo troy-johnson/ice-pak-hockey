@@ -125,7 +125,11 @@ const neighbour = (other: (typeof games)[number]) =>
       }
       {
         !hasScore && !upcoming && (
-          <p class="muted">This Game has no Scoresheet and no Box Score on the site.</p>
+          <p class="muted">
+            {box.goals.length > 0
+              ? "The site has the Ice Pak goals of this Game, and no final score."
+              : "This Game has no Scoresheet and no Box Score on the site."}
+          </p>
         )
       }
       {

@@ -537,6 +537,12 @@ def write_sql():
             score = [None, None]
             report["No Box Score"] += 1
 
+        # Troy, 2026-11-18: the UHL Games have no Scoresheets, and the Old Site has no opponent goals for them.
+        # The Ice Pak goals count for the Players, and the Games have no final score.
+        if game["league"] == "UHL":
+            score = [None, None]
+            report["UHL Game with no final score"] += 1
+
         game_type = link["type"] if link else GAME_TYPES[seasons[old["seasonId"]]["type"]]
         rink = (link and link["rink"]) or (old and rinks_by_id.get(old["locationId"]))
         recap = (old and (old["video"] or old["embedLink"])) or ""
