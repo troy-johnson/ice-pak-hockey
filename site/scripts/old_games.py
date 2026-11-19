@@ -63,6 +63,21 @@ BENCHAPP_SEASONS = {
     520964: "MIC Summer '26",
     522761: "County Winter '26-27",
 }
+# Troy, 2026-11-18: the goalie of the League Seasons that have no goalie marks in BenchApp.
+# The Player is the goalie in each Game of the League Season where the Player is a Game Player
+# and no other goalie is marked.
+# Troy: Scott Wade has been the goalie of most Games since 2024. A fill-in keeps the BenchApp mark.
+GOALIES_BY_LEAGUE_SEASON = {
+    "UHL Summer '21": "Dave Dries",
+    "County Summer '21": "Trevor Tilk",
+    **{
+        name: "Scott Wade"
+        for name in (
+            "County Winter '23-24", "County Summer '24", "County Winter '24-25", "County Summer '25",
+            "County Winter '25-26", "MIC Spring '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27",
+        )
+    },
+}
 MANAGER_ROSTERS = {"MIC Winter '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27"}
 # The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Spring '26 Games.
 MIC_SUMMER_26_FIRST_DAY = "2026-07-28"
@@ -601,6 +616,14 @@ def write_sql():
             f"WHERE starts_at = {quote(row['starts_at'])} "
             f"AND opponent_id = (SELECT id FROM opponents WHERE name = {quote(row['opponent'])}) "
             "AND hhg_game_id IS NULL;"
+        )
+
+    for league_season, goalie in GOALIES_BY_LEAGUE_SEASON.items():
+        out.append(
+            f"UPDATE game_players SET is_goalie = 1 WHERE player_id = {player_ref(goalie)} "
+            "AND game_id IN (SELECT id FROM games WHERE hhg_game_id IS NULL AND league_season_id = "
+            f"(SELECT id FROM league_seasons WHERE name = {quote(league_season)})) "
+            "AND game_id NOT IN (SELECT game_id FROM game_players WHERE is_goalie = 1);"
         )
 
     # The Rosters of the past League Seasons, from BenchApp. An existing Roster Answer stays.
