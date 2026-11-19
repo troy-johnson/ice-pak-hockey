@@ -2,7 +2,18 @@
 import Base from "../layouts/Base.astro";
 import GameTags from "../components/site/GameTags.astro";
 import OppMark from "../components/site/OppMark.astro";
-import { clockTime, monthName, opponentName, resultLabel, shortDate, utahTime, versus, type GameSummary } from "../lib/game-format";
+import {
+  clockTime,
+  leagueLabel,
+  leagueSeasonLabel,
+  monthName,
+  opponentName,
+  resultLabel,
+  shortDate,
+  utahTime,
+  versus,
+  type GameSummary,
+} from "../lib/game-format";
 import { gamesOf } from "../lib/site-data";
 import { currentLeagueSeasons, formatRecord, result, teamRecord } from "../lib/stats";
 
@@ -17,9 +28,6 @@ const today = now.slice(0, 10);
 const allGames = await gamesOf(Astro.locals);
 const games = allGames.filter((game) => !chosen || game.league === chosen);
 const past = games.filter((game) => game.startsAt < now);
-const record = teamRecord(past);
-const withScore = record.wins + record.losses + record.ties;
-const firstYear = games[0]?.startsAt.slice(0, 4);
 
 // The calendar has the 12 months before this month, this month, and the months up to the last Game.
 const lastDay = [today, ...games.map((game) => game.startsAt.slice(0, 10))].sort().at(-1)!;
@@ -51,30 +59,19 @@ const current = new Set(currentLeagueSeasons(allGames, now));
 const seasons: { id: number; name: string; games: GameSummary[] }[] = [];
 for (const game of [...past].reverse()) {
   let entry = seasons.find((each) => each.id === game.leagueSeasonId);
-  if (!entry) seasons.push((entry = { id: game.leagueSeasonId, name: game.leagueSeason, games: [] }));
+  if (!entry) {
+    seasons.push((entry = { id: game.leagueSeasonId, name: leagueSeasonLabel(game.leagueSeason, game.league), games: [] }));
+  }
   entry.games.push(game);
 }
 const upcoming = games.filter((game) => game.startsAt >= now);
-const summary = (list: GameSummary[]) => {
-  const seasonRecord = teamRecord(list);
-  const scored = seasonRecord.wins + seasonRecord.losses + seasonRecord.ties;
-  const parts = [
-    list.length === 1 ? "1 Game" : `${list.length} Games`,
-    `${seasonRecord.goalsFor} goals for`,
-    `${seasonRecord.goalsAgainst} against`,
-  ];
-  if (scored < list.length) parts.push(`${list.length - scored} with no Box Score`);
-  return { record: formatRecord(seasonRecord), text: parts.join(" · ") };
-};
+const RESULT_CLASS = { win: "w", loss: "l", tie: "t" } as const;
 ---
 
 <Base title="Schedule · Ice Pak Hockey" current="schedule">
   <div slot="band" class="band">
     <div class="wrap">
-      <h1>Schedule</h1>
-      <p class="muted">
-        {past.length} Games since {firstYear}. The record is {formatRecord(record)} in the {withScore} Games with a final score.
-      </p>
+      <div class="title-row"><h1>Schedule</h1></div>
     </div>
   </div>
 
@@ -86,10 +83,15 @@ const summary = (list: GameSummary[]) => {
     </div>
     <form method="get">
       <label class="muted">
-        League
-        <select name="league" data-submit>
+        <select name="league" aria-label="League" data-submit>
           <option value="">All Leagues</option>
-          {LEAGUES.map((name) => <option selected={name === chosen}>{name}</option>)}
+          {
+            LEAGUES.map((name) => (
+              <option value={name} selected={name === chosen}>
+                {leagueLabel(name)}
+              </option>
+            ))
+          }
         </select>
       </label>
       <noscript><button>Show</button></noscript>
@@ -113,12 +115,12 @@ const summary = (list: GameSummary[]) => {
               </h2>
               <div class="legend">
                 <span>
-                  <i class="w" />
-                  Win
+                  <i class="h" />
+                  Home
                 </span>
                 <span>
-                  <i />
-                  Loss, tie, or next game
+                  <i class="a" />
+                  Away
                 </span>
                 <span>
                   <i class="t" />
@@ -138,18 +140,14 @@ const summary = (list: GameSummary[]) => {
                 const outcome = result(game);
                 const next = game.startsAt >= now;
                 return (
-                  <a class:list={["day game", { win: outcome === "win", today: day === today }]} href={`/games/${game.id}`}>
+                  <a class:list={["day game", game.side, { today: day === today }]} href={`/games/${game.id}`}>
                     <span class="d">{number}</span>
                     <OppMark opponent={game.opponent} />
-                    <span class:list={["res", { time: next }]}>
+                    <span class:list={["res", next ? "time" : outcome && RESULT_CLASS[outcome]]}>
                       {next ? clockTime(game.startsAt) : resultLabel(game) ?? "–"}
                     </span>
                     <span class="who">
                       {versus(game.side)} {opponentName(game.opponent)}
-                    </span>
-                    <span class="marks">
-                      <span class="tag">{game.league}</span>
-                      {game.recapUrl && <span class="tag vid">Recap</span>}
                     </span>
                   </a>
                 );
@@ -193,7 +191,9 @@ const summary = (list: GameSummary[]) => {
                       </a>
                     </td>
                     <td class="score">
-                      <span class="tag">{game.league}</span>
+                      <a href={`/games/${game.id}`}>
+                        <span class="tag">{leagueLabel(game.league)}</span>
+                      </a>
                     </td>
                     <td class="wide-only muted">{game.rink}</td>
                   </tr>
@@ -206,13 +206,11 @@ const summary = (list: GameSummary[]) => {
     }
     {
       seasons.map((entry) => {
-        const { record: seasonRecord, text } = summary(entry.games);
         const open = current.has(entry.id);
         const head = (
           <div class="season-head">
             <h2>{entry.name}</h2>
-            <span class="rec">{seasonRecord}</span>
-            <span class="muted">{text}</span>
+            <span class="rec">{formatRecord(teamRecord(entry.games))}</span>
           </div>
         );
         const table = (
@@ -224,7 +222,7 @@ const summary = (list: GameSummary[]) => {
                   <th>Game</th>
                   <th>Result</th>
                   <th class="wide-only">Rink</th>
-                  <th>Watch</th>
+                  <th>Video</th>
                 </tr>
               </thead>
               <tbody>
@@ -244,15 +242,17 @@ const summary = (list: GameSummary[]) => {
                         </a>
                       </td>
                       <td class="score">
-                        {outcome ? (
-                          <>
-                            <span class:list={["tag", outcome]}>{outcome[0].toUpperCase()}</span>
-                            {game.icePakScore}-{game.opponentScore}
-                            {game.shootout && " SO"}
-                          </>
-                        ) : (
-                          <span class="muted">–</span>
-                        )}
+                        <a href={`/games/${game.id}`}>
+                          {outcome ? (
+                            <>
+                              <span class:list={["tag", outcome]}>{outcome[0].toUpperCase()}</span>
+                              {game.icePakScore}-{game.opponentScore}
+                              {game.shootout && " SO"}
+                            </>
+                          ) : (
+                            <span class="muted">–</span>
+                          )}
+                        </a>
                       </td>
                       <td class="wide-only muted">{game.rink}</td>
                       <td class="watch">

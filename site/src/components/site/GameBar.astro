@@ -1,0 +1,70 @@
+---
+// The game bar below the header: the last two results, the next Games, and a tile that opens the Schedule.
+import { bugRows, clockTime, opponentName, shortDate, type GameSummary } from "../../lib/game-format";
+import Crest from "./Crest.astro";
+import OppMark from "./OppMark.astro";
+
+interface Props {
+  games: GameSummary[];
+  /** Utah time, 'YYYY-MM-DD HH:MM'. */
+  now: string;
+}
+
+const { games, now } = Astro.props;
+const done = games.filter((game) => game.startsAt < now && game.icePakScore !== null).slice(-2);
+const next = games.filter((game) => game.startsAt >= now).slice(0, 4);
+const day = (game: GameSummary) => shortDate(game.startsAt).replace(",", "");
+---
+
+{
+  done.length + next.length > 0 && (
+    <div class="gamebar">
+      <div class="wrap">
+        <div class="gtrack">
+          {done.map((game) => (
+            <a class="gtile" href={`/games/${game.id}`}>
+              <span class="gh">
+                <span>{day(game)}</span>
+                <span class="fin">Final</span>
+              </span>
+              {bugRows(game).map((row) => (
+                <span class:list={["gt", { lost: row.lost }]}>
+                  {row.team === "ice-pak" ? <Crest /> : <OppMark opponent={game.opponent} />}
+                  <b>{row.team === "ice-pak" ? "Ice Pak" : opponentName(game.opponent)}</b>
+                  <em>{row.score}</em>
+                </span>
+              ))}
+            </a>
+          ))}
+          {next.map((game) => (
+            <a class="gtile next" href={`/games/${game.id}`}>
+              <span class="gh">
+                <span>{day(game)}</span>
+                <span>{clockTime(game.startsAt)}</span>
+              </span>
+              {bugRows(game).map((row) => (
+                <span class="gt">
+                  {row.team === "ice-pak" ? <Crest /> : <OppMark opponent={game.opponent} />}
+                  <b>{row.team === "ice-pak" ? "Ice Pak" : opponentName(game.opponent)}</b>
+                </span>
+              ))}
+            </a>
+          ))}
+          <a class="gtile gsched" href="/schedule">
+            <span class="gh">
+              <span>Schedule</span>
+            </span>
+            <span class="gs-main">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path fill="currentColor" d="M4 0h2v2h4V0h2v2h3v14H1V2h3zm-1 6v8h10V6z" />
+                <path fill="currentColor" d="M5 8h2v2H5zm4 0h2v2H9z" />
+              </svg>
+              <b>All games</b>
+              <span class="gs-arrow" aria-hidden="true">→</span>
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,13 @@
+---
+// The Ice Pak crest of each Theme. The styles show only the crest of the current Theme.
+interface Props {
+  /** "watermark" puts the large crest behind the page title. */
+  class?: string;
+}
+
+const { class: extra } = Astro.props;
+---
+
+<img class:list={[extra, "crest-home"]} src="/img/crest-home.png" alt="" />
+<img class:list={[extra, "crest-away"]} src="/img/crest-away.png" alt="" />
+<img class:list={[extra, "crest-third"]} src="/img/crest-third.svg" alt="" />

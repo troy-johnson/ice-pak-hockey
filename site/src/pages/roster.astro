@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { utahTime } from "../lib/game-format";
+import { leagueSeasonLabel, utahTime } from "../lib/game-format";
 import { gamesOf, leagueSeasons, playersById, rosters, statData, type PublicPlayer } from "../lib/site-data";
 import { formatRecord, played, teamRecord } from "../lib/stats";
 
@@ -53,12 +53,11 @@ const record = teamRecord(seasonGames);
       <div class="controls">
         <form method="get">
           <label class="muted">
-            League Season
-            <select name="ls" data-submit>
+            <select name="ls" aria-label="League Season" data-submit>
               {
                 seasons.map((season) => (
                   <option value={season.id} selected={season.id === chosen?.id}>
-                    {season.name}
+                    {leagueSeasonLabel(season.name, season.league)}
                   </option>
                 ))
               }
@@ -69,7 +68,7 @@ const record = teamRecord(seasonGames);
         <span class="muted">
           {members.length} Players{seasonGames.length > 0 && ` · Record ${formatRecord(record)}`}
         </span>
-        {seasonGames.length > 0 && <a class="ghost push" href={`/stats?ls=${chosen?.id}`}>Stats of this League Season</a>}
+        {seasonGames.length > 0 && <a class="ghost push" href={`/stats?ls=${chosen?.id}`}>Season Stats</a>}
       </div>
     </div>
   </div>
@@ -78,8 +77,9 @@ const record = teamRecord(seasonGames);
     groups.map((group) => (
       <section>
         <div class="sec-head">
-          <h2>{group.title}</h2>
-          <span class="muted">{group.list.length}</span>
+          <h2>
+            {group.title} <small>({group.list.length})</small>
+          </h2>
         </div>
         <div class="lines card" style={`--cols:${group.cols}`}>
           {group.list.map((player) => (

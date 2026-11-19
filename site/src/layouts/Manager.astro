@@ -9,23 +9,10 @@ interface Props {
 }
 
 const { title, label = "Managers" } = Astro.props;
-const path = Astro.url.pathname;
-const links = [
-  { href: "/manager/players", label: "Player Bank" },
-  { href: "/manager/seasons", label: "League Seasons" },
-];
+const current = Astro.url.pathname.startsWith("/manager/seasons") ? "seasons" : "players";
 ---
 
-<Base title={`${title} · Ice Pak`} noindex>
-  <nav slot="nav" aria-label="Manager">
-    {
-      links.map((link) => (
-        <a href={link.href} aria-current={path.startsWith(link.href) ? "page" : undefined}>
-          {link.label}
-        </a>
-      ))
-    }
-  </nav>
+<Base title={`${title} · Ice Pak`} noindex manager current={current}>
   <div slot="band" class="band">
     <div class="wrap">
       <span class="label">{label}</span>

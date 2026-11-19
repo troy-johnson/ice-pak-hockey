@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import PlayerCell from "../components/site/PlayerCell.astro";
-import { initials, utahTime } from "../lib/game-format";
+import { leagueLabel, seasonLabel, utahTime } from "../lib/game-format";
 import { gamesOf, leagueSeasons, playersById, statData } from "../lib/site-data";
 import {
   byStat,
@@ -31,7 +31,6 @@ const playedSeasons = allSeasons.filter((season) => past.games.some((game) => ga
 const view = params.has("ls") ? "ls" : "all";
 const ls = playedSeasons.find((season) => season.id === Number(params.get("ls"))) ?? playedSeasons[0];
 const scoped = view === "ls" ? only(past, (game) => game.leagueSeasonId === ls?.id) : past;
-const title = view === "ls" ? (ls?.name ?? "") : "All time";
 
 const record = teamRecord(scoped.games);
 const diff = record.goalsFor - record.goalsAgainst;
@@ -50,11 +49,20 @@ const SORTS: { key: StatKey; label: string; wide?: boolean }[] = [
 const sort = SORTS.find((each) => each.key === params.get("sort"))?.key ?? "points";
 const rows = [...lines].sort(byStat(sort));
 const LEADERS: { key: StatKey; label: string }[] = [
-  { key: "points", label: "Points" },
+  { key: "gamesPlayed", label: "Games played" },
   { key: "goals", label: "Goals" },
   { key: "assists", label: "Assists" },
+  { key: "points", label: "Points" },
   { key: "penaltyMinutes", label: "Penalty minutes" },
 ];
+// The League list and the Season list. The League order is the order of the newest League Season.
+const leagueNames = [...new Set(playedSeasons.map((season) => season.league))];
+const numberOf = (playerId: number) => players.get(playerId)?.number ?? null;
+const badge = (playerId: number) => {
+  const player = players.get(playerId);
+  if (!player) return "?";
+  return player.number !== null ? String(player.number) : `${player.firstName[0] ?? ""}${player.lastName[0] ?? ""}`;
+};
 const POSITION_LETTERS = { forward: "F", defense: "D", goalie: "G" };
 const name = (playerId: number) => {
   const player = players.get(playerId);
@@ -70,17 +78,57 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
     <div class="wrap">
       <h1>Stats</h1>
       <div class="controls">
-        <div class="seg" role="group" aria-label="Stats view">
+        <form class="seg" role="group" aria-label="Stats view" method="get" data-stats-pick>
           <a href="/stats" aria-current={view === "all" ? "page" : undefined}>All time</a>
-          <a href={`/stats?ls=${ls?.id}`} aria-current={view === "ls" ? "page" : undefined}>League Season</a>
-        </div>
+          <select aria-label="League" data-league class:list={{ on: view === "ls" }}>
+            <option value="">League</option>
+            {
+              leagueNames.map((league) => (
+                <option value={league} selected={view === "ls" && ls?.league === league}>
+                  {leagueLabel(league)}
+                </option>
+              ))
+            }
+          </select>
+          <select name="ls" aria-label="Season" data-season class:list={{ on: view === "ls" }}>
+            <option value="">Season</option>
+            {
+              playedSeasons.map((season) => (
+                <option
+                  value={season.id}
+                  data-lg={season.league}
+                  selected={view === "ls" && season.id === ls?.id}
+                  hidden={view === "ls" && season.league !== ls?.league}
+                >
+                  {seasonLabel(season.name)}
+                </option>
+              ))
+            }
+          </select>
+          <noscript><button>Show</button></noscript>
+        </form>
       </div>
     </div>
   </div>
 
   <div class="stack">
     <div class="card strip team" style="--n:5">
-      <span class="title">{title}</span>
+      {
+        view === "ls" && ls ? (
+          <span class="title lsname">
+            <span>
+              <span class="label">League</span>
+              {leagueLabel(ls.league)}
+            </span>
+            <span>
+              <span class="label">Season</span>
+              {seasonLabel(ls.name)}
+            </span>
+          </span>
+        ) : (
+          <span class="title">All time</span>
+        )
+      }
       <div class="key"><span class="label">Record</span><b>{formatRecord(record)}</b></div>
       <div><span class="label">GP</span><b>{record.gamesPlayed}</b></div>
       <div><span class="label">GF</span><b>{record.goalsFor}</b></div>
@@ -101,20 +149,21 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
                 <div class="leader card">
                   <span class="label">{label}</span>
                   <div class="top">
-                    <span class="av" aria-hidden="true">{initials(name(top.playerId), 2)}</span>
+                    <span class="av" aria-hidden="true">{badge(top.playerId)}</span>
                     <a href={`/players/${top.playerId}`}>{name(top.playerId)}</a>
                     <b>{top[key]}</b>
                   </div>
-                  <ol>
-                    {rest.map((line, index) => (
+                  <ul>
+                    {rest.map((line) => (
                       <li>
                         <span>
-                          {index + 2}. <a href={`/players/${line.playerId}`}>{name(line.playerId)}</a>
+                          <span class="lno">{numberOf(line.playerId) ?? "–"}</span>
+                          <a href={`/players/${line.playerId}`}>{name(line.playerId)}</a>
                         </span>
                         <span>{line[key]}</span>
                       </li>
                     ))}
-                  </ol>
+                  </ul>
                 </div>
               );
             })}
@@ -133,23 +182,6 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
             </span>
           )
         }
-        {
-          view === "ls" && (
-            <form method="get">
-              <label class="muted">
-                League Season
-                <select name="ls" data-submit>
-                  {playedSeasons.map((season) => (
-                    <option value={season.id} selected={season.id === ls?.id}>
-                      {season.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <noscript><button>Show</button></noscript>
-            </form>
-          )
-        }
       </div>
       {
         rows.length === 0 ? (
@@ -159,9 +191,8 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
             <table>
               <thead>
                 <tr>
-                  <th class="n" />
+                  <th class="n">#</th>
                   <th>Player</th>
-                  <th class="n wide-only">Pos</th>
                   {SORTS.map((each) => (
                     <th class:list={["n", { "wide-only": each.wide, sorted: each.key === sort }]} aria-sort={each.key === sort ? "descending" : undefined}>
                       <a href={sortHref(each.key)}>{each.label}</a>
@@ -170,18 +201,18 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
                 </tr>
               </thead>
               <tbody>
-                {rows.map((line, index) => {
+                {rows.map((line) => {
                   const player = players.get(line.playerId);
                   const cell = (key: StatKey, value: string | number) => (
                     <td class:list={["n", { "wide-only": SORTS.find((each) => each.key === key)?.wide, sorted: key === sort }]}>{value}</td>
                   );
                   return (
                     <tr>
-                      <td class="rank">{index + 1}</td>
+                      <td class="n num">{player?.number ?? "–"}</td>
                       <td class="name">
                         <PlayerCell player={player} />
+                        {player?.position && <span class="pos">{POSITION_LETTERS[player.position]}</span>}
                       </td>
-                      <td class="n muted wide-only">{player?.position ? POSITION_LETTERS[player.position] : ""}</td>
                       {cell("gamesPlayed", line.gamesPlayed)}
                       {cell("goals", line.goals)}
                       {cell("assists", line.assists)}
@@ -196,9 +227,6 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
           </div>
         )
       }
-      <p class="muted">
-        {rows.length} Players. Select a column title to sort the table. The record counts only the Games with a final score.
-      </p>
     </section>
 
     {
@@ -212,7 +240,8 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
             <table>
               <thead>
                 <tr>
-                  <th>Player</th>
+                  <th class="n">#</th>
+                  <th>Goalie</th>
                   <th class="n sorted">GP</th>
                   <th class="n wide-only">W-L-T</th>
                   <th class="n">GA</th>
@@ -226,6 +255,7 @@ const years = [past.games[0]?.startsAt.slice(0, 4), past.games.at(-1)?.startsAt.
               <tbody>
                 {goalies.map((line) => (
                   <tr>
+                    <td class="n num">{numberOf(line.playerId) ?? "–"}</td>
                     <td class="name">
                       <PlayerCell player={players.get(line.playerId)} />
                     </td>

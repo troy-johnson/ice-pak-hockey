@@ -4,8 +4,10 @@ import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "@fontsource/barlow-condensed/700.css";
 import "@fontsource/barlow-condensed/800-italic.css";
+import "@fontsource/graduate/400.css";
 import "../styles/site.css";
-import { currentLeagueSeasons, formatRecord, teamRecord } from "../lib/stats";
+import Crest from "../components/site/Crest.astro";
+import GameBar from "../components/site/GameBar.astro";
 import { utahTime } from "../lib/game-format";
 import { gamesOf } from "../lib/site-data";
 
@@ -14,34 +16,54 @@ interface Props {
   /** Keeps a page out of search engines. */
   noindex?: boolean;
   /** The header link of this page. */
-  current?: "schedule" | "stats" | "roster";
+  current?: string;
   /** The link preview: a description and an image. */
   description?: string;
   image?: string;
+  /** A Manager page: the Manager header, and no game bar. */
+  manager?: boolean;
 }
 
-const { title, noindex = false, current, description, image } = Astro.props;
-const links = [
-  { name: "schedule", label: "Schedule", href: "/schedule" },
-  { name: "stats", label: "Stats", href: "/stats" },
-  { name: "roster", label: "Roster", href: "/roster" },
-] as const;
-
-// The header shows the record of each current League Season. The manager pages have no record.
-const now = utahTime(new Date());
-const allGames = Astro.url.pathname.startsWith("/manager") ? [] : await gamesOf(Astro.locals);
-const records = currentLeagueSeasons(allGames, now).map((leagueSeasonId) => {
-  const games = allGames.filter((game) => game.leagueSeasonId === leagueSeasonId && game.startsAt < now);
-  return { league: games[0].league, name: games[0].leagueSeason, record: formatRecord(teamRecord(games)) };
-});
-const themes = [
-  { name: "home", label: "Home" },
-  { name: "away", label: "Away" },
-  { name: "third", label: "Third" },
+const { title, noindex = false, current, description, image, manager = false } = Astro.props;
+const links = manager
+  ? [
+      { name: "players", label: "Players", href: "/manager/players" },
+      { name: "seasons", label: "Seasons", href: "/manager/seasons" },
+    ]
+  : [
+      { name: "schedule", label: "Schedule", href: "/schedule" },
+      { name: "stats", label: "Stats", href: "/stats" },
+      { name: "roster", label: "Roster", href: "/roster" },
+    ];
+// The Manager links: in the "Managers" list of the header, and in the phone menu.
+const managerLinks = [
+  { label: "Players", href: "/manager/players" },
+  { label: "Seasons", href: "/manager/seasons" },
+  { label: "Public site", href: "/" },
 ];
+const themes = [
+  { name: "home", label: "Home", kit: "Navy jersey" },
+  { name: "away", label: "Away", kit: "White jersey" },
+  { name: "third", label: "Heritage", kit: "Red jersey" },
+];
+const now = utahTime(new Date());
+const games = manager ? [] : await gamesOf(Astro.locals);
+const lock = "M3 5V3.5a3 3 0 0 1 6 0V5h1v7H2V5zm1.5 0h3V3.5a1.5 1.5 0 0 0-3 0z";
+const openLock = "M3 5V3.5a3 3 0 0 1 5.8-1.1l-1.4.6A1.5 1.5 0 0 0 4.5 3.5V5H10v7H2V5z";
 ---
 
-<html lang="en">
+<html
+  lang="en"
+  data-recent="bar"
+  data-bar="on"
+  data-notice="none"
+  data-nmsg="none"
+  data-nstyle="auto"
+  data-nview="auto"
+  data-switcher="buttons"
+  data-auth={manager ? "in" : "out"}
+  data-mstyle="nav"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -55,22 +77,25 @@ const themes = [
     <script is:inline>
       // The visitor's choice selects the Theme. With no choice, the device setting selects Home or Away.
       (() => {
-        const stored = localStorage.getItem("theme");
+        let stored = null;
+        try {
+          stored = localStorage.getItem("theme");
+        } catch {}
         const light = matchMedia("(prefers-color-scheme: light)").matches;
         const theme = ["home", "away", "third"].includes(stored) ? stored : light ? "away" : "home";
         document.documentElement.dataset.theme = theme;
       })();
     </script>
   </head>
-  <body>
-    <header class="site-head">
-      <div class="wrap">
-        <a class="brand" href="/">
-          <img class="crest-navy" src="/crest-navy.png" alt="" width="399" height="420" />
-          <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
-          <span>Ice Pak</span>
-        </a>
-        <slot name="nav">
+  <body class:list={{ "mgr-area": manager }}>
+    <div class="sticky">
+      <header class="site-head">
+        <div class="wrap">
+          <a class="brand" href={manager ? "/manager" : "/"}>
+            <Crest />
+            <span>Ice Pak</span>
+            {manager && <span class="mgr-badge">Manager</span>}
+          </a>
           <nav aria-label="Main">
             {
               links.map((link) => (
@@ -80,48 +105,147 @@ const themes = [
               ))
             }
           </nav>
-        </slot>
-        {
-          records.length > 0 && (
-            <span class="rec">
-              {records.map((each) => (
-                <span title={each.name}>
-                  {each.league}
-                  <b>{each.record}</b>
-                </span>
-              ))}
+          {
+            manager ? (
+              <div class="mgr-dd" data-auth="in">
+                <button
+                  type="button"
+                  class="mgr-link mgr-dd-btn"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  aria-controls="mgr-dd-menu"
+                >
+                  <svg viewBox="0 0 12 12" aria-hidden="true">
+                    <path fill="currentColor" d={openLock} />
+                  </svg>
+                  <span>Managers</span>
+                  <span class="acct-caret" aria-hidden="true">
+                    ▾
+                  </span>
+                </button>
+                <div class="acct-menu" id="mgr-dd-menu" hidden>
+                  <span class="acct-head">Signed in as a Manager</span>
+                  {managerLinks.map((link) => (
+                    <a href={link.href}>{link.label}</a>
+                  ))}
+                  <a href="/cdn-cgi/access/logout" data-signout>
+                    Sign out
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <a class="mgr-link" data-auth="out" href="/manager">
+                <svg viewBox="0 0 12 12" aria-hidden="true">
+                  <path fill="currentColor" d={lock} />
+                </svg>
+                <span>Managers</span>
+              </a>
+            )
+          }
+          <div class="switch" role="group" aria-label="Theme">
+            {
+              themes.map((theme) => (
+                <button type="button" data-theme-choice={theme.name}>
+                  <i class:list={["kit-chip", theme.name]} />
+                  <span>{theme.label}</span>
+                </button>
+              ))
+            }
+          </div>
+          <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu">
+            <span class="bars" aria-hidden="true">
+              <i></i><i></i><i></i>
+              <svg class="sticks" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4.5 2.5 L15.4 17.8"></path>
+                <path d="M19.5 2.5 L8.6 17.8"></path>
+                <path class="blade" d="M15 17.6 Q16 19.4 18.2 19.4 L21.6 19.4"></path>
+                <path class="blade" d="M9 17.6 Q8 19.4 5.8 19.4 L2.4 19.4"></path>
+                <ellipse class="puck" cx="12" cy="19.1" rx="2.7" ry="1.65"></ellipse>
+              </svg>
             </span>
-          )
-        }
-        <div class="switch" role="group" aria-label="Theme">
+            <span class="mb-text">Menu</span>
+          </button>
+        </div>
+      </header>
+      <div class="mmenu" id="menu" hidden>
+        <nav aria-label="Menu">
+          {
+            links.map((link) => (
+              <a href={link.href} aria-current={link.name === current ? "page" : undefined}>
+                {link.label}
+              </a>
+            ))
+          }
+        </nav>
+        <div class="mm-theme" role="group" aria-label="Theme">
+          <span class="label">Theme</span>
           {
             themes.map((theme) => (
-              <button type="button" data-theme-choice={theme.name} aria-label={theme.label}>
+              <button type="button" data-theme-choice={theme.name}>
                 <i class:list={["kit-chip", theme.name]} />
-                <span>{theme.label}</span>
+                {theme.label}
               </button>
             ))
           }
         </div>
+        {
+          manager ? (
+            <div class="mm-acct" data-auth="in">
+              <span class="label">Manager</span>
+              <a href="/">Public site</a>
+              <a href="/cdn-cgi/access/logout" data-signout>
+                Sign out
+              </a>
+            </div>
+          ) : (
+            <a class="mm-mgr" data-auth="out" href="/manager">
+              Managers
+            </a>
+          )
+        }
       </div>
-    </header>
+      {!manager && <GameBar games={games} now={now} />}
+    </div>
     <slot name="band" />
     <main class="wrap">
       <slot />
     </main>
     <footer class="site-foot">
       <div class="wrap">
-        <img class="crest-navy" src="/crest-navy.png" alt="" width="399" height="420" />
-        <img class="crest-third" src="/crest-third.svg" alt="" width="399" height="420" />
-        <a href="https://www.youtube.com/@icepakhockey">Recaps on YouTube</a>
-        <a href="/schedule">Schedule</a>
-        <a href="/stats">Stats</a>
-        <span class="right"><a href="/manager">Managers</a></span>
+        <Crest />
+        <span class="social" aria-label="Ice Pak on social media">
+          <a href="https://www.youtube.com/@icepakhockey" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M23 7.2a3 3 0 0 0-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 0 0 1 7.2 31 31 0 0 0 .5 12a31 31 0 0 0 .5 4.8 3 3 0 0 0 2.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 0 0 2.1-2.1 31 31 0 0 0 .5-4.8 31 31 0 0 0-.5-4.8zM9.7 15.1V8.9l5.8 3.1z"
+              ></path>
+            </svg>
+          </a>
+        </span>
+        <span class="contact">Contact: <a href="mailto:contact@icepakhockey.com">contact@icepakhockey.com</a></span>
+        <span class="right"
+          >© {now.slice(0, 4)} Ice Pak Hockey. The Ice Pak™ name and crest belong to the team.{
+            !manager && (
+              <>
+                {" · "}
+                <a href="/manager">Managers</a>
+              </>
+            )
+          }</span
+        >
       </div>
     </footer>
     <script is:inline>
       (() => {
         const root = document.documentElement;
+        const save = (key, value) => {
+          try {
+            localStorage.setItem(key, value);
+          } catch {}
+        };
+
+        // Theme: the header buttons and the phone menu buttons.
         const buttons = document.querySelectorAll("[data-theme-choice]");
         const show = () =>
           buttons.forEach((button) =>
@@ -130,15 +254,52 @@ const themes = [
         buttons.forEach((button) =>
           button.addEventListener("click", () => {
             root.dataset.theme = button.dataset.themeChoice;
-            localStorage.setItem("theme", button.dataset.themeChoice);
+            save("theme", button.dataset.themeChoice);
             show();
           }),
         );
         show();
 
+        // Phone menu: one button opens the pages, the Theme, and the Manager link.
+        const menuButton = document.querySelector(".menu-btn");
+        const menu = document.getElementById("menu");
+        const openMenu = (open) => {
+          menu.hidden = !open;
+          menuButton.setAttribute("aria-expanded", String(open));
+          root.classList.toggle("menu-open", open);
+        };
+        menuButton.addEventListener("click", () => openMenu(menu.hidden));
+        matchMedia("(min-width: 761px)").addEventListener("change", (query) => {
+          if (query.matches) openMenu(false);
+        });
+
+        // Manager pages: the "Managers" button opens the list of Manager links.
+        const managerButton = document.querySelector(".mgr-dd-btn");
+        const managerList = managerButton && document.getElementById(managerButton.getAttribute("aria-controls"));
+        const closeManager = () => {
+          if (!managerButton) return;
+          managerList.hidden = true;
+          managerButton.setAttribute("aria-expanded", "false");
+        };
+        managerButton?.addEventListener("click", (event) => {
+          event.stopPropagation();
+          const open = managerList.hidden;
+          managerList.hidden = !open;
+          managerButton.setAttribute("aria-expanded", String(open));
+        });
+        document.addEventListener("click", (event) => {
+          if (!event.target.closest(".acct-menu")) closeManager();
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape") return;
+          openMenu(false);
+          closeManager();
+          closeVideo();
+        });
+
         // Views: one panel for each button. Add ?view=<name> to the address to open that view.
         const views = document.querySelectorAll("[data-view]");
-        const panels = document.querySelectorAll("[data-panel]");
+        const panels = document.querySelectorAll("body [data-panel]");
         const wanted = new URLSearchParams(location.search).get("view");
         views.forEach((view) => {
           view.addEventListener("click", () => {
@@ -147,6 +308,41 @@ const themes = [
           });
           if (view.dataset.view === wanted) view.click();
         });
+
+        // Video: a click opens a player over the page. The visitor stays on the site.
+        function closeVideo() {
+          document.querySelector(".player-pop")?.remove();
+        }
+        document.querySelectorAll("[data-yt]").forEach((frame) =>
+          frame.addEventListener("click", (event) => {
+            event.preventDefault();
+            const pop = document.createElement("div");
+            pop.className = "player-pop" + (frame.classList.contains("frame") ? " vertical" : "");
+            pop.setAttribute("role", "dialog");
+            pop.setAttribute("aria-label", "Video player");
+            const box = document.createElement("div");
+            box.className = "box";
+            const title = document.createElement("span");
+            title.className = "title";
+            title.textContent = frame.getAttribute("aria-label") || "Recap";
+            const close = document.createElement("button");
+            close.type = "button";
+            close.className = "close";
+            close.textContent = "Close";
+            close.addEventListener("click", closeVideo);
+            const player = document.createElement("iframe");
+            player.src = `https://www.youtube-nocookie.com/embed/${frame.dataset.yt}?autoplay=1&rel=0`;
+            player.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+            player.title = "Video player";
+            box.append(title, close, player);
+            pop.append(box);
+            pop.addEventListener("click", (click) => {
+              if (click.target === pop) closeVideo();
+            });
+            document.body.append(pop);
+            close.focus();
+          }),
+        );
 
         // Schedule calendar: one panel for each month. The month of today opens first.
         const months = [...document.querySelectorAll("[data-month]")];
@@ -168,9 +364,25 @@ const themes = [
         }
 
         // A list that changes the page: the form sends the choice.
-        document.querySelectorAll("select[data-submit]").forEach((select) =>
-          select.addEventListener("change", () => select.form.submit()),
-        );
+        document
+          .querySelectorAll("select[data-submit]")
+          .forEach((select) => select.addEventListener("change", () => select.form.submit()));
+
+        // Stats: a League opens its newest League Season. A Season opens that League Season.
+        const statsPick = document.querySelector("[data-stats-pick]");
+        if (statsPick) {
+          const league = statsPick.querySelector("[data-league]");
+          const season = statsPick.querySelector("[data-season]");
+          league.addEventListener("change", () => {
+            const first = [...season.options].find((option) => option.dataset.lg === league.value);
+            if (!first) return;
+            season.value = first.value;
+            statsPick.submit();
+          });
+          season.addEventListener("change", () => {
+            if (season.value) statsPick.submit();
+          });
+        }
       })();
     </script>
   </body>

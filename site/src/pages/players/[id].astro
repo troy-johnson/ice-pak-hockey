@@ -1,7 +1,8 @@
 ---
 import Base from "../../layouts/Base.astro";
-import { opponentName, plainDate, resultLabel, utahTime, versus } from "../../lib/game-format";
+import { leagueLabel, leagueSeasonLabel, opponentName, plainDate, resultLabel, utahTime, versus } from "../../lib/game-format";
 import { LABELS } from "../../lib/roster";
+import Crest from "../../components/site/Crest.astro";
 import GoalRows from "../../components/site/GoalRows.astro";
 import { gamesOf, leagueSeasons, playerGoals, playersById, statData } from "../../lib/site-data";
 import { formatPointsPerGame, only, played, skaterLines, type SkaterLine } from "../../lib/stats";
@@ -62,9 +63,8 @@ const strip = (label: string, line: SkaterLine) => ({ label, line });
 <Base title={`${name} · Ice Pak Hockey`} current="roster">
   <div slot="band" class="band">
     <div class="wrap">
-      <img class="watermark crest-navy" src="/crest-navy.png" alt="" />
-      <img class="watermark crest-third" src="/crest-third.svg" alt="" />
-      <p class="crumbs"><a href="/roster">Roster</a>{latest && ` / ${latest.leagueSeason}`}</p>
+      <Crest class="watermark" />
+      <p class="crumbs"><a href="/roster">Roster</a>{latest && ` / ${leagueSeasonLabel(latest.leagueSeason, latest.league)}`}</p>
       <div class="player-head">
         {player.number !== null && <span class="jersey-no">{player.number}</span>}
         <div>
@@ -83,7 +83,7 @@ const strip = (label: string, line: SkaterLine) => ({ label, line });
 
   <div class="strips">
     {
-      [...(latest && thisSeason ? [strip(latest.leagueSeason, thisSeason)] : []), strip("Career", career)].map(({ label, line }) => (
+      [...(latest && thisSeason ? [strip(leagueSeasonLabel(latest.leagueSeason, latest.league), thisSeason)] : []), strip("Career", career)].map(({ label, line }) => (
         <div class="card strip" style="--n:6">
           <span class="title">{label}</span>
           <div><span class="label">GP</span><b>{line.gamesPlayed}</b></div>
@@ -172,9 +172,9 @@ const strip = (label: string, line: SkaterLine) => ({ label, line });
               {bySeason.map(({ leagueSeason, line }) => (
                 <tr>
                   <td class="name">
-                    <a href={`/roster?ls=${leagueSeason.id}`}>{leagueSeason.name}</a>
+                    <a href={`/roster?ls=${leagueSeason.id}`}>{leagueSeasonLabel(leagueSeason.name, leagueSeason.league)}</a>
                   </td>
-                  <td class="n muted wide-only">{leagueSeason.league}</td>
+                  <td class="n muted wide-only">{leagueLabel(leagueSeason.league)}</td>
                   <td class="n">{line.gamesPlayed}</td>
                   <td class="n">{line.goals}</td>
                   <td class="n">{line.assists}</td>

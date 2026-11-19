@@ -208,3 +208,18 @@ export function videoImage(url: string, image = ""): string | null {
   const id = youtubeId(url);
   return id ? `https://i.ytimg.com/vi/${id}/hqdefault.jpg` : null;
 }
+
+/** The League name that a visitor sees: "SLC County" for County, "Mammoth" for MIC. */
+export function leagueLabel(league: string): string {
+  return ({ County: "SLC County", MIC: "Mammoth" } as Record<string, string>)[league] ?? league;
+}
+
+/** The Season part of a League Season name: "Winter '26-27" from "County Winter '26-27". */
+export function seasonLabel(leagueSeason: string): string {
+  return leagueSeason.split(" ").slice(1).join(" ") || leagueSeason;
+}
+
+/** A League Season name with the League name that a visitor sees: "SLC County Winter '26-27". */
+export function leagueSeasonLabel(leagueSeason: string, league: string): string {
+  return `${leagueLabel(league)} ${seasonLabel(leagueSeason)}`;
+}

@@ -4,10 +4,13 @@ import {
   clockTime,
   gameTitle,
   initials,
+  leagueLabel,
+  leagueSeasonLabel,
   lineScore,
   longDate,
   periodName,
   resultLabel,
+  seasonLabel,
   shortDate,
   utahTime,
   versus,
@@ -124,5 +127,18 @@ describe("youtubeId", () => {
   it("prefers the image from HHG", () => {
     expect(videoImage("https://youtu.be/akh50MMs8lI", "/img/recap.jpg")).toBe("/img/recap.jpg");
     expect(videoImage("https://youtu.be/akh50MMs8lI")).toBe("https://i.ytimg.com/vi/akh50MMs8lI/hqdefault.jpg");
+  });
+});
+
+describe("League labels", () => {
+  it("names the League as the visitor knows it", () => {
+    expect(leagueLabel("County")).toBe("SLC County");
+    expect(leagueLabel("MIC")).toBe("Mammoth");
+    expect(leagueLabel("UHL")).toBe("UHL");
+  });
+
+  it("splits the Season from a League Season name", () => {
+    expect(seasonLabel("County Winter '26-27")).toBe("Winter '26-27");
+    expect(leagueSeasonLabel("MIC Spring '26", "MIC")).toBe("Mammoth Spring '26");
   });
 });

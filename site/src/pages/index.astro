@@ -1,9 +1,20 @@
 ---
 import Base from "../layouts/Base.astro";
-import GameCard from "../components/site/GameCard.astro";
+import OppMark from "../components/site/OppMark.astro";
 import PlayerCell from "../components/site/PlayerCell.astro";
 import ScoreBug from "../components/site/ScoreBug.astro";
-import { headline, periodName, plainDate, utahTime, videoImage } from "../lib/game-format";
+import {
+  headline,
+  leagueLabel,
+  longDate,
+  opponentName,
+  periodName,
+  seasonLabel,
+  utahTime,
+  versus,
+  videoImage,
+  youtubeId,
+} from "../lib/game-format";
 import { boxScore, gamesOf, playersById, statData } from "../lib/site-data";
 import { byStat, currentLeagueSeasons, only, played, skaterLines } from "../lib/stats";
 
@@ -14,26 +25,33 @@ const games = await gamesOf(Astro.locals);
 const past = games.filter((game) => game.startsAt < now);
 // The hero is the newest Game with a final score, or else the newest Game.
 const latest = past.findLast((game) => game.icePakScore !== null) ?? past.at(-1);
-const current = new Set(currentLeagueSeasons(games, now));
+const current = currentLeagueSeasons(games, now);
 const [data, players, box] = await Promise.all([
   statData(games),
   playersById(),
   latest ? boxScore(latest.id) : Promise.resolve(null),
 ]);
 
-// The Games of the current League Seasons, newest first. With none, the newest three Games.
-const seasonGames = past.filter((game) => current.has(game.leagueSeasonId)).reverse();
-const cards = (seasonGames.length ? seasonGames : [...past].reverse()).slice(0, 3);
-const leaders = skaterLines(only(played(data, now), (game) => current.has(game.leagueSeasonId)))
-  .filter((line) => line.points > 0)
-  .sort(byStat("points"))
-  .slice(0, 6);
+// Points leaders: one table for each current League Season.
+const playedData = played(data, now);
+const boards = current
+  .map((leagueSeasonId) => {
+    const game = games.find((each) => each.leagueSeasonId === leagueSeasonId)!;
+    const lines = skaterLines(only(playedData, (each) => each.leagueSeasonId === leagueSeasonId))
+      .filter((line) => line.points > 0)
+      .sort(byStat("points"))
+      .slice(0, 6);
+    return { league: leagueLabel(game.league), season: seasonLabel(game.leagueSeason), lines };
+  })
+  .filter((board) => board.lines.length > 0);
 const shorts = (box?.goals ?? []).filter((goal) => goal.team === "ice-pak" && goal.videoIsShort).slice(0, 3);
 const recapImage = latest?.recapUrl ? videoImage(latest.recapUrl, latest.recapImage) : null;
+const recapId = latest?.recapUrl ? youtubeId(latest.recapUrl) : null;
 const nameOf = (playerId: number | null) => {
   const player = playerId === null ? undefined : players.get(playerId);
   return player ? `${player.firstName} ${player.lastName}` : "Ice Pak";
 };
+const monthDay = (startsAt: string) => longDate(startsAt).split(", ")[1];
 ---
 
 <Base title="Ice Pak Hockey" description="The game videos, the schedule, and the stats of Ice Pak, a hockey team in Salt Lake City.">
@@ -42,15 +60,21 @@ const nameOf = (playerId: number | null) => {
       {
         latest ? (
           <div class:list={["hero", { "no-video": !recapImage }]}>
-            {recapImage && (
-              <a class="video" href={latest.recapUrl}>
-                <img src={recapImage} alt={`Recap of ${headline(latest)}`} />
-                <span class="play">Watch the Recap</span>
-              </a>
-            )}
+            {recapImage &&
+              (recapId ? (
+                <button type="button" class="video" data-yt={recapId} aria-label={`Recap of ${headline(latest)}`}>
+                  <img src={recapImage} alt={`Recap of ${headline(latest)}`} />
+                  <span class="play">Watch the Recap</span>
+                </button>
+              ) : (
+                <a class="video" href={latest.recapUrl}>
+                  <img src={recapImage} alt={`Recap of ${headline(latest)}`} />
+                  <span class="play">Watch the Recap</span>
+                </a>
+              ))}
             <div class="side">
               <span class="label">
-                {latest.icePakScore === null ? "Latest game" : "Final"} · {plainDate(latest.startsAt)} · {latest.leagueSeason}
+                {latest.icePakScore === null ? "Latest game" : "Final"} · {longDate(latest.startsAt)}
               </span>
               <h1>{headline(latest)}</h1>
               <ScoreBug game={latest} large />
@@ -66,43 +90,37 @@ const nameOf = (playerId: number | null) => {
     </div>
   </div>
 
-  {
-    cards.length > 0 && (
-      <section>
-        <div class="sec-head">
-          <h2>{seasonGames.length ? "This season" : "Latest games"}</h2>
-          <a href="/schedule">Full Schedule</a>
-        </div>
-        <div class="cards three">
-          {cards.map((game) => (
-            <GameCard game={game} />
-          ))}
-        </div>
-      </section>
-    )
-  }
-
   <div class="two-col">
     {
-      shorts.length > 0 ? (
+      shorts.length > 0 && latest ? (
         <section>
           <div class="sec-head">
             <h2>Shorts</h2>
-            <span class="muted">{latest && headline(latest)}</span>
+            <a class="sec-sub" href={`/games/${latest.id}`}>
+              <OppMark opponent={latest.opponent} chip={false} />
+              {versus(latest.side)} {opponentName(latest.opponent)} · {monthDay(latest.startsAt)}
+            </a>
           </div>
           <div class="shorts three">
             {shorts.map((goal) => {
               const image = videoImage(goal.videoUrl);
+              const id = youtubeId(goal.videoUrl);
+              const title = `${nameOf(goal.scorerId)} · ${periodName(goal.period)} ${goal.clock}`;
               return (
-                <a class="short" href={goal.videoUrl}>
-                  <span class="frame">
-                    {image && <img src={image} alt="" />}
-                    <span class="play">Short</span>
-                  </span>
-                  <span>
-                    {nameOf(goal.scorerId)} · {periodName(goal.period)} {goal.clock}
-                  </span>
-                </a>
+                <div class="short">
+                  {id ? (
+                    <button type="button" class="frame" data-yt={id} aria-label={`Play the Short: ${title}`}>
+                      {image && <img src={image} alt="" />}
+                      <span class="play">Short</span>
+                    </button>
+                  ) : (
+                    <a class="frame" href={goal.videoUrl}>
+                      {image && <img src={image} alt="" />}
+                      <span class="play">Short</span>
+                    </a>
+                  )}
+                  <span>{title}</span>
+                </div>
               );
             })}
           </div>
@@ -125,37 +143,51 @@ const nameOf = (playerId: number | null) => {
           <a href="/stats">All Stats</a>
         </div>
         {
-          leaders.length === 0 ? (
+          boards.length === 0 ? (
             <p class="muted">No Player has a point in the current League Seasons yet.</p>
           ) : (
-            <div class="card table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th class="n" />
-                    <th>Player</th>
-                    <th class="n">GP</th>
-                    <th class="n">G</th>
-                    <th class="n">A</th>
-                    <th class="n sorted">Pts</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaders.map((line, index) => (
-                    <tr>
-                      <td class="rank">{index + 1}</td>
-                      <td class="name">
-                        <PlayerCell player={players.get(line.playerId)} />
-                      </td>
-                      <td class="n">{line.gamesPlayed}</td>
-                      <td class="n">{line.goals}</td>
-                      <td class="n">{line.assists}</td>
-                      <td class="n sorted">{line.points}</td>
-                    </tr>
+            <>
+              {boards.length > 1 && (
+                <div class="lead-pick seg" role="group" aria-label="League Season">
+                  {boards.map((board, index) => (
+                    <button type="button" data-view={`lead-${index}`} aria-pressed={index === 0 ? "true" : "false"}>
+                      <span class="lp-lg">{board.league}</span>
+                      <span class="lp-sn">{board.season}</span>
+                    </button>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+              )}
+              {boards.map((board, index) => (
+                <div class="card table-wrap" data-panel={`lead-${index}`} hidden={index > 0}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th class="n">#</th>
+                        <th>Player</th>
+                        <th class="n">GP</th>
+                        <th class="n">G</th>
+                        <th class="n">A</th>
+                        <th class="n sorted">Pts</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {board.lines.map((line) => (
+                        <tr>
+                          <td class="n num">{players.get(line.playerId)?.number ?? "–"}</td>
+                          <td class="name">
+                            <PlayerCell player={players.get(line.playerId)} />
+                          </td>
+                          <td class="n">{line.gamesPlayed}</td>
+                          <td class="n">{line.goals}</td>
+                          <td class="n">{line.assists}</td>
+                          <td class="n sorted">{line.points}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))}
+            </>
           )
         }
       </section>

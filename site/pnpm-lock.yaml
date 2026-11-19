@@ -14,6 +14,9 @@ importers:
       '@fontsource/barlow-condensed':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/graduate':
+        specifier: '5'
+        version: 5.3.0
       '@fontsource/inter':
         specifier: ^5.3.0
         version: 5.3.0
@@ -535,6 +538,9 @@ packages:
 
   '@fontsource/barlow-condensed@5.3.0':
     resolution: {integrity: sha512-RA7MmIx0v3eQ6Gcf74qLVLOwLB0GpPOzx+eU9iG/AmCnSJGcIWYeU8y6CEMGZ210MGwGg5CZhzLkkvyZdTTk1g==}
+
+  '@fontsource/graduate@5.3.0':
+    resolution: {integrity: sha512-Bv3IryiDnzmj5Uo9WP4MMtlXKebCAqsEIIjmcK1H2lWPleF3YNXWUKpJgOMt3SVDUxxQ2CeDzqonj5IcThOjBg==}
 
   '@fontsource/inter@5.3.0':
     resolution: {integrity: sha512-RofMylZmjlJEfELXeNHFWBRcSs75rGU/6bV2S2jfnvv/3rPXPGe0LgUJTklcHZ9lM4OZmAVFhcJPnACfb91A3g==}
@@ -2497,6 +2503,8 @@ snapshots:
     optional: true
 
   '@fontsource/barlow-condensed@5.3.0': {}
+
+  '@fontsource/graduate@5.3.0': {}
 
   '@fontsource/inter@5.3.0': {}
 

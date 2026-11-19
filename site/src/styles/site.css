@@ -1,7 +1,8 @@
-/* The styles of the public site. They come from the mockups in docs/design/ (mock.css).
+/* The styles of the public site. They come from the mockups in docs/design/ (mock.css), with no dev panel.
    Part 1 has the Theme tokens. Part 2 has the base and the page frame. Part 3 has the shared parts.
    Part 4 has the page layouts. docs/design/visual-direction.md gives the reason for each choice.
-   The script in Base.astro always sets data-theme, so this file has no block for the device setting. */
+   The script in Base.astro always sets data-theme, so this file has no block for the device setting.
+   Base.astro sets the mockup options on <html>: recent "bar", no notice, notice style "auto", Manager style "nav". */
 
 /* ---------- 1. Theme tokens ---------- */
 :root,
@@ -19,9 +20,20 @@
   --on-fill: #ffffff;
   /* The band is the header and the top of each page. */
   --head: #0a1427;
+  /* Links are white in the Home Theme. */
+  --link: #ffffff;
+  /* The second Kit colour, for small marks. */
+  --second: #5ba5d1;
+  /* Calendar: the primary and secondary Kit colours. */
+  --cal-home: #27478a;
+  --cal-home-line: #5ba5d1;
+  --cal-home-ink: #ffffff;
+  --cal-away: #5ba5d1;
+  --cal-away-line: #a9d3ee;
+  --cal-away-ink: #0d1930;
   --band: linear-gradient(180deg, rgb(23 41 90 / 0.46), rgb(13 25 48 / 0.84));
   /* The veil over the rink photo: light at the top of the window, heavy at the bottom. */
-  --veil: linear-gradient(180deg, rgb(13 25 48 / 0.34), rgb(13 25 48 / 0.8) 75%);
+  --veil: linear-gradient(180deg, rgb(13 25 48 / 0.55), rgb(13 25 48 / 0.88) 75%);
   --shade: rgb(0 0 0 / 0.35);
   --display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
   --body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -42,8 +54,16 @@
   --kit-line: #1d315f;
   --accent: #2a4a8f;
   --head: #ffffff;
+  --link: var(--accent);
+  --second: #5ba5d1;
+  --cal-home: #1d315f;
+  --cal-home-line: #1d315f;
+  --cal-home-ink: #ffffff;
+  --cal-away: #5ba5d1;
+  --cal-away-line: #3d8fc2;
+  --cal-away-ink: #0d1930;
   --band: linear-gradient(180deg, rgb(29 49 95 / 0.66), rgb(23 40 79 / 0.92));
-  --veil: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.8) 75%);
+  --veil: linear-gradient(180deg, rgb(255 255 255 / 0.3), rgb(255 255 255 / 0.5) 75%);
   --shade: rgb(29 49 95 / 0.12);
 }
 
@@ -60,8 +80,16 @@
   --kit-line: #ffffff;
   --accent: #ffffff;
   --head: #c0211c;
+  --link: var(--accent);
+  --second: #ffffff;
+  --cal-home: #c0211c;
+  --cal-home-line: #e5483f;
+  --cal-home-ink: #ffffff;
+  --cal-away: #000000;
+  --cal-away-line: #c0211c;
+  --cal-away-ink: #ffffff;
   --band: linear-gradient(180deg, rgb(192 33 28 / 0.72), rgb(150 22 18 / 0.93));
-  --veil: linear-gradient(180deg, rgb(10 10 10 / 0.42), rgb(10 10 10 / 0.86) 75%);
+  --veil: linear-gradient(180deg, rgb(10 10 10 / 0.58), rgb(10 10 10 / 0.9) 75%);
   --shade: rgb(0 0 0 / 0.5);
 }
 
@@ -70,6 +98,7 @@
   --ink: #ffffff;
   --frost: rgb(255 255 255 / 0.8);
   --accent: #ffffff;
+  --link: #ffffff;
   --kit-line: #ffffff;
   --rule: rgb(255 255 255 / 0.24);
   --panel: rgb(255 255 255 / 0.08);
@@ -90,6 +119,37 @@
   --kit-line: #ffffff;
 }
 
+/* Away: the page ground is the ice of the rink image. Text on the ice is navy. A card is pure white and has the usual text colours. */
+:root[data-theme="away"] main {
+  --frost: #1d315f;
+  --accent: #1d315f;
+  --link: #1d315f;
+  --rule: #7f93b3;
+}
+
+:root[data-theme="away"] main .card,
+:root[data-theme="away"] main .cal .day,
+:root[data-theme="away"] main .state {
+  --frost: #52658c;
+  --accent: #2a4a8f;
+  --link: #2a4a8f;
+  --rule: #cbd5e6;
+}
+
+:root[data-theme="away"] main .card {
+  background: #ffffff;
+  border-color: #b9c6dc;
+  box-shadow: 0 12px 28px -16px rgb(13 25 48 / 0.45);
+}
+
+:root[data-theme="away"] main .cal .day:not(.game) {
+  background: rgb(255 255 255 / 0.55);
+}
+
+:root[data-theme="away"] main .mock-note {
+  background: rgb(255 255 255 / 0.7);
+}
+
 /* ---------- 2. Base and page frame ---------- */
 * {
   box-sizing: border-box;
@@ -99,8 +159,6 @@ body {
   position: relative;
   margin: 0;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   background: var(--ground);
   color: var(--ink);
   font: 400 16px/1.5 var(--body);
@@ -114,7 +172,7 @@ body::before {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  background: var(--veil), url(/img/bg-home.jpg) center 78% / cover no-repeat;
+  background: var(--veil), url(/img/bg-home.jpg) center 60% / cover no-repeat;
 }
 
 :root[data-theme="away"] body::before {
@@ -140,7 +198,7 @@ main,
 }
 
 a {
-  color: var(--accent);
+  color: var(--link);
   text-underline-offset: 3px;
 }
 
@@ -220,14 +278,32 @@ p {
   width: auto;
 }
 
-/* The black crest of the third jersey goes with the Third Theme. */
+/* One crest for each Theme, from the art file of that jersey:
+   Home: Jesey_Logos.ai (white outlines, for a navy ground).
+   Away: Logo_IcePak.ai (navy outlines, for a white ground).
+   Third: IcePak_RedBlk.ai (black, for a red ground). */
+.crest-away,
 .crest-third,
-:root[data-theme="third"] .crest-navy {
+:root[data-theme="away"] .crest-home,
+:root[data-theme="third"] .crest-home {
   display: none;
 }
 
+:root[data-theme="away"] .crest-away,
 :root[data-theme="third"] .crest-third {
   display: block;
+}
+
+/* Away: the Ice Pak row of a score bug is white, as the away jersey, so the navy crest shows. */
+:root[data-theme="away"] .bug .ipk .team {
+  background: #ffffff;
+  color: #1d315f;
+  box-shadow: inset 0 0 0 1px #b9c6dc, inset 0 -3px 0 #1d315f;
+}
+
+:root[data-theme="away"] .bug .ipk .pts {
+  background: #1d315f;
+  color: #ffffff;
 }
 
 .site-head nav {
@@ -274,13 +350,9 @@ p {
   vertical-align: -2px;
 }
 
-/* With no record in the header, the switch goes to the right by itself. */
-.site-head .wrap > :not(.rec) + .switch {
-  margin-left: auto;
-}
-
 /* Theme switch: one button for each Kit. */
 .switch {
+  margin-left: auto;
   display: inline-flex;
   border: 1px solid var(--rule);
 }
@@ -362,6 +434,14 @@ p {
   opacity: 0.16;
 }
 
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
 .crumbs {
   font-size: 14px;
   color: var(--frost);
@@ -376,10 +456,6 @@ main {
   display: flex;
   flex-direction: column;
   gap: 44px;
-  /* On a short page, the footer stays at the bottom of the window. */
-  flex: 1;
-  /* The body is a flex column, so main needs a width to fill the page. */
-  width: 100%;
 }
 
 section {
@@ -455,6 +531,13 @@ section {
   display: none;
 }
 
+.mock-note {
+  border: 1px dashed var(--rule);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--frost);
+}
+
 /* ---------- 3. Shared parts ---------- */
 
 /* Card: a surface that stands on the ice */
@@ -477,13 +560,19 @@ section {
   text-decoration: none;
 }
 
+/* Results: green for a win and red for a loss, the same in each Theme. */
 .tag.win {
-  background: var(--kit-fill);
-  border-color: var(--kit-fill);
-  color: var(--on-fill);
+  background: #1b7f46;
+  border-color: #1b7f46;
+  color: #ffffff;
 }
 
-.tag.loss,
+.tag.loss {
+  background: #b3261e;
+  border-color: #b3261e;
+  color: #ffffff;
+}
+
 .tag.tie {
   color: var(--ink);
 }
@@ -522,7 +611,8 @@ a.tag.vid:hover {
   align-items: center;
   gap: 10px;
   min-width: 0;
-  padding: 9px 12px;
+  height: 44px;
+  padding: 0 12px;
   font: 600 16px/1.15 var(--body);
   background: var(--panel-2);
   color: var(--ink);
@@ -532,16 +622,6 @@ a.tag.vid:hover {
   background: linear-gradient(90deg, var(--kit-fill), color-mix(in srgb, var(--kit-fill) 82%, #000));
   color: var(--on-fill);
   box-shadow: inset 0 -2px 0 var(--kit-line);
-}
-
-/* The opponent chip: primary colour over secondary colour. */
-.bug .opp .team::before {
-  content: "";
-  flex: none;
-  width: 10px;
-  align-self: stretch;
-  margin: -9px 0 -9px -12px;
-  background: linear-gradient(var(--opp) 0 60%, var(--opp-2) 60% 100%);
 }
 
 .bug .pts {
@@ -562,14 +642,10 @@ a.tag.vid:hover {
 }
 
 .bug.lg .team {
-  padding: 15px 16px;
+  height: 64px;
+  padding: 0 16px;
   font-size: 22px;
   font-weight: 700;
-}
-
-.bug.lg .opp .team::before {
-  width: 14px;
-  margin: -15px 0 -15px -16px;
 }
 
 .bug.lg .pts {
@@ -577,8 +653,12 @@ a.tag.vid:hover {
 }
 
 .bug .ipk .team img {
-  height: 30px;
+  height: 22px;
   width: auto;
+}
+
+.bug.lg .ipk .team img {
+  height: 30px;
 }
 
 /* On the band of the Away Theme the Ice Pak row is white, as the away jersey. */
@@ -586,9 +666,10 @@ a.tag.vid:hover {
   background: var(--kit-fill);
 }
 
-/* On the band of the Third Theme the Ice Pak row is black, so the black crest is hidden there. */
-:root[data-theme="third"] .band .bug .ipk .team img {
-  display: none;
+/* On the band of the Third Theme the Ice Pak row is black. The black crest gets a red square behind it. */
+:root[data-theme="third"] .band .bug .ipk .team img.crest-third {
+  background: #c0211c;
+  padding: 3px;
 }
 
 /* Home or Away: a small label at the right of the team name. The home team is the first row. */
@@ -667,7 +748,7 @@ a.tag.vid:hover {
   justify-content: flex-start;
 }
 
-/* Avatar: the initials of a Player, in place of a photo */
+/* Avatar: the photo of a Player. With no photo, the jersey number. */
 .av {
   flex: none;
   display: inline-grid;
@@ -678,8 +759,16 @@ a.tag.vid:hover {
   background: var(--kit-fill);
   color: var(--on-fill);
   box-shadow: inset 0 0 0 2px var(--kit-line);
-  font: 700 15px/1 var(--display);
-  letter-spacing: 0.04em;
+  font: 700 17px/1 var(--display);
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  overflow: hidden;
+}
+
+.av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* Opponent chip: a disc with the two colours of the opponent */
@@ -698,22 +787,17 @@ a.tag.vid:hover {
   box-shadow: 0 0 0 1px var(--rule);
 }
 
-/* Opponent logo: the real logo on a white disc, so each logo is clear in each Theme */
+/* Opponent logo: the logo only, with no disc and no border */
 .opp-logo {
   flex: none;
   width: 38px;
   height: 38px;
-  padding: 3px;
-  border-radius: 50%;
-  background: #ffffff;
   object-fit: contain;
-  box-shadow: 0 0 0 1px var(--rule);
 }
 
 .bug .opp .team .opp-logo {
   width: 26px;
   height: 26px;
-  padding: 2px;
 }
 
 .bug.lg .opp .team .opp-logo {
@@ -885,8 +969,7 @@ tfoot td {
   border-left: 0;
 }
 
-.seg [aria-pressed="true"],
-.seg [aria-current="page"] {
+.seg [aria-pressed="true"] {
   background: var(--kit-fill);
   color: var(--on-fill);
 }
@@ -915,6 +998,16 @@ tfoot td {
   box-shadow: inset 0 -3px 0 var(--kit-line);
 }
 
+.seg select {
+  border: 0;
+  color: var(--ink);
+}
+
+.seg select.on {
+  background: var(--kit-fill);
+  color: var(--on-fill);
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -926,28 +1019,51 @@ tfoot td {
   margin-left: auto;
 }
 
-select,
-.ghost {
+select option {
+  color: #10182b;
+  background: #ffffff;
+}
+
+select {
   font: 600 14px/1.2 var(--body);
   color: var(--ink);
   background: var(--panel-2);
   border: 1px solid var(--rule);
   padding: 10px 12px;
   max-width: 100%;
-  text-decoration: none;
   cursor: pointer;
 }
 
-.button {
+/* Button: a shape with a forward lean, as the crest wordmark. The corners are cut, not square. */
+.button,
+.ghost {
   display: inline-block;
+  border: 0;
   background: var(--kit-fill);
-  border: 1px solid var(--kit-line);
   color: var(--on-fill);
-  padding: 13px 20px;
-  font: 700 20px/1 var(--display);
+  padding: 13px 30px 13px 26px;
+  font: italic 800 21px/1 var(--display);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
+  cursor: pointer;
+  clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.ghost {
+  padding: 10px 24px 10px 22px;
+  font-size: 17px;
+  background: var(--panel-2);
+  color: var(--ink);
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.button:hover,
+.ghost:hover {
+  transform: translateX(3px);
+  filter: brightness(1.12);
 }
 
 /* Video */
@@ -980,20 +1096,21 @@ select,
   position: absolute;
   left: 14px;
   bottom: 14px;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
   display: inline-flex;
   align-items: center;
   gap: 8px;
   background: #080c11;
   color: #ffffff;
-  padding: 10px 14px;
-  font: 700 17px/1 var(--display);
+  padding: 10px 20px 10px 18px;
+  font: italic 800 17px/1 var(--display);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .play::before {
   content: "";
-  border-left: 10px solid #e5483f;
+  border-left: 10px solid var(--second);
   border-block: 6px solid transparent;
 }
 
@@ -1101,8 +1218,8 @@ select,
 }
 
 .next.row li {
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
   gap: 8px 16px;
   padding: 14px 16px;
   border-top: 3px solid var(--kit-line);
@@ -1111,6 +1228,14 @@ select,
 .next.row .tag {
   grid-column: 2;
   justify-self: start;
+}
+
+.next.row .opp-logo,
+.next.row .opp-chip {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  width: 52px;
+  height: 52px;
 }
 
 .next .day {
@@ -1145,15 +1270,17 @@ select,
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 4px 14px;
   padding-block: 8px;
+  line-height: 28px;
 }
 
 .nextbar .opp-logo,
 .nextbar .opp-chip {
   width: 28px;
   height: 28px;
-  padding: 2px;
   font-size: 11px;
 }
 
@@ -1161,8 +1288,11 @@ select,
   font-weight: 600;
 }
 
+.nextbar .label {
+  line-height: 28px;
+}
+
 .nextbar a {
-  margin-left: auto;
   font-weight: 600;
 }
 
@@ -1206,7 +1336,8 @@ select,
   font-variant-numeric: tabular-nums;
 }
 
-.leader ol {
+.leader ol,
+.leader ul {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1409,9 +1540,14 @@ select,
   background: var(--panel);
 }
 
-.legend i.w {
-  background: var(--kit-fill);
-  border-color: var(--kit-line);
+.legend i.h {
+  background: var(--cal-home);
+  border-color: var(--cal-home-line);
+}
+
+.legend i.a {
+  background: var(--cal-away);
+  border-color: var(--cal-away-line);
 }
 
 .legend i.t {
@@ -1435,8 +1571,8 @@ select,
 
 .cal .day {
   position: relative;
-  min-height: 62px;
-  padding: 8px 10px 12px;
+  height: 136px;
+  padding: 8px 10px 10px;
   background: color-mix(in srgb, var(--panel) 45%, transparent);
   border: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
   display: flex;
@@ -1471,15 +1607,25 @@ select,
   border-color: var(--kit-line);
 }
 
-.cal .day.win {
-  background: linear-gradient(160deg, var(--kit-fill), color-mix(in srgb, var(--kit-fill) 78%, #000));
-  border-color: var(--kit-line);
-  color: var(--on-fill);
+/* A home Game has the primary Kit colour. An away Game has the secondary Kit colour. */
+.cal .day.home {
+  background: var(--cal-home);
+  border-color: var(--cal-home-line);
+  color: var(--cal-home-ink);
 }
 
-.cal .day.win .d,
-.cal .day.win .who {
-  color: color-mix(in srgb, var(--on-fill) 82%, transparent);
+.cal .day.away {
+  background: var(--cal-away);
+  border-color: var(--cal-away-line);
+  color: var(--cal-away-ink);
+}
+
+.cal .day.home .d,
+.cal .day.home .who,
+.cal .day.away .d,
+.cal .day.away .who {
+  color: inherit;
+  opacity: 0.85;
 }
 
 .cal .day.today {
@@ -1499,9 +1645,29 @@ select,
 }
 
 .cal .res {
-  font: 700 24px/1 var(--display);
+  font: 700 22px/1 var(--display);
   letter-spacing: 0.03em;
   white-space: nowrap;
+}
+
+/* The result: green for a win and red for a loss */
+.cal .res.w,
+.cal .res.l,
+.cal .res.t {
+  padding: 3px 8px 4px;
+  color: #ffffff;
+}
+
+.cal .res.w {
+  background: #1b7f46;
+}
+
+.cal .res.l {
+  background: #b3261e;
+}
+
+.cal .res.t {
+  background: #5b6470;
 }
 
 .cal .res.time {
@@ -1513,24 +1679,6 @@ select,
   line-height: 1.25;
   color: var(--frost);
   overflow-wrap: anywhere;
-}
-
-.cal .marks {
-  margin-top: auto;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px;
-}
-
-.cal .marks .tag {
-  font-size: 10px;
-  padding: 3px 5px;
-}
-
-.cal .win .tag {
-  color: var(--on-fill);
-  border-color: color-mix(in srgb, var(--on-fill) 55%, transparent);
 }
 
 /* Schedule: list view */
@@ -1641,7 +1789,7 @@ details.season[open] > summary {
 .sched td.watch {
   width: 1%;
   white-space: nowrap;
-  text-align: right;
+  text-align: left;
 }
 
 .sched td.watch .tag + .tag {
@@ -1673,7 +1821,7 @@ details.season[open] > summary {
 
 .events .ev {
   display: grid;
-  grid-template-columns: 52px 12px minmax(0, 1fr) auto;
+  grid-template-columns: 52px 26px minmax(0, 1fr) auto;
   gap: 10px;
   align-items: baseline;
   padding: 10px 16px;
@@ -1685,16 +1833,30 @@ details.season[open] > summary {
   font-variant-numeric: tabular-nums;
 }
 
-.events .chip {
-  width: 10px;
-  height: 16px;
+/* The team of an event: the logo */
+.events .tm {
   align-self: center;
-  background: linear-gradient(var(--opp) 0 60%, var(--opp-2) 60% 100%);
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
 }
 
-.events .ipk .chip {
+.events .tm img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.events .tm .opp-chip {
+  width: 24px;
+  height: 24px;
+  font-size: 9px;
+}
+
+/* The black crest of the Third Theme needs red behind it. */
+:root[data-theme="third"] .events .ipk .tm {
   background: var(--kit-fill);
-  box-shadow: inset 0 -2px 0 var(--kit-line);
 }
 
 .events .what b {
@@ -1908,10 +2070,6 @@ details.more > summary::-webkit-details-marker {
     font-size: 17px;
   }
 
-  .bug.lg.line .opp .team::before {
-    margin: -12px 0 -12px -10px;
-  }
-
   .lines {
     padding: 4px;
   }
@@ -2035,7 +2193,7 @@ details.more > summary::-webkit-details-marker {
   }
 
   .cal .day {
-    min-height: 40px;
+    height: 74px;
     padding: 4px 2px 6px;
     gap: 3px;
   }
@@ -2049,7 +2207,6 @@ details.more > summary::-webkit-details-marker {
   .cal .opp-logo {
     width: 26px;
     height: 26px;
-    padding: 2px;
     font-size: 10px;
   }
 
@@ -2059,9 +2216,14 @@ details.more > summary::-webkit-details-marker {
     letter-spacing: 0;
   }
 
-  .cal .who,
-  .cal .marks {
+  .cal .who {
     display: none;
+  }
+
+  .cal .res.w,
+  .cal .res.l,
+  .cal .res.t {
+    padding: 2px 3px;
   }
 
   .legend {
@@ -2069,11 +2231,11 @@ details.more > summary::-webkit-details-marker {
   }
 
   .sched th:nth-child(1) {
-    width: 92px;
+    width: 88px;
   }
 
   .sched th:nth-child(3) {
-    width: 80px;
+    width: 92px;
   }
 
   .sched th:nth-child(5) {
@@ -2115,8 +2277,17 @@ details.more > summary::-webkit-details-marker {
     margin-right: 5px;
   }
 
+  /* A League name can use two lines. */
+  .sched td.score .tag {
+    white-space: normal;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+
   .events .ev {
-    grid-template-columns: 44px 10px minmax(0, 1fr);
+    grid-template-columns: 44px 26px minmax(0, 1fr);
     padding-inline: 12px;
   }
 
@@ -2160,8 +2331,4893 @@ details.more > summary::-webkit-details-marker {
   }
 }
 
-/* ---------- Site parts that the mockups do not have ---------- */
+/* ---------- Controls with a forward lean ---------- */
+/* Each button, list, and switch has the cut shape of the main button, as a menu in a hockey video game. */
+select,
+.seg,
+.switch,
+.month-nav {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  border: 0;
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+}
 
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 10px 40px 11px 22px;
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 24px) 52%, calc(100% - 18px) 52%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+}
+
+select option {
+  font: 600 14px var(--body);
+  text-transform: none;
+}
+
+.seg button,
+.seg a,
+.switch button,
+.month-nav button,
+.month-nav b {
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 0;
+  padding: 10px 18px 11px;
+}
+
+.seg > :first-child,
+.switch > :first-child,
+.month-nav > :first-child {
+  padding-left: 24px;
+}
+
+.seg > :last-child,
+.switch > :last-child,
+.month-nav > :last-child {
+  padding-right: 24px;
+}
+
+.seg select {
+  clip-path: none;
+  box-shadow: none;
+  background-color: transparent;
+  padding-left: 16px;
+}
+
+.seg select.on,
+.seg [aria-pressed="true"],
+.switch button[aria-pressed="true"] {
+  background-color: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: none;
+}
+
+.month-nav button {
+  background: transparent;
+}
+
+.switch button {
+  font-size: 14px;
+  padding: 8px 12px 9px;
+}
+
+.tabs button {
+  font: italic 800 21px/1 var(--display);
+}
+
+label.muted {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The opponent row with the primary colour of the opponent */
+.bug .opp.col .team {
+  background: var(--opp);
+  color: var(--opp-ink, #ffffff);
+}
+
+.bug .opp.col.line2 .team {
+  box-shadow: inset 0 -3px 0 var(--opp-2);
+}
+
+.nextbar a.game {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nextbar a.game:hover b {
+  text-decoration: underline;
+}
+
+.sec-head h2 small {
+  font: inherit;
+  color: var(--frost);
+}
+
+@media (max-width: 760px) {
+  .site-head .mgr-link span {
+    display: none;
+  }
+
+  .switch button {
+    padding: 13px;
+  }
+
+  .switch > :first-child {
+    padding-left: 17px;
+  }
+
+  .switch > :last-child {
+    padding-right: 17px;
+  }
+
+  select {
+    font-size: 15px;
+    padding-left: 18px;
+  }
+}
+
+/* ---------- Video that plays in the page ---------- */
+button.video,
+button.frame {
+  border: 0;
+  padding: 0;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+}
+
+.video iframe,
+.frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* The mockup player: shown where an embedded player cannot load. */
+.fake-player {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: linear-gradient(transparent, rgb(0 0 0 / 0.85));
+  color: #ffffff;
+  font: 600 12px/1 var(--body);
+}
+
+.fake-player i {
+  flex: 1;
+  height: 3px;
+  background: linear-gradient(90deg, #ff0033 0 18%, rgb(255 255 255 / 0.4) 18%);
+}
+
+.playing .play {
+  display: none;
+}
+
+/* ---------- Opponent page ---------- */
+.opp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 24px;
+}
+
+.opp-head .opp-logo,
+.opp-head .opp-chip {
+  width: 112px;
+  height: 112px;
+  font-size: 34px;
+}
+
+.opp-head .bio {
+  margin-top: 8px;
+  color: var(--frost);
+}
+
+.sched td.score a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1 a {
+  color: inherit;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+@media (max-width: 760px) {
+  .opp-head .opp-logo,
+  .opp-head .opp-chip {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+/* The game history of an opponent: its own column widths */
+.sched.hist {
+  table-layout: auto;
+}
+
+.sched.hist th {
+  width: auto;
+}
+
+/* ---------- Pass of 2026-11-16, evening ---------- */
+/* Sticky top: the header and the next-game bar stay at the top during a scroll. */
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+}
+
+/* Controls in parts: each part is its own slanted shape, with a small gap. */
+.seg,
+.switch,
+.month-nav {
+  clip-path: none;
+  background: none;
+  box-shadow: none;
+  gap: 4px;
+}
+
+.seg > *,
+.switch > *,
+.month-nav > * {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  margin-left: -6px;
+}
+
+.seg > :first-child,
+.switch > :first-child,
+.month-nav > :first-child {
+  margin-left: 0;
+}
+
+.seg select {
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+  padding-left: 22px;
+}
+
+.month-nav b {
+  display: grid;
+  place-items: center;
+}
+
+.switch button {
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: 0.05em;
+}
+
+/* Tables: every second row has a light fill. */
+tbody tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--panel-2) 45%, transparent);
+}
+
+tbody tr:nth-child(even) td.sorted {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+/* Third band: the Ice Pak row is red, the colour of the third jersey. */
+:root[data-theme="third"] .band .bug .ipk .team {
+  background: #c0211c;
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.35), inset 0 -3px 0 #000000;
+}
+
+:root[data-theme="third"] .band .bug .ipk .team img.crest-third {
+  background: none;
+  padding: 0;
+}
+
+/* The Short label: room before the arrow */
+.short .play {
+  padding: 7px 14px 7px 16px;
+}
+
+/* A section subtitle with the opponent logo */
+.sec-sub {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 16px 6px;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  background: var(--panel-2);
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.sec-sub .opp-logo {
+  width: 22px;
+  height: 22px;
+}
+
+/* Player page: League and Season columns, then a gap before the numbers */
+td.gap,
+th.gap {
+  width: 32px;
+  padding: 0;
+}
+
+/* Video pop-out player */
+.player-pop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top, 0px)) 16px;
+  background: rgb(4 8 14 / 0.86);
+  backdrop-filter: blur(6px);
+}
+
+.player-pop .box {
+  position: relative;
+  width: min(1100px, 100%);
+  aspect-ratio: 16 / 9;
+  background: #000000;
+  box-shadow: 0 30px 80px -20px #000000;
+}
+
+.player-pop.vertical .box {
+  width: auto;
+  height: min(86vh, 900px);
+  aspect-ratio: 9 / 16;
+}
+
+.player-pop iframe,
+.player-pop img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  object-fit: cover;
+}
+
+.player-pop .close {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  border: 0;
+  background: #ffffff;
+  color: #10182b;
+  padding: 9px 18px 10px;
+  font: italic 800 16px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+.player-pop .title {
+  position: absolute;
+  left: 0;
+  top: -40px;
+  color: #ffffff;
+  font: italic 800 20px/1 var(--display);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Manager pages ---------- */
+.add-form,
+.settings,
+.chase {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+}
+
+.add-form label,
+.settings label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+input,
+textarea {
+  font: 500 16px/1.3 var(--body);
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--rule);
+  border-bottom: 3px solid var(--kit-line);
+  padding: 9px 11px;
+  min-width: 0;
+}
+
+textarea {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.ghost.small {
+  padding: 7px 18px 8px 16px;
+  font-size: 14px;
+}
+
+td.grip,
+th.grip {
+  width: 1%;
+  cursor: grab;
+  color: var(--frost);
+  letter-spacing: -2px;
+  user-select: none;
+}
+
+tr.dragging td,
+.pcard.dragging {
+  opacity: 0.4;
+}
+
+/* Seasons: the list of Leagues at the left, the season at the right */
+.mgr {
+  display: grid;
+  grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.lg-list {
+  padding: 14px 16px;
+}
+
+.lg-list ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lg-list li a {
+  display: block;
+  padding: 8px 10px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+.lg-list li.on a {
+  background: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.col-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font: italic 800 18px/1 var(--display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fee-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 32px;
+}
+
+.fee-row b {
+  display: block;
+  margin-top: 4px;
+  font: 700 30px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+.small {
+  font-size: 13px;
+}
+
+/* Roster Builder: one column for each Roster Answer */
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  align-items: start;
+}
+
+.board .col {
+  padding: 12px;
+  min-height: 220px;
+}
+
+.board .col .count {
+  font: 700 22px/1 var(--display);
+  color: var(--accent);
+}
+
+.board .col ul {
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 160px;
+}
+
+.board .col.over {
+  outline: 2px dashed var(--accent);
+  outline-offset: -4px;
+}
+
+.pcard {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 8px;
+  background: var(--panel-2);
+  border-left: 3px solid var(--kit-line);
+  cursor: grab;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.pcard .av {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+}
+
+.pcard small {
+  display: block;
+  color: var(--frost);
+  font-size: 11px;
+}
+
+/* Jerseys */
+.jno {
+  font: italic 800 26px/1 var(--display);
+}
+
+.chk {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 6px;
+  font-size: 12px;
+  color: var(--frost);
+  white-space: nowrap;
+}
+
+.numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.numbers span {
+  min-width: 44px;
+  padding: 8px 10px;
+  text-align: center;
+  background: var(--panel-2);
+  font: italic 800 20px/1 var(--display);
+  clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+}
+
+@media (max-width: 1000px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mgr {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .chk {
+    display: flex;
+    margin: 2px 0;
+  }
+
+  .fee-row {
+    gap: 12px 20px;
+  }
+}
+
+.phone-only {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .phone-only {
+    display: block;
+  }
+
+  .jerseys .chk {
+    font-size: 0;
+    gap: 0;
+  }
+
+  .jerseys td.n,
+  .jerseys th.n {
+    padding-inline: 3px;
+  }
+}
+
+/* Score bug: no bottom line on any row. The white Away row keeps a thin edge, so it shows on a white card. */
+.bug .team,
+.bug .ipk .team,
+:root[data-theme="third"] .band .bug .ipk .team {
+  box-shadow: none;
+}
+
+:root[data-theme="away"] .bug .ipk .team {
+  box-shadow: inset 0 0 0 1px #b9c6dc;
+}
+
+/* Header: the link to the Manager pages, behind a login */
+.site-head .mgr-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+  text-decoration: none;
+}
+
+.site-head .mgr-link:hover {
+  color: var(--ink);
+}
+
+.site-head .mgr-link svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Login page */
+.login {
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.login .button {
+  align-self: flex-start;
+}
+
+.login .step2[hidden] {
+  display: none;
+}
+
+/* ---------- Game bar: the last results and the next games, below the header ---------- */
+.gamebar {
+  position: relative;
+  z-index: 1;
+  background: var(--panel-2);
+  border-bottom: 1px solid var(--rule);
+}
+
+.gamebar .wrap {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  padding-block: 6px;
+}
+
+.gtrack {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.gtrack::-webkit-scrollbar {
+  display: none;
+}
+
+.gtile {
+  flex: 0 0 168px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 6px 10px;
+  background: var(--panel);
+  border-left: 3px solid var(--rule);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.gtile:hover {
+  border-left-color: var(--kit-line);
+}
+
+.gtile.next {
+  border-left-color: var(--accent);
+}
+
+.gtile .gh {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  font: 600 10px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.gtile .fin {
+  color: var(--ink);
+}
+
+.gtile .gt {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.gtile .gt b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.gtile .gt em {
+  font: 700 16px/1 var(--display);
+  font-style: normal;
+}
+
+.gtile .gt.lost {
+  color: var(--frost);
+}
+
+.gtile .gt img,
+.gtile .gt .opp-chip {
+  width: 16px;
+  height: 16px;
+  font-size: 7px;
+  flex: none;
+}
+
+.gtile .gr {
+  font-size: 10px;
+  color: var(--frost);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+
+@media (max-width: 760px) {
+
+  .gtile {
+    flex-basis: 150px;
+  }
+}
+
+/* The slash before a section title has the main colour of the jersey of the Theme.
+   Home and Away keep light blue and navy, because a navy slash on the navy ground and a white slash on the white ground do not show. */
+:root[data-theme="third"] .sec-head h2::before {
+  background: #c0211c;
+}
+
+:root[data-theme="third"] .band .sec-head h2::before {
+  background: #000000;
+}
+
+/* ---------- Variants ---------- */
+:root[data-bar="off"] .gamebar,
+:root[data-bar="on"] [data-variant="no-bar"],
+:root[data-auth="out"] [data-auth="in"],
+:root[data-auth="in"] [data-auth="out"] {
+  display: none !important;
+}
+
+/* Signed in: a thin Manager strip above the header */
+.admin-strip {
+  background: #f5c542;
+  color: #10182b;
+  font: 600 12px/1 var(--body);
+}
+
+.admin-strip .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  padding-block: 7px;
+}
+
+.admin-strip .who-mgr {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.admin-strip a {
+  color: #10182b;
+}
+
+.admin-strip [data-signout] {
+  margin-left: auto;
+}
+
+/* ---------- Recent games variants ---------- */
+section[data-recent] {
+  display: none;
+}
+
+:root[data-recent="cards"] section[data-recent="cards"],
+:root[data-recent="list"] section[data-recent="list"],
+:root[data-recent="board"] section[data-recent="board"] {
+  display: flex;
+}
+
+/* Scoreboard: four large tiles, as on a league scores page */
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.sb {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px;
+  color: var(--ink);
+  text-decoration: none;
+  border-top: 3px solid var(--kit-line);
+  transition: transform 0.15s;
+}
+
+.sb:hover {
+  transform: translateY(-2px);
+}
+
+.sbh {
+  display: flex;
+  justify-content: space-between;
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.sbh .fin {
+  color: var(--ink);
+}
+
+.sbt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sbt img,
+.sbt .opp-chip {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  object-fit: contain;
+}
+
+.sbt b {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sbt em {
+  font: 700 34px/1 var(--display);
+  font-style: normal;
+}
+
+.sbt.lost {
+  color: var(--frost);
+}
+
+:root[data-theme="third"] .sbt .crest-third {
+  background: #c0211c;
+}
+
+.sbf {
+  display: flex;
+  gap: 6px;
+}
+
+/* ---------- Notice bar: only when a notice is active ---------- */
+.notice {
+  display: none;
+  background: var(--notice-bg, #1f6fa5);
+  color: #ffffff;
+  font-size: 14px;
+}
+
+:root[data-notice="info"] .notice {
+  display: block;
+  --notice-bg: #1f6fa5;
+}
+
+:root[data-notice="alert"] .notice {
+  display: block;
+  --notice-bg: #c77700;
+}
+
+.notice .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding-block: 7px;
+}
+
+.notice .ntag {
+  padding: 3px 10px 4px;
+  background: rgb(0 0 0 / 0.25);
+  font: italic 800 13px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  clip-path: polygon(5px 0, 100% 0, calc(100% - 5px) 100%, 0 100%);
+}
+
+.notice .ntext {
+  font-weight: 600;
+}
+
+.notice .nlink {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.notice .nclose {
+  margin-left: auto;
+  border: 0;
+  background: none;
+  color: #ffffff;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  clip-path: none;
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .scoreboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .sbt em {
+    font-size: 26px;
+  }
+
+  .sbt img,
+  .sbt .opp-chip {
+    width: 26px;
+    height: 26px;
+  }
+
+  .sbt {
+    font-size: 14px;
+    gap: 6px;
+  }
+
+  .sb {
+    padding: 12px;
+  }
+}
+
+/* Game bar: shorter, with no rink */
+.gamebar .wrap {
+  padding-block: 4px;
+}
+
+.gtile {
+  gap: 1px;
+  padding: 4px 10px;
+  line-height: 1.15;
+}
+
+.gtile .gt {
+  height: 17px;
+}
+
+
+/* Info notice: the colours of the jersey of each Theme. The alert notice stays orange in each Theme. */
+:root[data-notice="info"] .notice {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice {
+  background: #000000;
+  color: #ffffff;
+  border-bottom: 3px solid #c0211c;
+}
+
+:root[data-notice="info"] .notice .nlink,
+:root[data-notice="info"] .notice .nclose {
+  color: inherit;
+}
+
+:root[data-notice="info"] .notice .ntag {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice .ntag {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice .ntag {
+  background: #c0211c;
+  color: #ffffff;
+}
+
+/* The tag of a notice: the text is centred in its box. */
+.notice .ntag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  min-width: 64px;
+  padding: 0 12px;
+  line-height: 1;
+  text-align: center;
+}
+
+/* ---------- Theme control: buttons or a dropdown ---------- */
+.theme-dd {
+  position: relative;
+}
+
+:root[data-switcher="buttons"] .theme-dd,
+:root[data-switcher="dropdown"] .site-head .switch {
+  display: none;
+}
+
+:root[data-switcher="dropdown"] .theme-dd {
+  display: block;
+}
+
+.dd-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: var(--panel-2);
+  color: var(--ink);
+  padding: 8px 22px 9px 20px;
+  font: 600 13px/1 var(--body);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+}
+
+.dd-arrow {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.dd-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 30;
+  min-width: 210px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  box-shadow: 0 16px 40px -12px rgb(0 0 0 / 0.6);
+}
+
+.dd-menu button {
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 8px 10px;
+  font: 600 14px/1.2 var(--body);
+  text-align: left;
+  cursor: pointer;
+}
+
+.dd-menu button small {
+  grid-column: 2;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--frost);
+}
+
+.dd-menu button:hover,
+.dd-menu button[aria-selected="true"] {
+  background: var(--panel-2);
+}
+
+.dd-menu button[aria-selected="true"] {
+  box-shadow: inset 3px 0 0 var(--kit-line);
+}
+
+.dd-menu .kit-chip {
+  grid-row: 1 / span 2;
+}
+
+:root[data-theme="third"] .dd-btn {
+  background: #000000;
+  color: #ffffff;
+  box-shadow: inset 0 -3px 0 #ffffff;
+}
+
+/* ---------- Opponents list ---------- */
+.opgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.opcard {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.opcard:hover {
+  transform: translateY(-2px);
+  border-color: var(--kit-line);
+}
+
+.opcard .opp-logo,
+.opcard .opp-chip {
+  width: 48px;
+  height: 48px;
+  font-size: 15px;
+}
+
+.opn {
+  flex: 1;
+  min-width: 0;
+}
+
+.opn b {
+  display: block;
+  font-size: 17px;
+}
+
+.opn small {
+  color: var(--frost);
+  font-size: 12px;
+}
+
+.oprec {
+  font: 700 26px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .dd-btn {
+    padding: 11px 18px 12px 16px;
+  }
+
+  .dd-btn .dd-name {
+    display: none;
+  }
+}
+
+/* The dropdown list opens over the notice bar and the game bar. */
+.sticky .site-head {
+  position: relative;
+  z-index: 5;
+}
+
+.theme-dd {
+  margin-left: auto;
+}
+
+/* Theme buttons: one connected bar. Each button keeps its slant on both sides, has the same width, and centres its text. */
+.site-head .switch {
+  gap: 0;
+}
+
+.site-head .switch > * {
+  width: 112px;
+  justify-content: center;
+  margin-left: -9px;
+  padding: 8px 14px 9px;
+}
+
+.site-head .switch > :first-child {
+  margin-left: 0;
+  padding-left: 14px;
+}
+
+.site-head .switch > :last-child {
+  padding-right: 14px;
+}
+
+@media (max-width: 760px) {
+  .site-head .switch > * {
+    width: 50px;
+    padding: 12px 0;
+  }
+
+  .site-head .switch > :first-child,
+  .site-head .switch > :last-child {
+    padding: 12px 0;
+  }
+}
+
+.site-head .switch button {
+  background-color: var(--panel-2);
+  box-shadow: inset 0 -3px 0 var(--kit-line);
+}
+
+.site-head .switch button[aria-pressed="true"] {
+  background-color: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: none;
+}
+
+:root[data-theme="away"] .site-head .switch button {
+  background-color: #e6ecf6;
+}
+
+:root[data-theme="away"] .site-head .switch button[aria-pressed="true"] {
+  background-color: #1d315f;
+  color: #ffffff;
+}
+
+/* Footer at the bottom: on a short page the main part grows, so the footer sits at the bottom of the window. */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+body > main {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+body > .sticky,
+body > .band,
+body > .site-foot {
+  flex: none;
+}
+
+/* Player Bank: position and number change in the row */
+select.cell,
+input.cell {
+  clip-path: none;
+  box-shadow: none;
+  font: 600 14px/1 var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  background-color: var(--ground);
+  border: 1px solid var(--rule);
+  padding: 6px 22px 6px 8px;
+}
+
+input.cell.no-in {
+  width: 3.4em;
+  padding: 6px 4px;
+  text-align: center;
+  border-bottom: 1px solid var(--rule);
+}
+
+select.cell {
+  background-position: calc(100% - 12px) 52%, calc(100% - 7px) 52%;
+  background-size: 5px 5px;
+}
+
+select.cell:focus,
+input.cell:focus {
+  border-color: var(--accent);
+}
+
+/* Positions: a Player can have more than one. The first one set is the main position. */
+.pos-tg {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.pos-tg button {
+  width: 28px;
+  height: 26px;
+  border: 1px solid var(--rule);
+  background: var(--ground);
+  color: var(--frost);
+  font: 700 13px/1 var(--body);
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+
+.pos-tg button[aria-pressed="true"] {
+  background: var(--kit-fill);
+  border-color: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.pos-field {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pos-field legend {
+  padding: 0;
+  margin-bottom: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.pos-field .pos-tg button {
+  width: 40px;
+  height: 38px;
+}
+
+/* Balance: what a Player owes in all seasons. A credit is green. */
+td.bal {
+  font-weight: 700;
+}
+
+td.bal.owes {
+  color: #e2584f;
+}
+
+:root[data-theme="away"] td.bal.owes {
+  color: #b3261e;
+}
+
+td.bal.credit {
+  color: #3fb371;
+}
+
+:root[data-theme="away"] td.bal.credit {
+  color: #1b7f46;
+}
+
+td.bal.zero {
+  color: var(--frost);
+  font-weight: 400;
+}
+
+td.nowrap {
+  white-space: nowrap;
+}
+
+/* Seasons page: one list of all seasons, grouped by League, and one New season button */
+.season-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.season-bar select {
+  min-width: min(360px, 100%);
+}
+
+/* Dialog over the page */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgb(4 8 14 / 0.72);
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-box {
+  width: min(620px, 100%);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--panel);
+}
+
+:root[data-theme="away"] .modal-box {
+  background: #ffffff;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-head .nclose {
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  clip-path: none;
+  box-shadow: none;
+}
+
+.modal-box label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: 600 12px/1.2 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+.fields.two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.modal-box select {
+  font: 600 15px/1.2 var(--body);
+  text-transform: none;
+  letter-spacing: 0;
+  clip-path: none;
+  box-shadow: none;
+  border: 1px solid var(--rule);
+  border-bottom: 3px solid var(--kit-line);
+  background-color: var(--ground);
+  padding: 9px 30px 9px 11px;
+}
+
+@media (max-width: 520px) {
+  .fields.two {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Team ledger */
+td.bal a {
+  color: inherit;
+}
+
+.tag.k-owes {
+  border-color: #e2584f;
+  color: #e2584f;
+}
+
+.tag.k-pay,
+.tag.k-in {
+  border-color: #3fb371;
+  color: #3fb371;
+}
+
+.tag.k-out {
+  border-color: var(--frost);
+  color: var(--ink);
+}
+
+:root[data-theme="away"] .tag.k-owes {
+  border-color: #b3261e;
+  color: #b3261e;
+}
+
+:root[data-theme="away"] .tag.k-pay,
+:root[data-theme="away"] .tag.k-in {
+  border-color: #1b7f46;
+  color: #1b7f46;
+}
+
+.ledger td.n {
+  white-space: nowrap;
+}
+
+.sec-head .controls select {
+  font-size: 14px;
+  padding-block: 8px 9px;
+}
+
+@media (max-width: 760px) {
+  .ledger th:nth-child(2),
+  .ledger td:nth-child(2) {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  /* Ledger on a phone: the Team Fund column is hidden. The strip at the top has the Team Fund. */
+  .ledger th:nth-child(7),
+  .ledger td:nth-child(7) {
+    display: none;
+  }
+
+  .ledger td,
+  .ledger th {
+    padding-inline: 6px;
+  }
+}
+
+@media (max-width: 420px) {
+  /* A strip with long labels: two columns, the key value on its own row */
+  .strip.team[style*="--n:3"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .ledger td.date {
+    font-size: 13px;
+  }
+
+  .ledger td.date small {
+    display: none;
+  }
+
+  .ledger td.n {
+    font-size: 14px;
+  }
+}
+
+.modal-box label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  text-transform: none;
+  letter-spacing: 0;
+  font: 500 15px/1.3 var(--body);
+  color: var(--ink);
+}
+
+.modal-box label.check input {
+  width: 18px;
+  height: 18px;
+}
+
+/* One height for each main button and list: 44 px. The small buttons in tables keep their size. */
+.button,
+.ghost:not(.small),
+select:not(.cell):not(.dv-page):not(td select) {
+  box-sizing: border-box;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1;
+}
+
+select:not(.cell):not(.dv-page):not(td select) {
+  display: inline-block;
+  line-height: 44px;
+}
+
+.modal-box select,
+.modal-box .button,
+.modal-box .ghost {
+  height: 44px;
+}
+
+/* The notice bar and the game bar touch: no line and no padding between them. */
+:root[data-theme="third"][data-notice="info"] .notice {
+  border-bottom: 0;
+}
+
+
+
+/* Theme dropdown: a solid list in each Theme */
+.dd-menu {
+  background: #14244a;
+}
+
+:root[data-theme="away"] .dd-menu {
+  background: #ffffff;
+}
+
+:root[data-theme="third"] .dd-menu {
+  background: #151515;
+  border-color: #343434;
+  --ink: #f5f5f5;
+  --frost: #b4b4b4;
+  --panel-2: #262626;
+  --kit-line: #c0211c;
+}
+
+/* One text size for each main button and list: 17 px */
+.button,
+.ghost:not(.small),
+select:not(.cell):not(.dv-page):not(td select),
+.seg button,
+.seg a,
+.dd-btn {
+  font-size: 17px;
+}
+
+.button,
+.ghost:not(.small) {
+  padding-left: 22px;
+  padding-right: 24px;
+}
+
+/* Game bar: space above and below the tiles. The notice bar still touches the game bar. */
+.gamebar .wrap {
+  padding-block: 8px;
+}
+
+/* Heritage crest in the game bar: no box behind it. A thin light edge keeps the black parts in view on the dark tile. */
+:root[data-theme="third"] .gtile .gt .crest-third {
+  background: none;
+  filter: drop-shadow(0 0 0.6px #ffffff) drop-shadow(0 0 0.6px #ffffff);
+}
+
+/* Header: the Manager link text is centred on the lock icon. */
+.site-head .mgr-link {
+  height: 44px;
+  line-height: 1;
+}
+
+.site-head .mgr-link span {
+  display: block;
+  padding-top: 1px;
+}
+
+.site-head .mgr-link svg {
+  display: block;
+  flex: none;
+}
+
+/* Phone menu: hidden on a wide screen */
+.menu-btn,
+.mmenu {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .site-head nav,
+  .site-head .switch,
+  .site-head .theme-dd,
+  .site-head .mgr-link {
+    display: none !important;
+  }
+
+  .site-head .wrap {
+    flex-wrap: nowrap;
+  }
+
+  .menu-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 44px;
+    padding: 0 14px;
+    border: 0;
+    background: var(--panel-2);
+    color: var(--ink);
+    font: italic 800 17px/1 var(--display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .menu-btn .bars {
+    display: grid;
+    gap: 4px;
+    width: 18px;
+  }
+
+  .menu-btn .bars i {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .mmenu:not([hidden]) {
+    position: relative;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 8px max(16px, env(safe-area-inset-right, 0px)) 22px max(16px, env(safe-area-inset-left, 0px));
+    background: var(--head);
+    border-bottom: 3px solid var(--kit-line);
+    animation: menu-in 0.2s ease-out;
+  }
+
+  .mmenu nav {
+    display: flex;
+    flex-direction: column;
+    font: 700 26px/1 var(--display);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .mmenu nav a {
+    padding: 13px 0;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .mmenu nav a[aria-current="page"] {
+    box-shadow: inset 4px 0 0 var(--kit-line);
+    padding-left: 14px;
+  }
+
+  .mm-theme {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mm-theme .label {
+    grid-column: 1 / -1;
+  }
+
+  .mm-theme button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    border: 1px solid var(--rule);
+    background: var(--panel-2);
+    color: var(--ink);
+    font: 600 15px/1 var(--body);
+    cursor: pointer;
+  }
+
+  .mm-theme button[aria-pressed="true"] {
+    background: var(--kit-fill);
+    color: var(--on-fill);
+    border-color: var(--kit-line);
+  }
+
+  :root[data-theme="away"] .mm-theme button[aria-pressed="true"] {
+    background: #1d315f;
+    color: #ffffff;
+  }
+
+  .mm-mgr {
+    align-self: flex-start;
+    color: var(--frost);
+    font: 600 13px/1 var(--body);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+
+
+  /* Tables on a phone: smaller text */
+  .table-wrap td,
+  .table-wrap th {
+    font-size: 14px;
+  }
+
+  td.name,
+  td.name a {
+    font-size: 14px;
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+/* Notice bar: it slides in, a light passes over the tag, and the link arrow moves. */
+:root[data-notice="info"] .notice,
+:root[data-notice="alert"] .notice {
+  animation: notice-in 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.notice .ntag {
+  position: relative;
+  overflow: hidden;
+}
+
+.notice .ntag::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(255 255 255 / 0.6) 50%, transparent 70%);
+  transform: translateX(-120%);
+  animation: ntag-shine 3.5s ease-in-out 0.8s infinite;
+}
+
+.notice .nlink::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 6px;
+  animation: nlink-nudge 1.8s ease-in-out infinite;
+}
+
+@keyframes notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes ntag-shine {
+  0% {
+    transform: translateX(-120%);
+  }
+
+  35%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes nlink-nudge {
+  0%,
+  60%,
+  100% {
+    transform: translateX(0);
+  }
+
+  30% {
+    transform: translateX(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notice,
+  .notice .ntag::after,
+  .notice .nlink::after,
+  .mmenu {
+    animation: none !important;
+  }
+}
+
+/* Player tables: the jersey number in the first column, and the position beside the name */
+td.num {
+  width: 1%;
+  color: var(--frost);
+  font: 700 17px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+td.name .pos {
+  margin-left: 8px;
+  padding: 2px 6px;
+  border: 1px solid var(--rule);
+  color: var(--frost);
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.06em;
+  vertical-align: 2px;
+}
+
+td.name .who {
+  display: inline;
+}
+
+/* Game Players: one block for each team, with the skaters and the goalie */
+.gp-teams {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.gp-team {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.gp-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font: 700 20px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.gp-title img {
+  height: 28px;
+  width: auto;
+}
+
+@media (max-width: 900px) {
+  .gp-teams {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Next game page */
+.bug.pre .pts {
+  font-size: 22px;
+}
+
+.pre-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 22px;
+}
+
+.pre-facts b {
+  display: block;
+  margin-top: 4px;
+  font: 700 26px/1.1 var(--display);
+}
+
+.game-top .actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* Roster list view */
+.rlist td.name {
+  min-width: 160px;
+}
+
+/* A strip with no title: the values are centred across the strip. */
+.strip.plain {
+  grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr));
+  justify-items: center;
+}
+
+.strip.plain .key {
+  text-align: center;
+}
+
+@media (max-width: 760px) {
+  .strip.team.plain {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .strip.team.plain .key {
+    grid-column: auto;
+    text-align: center;
+    padding-left: 0;
+  }
+}
+
+/* Footer: social links, the contact address, and the copyright line */
+.site-foot .social {
+  display: inline-flex;
+  gap: 14px;
+}
+
+.site-foot .social a {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink);
+}
+
+.site-foot .social svg {
+  width: 22px;
+  height: 22px;
+}
+
+.site-foot .social a:hover {
+  color: var(--accent);
+}
+
+.site-foot .contact {
+  color: var(--frost);
+}
+
+@media (max-width: 760px) {
+  .site-foot .right {
+    margin-left: 0;
+    flex-basis: 100%;
+    font-size: 13px;
+  }
+}
+
+/* Away band: the white button keeps a light blue line at the bottom. A white line does not show on a white button. */
+:root[data-theme="away"] .band .button {
+  box-shadow: inset 0 -3px 0 #5ba5d1;
+}
+
+/* Theme dropdown button: the italic display font of the other buttons */
+.dd-btn {
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.06em;
+}
+
+/* Jerseys: the row that the Add a jersey dialog changed has a short highlight. */
+tr.flash td {
+  animation: row-flash 1.6s ease-out;
+}
+
+@keyframes row-flash {
+  from {
+    background-color: rgb(91 165 209 / 0.45);
+  }
+}
+
+/* + Payment dialog: what the Player owes, above the fields */
+.pay-owes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--panel-2);
+}
+
+.pay-owes b {
+  display: block;
+  margin-top: 4px;
+  font: 700 26px/1 var(--display);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Next games on the Home page: each card opens the next-game page. */
+.next li {
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.next .next-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.next li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px var(--shade);
+}
+
+/* Heritage phone menu: the chosen Theme is white with black text, so it stands out on the red header. */
+:root[data-theme="third"] .mm-theme button[aria-pressed="true"] {
+  background: #ffffff;
+  color: #000000;
+  border-color: #ffffff;
+}
+
+/* Payments: "+ Payment" on a wide screen, "Pay" on a phone */
+[data-pay] {
+  white-space: nowrap;
+}
+
+.pay-short {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .pay-long {
+    display: none;
+  }
+
+  .pay-short {
+    display: inline;
+  }
+}
+
+/* Player Bank: the Manager note, one line under the name; a click shows all of it */
+td.name .pnote {
+  display: block;
+  max-width: 36ch;
+  margin-top: 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--frost);
+  font: italic 400 13px/1.35 var(--body);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+td.name .pnote::before {
+  content: "Note: ";
+  font-style: normal;
+  font-weight: 600;
+}
+
+td.name .pnote[aria-expanded="true"] {
+  white-space: normal;
+}
+
+/* Manager pages: the yellow of the admin strip marks the header, so a Manager always sees the area */
+.mgr-badge {
+  margin-left: 4px;
+  padding: 5px 9px 4px;
+  background: #f5c542;
+  color: #10182b;
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: skewX(-8deg);
+}
+
+body.mgr-area .site-head {
+  border-bottom: 4px solid #f5c542;
+}
+
+
+/* Season settings: the locked fee */
+.settings.locked input {
+  opacity: 0.6;
+}
+
+#lock-tag.locked {
+  background: #2f9e5b;
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .brand .mgr-badge {
+    display: inline-block;
+    margin-left: 10px;
+  }
+}
+
+/* Jerseys: one row for each Player, with one slot for each jersey. Each slot has its own number, size, and status. */
+.jgrid {
+  padding: 0;
+}
+
+.jhead,
+.jrow {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.3fr) repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.jhead {
+  padding-block: 12px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--frost);
+  font: 600 12px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.jhead span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jrow + .jrow {
+  border-top: 1px solid var(--rule);
+}
+
+.jname {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.jname b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jname .muted {
+  font-size: 12px;
+}
+
+.jslot {
+  --jbg: #1d315f;
+  --jfg: #ffffff;
+  --jedge: #5ba5d1;
+  --st: var(--rule);
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: "no size" "no st";
+  align-items: center;
+  column-gap: 10px;
+  min-height: 52px;
+  padding: 6px 10px 6px 12px;
+  border: 0;
+  background: var(--jbg);
+  box-shadow: inset 0 0 0 1px var(--jedge), inset 4px 0 0 var(--st);
+  color: var(--jfg);
+  text-align: left;
+  cursor: pointer;
+}
+
+.jslot[data-kit="away"] {
+  --jbg: #ffffff;
+  --jfg: #1d315f;
+  --jedge: #1d315f;
+}
+
+.jslot[data-kit="third"] {
+  --jbg: #c0211c;
+  --jfg: #ffffff;
+  --jedge: #0d0d0d;
+}
+
+.jslot[data-st="paid"] { --st: #2f9e5b; }
+.jslot[data-st="owes"] { --st: #d9534f; }
+.jslot[data-st="loan"] { --st: #e0a526; }
+
+.jslot .js-kit {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.jslot .js-no {
+  grid-area: no;
+  min-width: 1.6em;
+  font: italic 800 28px/1 var(--display);
+  text-align: center;
+}
+
+.jslot .js-size {
+  grid-area: size;
+  font: 600 12px/1.2 var(--body);
+  opacity: 0.8;
+}
+
+.jslot .js-st {
+  grid-area: st;
+  justify-self: start;
+  padding: 2px 6px;
+  background: var(--st);
+  color: #fff;
+  font: 600 11px/1.3 var(--body);
+  white-space: nowrap;
+}
+
+.jslot[data-st="loan"] .js-st {
+  color: #10182b;
+}
+
+.jslot[data-st="none"] {
+  display: flex;
+  justify-content: center;
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--rule);
+  outline-offset: -1px;
+  color: var(--frost);
+}
+
+.jslot[data-st="none"]:hover {
+  outline-color: var(--frost);
+  color: var(--ink);
+}
+
+.jslot .js-add {
+  font: 600 13px/1 var(--body);
+}
+
+.jslot:not([data-st="none"]):hover {
+  filter: brightness(1.08);
+}
+
+.jslot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.jslot.flash {
+  animation: slot-flash 1.2s ease-out;
+}
+
+@keyframes slot-flash {
+  from {
+    transform: scale(1.06);
+    box-shadow: inset 0 0 0 1px var(--jedge), inset 4px 0 0 var(--st), 0 0 0 4px rgb(91 165 209 / 0.6);
+  }
+}
+
+.jkey {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--frost);
+}
+
+.jkey span::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.jkey [data-st="paid"]::before { background: #2f9e5b; }
+.jkey [data-st="owes"]::before { background: #d9534f; }
+.jkey [data-st="loan"]::before { background: #e0a526; }
+
+/* Jerseys: a board of the numbers 1 to 99 for each jersey */
+.nboards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.nboard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.nb-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nb-head .muted {
+  margin-left: auto;
+  font-size: 13px;
+}
+
+.nb-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.nb-grid span {
+  padding: 5px 0;
+  background: var(--panel-2);
+  color: var(--frost);
+  font: 600 12px/1 var(--body);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.nb-grid span:first-child {
+  grid-column: 2;
+}
+
+.nboard[data-kit="home"] .nb-grid span.taken { background: #1d315f; color: #fff; box-shadow: inset 0 0 0 1px #5ba5d1; }
+.nboard[data-kit="away"] .nb-grid span.taken { background: #fff; color: #1d315f; box-shadow: inset 0 0 0 1px #1d315f; }
+.nboard[data-kit="third"] .nb-grid span.taken { background: #c0211c; color: #fff; }
+
+.nb-grid span.taken {
+  font-weight: 800;
+  cursor: help;
+}
+
+@media (max-width: 1000px) {
+  .nboards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .jhead {
+    display: none;
+  }
+
+  .jrow {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .jname {
+    grid-column: 1 / -1;
+  }
+
+  .jslot {
+    grid-template-columns: 1fr;
+    grid-template-areas: "no" "size" "st";
+    justify-items: center;
+    row-gap: 4px;
+    padding: 8px 4px 8px 8px;
+    text-align: center;
+  }
+
+  .jslot .js-st {
+    justify-self: center;
+    font-size: 10px;
+  }
+
+  .jslot[data-st="none"] {
+    min-height: 92px;
+  }
+}
+
+/* Game bar: the last tile opens the Schedule. It has the size of a game tile and the kit colour. */
+.gtile.gsched {
+  flex: 0 0 156px;
+  background: var(--kit-fill);
+  border-left-color: var(--kit-line);
+  color: var(--on-fill);
+}
+
+.gtile.gsched .gh {
+  color: inherit;
+  opacity: 0.75;
+}
+
+.gtile.gsched .gs-main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  font: italic 800 17px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.gtile.gsched svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.gtile.gsched b {
+  font-weight: inherit;
+  white-space: nowrap;
+}
+
+.gtile.gsched .gs-arrow {
+  margin-left: auto;
+  transition: transform 0.2s;
+}
+
+.gtile.gsched:hover {
+  filter: brightness(1.1);
+}
+
+.gtile.gsched:hover .gs-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 760px) {
+  .gtile.gsched {
+    display: flex;
+    flex: 0 0 112px;
+  }
+
+  .gtile.gsched .gs-main {
+    font-size: 15px;
+  }
+}
+
+/* Schedule: the month arrows are solid buttons in the kit colour, with large arrows */
+.month-nav button {
+  display: grid;
+  place-items: center;
+  min-width: 52px;
+  padding-block: 4px 6px;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  font: 700 30px/1 var(--body);
+}
+
+.month-nav button:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.month-nav button:disabled {
+  background: var(--panel-2);
+  color: var(--frost);
+  opacity: 0.6;
+}
+
+/* Notice bar: the colours and the hem stripes of the jersey of each Theme. The alert notice stays orange. */
+:root[data-notice="info"] .notice {
+  border-bottom: 0;
+  background: #1d315f;
+  color: #ffffff;
+  box-shadow: inset 0 3px 0 #5ba5d1, inset 0 5px 0 #ffffff, inset 0 -3px 0 #5ba5d1, inset 0 -5px 0 #ffffff;
+}
+
+:root[data-notice="info"] .notice .ntag {
+  background: #5ba5d1;
+  color: #0d1930;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice {
+  background: #ffffff;
+  color: #1d315f;
+  box-shadow: inset 0 3px 0 #1d315f, inset 0 5px 0 #5ba5d1, inset 0 -3px 0 #1d315f, inset 0 -5px 0 #5ba5d1;
+}
+
+:root[data-theme="away"][data-notice="info"] .notice .ntag {
+  background: #1d315f;
+  color: #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice {
+  background: #0d0d0d;
+  color: #ffffff;
+  box-shadow: inset 0 3px 0 #c0211c, inset 0 5px 0 #ffffff, inset 0 -3px 0 #c0211c, inset 0 -5px 0 #ffffff;
+}
+
+:root[data-theme="third"][data-notice="info"] .notice .ntag {
+  background: #c0211c;
+  color: #ffffff;
+}
+
+:root[data-notice="info"] .notice .wrap {
+  padding-block: 11px;
+}
+
+/* The Schedule tile stays at the right end of the game bar while the games scroll under it. */
+.gtile.gsched {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  margin-left: auto;
+  box-shadow: -8px 0 12px -4px rgb(0 0 0 / 0.35);
+}
+
+/* Stats: five leader cards in one row on a wide screen */
+.leaders {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+/* Stats: the strip of a League Season has a League label and a Season label */
+.strip .title.lsname {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.strip .title.lsname > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.strip .title.lsname .label {
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frost);
+}
+
+/* Stats: the season list is clearly off when "All time" is on */
+.seg select:not(.on) {
+  color: var(--frost);
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px var(--rule);
+  opacity: 0.8;
+}
+
+.seg select:not(.on):hover {
+  opacity: 1;
+  color: var(--ink);
+}
+
+/* Leader card: the name can shrink, and the number never leaves the card */
+.leader .top {
+  gap: 10px;
+}
+
+.leader .top a {
+  flex: 1;
+  min-width: 0;
+}
+
+.leader .top b {
+  font-size: 40px;
+}
+
+.leader .top .av {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  font-size: 18px;
+}
+
+.leader .top b {
+  font-size: 34px;
+}
+
+.leader .top a {
+  font-size: 15px;
+}
+
+.leaders {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.leader .top .av {
+  width: 36px;
+  height: 36px;
+  font-size: 16px;
+}
+
+.leader .top a {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1279px) {
+  .leaders {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .leaders {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Player Bank: a gap between the number badge and the name */
+td.name .who .av {
+  display: inline-grid;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+td.name .who:has(.av) + .pnote {
+  padding-left: 46px;
+}
+
+@media (max-width: 760px) {
+  td.name .who:has(.av) + .pnote {
+    padding-left: 40px;
+  }
+}
+
+/* Home: the Points leaders switch between the current League Seasons */
+.lead-pick {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.lead-pick button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+
+.lead-pick .lp-sn {
+  font: 600 11px/1 var(--body);
+  font-style: normal;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
+}
+
+/* Stats: the League list and the Season list sit side by side */
+@media (max-width: 760px) {
+  .controls .seg {
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+}
+
+/* Roster jersey: the real Ice Pak design. Home has the colours of the real jersey. Away and Heritage use the same design in their Kit colours. */
+.jersey {
+  --j-body: #1d315f;
+  --j-stripe: #f3ead2;
+  --j-line2: #5ba5d1;
+  --j-num: #f3ead2;
+  --j-num-line: #5ba5d1;
+  --j-edge: #5ba5d1;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-stripe: #1d315f;
+  --j-line2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #9fb1cf;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #c0211c;
+  --j-stripe: #000000;
+  --j-line2: #ffffff;
+  --j-num: #ffffff;
+  --j-num-line: #000000;
+  --j-edge: #000000;
+}
+
+.jersey .stripe {
+  fill: var(--j-stripe);
+}
+
+.jersey .yoke,
+.jersey .arc {
+  fill: none;
+  stroke: var(--j-stripe);
+  stroke-width: 6;
+}
+
+.jersey .arc {
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.jersey .line2 {
+  fill: none;
+  stroke: var(--j-line2);
+  stroke-width: 2.5;
+  stroke-linejoin: miter;
+}
+
+.jersey .collar {
+  stroke: var(--j-stripe);
+  stroke-width: 5;
+}
+
+.jersey text {
+  font: 400 70px/1 "Graduate", var(--display);
+  fill: var(--j-num);
+  stroke: var(--j-num-line);
+  stroke-width: 6;
+  letter-spacing: -2px;
+}
+
+/* Stats on a phone: the second row of the lists starts at the left edge */
+@media (max-width: 760px) {
+  .controls .seg > * {
+    margin-left: 0;
+  }
+}
+
+/* Player page: the large number uses the block font of the real jersey */
+.jersey-no {
+  font: 400 96px/0.9 "Graduate", var(--display);
+  letter-spacing: -3px;
+}
+
+/* Roster jersey: one drawing for each real Kit. The Theme shows its own Kit. */
+.jersey .k-home,
+.jersey .k-away,
+.jersey .k-third {
+  display: none;
+}
+
+:root[data-theme="home"] .jersey .k-home,
+:root:not([data-theme]) .jersey .k-home,
+:root[data-theme="away"] .jersey .k-away,
+:root[data-theme="third"] .jersey .k-third {
+  display: inline;
+}
+
+.jersey .body {
+  stroke: none;
+}
+
+.jersey .body-edge {
+  fill: none;
+  stroke: var(--j-edge);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.jersey .navy {
+  fill: #1d315f;
+}
+
+.jersey .black {
+  fill: #111111;
+}
+
+.jersey .chev {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 4;
+}
+
+.jersey .line3 {
+  fill: none;
+  stroke: #a9b3c2;
+  stroke-width: 2;
+}
+
+:root[data-theme="away"] .jersey {
+  --j-body: #ffffff;
+  --j-line2: #5ba5d1;
+  --j-num: #1d315f;
+  --j-num-line: #5ba5d1;
+  --j-edge: #1d315f;
+  --j-stripe: #1d315f;
+}
+
+:root[data-theme="away"] .jersey .collar {
+  stroke: #5ba5d1;
+  stroke-width: 4;
+}
+
+:root[data-theme="away"] .jersey text {
+  font: italic 800 84px/1 var(--display);
+  stroke-width: 7;
+  letter-spacing: 0;
+}
+
+:root[data-theme="third"] .jersey {
+  --j-body: #e2231a;
+  --j-num: #111111;
+  --j-edge: #8f1510;
+}
+
+:root[data-theme="third"] .jersey .collar {
+  stroke: #111111;
+  stroke-width: 4;
+}
+
+:root[data-theme="third"] .jersey text {
+  font: 700 84px/1 var(--display);
+  stroke: none;
+  letter-spacing: 0;
+}
+
+:root[data-theme="away"] .jersey text {
+  font-size: 72px;
+  transform: translateY(4px);
+}
+
+:root[data-theme="away"] .jersey-no {
+  font: italic 800 112px/0.86 var(--display);
+  letter-spacing: 0;
+}
+
+:root[data-theme="third"] .jersey-no {
+  font: 700 112px/0.86 var(--display);
+  letter-spacing: 0;
+}
+
+:root[data-theme="home"] .jersey-no,
+:root:not([data-theme]) .jersey-no {
+  background: #1d315f;
+  color: #f3ead2;
+  -webkit-text-stroke: 6px #5ba5d1;
+  paint-order: stroke fill;
+}
+
+/* ---------- Notice styles: five options to compare (Mockup panel, "style") ---------- */
+.notice .nicon,
+.nside-tab {
+  display: none;
+}
+
+.notice .nbody {
+  display: contents;
+}
+
+
+/* Slim: a thin line in the panel colour. The tag is small coloured text, and the link is at the right. */
+:root[data-nview="slim"][data-notice] .notice {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: inset 3px 0 0 var(--accent), inset 0 -1px 0 var(--rule);
+  border: 0;
+}
+
+:root[data-nview="slim"][data-notice="alert"] .notice {
+  box-shadow: inset 3px 0 0 #e0a526, inset 0 -1px 0 var(--rule);
+}
+
+:root[data-nview="slim"][data-notice] .notice .wrap {
+  gap: 4px 14px;
+  padding-block: 9px;
+}
+
+:root[data-nview="slim"][data-notice] .notice .ntag {
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  color: var(--accent);
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  animation: none;
+}
+
+:root[data-nview="slim"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nview="slim"][data-notice="alert"] .notice .ntag {
+  color: #e0a526;
+}
+
+:root[data-nview="slim"][data-notice] .notice .ntext {
+  font-weight: 500;
+}
+
+:root[data-nview="slim"][data-notice] .notice .nlink {
+  margin-left: auto;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+:root[data-nview="slim"][data-notice] .notice .nlink::after {
+  content: " →";
+  color: var(--accent);
+}
+
+:root[data-nview="slim"][data-notice] .notice .nclose {
+  margin-left: 0;
+  color: var(--frost);
+  font-size: 18px;
+}
+
+/* Card: a card inside the page width, with the opponent logo, the tag above the text, and a button. */
+:root[data-nview="card"][data-notice] .notice {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  color: var(--ink);
+}
+
+:root[data-nview="card"][data-notice] .notice .wrap {
+  margin-block: 10px;
+  padding-block: 12px;
+  gap: 14px;
+  flex-wrap: nowrap;
+  background: var(--panel);
+  box-shadow: inset 4px 0 0 var(--accent), 0 0 0 1px var(--rule);
+}
+
+:root[data-nview="card"][data-notice="alert"] .notice .wrap {
+  box-shadow: inset 4px 0 0 #e0a526, 0 0 0 1px var(--rule);
+}
+
+:root[data-nview="card"][data-notice] .notice .nicon {
+  display: grid;
+}
+
+:root[data-nview="card"][data-notice] .notice .nbody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+:root[data-nview="card"][data-notice] .notice .ntag {
+  justify-content: flex-start;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  color: var(--accent);
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  animation: none;
+}
+
+:root[data-nview="card"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nview="card"][data-notice="alert"] .notice .ntag {
+  color: #e0a526;
+}
+
+:root[data-nview="card"][data-notice] .notice .ntext {
+  font-size: 15px;
+}
+
+:root[data-nview="card"][data-notice] .notice .nlink {
+  flex: none;
+  margin-left: auto;
+  padding: 9px 16px;
+  background: var(--kit-fill);
+  color: var(--on-fill);
+  font: italic 800 15px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+}
+
+:root[data-nview="card"][data-notice] .notice .nclose {
+  margin-left: 0;
+  color: var(--frost);
+  align-self: flex-start;
+}
+
+@media (max-width: 760px) {
+  :root[data-nview="card"][data-notice] .notice .nlink {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+}
+
+
+/* Notice accent: info uses the Theme accent, a change is orange, and a cancellation is red. */
+:root[data-notice] .notice,
+:root[data-notice] .nside-tab {
+  --n-acc: var(--accent);
+  --n-on: #0d1930;
+}
+
+:root[data-nmsg="change"] .notice,
+:root[data-nmsg="change"] .nside-tab {
+  --n-acc: #e0a526;
+}
+
+:root[data-nmsg="cancel"] .notice,
+:root[data-nmsg="cancel"] .nside-tab {
+  --n-acc: #d9534f;
+  --n-on: #ffffff;
+}
+
+:root[data-nstyle][data-notice] .notice .ntag {
+  color: var(--n-acc);
+}
+
+:root[data-nview="slim"][data-notice] .notice {
+  box-shadow: inset 3px 0 0 var(--n-acc), inset 0 -1px 0 var(--rule);
+}
+
+:root[data-nview="card"][data-notice] .notice .wrap {
+  box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule);
+}
+
+:root[data-nview="stripes"][data-notice] .notice .ntag {
+  color: inherit;
+}
+
+/* The type icon: i for news, ! for a change, × for a cancellation */
+.notice .nicon {
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--n-acc);
+  color: var(--n-on);
+  font: 800 18px/1 var(--body);
+}
+
+.notice .nicon::before {
+  content: "i";
+}
+
+:root[data-nmsg="change"] .notice .nicon::before {
+  content: "!";
+}
+
+:root[data-nmsg="cancel"] .notice .nicon::before {
+  content: "×";
+  font-size: 22px;
+}
+
+/* Toast, side tab, and bottom bar: the same card layout. The icon, the tag and text, and the close are in a row, and the link is below the text. */
+:root[data-nview="toast"][data-notice] .notice,
+:root[data-nview="side"][data-notice] .notice,
+:root[data-nview="bottom"][data-notice] .notice {
+  position: fixed;
+  z-index: 60;
+  background: var(--panel);
+  color: var(--ink);
+  border: 0;
+  box-shadow: inset 4px 0 0 var(--n-acc), 0 0 0 1px var(--rule), 0 14px 34px -10px rgb(0 0 0 / 0.55);
+}
+
+:root[data-nview="toast"][data-notice] .notice .wrap,
+:root[data-nview="side"][data-notice] .notice .wrap {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "icon body close" "icon link link";
+  gap: 8px 12px;
+  align-items: start;
+  padding: 14px 14px 14px 18px;
+  max-width: none;
+}
+
+:root[data-nview="toast"][data-notice] .notice .nicon,
+:root[data-nview="side"][data-notice] .notice .nicon {
+  display: grid;
+  grid-area: icon;
+}
+
+:root[data-nview="toast"][data-notice] .notice .nbody,
+:root[data-nview="side"][data-notice] .notice .nbody,
+:root[data-nview="bottom"][data-notice] .notice .nbody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  grid-area: body;
+  min-width: 0;
+}
+
+:root[data-nview="toast"][data-notice] .notice .ntag,
+:root[data-nview="side"][data-notice] .notice .ntag,
+:root[data-nview="bottom"][data-notice] .notice .ntag {
+  justify-content: flex-start;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  background: none;
+  clip-path: none;
+  font: 700 11px/1 var(--body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: none;
+}
+
+:root[data-nview="toast"][data-notice] .notice .ntag::after,
+:root[data-nview="side"][data-notice] .notice .ntag::after,
+:root[data-nview="bottom"][data-notice] .notice .ntag::after {
+  display: none;
+}
+
+:root[data-nview="toast"][data-notice] .notice .ntext,
+:root[data-nview="side"][data-notice] .notice .ntext {
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+:root[data-nview="toast"][data-notice] .notice .nlink,
+:root[data-nview="side"][data-notice] .notice .nlink,
+:root[data-nview="bottom"][data-notice] .notice .nlink {
+  grid-area: link;
+  color: var(--ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+:root[data-nview="toast"][data-notice] .notice .nlink::after,
+:root[data-nview="side"][data-notice] .notice .nlink::after,
+:root[data-nview="bottom"][data-notice] .notice .nlink::after {
+  content: " →";
+  color: var(--n-acc);
+}
+
+:root[data-nview="toast"][data-notice] .notice .nclose,
+:root[data-nview="side"][data-notice] .notice .nclose,
+:root[data-nview="bottom"][data-notice] .notice .nclose {
+  grid-area: close;
+  margin: 0;
+  color: var(--frost);
+}
+
+/* Toast: a card at the bottom left that slides up. On a phone it spans the width. */
+:root[data-nview="toast"][data-notice] .notice {
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+  width: min(380px, calc(100vw - 32px));
+  animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+/* Side tab: a tab on the right edge. The tab opens a panel with the notice. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  position: fixed;
+  z-index: 61;
+  top: 50%;
+  right: env(safe-area-inset-right, 0px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 9px;
+  border: 0;
+  background: var(--n-acc);
+  color: var(--n-on);
+  font: italic 800 14px/1 var(--display);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) rotate(180deg);
+  box-shadow: 0 8px 20px -8px rgb(0 0 0 / 0.6);
+  cursor: pointer;
+}
+
+.nside-tab .nst-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: ntag-dot 1.6s ease-in-out infinite;
+}
+
+@keyframes ntag-dot {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+:root[data-nview="side"][data-notice] .notice {
+  top: 50%;
+  right: calc(36px + env(safe-area-inset-right, 0px));
+  width: min(320px, calc(100vw - 60px));
+  transform: translateY(-50%);
+  animation: none;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+:root[data-nview="side"][data-nopen="true"] .notice {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Bottom bar: a strip pinned to the bottom of the screen. The page gets room for it. */
+:root[data-nview="bottom"][data-notice] .notice {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: inset 0 3px 0 var(--n-acc), 0 -10px 30px -12px rgb(0 0 0 / 0.5);
+  animation: toast-in 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+:root[data-nview="bottom"][data-notice] .notice .wrap {
+  gap: 4px 16px;
+  padding-block: 12px max(12px, env(safe-area-inset-bottom, 0px));
+}
+
+:root[data-nview="bottom"][data-notice] .notice .nicon {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  font-size: 15px;
+}
+
+:root[data-nview="bottom"][data-notice] .notice .nbody {
+  flex: 1;
+}
+
+:root[data-nview="bottom"][data-notice="info"] body,
+:root[data-nview="bottom"][data-notice="alert"] body {
+  padding-bottom: 90px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-nstyle] .notice,
+  .nside-tab .nst-dot {
+    animation: none !important;
+  }
+}
+
+/* ---------- Manager style: four ways to show the Manager links (Mockup panel, "mgr style") ---------- */
+.admin-strip,
+.acct,
+.mpill,
+.mm-acct {
+  display: none;
+}
+
+:root[data-mstyle="strip"] .admin-strip {
+  display: block;
+}
+
+/* Menu: an account button in the header opens the Manager links. The manager pages keep it in every style except strip. */
+:root[data-mstyle="menu"] .acct,
+:root:not([data-mstyle="strip"]) body.mgr-area .acct {
+  display: block;
+}
+
+.acct {
+  position: relative;
+}
+
+.acct-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px 0 6px;
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  color: var(--ink);
+  font: 600 13px/1 var(--body);
+  cursor: pointer;
+}
+
+.acct-btn:hover,
+.acct-btn[aria-expanded="true"] {
+  border-color: #f5c542;
+}
+
+.acct-av {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f5c542;
+  color: #10182b;
+  font: 800 13px/1 var(--body);
+}
+
+.acct-caret {
+  font-size: 10px;
+  color: var(--frost);
+}
+
+.acct-menu,
+.mpill-menu {
+  position: absolute;
+  z-index: 70;
+  display: flex;
+  flex-direction: column;
+  min-width: 210px;
+  padding: 6px;
+  background: #14244a;
+  color: #f2f6fb;
+  box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08);
+  font: 600 14px/1 var(--body);
+}
+
+.acct-menu[hidden],
+.mpill-menu[hidden] {
+  display: none;
+}
+
+.acct-menu {
+  top: calc(100% + 8px);
+  right: 0;
+}
+
+.acct-menu a,
+.mpill-menu a {
+  padding: 11px 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.acct-menu a:hover,
+.mpill-menu a:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.acct-menu [data-signout],
+.mpill-menu [data-signout] {
+  margin-top: 4px;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  color: #f5c542;
+}
+
+.acct-head {
+  padding: 8px 12px 10px;
+  color: #a9b6cc;
+  font: 700 10px/1 var(--body);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Button: a floating Manage button at the bottom left. The public layout does not change. */
+:root[data-mstyle="pill"] .mpill {
+  display: block;
+}
+
+.mpill {
+  position: fixed;
+  z-index: 55;
+  left: max(16px, env(safe-area-inset-left, 0px));
+  bottom: max(16px, env(safe-area-inset-bottom, 0px));
+}
+
+.mpill-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 22px;
+  background: #f5c542;
+  color: #10182b;
+  font: italic 800 16px/1 var(--display);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 26px -8px rgb(0 0 0 / 0.6);
+  cursor: pointer;
+}
+
+.mpill-menu {
+  bottom: calc(100% + 10px);
+  left: 0;
+}
+
+
+/* Phone: the Manager links are in the phone menu, and the account button shows only the letter. */
+@media (max-width: 760px) {
+  :root[data-mstyle="menu"] .mm-acct {
+    display: flex;
+  }
+
+  .mm-acct {
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .mm-acct a {
+    padding: 10px 0;
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .acct-name,
+  .acct-caret {
+    display: none;
+  }
+
+  .acct-btn {
+    padding: 0 6px;
+  }
+}
+
+/* Manager pages: the header is full, so the account button shows only the letter. */
+body.mgr-area .acct-name,
+body.mgr-area .acct-caret {
+  display: none;
+}
+
+body.mgr-area .acct-btn {
+  padding: 0 6px;
+}
+
+/* Phone: the phone menu has the Manager links, so the header has no account button. */
+@media (max-width: 760px) {
+  .acct {
+    display: none !important;
+  }
+
+  :root:not([data-mstyle="strip"]) body.mgr-area .mm-acct {
+    display: flex;
+  }
+}
+
+/* Manager pages: "Public site" moves into the account menu, so the header fits on one row. */
+@media (min-width: 761px) {
+  :root:not([data-mstyle="strip"]) body.mgr-area .site-head nav a[href="home.html"] {
+    display: none;
+  }
+}
+
+/* Phone, manager pages: the menu already lists the manager pages, so the Manager part has only "Sign out". */
+body.mgr-area .mm-acct a:not([data-signout]) {
+  display: none;
+}
+
+/* Nav: the "Managers" link stays in the header with an open lock, and a click opens the Manager links. */
+.mgr-dd {
+  display: none;
+  position: relative;
+}
+
+:root[data-mstyle="nav"] .mgr-dd {
+  display: block;
+}
+
+:root[data-mstyle="nav"] body.mgr-area .acct {
+  display: none;
+}
+
+.site-head .mgr-dd-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.site-head .mgr-dd-btn svg {
+  color: #f5c542;
+}
+
+.site-head .mgr-dd-btn[aria-expanded="true"] {
+  color: #f5c542;
+}
+
+.mgr-dd .acct-menu {
+  right: auto;
+  left: 0;
+  top: calc(100% + 2px);
+}
+
+@media (max-width: 760px) {
+  .mgr-dd {
+    display: none !important;
+  }
+
+  :root[data-mstyle="nav"] .mm-acct {
+    display: flex;
+  }
+}
+
+/* Event notices have their own colour: green. Recaps use the Theme accent. */
+:root[data-nmsg="event"] .notice,
+:root[data-nmsg="event"] .nside-tab {
+  --n-acc: #3fb27f;
+  --n-on: #0d1930;
+}
+
+:root[data-nmsg="event"] .notice .nicon::before {
+  content: "★";
+  font-size: 16px;
+}
+
+/* Auto: a closed notice is gone. A viewed notice keeps the tab, with no dot. */
+:root[data-ngone="true"] .notice,
+:root[data-ngone="true"] .nside-tab {
+  display: none !important;
+}
+
+:root[data-nread="true"] .nside-tab .nst-dot {
+  display: none;
+}
+
+/* The toast goes to the side tab with a short slide. */
+:root[data-nview="side"][data-notice] .nside-tab {
+  animation: tab-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes tab-in {
+  from {
+    opacity: 0;
+    translate: 20px 0;
+  }
+}
+
+.dv-replay {
+  border: 1px solid #3c3f44;
+  background: #2b2d31;
+  color: #e8eaed;
+  padding: 3px 8px;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dv-nstate {
+  margin-left: 8px;
+  color: #9aa0a6;
+}
+
+/* Manager badge: the text is in the centre of the yellow box. */
+.mgr-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 10px;
+  line-height: 1;
+}
+
+/* Info button and its explanation */
+.info-wrap {
+  position: relative;
+}
+
+.info-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 4px;
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: none;
+  color: var(--frost);
+  font: italic 700 10px/1 Georgia, serif;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: 1px;
+  cursor: pointer;
+}
+
+.info-btn:hover,
+.info-btn[aria-expanded="true"] {
+  color: var(--ink);
+}
+
+.info-pop {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 8px);
+  left: 0;
+  width: min(300px, calc(100vw - 48px));
+  padding: 12px 14px;
+  background: #14244a;
+  color: #f2f6fb;
+  box-shadow: 0 14px 34px -10px rgb(0 0 0 / 0.6), 0 0 0 1px rgb(255 255 255 / 0.08);
+  font: 400 13px/1.45 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.info-pop[hidden] {
+  display: none;
+}
+
+/* Phone: in the auto style, a bell in the header takes the place of the side tab. The dot shows an unread notice. */
+.nbell {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .nbell,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .nbell {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ink);
+    cursor: pointer;
+  }
+
+  .nbell svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .nbell .nb-dot {
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--n-acc, #f5c542);
+    box-shadow: 0 0 0 2px var(--head, #0a1427);
+  }
+
+  :root[data-nread="true"] .nbell .nb-dot {
+    display: none;
+  }
+
+  :root[data-nview="side"] .nside-tab {
+    display: none !important;
+  }
+
+  /* The bell opens the notice as a panel below the header. */
+  :root[data-nview="side"][data-notice] .notice {
+    top: calc(var(--head-h, 64px) + 8px);
+    left: max(16px, env(safe-area-inset-left, 0px));
+    right: max(16px, env(safe-area-inset-right, 0px));
+    width: auto;
+    transform: none;
+  }
+}
+
+:root[data-notice] .nbell { --n-acc: var(--accent); }
+:root[data-nmsg="event"] .nbell { --n-acc: #3fb27f; }
+:root[data-nmsg="change"] .nbell { --n-acc: #e0a526; }
+:root[data-nmsg="cancel"] .nbell { --n-acc: #d9534f; }
+
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .site-head .nbell + .menu-btn,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .site-head .nbell + .menu-btn {
+    margin-left: 6px;
+  }
+}
+
+:root[data-theme="third"] .nbell .nb-dot {
+  box-shadow: 0 0 0 2px #ffffff;
+}
+
+/* Game bar: drag with the mouse, swipe on a phone. Each tile snaps to the left edge. */
+.gtrack {
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+}
+
+.gtrack.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.gtrack.dragging a {
+  pointer-events: none;
+}
+
+.gtile {
+  scroll-snap-align: start;
+}
+
+@media (max-width: 760px) {
+  .gtile {
+    flex: 0 0 150px;
+  }
+
+  .gtrack {
+    cursor: auto;
+  }
+}
+
+/* Phone: the header and the game bar stay at the top. A card notice sits between them at the top of the page, and it scrolls away. */
+@media (max-width: 760px) {
+  body > .sticky {
+    display: contents;
+  }
+
+  .sticky > .site-head {
+    position: sticky;
+    top: 0;
+    z-index: 22;
+  }
+
+  .sticky > .gamebar {
+    position: sticky;
+    top: var(--head-h0, 65px);
+    z-index: 21;
+    box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+  }
+
+  .sticky > .notice {
+    position: relative;
+    z-index: 20;
+  }
+
+  .mmenu:not([hidden]) {
+    position: fixed;
+    top: var(--head-h0, 65px);
+    left: 0;
+    right: 0;
+    z-index: 40;
+    max-height: calc(100dvh - var(--head-h0, 65px));
+    overflow-y: auto;
+  }
+}
+
+/* Phone bell: the same slanted panel as the Menu button. */
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .nbell,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .nbell {
+    width: 52px;
+    height: 44px;
+    border-radius: 0;
+    background: var(--panel-2);
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  .nbell svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .nbell .nb-dot {
+    top: 8px;
+    right: 13px;
+    box-shadow: 0 0 0 2px var(--panel-2);
+  }
+
+  :root[data-theme="third"] .nbell .nb-dot {
+    box-shadow: 0 0 0 2px var(--panel-2);
+  }
+
+  .nbell[aria-expanded="true"] {
+    background: var(--kit-fill);
+    color: var(--on-fill);
+  }
+}
+
+/* Phone: a card notice takes the place of the game bar, below the header. When the card closes, the game bar comes back. */
+@media (max-width: 760px) {
+  :root[data-nview="card"][data-notice="info"]:not([data-ngone="true"]) .sticky > .gamebar,
+  :root[data-nview="card"][data-notice="alert"]:not([data-ngone="true"]) .sticky > .gamebar {
+    display: none;
+  }
+
+  :root[data-nview="card"][data-notice="info"]:not([data-ngone="true"]) .sticky > .notice,
+  :root[data-nview="card"][data-notice="alert"]:not([data-ngone="true"]) .sticky > .notice {
+    position: sticky;
+    top: var(--head-h0, 65px);
+    z-index: 21;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--rule);
+    box-shadow: 0 8px 20px -14px rgb(0 0 0 / 0.6);
+  }
+
+  :root[data-nview="card"][data-notice] .notice .wrap {
+    margin-block: 6px;
+  }
+
+  .sticky > .gamebar.bar-back {
+    animation: bar-back 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+}
+
+@keyframes bar-back {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sticky > .gamebar.bar-back {
+    animation: none;
+  }
+}
+
+/* Phone: no bell while the card shows. The card has the message and its own close. */
+@media (max-width: 760px) {
+  :root[data-nview="card"] .nbell {
+    display: none !important;
+  }
+
+  :root[data-nview="card"] .site-head .nbell + .menu-btn {
+    margin-left: auto !important;
+  }
+}
+
+/* Leader card: the jersey number in front of each name, in place of a rank */
+.leader li > span:first-child {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+.leader .lno {
+  flex: none;
+  min-width: 1.6em;
+  color: var(--frost);
+  font: 700 15px/1 var(--display);
+  text-align: right;
+}
+
+/* The sticky top part is solid, so the page never shows through a gap or a margin in it during a scroll. */
+.sticky {
+  background: var(--ground);
+}
+
+:root[data-nview="card"][data-notice] .notice {
+  background: var(--ground);
+}
+
+/* Home Theme: the notice icon and the tab text are white. */
+:root[data-theme="home"] .notice,
+:root[data-theme="home"] .nside-tab,
+:root:not([data-theme]) .notice,
+:root:not([data-theme]) .nside-tab {
+  --n-on: #ffffff;
+}
+
+/* Away Theme: the recap icon is white on the navy accent. */
+:root[data-theme="away"][data-nmsg="recap"] .notice,
+:root[data-theme="away"][data-nmsg="recap"] .nside-tab {
+  --n-on: #ffffff;
+}
+
+/* Home Theme: darker circles and tabs, so the white icon has at least 4.4 to 1 contrast. The tag text keeps the bright colour on the dark card. */
+:root[data-theme="home"][data-nmsg="recap"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="recap"] .nside-tab,
+:root:not([data-theme])[data-nmsg="recap"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="recap"] .nside-tab {
+  background: #2a78a8;
+}
+
+:root[data-theme="home"][data-nmsg="event"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="event"] .nside-tab,
+:root:not([data-theme])[data-nmsg="event"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="event"] .nside-tab {
+  background: #2f7a55;
+}
+
+:root[data-theme="home"][data-nmsg="change"] .notice .nicon,
+:root[data-theme="home"][data-nmsg="change"] .nside-tab,
+:root:not([data-theme])[data-nmsg="change"] .notice .nicon,
+:root:not([data-theme])[data-nmsg="change"] .nside-tab {
+  background: #a8690f;
+}
+
+/* Side tab and side panel: centred with auto margins, not translateY(-50%). A half-pixel move made the text blurry. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  top: 0;
+  bottom: 0;
+  height: fit-content;
+  margin-block: auto;
+  transform: rotate(180deg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 761px) {
+  :root[data-nview="side"][data-notice] .notice {
+    top: 0;
+    bottom: 0;
+    height: fit-content;
+    margin-block: auto;
+    transform: none;
+  }
+}
+
+/* The script places the tab and the panel on whole pixels (see placeSide in mock.js). */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  bottom: auto;
+  height: 96px;
+  margin: 0;
+  justify-content: center;
+}
+
+@media (min-width: 761px) {
+  :root[data-nview="side"][data-notice] .notice {
+    bottom: auto;
+    height: auto;
+    margin: 0;
+  }
+}
+
+/* Side tab: a bell with an unread dot, with no sideways text. Text turned on its side is blurry on some screens. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  writing-mode: horizontal-tb;
+  transform: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 52px;
+  padding: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.nside-tab svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nside-tab .nst-dot {
+  position: absolute;
+  top: 11px;
+  right: 9px;
+  width: 9px;
+  height: 9px;
+  background: #ffffff;
+  box-shadow: 0 0 0 2px var(--n-acc);
+}
+
+:root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
+  background: #c0211c;
+}
+
+/* Side tab: the kind of notice in upright letters, one under the other. The letters are not turned, so they are as sharp as other text. Every size is a whole pixel. */
+:root[data-nview="side"][data-notice="info"] .nside-tab,
+:root[data-nview="side"][data-notice="alert"] .nside-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 34px;
+  height: auto;
+  padding: 12px 0 10px;
+  border-radius: 6px 0 0 6px;
+  writing-mode: horizontal-tb;
+  transform: none;
+}
+
+.nside-tab .nst-text {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font: 700 14px/16px var(--display);
+  font-style: normal;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.nside-tab .nst-dot {
+  position: static;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  box-shadow: none;
+  background: currentColor;
+}
+
+:root[data-theme="third"][data-nmsg="recap"] .nside-tab .nst-dot {
+  background: #c0211c;
+}
+
+/* Phone bell: no background. Only the bell and its dot show. */
+@media (max-width: 760px) {
+  :root[data-nstyle="auto"][data-notice="info"]:not([data-ngone="true"]) .nbell,
+  :root[data-nstyle="auto"][data-notice="alert"]:not([data-ngone="true"]) .nbell,
+  .nbell[aria-expanded="true"] {
+    background: none;
+    clip-path: none;
+    color: var(--ink);
+  }
+
+  .nbell .nb-dot,
+  :root[data-theme="third"] .nbell .nb-dot {
+    box-shadow: 0 0 0 2px var(--head);
+  }
+}
+
+/* Phone Menu button: no background, like the bell. */
+@media (max-width: 760px) {
+  .menu-btn,
+  .menu-btn[aria-expanded="true"] {
+    background: none;
+    clip-path: none;
+    color: var(--ink);
+  }
+}
+
+/* Money totals: the hint under a label */
+.strip.money .label small {
+  display: block;
+  margin-top: 3px;
+  font: 400 11px/1.2 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--frost);
+}
+
+/* Phone: the money totals are rows, with the label at the left and the amount at the right. */
+@media (max-width: 760px) {
+  .strip.money {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 14px 16px;
+  }
+
+  .strip.money .title {
+    padding-bottom: 10px;
+    text-align: left;
+  }
+
+  .strip.money > div,
+  .strip.money > div.key {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 0;
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+    text-align: left;
+    grid-column: auto;
+  }
+
+  .strip.money > div .label {
+    margin: 0;
+    text-align: left;
+  }
+
+  .strip.money > div b {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 760px) {
+  .strip.money {
+    align-items: stretch;
+  }
+
+  .strip.money.team .title {
+    display: block;
+    padding-left: 0;
+  }
+
+  .strip.money > div b {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .strip.money > div:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+}
+
+/* Phone, Player Bank: the name, the positions, and the Balance fit on the screen with no sideways scroll. */
+@media (max-width: 760px) {
+  table.bank {
+    width: 100%;
+  }
+
+  table.bank td.name {
+    max-width: 0;
+    width: 100%;
+  }
+
+  table.bank td.name .who {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+
+  table.bank td.name .who a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  table.bank td.name .pnote {
+    max-width: 100%;
+  }
+
+  table.bank td.name .who:has(.av) + .pnote {
+    padding-left: 0;
+  }
+
+  table.bank .av {
+    width: 28px;
+    height: 28px;
+    margin-right: 8px;
+    font-size: 13px;
+  }
+
+  table.bank .pos-tg button {
+    width: 26px;
+    height: 28px;
+    padding: 0;
+    font-size: 12px;
+  }
+
+  table.bank td,
+  table.bank th {
+    padding-inline: 6px;
+  }
+
+  table.bank td.bal {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+}
+
+/* Roster Builder: tap a card to move it. The row of column buttons opens under the card. */
+.pcard {
+  cursor: pointer;
+}
+
+.pcard:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.pcard[aria-expanded="true"] {
+  border-left-color: #f5c542;
+}
+
+.move-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px;
+  background: var(--panel);
+  border-left: 3px solid #f5c542;
+  list-style: none;
+}
+
+.move-row .mr-label {
+  width: 100%;
+  color: var(--frost);
+  font: 600 11px/1 var(--body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.move-row button {
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--rule);
+  background: var(--ground);
+  color: var(--ink);
+  font: italic 800 14px/1 var(--display);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.move-row button:hover,
+.move-row button:focus-visible {
+  background: var(--kit-fill);
+  border-color: var(--kit-fill);
+  color: var(--on-fill);
+}
+
+.pcard.flash {
+  animation: row-flash 1.6s ease-out;
+}
+
+@media (max-width: 760px) {
+  .pcard {
+    cursor: pointer;
+  }
+}
+
+/* Away: both score boxes of a score bug have the same background. */
+:root[data-theme="away"] .bug .ipk .pts {
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+/* Ledger: the Edit button in each row, and the Delete button in the dialog */
+.ledger .tx-cell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.ledger .tx-edit {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.modal .tx-delete {
+  margin-left: auto;
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
+.modal .tx-delete.confirm {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+tr.flash td {
+  animation: row-flash 1.6s ease-out;
+}
+
+/* Phone, Ledger: a small Edit button, so the table fits the screen. */
+@media (max-width: 760px) {
+  .ledger .tx-edit {
+    min-height: 30px;
+    padding: 0 7px;
+    font-size: 11px;
+  }
+
+  .ledger td.tx-cell,
+  .ledger th.tx-cell {
+    padding-left: 2px;
+    padding-right: 6px;
+  }
+}
+
+@media (max-width: 760px) {
+  .ledger td.n,
+  .ledger td.date {
+    font-size: 13px;
+  }
+
+  .ledger td,
+  .ledger th {
+    padding-inline: 5px;
+  }
+}
+
+/* Manager badge: the letters in the vertical centre of the box, on every screen. */
+.mgr-badge,
+.brand .mgr-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 24px;
+  padding: 0 10px 2px;
+  line-height: 1;
+}
+
+/* Info tooltip: the panel colours of the Theme, with the kit line at the top. */
+.info-pop {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: inset 0 3px 0 var(--kit-line), 0 0 0 1px var(--rule), 0 14px 34px -10px rgb(0 0 0 / 0.45);
+  padding-top: 14px;
+}
+
+:root[data-theme="away"] .info-pop {
+  background: #ffffff;
+}
+
+/* The Player form stops below the sticky header when it scrolls into view. */
+#add-player {
+  scroll-margin-top: 90px;
+}
+
+/* Jerseys: one colour system at a time. The slot is neutral, a small chip shows the kit,
+   and only the status has colour: Owes is a solid red tag, On loan is an outlined amber tag, Paid is quiet text. */
+.jslot,
+.jslot[data-kit="away"],
+.jslot[data-kit="third"] {
+  --jbg: var(--panel-2);
+  --jfg: var(--ink);
+  --jedge: var(--rule);
+}
+
+.jslot {
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+
+.jslot[data-st="owes"] {
+  box-shadow: inset 0 0 0 1px var(--rule), inset 3px 0 0 #d9534f;
+}
+
+/* The kit chip at the top right of a slot */
+.jslot:not([data-st="none"])::after {
+  content: "";
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #5ba5d1;
+  background: #1d315f;
+}
+
+.jslot[data-kit="away"]:not([data-st="none"])::after {
+  border-color: #1d315f;
+  background: #ffffff;
+}
+
+.jslot[data-kit="third"]:not([data-st="none"])::after {
+  border-color: #111111;
+  background: #c0211c;
+}
+
+.jslot .js-size {
+  color: var(--frost);
+  opacity: 1;
+}
+
+.jslot .js-st {
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.jslot[data-st="paid"] .js-st {
+  padding-inline: 0;
+  background: none;
+  color: var(--frost);
+}
+
+.jslot[data-st="owes"] .js-st {
+  background: #d9534f;
+  color: #ffffff;
+}
+
+.jslot[data-st="loan"] .js-st {
+  background: none;
+  border-color: #e0a526;
+  color: var(--ink);
+}
+
+/* The key above the list uses the same three looks. */
+.jkey [data-st]::before {
+  border: 1px solid transparent;
+}
+
+.jkey [data-st="paid"]::before {
+  background: var(--frost);
+  opacity: 0.5;
+}
+
+.jkey [data-st="owes"]::before {
+  background: #d9534f;
+}
+
+.jkey [data-st="loan"]::before {
+  background: none;
+  border-color: #e0a526;
+}
+
+/* Menu button: when the menu is open, two crossed hockey sticks take the place of the three bars. */
+.menu-btn .sticks {
+  display: none;
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+
+
+@keyframes sticks-in {
+  from {
+    opacity: 0;
+    transform: rotate(-30deg) scale(0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .sticks {
+    animation: none;
+  }
+}
+
+.menu-btn .sticks {
+  stroke-width: 2.1;
+}
+
+.menu-btn .sticks .blade {
+  stroke-width: 3.6;
+}
+
+/* Jerseys: a table. One row for each Player, and one column for each Kit, with the Kit in the column title. */
+.jtable {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.jtable thead th {
+  text-align: left;
+}
+
+.jtable thead th:first-child {
+  width: 26%;
+}
+
+.jtable .jh {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+tr.jrow {
+  display: table-row;
+  padding: 0;
+}
+
+.jtable tbody th,
+.jtable tbody td {
+  padding: 6px 8px;
+  vertical-align: middle;
+  border-top: 1px solid var(--rule);
+}
+
+.jtable tbody th {
+  font-weight: 400;
+  text-align: left;
+}
+
+.jtable .jslot {
+  width: 100%;
+}
+
+/* The column title names the Kit, so a slot has no kit chip. */
+.jtable .jslot::after {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .jtable thead th:first-child {
+    width: 28%;
+  }
+
+  .jtable thead th,
+  .jtable tbody th,
+  .jtable tbody td {
+    padding: 6px 3px;
+  }
+
+  .jtable .jh {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .jtable .jname {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .jtable .jname b {
+    white-space: normal;
+    font-size: 13px;
+    line-height: 1.2;
+  }
+
+  .jtable .jslot {
+    padding: 6px 2px;
+  }
+
+  .jtable .jslot .js-st {
+    font-size: 9px;
+    padding: 1px 4px;
+  }
+
+  .jtable .jslot[data-st="paid"] .js-st {
+    padding-inline: 0;
+  }
+
+  .jtable .jslot[data-st="none"] {
+    min-height: 84px;
+  }
+
+  .jtable .jslot .js-add {
+    font-size: 11px;
+  }
+}
+
+.jtable tbody th.jname,
+.jtable tbody th.jname b {
+  background: none;
+  color: var(--ink);
+  font: 600 15px/1.25 var(--body);
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: normal;
+}
+
+.jtable tbody th.jname {
+  display: table-cell;
+}
+
+.jtable tbody th.jname .muted {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .jtable tbody th.jname {
+    display: table-cell;
+  }
+
+  .jtable tbody th.jname b {
+    display: block;
+    font-size: 13px;
+  }
+
+  .jtable tbody th.jname .muted {
+    margin-left: 0;
+  }
+}
+
+/* Menu button: the three bars fold into an X and fade, and the crossed sticks turn in over them. Closing runs it back. */
+.menu-btn .bars {
+  position: relative;
+}
+
+.menu-btn .bars i {
+  transition: transform 0.22s ease, opacity 0.18s ease;
+}
+
+.menu-btn .sticks {
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -11px 0 0 -11px;
+  opacity: 0;
+  transform: rotate(-35deg) scale(0.6);
+  transition: opacity 0.2s ease 0.08s, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s;
+}
+
+.menu-btn[aria-expanded="true"] .bars i {
+  opacity: 0;
+}
+
+.menu-btn[aria-expanded="true"] .sticks {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn .bars i,
+  .menu-btn .sticks {
+    transition: none;
+  }
+}
+
+.menu-btn .sticks {
+  transition: opacity 0.15s ease, transform 0.2s ease;
+}
+
+.menu-btn[aria-expanded="true"] .sticks {
+  transition: opacity 0.2s ease 0.08s, transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1) 0.08s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn .sticks,
+  .menu-btn[aria-expanded="true"] .sticks {
+    transition: none;
+  }
+}
+
+/* Menu button: the middle bar becomes a puck that drops between the crossed sticks, as at a faceoff. */
+.menu-btn .bars i:nth-child(2) {
+  justify-self: center;
+  width: 18px;
+  transition: width 0.22s ease, height 0.22s ease, border-radius 0.22s ease, transform 0.22s ease, opacity 0.18s ease;
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 4px;
+  border-radius: 50%;
+  opacity: 1;
+  transform: translateY(6px);
+  animation: puck-drop 0.5s cubic-bezier(0.3, 0, 0.4, 1) both;
+}
+
+@keyframes puck-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(7px);
+  }
+
+  75% {
+    transform: translateY(4.5px);
+  }
+
+  100% {
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+    animation: none;
+  }
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 9px;
+  height: 5px;
+  transform: translateY(4px);
+  box-shadow: 0 0 0 1.5px var(--head);
+  animation-name: puck-drop-2;
+}
+
+@keyframes puck-drop-2 {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(5.5px);
+  }
+
+  75% {
+    transform: translateY(3px);
+  }
+
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 7px;
+  height: 4px;
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 5px;
+  height: 3px;
+  box-shadow: 0 0 0 1px var(--head);
+}
+
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  transform: translateY(6.5px);
+  animation-name: puck-drop-3;
+}
+
+@keyframes puck-drop-3 {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(8px);
+  }
+
+  75% {
+    transform: translateY(5.5px);
+  }
+
+  100% {
+    transform: translateY(6.5px);
+  }
+}
+
+/* The puck is drawn in the sticks icon, so it shares their grid and sits in the exact centre.
+   The middle bar shrinks toward the centre and fades while the puck drops in. */
+.menu-btn[aria-expanded="true"] .bars i:nth-child(2) {
+  width: 5px;
+  height: 2px;
+  opacity: 0;
+  box-shadow: none;
+  transform: translateY(4px);
+  animation: none;
+}
+
+.menu-btn .sticks .puck {
+  fill: currentColor;
+  stroke: var(--head);
+  stroke-width: 2.2;
+  paint-order: stroke;
+  opacity: 0;
+}
+
+.menu-btn[aria-expanded="true"] .sticks .puck {
+  animation: puck-drop-svg 0.5s cubic-bezier(0.3, 0, 0.4, 1) 0.1s both;
+}
+
+@keyframes puck-drop-svg {
+  0% {
+    opacity: 0;
+    transform: translateY(-9px);
+  }
+
+  55% {
+    opacity: 1;
+    transform: translateY(1.5px);
+  }
+
+  75% {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-btn[aria-expanded="true"] .sticks .puck {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+
+/* ---------- Site additions: parts that the mockups do not have ---------- */
 /* The Home page with no Recap: the score and the headline only. */
 .hero.no-video {
   grid-template-columns: minmax(0, 640px);
@@ -2173,7 +7229,9 @@ th a {
   text-decoration: none;
 }
 
-/* The header record has one part for each current League Season. */
-.site-head .rec > span + span {
-  margin-left: 14px;
+/* Stats: "All time" is a link, so the current view has aria-current in place of aria-pressed. */
+.seg a[aria-current="page"] {
+  background-color: var(--kit-fill);
+  color: var(--on-fill);
+  box-shadow: none;
 }
