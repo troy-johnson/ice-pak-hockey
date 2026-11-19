@@ -78,6 +78,17 @@ GOALIES_BY_LEAGUE_SEASON = {
         )
     },
 }
+# The goalie of single Games, from the BenchApp chats (read on 2026-11-18). A fill-in goalie often has
+# no BenchApp check-in, so the load adds the goalie as a Game Player.
+GOALIE_GAMES = {
+    "2023-11-19 18:45": "Reid Jacobson",  # "Looking forward to your debut! Thanks Reid!"
+    "2024-05-08 19:45": "Dave Dries",  # "In goal tomorrow ... Ice Pak alumnus Dave Dries!"
+    "2024-05-13 21:45": "Danny Parker",  # "We have found a goalie! Guy named Danny Parker."
+    "2024-10-27 16:30": "Reid Jacobson",  # the lines of the day end with "Reid"
+    "2024-12-22 20:15": "Ben Lieberman",  # "Ben Lieberman gets the call-up!"
+    "2025-07-14 20:15": "Ben Lieberman",  # "Ben Lieberman is in goal tonight!"
+    "2026-05-15 22:30": "Joe Darnell",  # "We have Joe Darnell in net tonight."
+}
 MANAGER_ROSTERS = {"MIC Winter '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27"}
 # The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Spring '26 Games.
 MIC_SUMMER_26_FIRST_DAY = "2026-07-28"
@@ -623,6 +634,12 @@ def write_sql():
             f"AND opponent_id = (SELECT id FROM opponents WHERE name = {quote(row['opponent'])}) "
             "AND hhg_game_id IS NULL;"
         )
+
+    for starts_at, goalie in GOALIE_GAMES.items():
+        game_ref = f"(SELECT id FROM games WHERE starts_at = {quote(starts_at)} AND hhg_game_id IS NULL)"
+        out.append(f"UPDATE game_players SET is_goalie = 0 WHERE game_id = {game_ref};")
+        out.append(f"INSERT INTO game_players (game_id, player_id, is_goalie) VALUES ({game_ref}, {player_ref(goalie)}, 1) "
+                   "ON CONFLICT (game_id, player_id) DO UPDATE SET is_goalie = 1;")
 
     for league_season, goalie in GOALIES_BY_LEAGUE_SEASON.items():
         out.append(
