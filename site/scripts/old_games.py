@@ -63,15 +63,19 @@ BENCHAPP_SEASONS = {
     520964: "MIC Summer '26",
     522761: "County Winter '26-27",
 }
-# Troy, 2026-11-18: the goalie of the League Seasons that have no goalie marks in BenchApp.
-# The Player is the goalie in each Game of the League Season where the Player is a Game Player
-# and no other goalie is marked.
-# Troy: Scott Wade has been the goalie of most Games since 2024. A fill-in keeps the BenchApp mark.
+# Troy, 2026-11-18: the goalies of each League Season, in order. In each Game with no goalie mark,
+# the first of them who is a Game Player is the goalie. A fill-in keeps the BenchApp mark.
 GOALIES_BY_LEAGUE_SEASON = {
-    "UHL Summer '21": "Dave Dries",
-    "County Summer '21": "Trevor Tilk",
+    "UHL Summer '21": ["Dave Dries"],
+    "County Summer '21": ["Trevor Tilk"],
+    # "Matt Turner for a bulk, some Jared Ferrin as well."
     **{
-        name: "Scott Wade"
+        name: ["Matt Turner", "Jared Ferrin"]
+        for name in ("County Winter '21-22", "County Summer '22", "County Winter '22-23", "County Summer '23")
+    },
+    # "Scott Wade has been the goalie for most of the games since 2024."
+    **{
+        name: ["Scott Wade"]
         for name in (
             "County Winter '23-24", "County Summer '24", "County Winter '24-25", "County Summer '25",
             "County Winter '25-26", "MIC Spring '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27",
@@ -88,7 +92,12 @@ GOALIE_GAMES = {
     "2024-12-22 20:15": "Ben Lieberman",  # "Ben Lieberman gets the call-up!"
     "2025-07-14 20:15": "Ben Lieberman",  # "Ben Lieberman is in goal tonight!"
     "2026-05-15 22:30": "Joe Darnell",  # "We have Joe Darnell in net tonight."
+    "2025-03-18 20:30": "Dennis Lucero",  # "Dennis Lucero will be in net tonight."
+    "2026-06-19 21:15": "Dennis Lucero",  # "Dennis Lucero will be in net tomorrow night!"
+    "2026-07-29 18:45": "Tara Riley",  # "We've got Tara Riley in goal tonight."
 }
+# Sub goalies from the chats. Troy, 2026-11-18: they become Players.
+SUB_GOALIES = ["Dennis Lucero", "Tara Riley"]
 MANAGER_ROSTERS = {"MIC Winter '26", "County Summer '26", "MIC Summer '26", "County Winter '26-27"}
 # The events of "2026 Summer (Mammoth)" before this day are copies of the MIC Spring '26 Games.
 MIC_SUMMER_26_FIRST_DAY = "2026-07-28"
@@ -635,13 +644,17 @@ def write_sql():
             "AND hhg_game_id IS NULL;"
         )
 
+    for name in SUB_GOALIES:
+        first, last = split_name(name)
+        out.append("INSERT OR IGNORE INTO players (first_name, last_name, position) "
+                   f"VALUES ({quote(first)}, {quote(last)}, 'goalie');")
     for starts_at, goalie in GOALIE_GAMES.items():
         game_ref = f"(SELECT id FROM games WHERE starts_at = {quote(starts_at)} AND hhg_game_id IS NULL)"
         out.append(f"UPDATE game_players SET is_goalie = 0 WHERE game_id = {game_ref};")
         out.append(f"INSERT INTO game_players (game_id, player_id, is_goalie) VALUES ({game_ref}, {player_ref(goalie)}, 1) "
                    "ON CONFLICT (game_id, player_id) DO UPDATE SET is_goalie = 1;")
 
-    for league_season, goalie in GOALIES_BY_LEAGUE_SEASON.items():
+    for league_season, goalie in ((name, each) for name, goalies in GOALIES_BY_LEAGUE_SEASON.items() for each in goalies):
         out.append(
             f"UPDATE game_players SET is_goalie = 1 WHERE player_id = {player_ref(goalie)} "
             "AND game_id IN (SELECT id FROM games WHERE hhg_game_id IS NULL AND league_season_id = "
