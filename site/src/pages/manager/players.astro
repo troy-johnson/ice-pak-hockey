@@ -1,5 +1,6 @@
 ---
 import Manager from "../../layouts/Manager.astro";
+import { syncCalendar } from "../../lib/calendar-sync";
 import { createPlayer, deletePlayer, listPlayers, updatePlayer } from "../../lib/db";
 import { playerFields } from "../../lib/form-fields";
 import { count, text } from "../../lib/forms";
@@ -8,13 +9,21 @@ import { byPriority, LABELS, POSITIONS, PRIORITY_TIERS } from "../../lib/roster"
 export const prerender = false;
 
 let error = "";
+let notice = "";
 
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
   const id = count(data, "id");
   const fields = playerFields(data);
 
-  if (text(data, "action") === "delete") {
+  if (text(data, "action") === "sync-calendar") {
+    try {
+      const result = await syncCalendar();
+      notice = `Calendar Feed read: ${result.added} Games added, ${result.changed} changed, ${result.removed} removed.`;
+    } catch (failure) {
+      error = `The Calendar Feed did not answer: ${failure instanceof Error ? failure.message : failure}`;
+    }
+  } else if (text(data, "action") === "delete") {
     if (await deletePlayer(id)) {
       return Astro.redirect("/manager/players");
     }
@@ -40,6 +49,12 @@ const editing = players.find((player) => player.id === Number(Astro.url.searchPa
     {players.length} Players. Only Managers see the Priority Tier, the order, and the note.
   </p>
   {error && <p class="error" role="alert">{error}</p>}
+  {notice && <p class="card panel" role="status">{notice}</p>}
+  <form method="POST">
+    <input type="hidden" name="action" value="sync-calendar" />
+    <button>Read the Calendar Feed now</button>
+    <span class="muted">The site reads it each hour. Use this after a change in BenchApp.</span>
+  </form>
 
   <section class="card panel">
     <h2>{editing ? `Edit ${editing.firstName} ${editing.lastName}` : "Add a Player"}</h2>

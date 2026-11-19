@@ -3,7 +3,12 @@
 	"compatibility_date": "2026-11-10",
 	"compatibility_flags": ["global_fetch_strictly_public"],
 	"name": "ice-pak-site",
-	"main": "@astrojs/cloudflare/entrypoints/server",
+	// The Astro pages and the Cron Trigger of the Calendar Feed.
+	"main": "./src/worker.ts",
+	// Each hour at 17 past: read the Calendar Feed (BenchApp). The feed address is the Worker secret CALENDAR_FEED_URL.
+	"triggers": {
+		"crons": ["17 * * * *"]
+	},
 	"assets": {
 		"directory": "./dist",
 		"binding": "ASSETS"

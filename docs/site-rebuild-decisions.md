@@ -24,6 +24,7 @@ Each "not verified" item is a fact that nobody checked against a primary source.
 - **Opponent logos:** the site uses the 17 opponent logos, NHL logos included. Troy accepted them on 2026-11-16.
 - **Shop page:** the Shop page and its link wait for the Printful Quick Store.
 - **Headline of a Game:** the site writes "Ice Pak at Night Owls" or "Ice Pak vs Wild". A headline in the HHG Game File replaces it.
+- **Calendar Feed:** a Cron Trigger reads the BenchApp calendar each hour, at 17 past. The address has a private key, so it is the Worker secret `CALENDAR_FEED_URL`, and `site/.dev.vars` has it for the dev server. The feed adds each new Game to the newest League Season of the League of its rink, and it changes the date, opponent, side, and rink of a coming Game. A coming Game that BenchApp deletes goes too. A Game with a Box Score keeps its values. A Manager can read the feed at once from the Player Bank page.
 - **Next game:** the Home page shows the next game with the date, opponent, rink, and League.
 - **Dropped:** news posts, comments, text alerts, player logins, contact data, and the custom shop checkout.
 

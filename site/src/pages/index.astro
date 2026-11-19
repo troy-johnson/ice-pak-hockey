@@ -3,7 +3,18 @@ import Base from "../layouts/Base.astro";
 import GameCard from "../components/site/GameCard.astro";
 import PlayerCell from "../components/site/PlayerCell.astro";
 import ScoreBug from "../components/site/ScoreBug.astro";
-import { headline, periodName, plainDate, utahTime, videoImage } from "../lib/game-format";
+import OppMark from "../components/site/OppMark.astro";
+import {
+  clockTime,
+  headline,
+  opponentName,
+  periodName,
+  plainDate,
+  shortDate,
+  utahTime,
+  versus,
+  videoImage,
+} from "../lib/game-format";
 import { boxScore, gamesOf, playersById, statData } from "../lib/site-data";
 import { byStat, currentLeagueSeasons, only, played, skaterLines } from "../lib/stats";
 
@@ -12,6 +23,10 @@ export const prerender = false;
 const now = utahTime(new Date());
 const games = await gamesOf(Astro.locals);
 const past = games.filter((game) => game.startsAt < now);
+// The coming Games come from the Calendar Feed.
+const upcoming = games.filter((game) => game.startsAt >= now);
+const nextGame = upcoming[0];
+const monthDay = (startsAt: string) => plainDate(startsAt).replace(/, \d{4}$/, "");
 // The hero is the newest Game with a final score, or else the newest Game.
 const latest = past.findLast((game) => game.icePakScore !== null) ?? past.at(-1);
 const current = new Set(currentLeagueSeasons(games, now));
@@ -37,6 +52,25 @@ const nameOf = (playerId: number | null) => {
 ---
 
 <Base title="Ice Pak Hockey" description="The game videos, the schedule, and the stats of Ice Pak, a hockey team in Salt Lake City.">
+  {
+    nextGame && (
+      <div slot="nextbar" class="nextbar">
+        <div class="wrap">
+          <span class="label">Next game</span>
+          <b>
+            {shortDate(nextGame.startsAt)} · {clockTime(nextGame.startsAt)}
+          </b>
+          <OppMark opponent={nextGame.opponent} />
+          <span>
+            {versus(nextGame.side)} <b>{opponentName(nextGame.opponent)}</b>
+          </span>
+          {nextGame.rink && <span class="muted">{nextGame.rink}</span>}
+          <span class="tag">{nextGame.league}</span>
+          <a href="/schedule?view=list">Full Schedule</a>
+        </div>
+      </div>
+    )
+  }
   <div slot="band" class="band">
     <div class="wrap">
       {
@@ -161,4 +195,33 @@ const nameOf = (playerId: number | null) => {
       </section>
     </div>
   </div>
+  {
+    upcoming.length > 0 && (
+      <section>
+        <div class="sec-head">
+          <h2>Next games</h2>
+          <a href="/schedule">Calendar</a>
+        </div>
+        <ul class="next row">
+          {upcoming.slice(0, 4).map((game) => (
+            <li class="card">
+              <span class="day">
+                {monthDay(game.startsAt)}
+                <small>
+                  {shortDate(game.startsAt).slice(0, 3)} · {clockTime(game.startsAt)}
+                </small>
+              </span>
+              <span class="opp-name">
+                <a href={`/games/${game.id}`}>
+                  {versus(game.side)} {opponentName(game.opponent)}
+                </a>
+                {game.rink && <span class="rink">{game.rink}</span>}
+              </span>
+              <span class="tag">{game.league}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 </Base>
